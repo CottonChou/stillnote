@@ -22,7 +22,7 @@ import {
 } from "./sign-windows-update-manifest.mjs";
 import { syncReadmeContributors } from "./sync-readme-contributors.mjs";
 
-const DEFAULT_REPOSITORY = "tianma-if/edgeever";
+const DEFAULT_REPOSITORY = "CottonChou/stillnote";
 const VERSION_BUMPS = new Set(["patch", "minor", "major"]);
 const POLL_INTERVAL_MS = 10_000;
 const RUN_DISCOVERY_TIMEOUT_MS = 60_000;
@@ -456,12 +456,12 @@ export const selectPublishedDmg = (assets, arch = process.arch) => {
     throw new Error(`Unsupported macOS architecture for installation: ${arch}.`);
   }
   const matches = assets.filter((asset) =>
-    new RegExp(`^EdgeEver-(.+)-mac-${arch}\\.dmg$`).test(asset.name)
+    new RegExp(`^StillNote-(.+)-mac-${arch}\\.dmg$`).test(asset.name)
   );
   if (matches.length !== 1) {
     throw new Error(`Expected exactly one macOS ${arch} DMG, found ${matches.length}.`);
   }
-  const version = new RegExp(`^EdgeEver-(.+)-mac-${arch}\\.dmg$`).exec(matches[0].name)?.[1];
+  const version = new RegExp(`^StillNote-(.+)-mac-${arch}\\.dmg$`).exec(matches[0].name)?.[1];
   if (!version || !matches[0].digest?.startsWith("sha256:")) {
     throw new Error("Published DMG is missing its version or SHA-256 digest.");
   }
@@ -592,7 +592,7 @@ export const updateIosProjectMarketingVersion = (contents, nextVersion) => {
   );
   if (!matches || matches.length < 2) {
     throw new Error(
-      "Unable to update apps/ios/EdgeEver.xcodeproj/project.pbxproj MARKETING_VERSION.",
+      "Unable to update apps/ios/StillNote.xcodeproj/project.pbxproj MARKETING_VERSION.",
     );
   }
   return updated;
@@ -652,7 +652,7 @@ const updateReleaseVersions = ({
 
   if (iosRebuild) {
     const iosVersionPath = "apps/ios/Config/Version.xcconfig";
-    const iosProjectPath = "apps/ios/EdgeEver.xcodeproj/project.pbxproj";
+    const iosProjectPath = "apps/ios/StillNote.xcodeproj/project.pbxproj";
     writeFileSync(
       iosVersionPath,
       updateIosMarketingVersion(readFileSync(iosVersionPath, "utf8"), nextVersion),
@@ -739,7 +739,7 @@ const listWorkflowRuns = ({ repository, workflow, event }) => ghJson([
 ]);
 
 const releaseCheckpointMarker = (tag) =>
-  `<!-- edgeever-release-checkpoint:${tag}\n`;
+  `<!-- stillnote-release-checkpoint:${tag}\n`;
 
 const CHECKPOINT_RUN_FIELDS = [
   "desktopRunId",
@@ -1299,7 +1299,7 @@ const assertDraftAssets = ({
 
   if (!mobileRebuild) {
     const previousApk = previousAssets.find((asset) =>
-      /^edgeever-android-v.*-arm64-v8a\.apk$/.test(asset.name)
+      /^stillnote-android-v.*-arm64-v8a\.apk$/.test(asset.name)
     );
     if (!previousApk || !reusedAssetMatches(previousAssets, assets, previousApk.name)) {
       throw new Error("Reused Android APK filename, size, or checksum changed.");
@@ -1309,9 +1309,9 @@ const assertDraftAssets = ({
     const previousDesktopNames = previousAssets
       .map((asset) => asset.name)
       .filter((name) =>
-        /^EdgeEver-.*-mac-(?:arm64|x64)\.(?:dmg|zip)(?:\.blockmap)?$/.test(name) ||
-        /^EdgeEver-.*-windows-x64\.exe$/.test(name) ||
-        /^EdgeEver-.*-linux-x64\.AppImage$/.test(name) ||
+        /^StillNote-.*-mac-(?:arm64|x64)\.(?:dmg|zip)(?:\.blockmap)?$/.test(name) ||
+        /^StillNote-.*-windows-x64\.exe$/.test(name) ||
+        /^StillNote-.*-linux-x64\.AppImage$/.test(name) ||
         [
           "latest-mac.yml",
           "latest.yml",
@@ -1334,7 +1334,7 @@ const assertDraftAssets = ({
 };
 
 const signDraftWindowsUpdate = ({ repository, tag }) => {
-  const temporaryDirectory = mkdtempSync(join(tmpdir(), "edgeever-windows-update-signing-"));
+  const temporaryDirectory = mkdtempSync(join(tmpdir(), "stillnote-windows-update-signing-"));
   const manifestPath = join(temporaryDirectory, "latest-windows.json");
   const signaturePath = `${manifestPath}.sig`;
   try {
@@ -1352,7 +1352,7 @@ const signDraftWindowsUpdate = ({ repository, tag }) => {
     signWindowsUpdateManifest({
       manifestPath,
       signaturePath,
-      privateKeyPath: process.env.EDGE_EVER_WINDOWS_UPDATE_SIGNING_KEY,
+      privateKeyPath: process.env.STILLNOTE_WINDOWS_UPDATE_SIGNING_KEY,
     });
     run("gh", [
       "release",
@@ -1365,7 +1365,7 @@ const signDraftWindowsUpdate = ({ repository, tag }) => {
     ]);
     console.log(`[release] signed Windows update manifest for ${tag}`);
   } finally {
-    if (temporaryDirectory.startsWith(`${tmpdir()}${sep}edgeever-windows-update-signing-`)) {
+    if (temporaryDirectory.startsWith(`${tmpdir()}${sep}stillnote-windows-update-signing-`)) {
       rmSync(temporaryDirectory, { recursive: true, force: true });
     }
   }
@@ -1385,7 +1385,7 @@ export const installPublishedDmg = async ({ repository, tag, assets }) => {
   }
   const { asset: dmg, version: nativeVersion } = selectPublishedDmg(assets);
 
-  const temporaryDirectory = mkdtempSync(join(tmpdir(), "edgeever-release-"));
+  const temporaryDirectory = mkdtempSync(join(tmpdir(), "stillnote-release-"));
   const mountDirectory = join(temporaryDirectory, "mount");
   const dmgPath = join(temporaryDirectory, dmg.name);
   mkdirSync(mountDirectory);
@@ -1418,20 +1418,20 @@ export const installPublishedDmg = async ({ repository, tag, assets }) => {
       mountDirectory,
     ]);
     mounted = true;
-    const sourceApp = join(mountDirectory, "EdgeEver.app");
+    const sourceApp = join(mountDirectory, "StillNote.app");
     if (!existsSync(sourceApp)) {
-      throw new Error("Mounted DMG does not contain EdgeEver.app.");
+      throw new Error("Mounted DMG does not contain StillNote.app.");
     }
 
-    run("osascript", ["-e", 'tell application "EdgeEver" to quit'], { allowFailure: true });
+    run("osascript", ["-e", 'tell application "StillNote" to quit'], { allowFailure: true });
     await wait(2_000);
-    const installedApp = "/Applications/EdgeEver.app";
+    const installedApp = "/Applications/StillNote.app";
     if (existsSync(installedApp)) {
       const trashDirectory = join(process.env.HOME || "", ".Trash");
       if (!trashDirectory.startsWith(`${sep}Users${sep}`)) {
         throw new Error("Could not resolve a safe Trash directory for the previous app.");
       }
-      backupPath = join(trashDirectory, `EdgeEver.app.pre-${tag}`);
+      backupPath = join(trashDirectory, `StillNote.app.pre-${tag}`);
       if (existsSync(backupPath)) {
         backupPath = `${backupPath}.${Date.now()}`;
       }
@@ -1461,7 +1461,7 @@ export const installPublishedDmg = async ({ repository, tag, assets }) => {
     }
     run("open", ["-a", installedApp]);
     console.log(
-      `[release] installed and launched EdgeEver ${nativeVersion} from ${tag}`,
+      `[release] installed and launched StillNote ${nativeVersion} from ${tag}`,
     );
     if (backupPath) {
       console.log(`[release] previous app backup: ${backupPath}`);
@@ -1470,7 +1470,7 @@ export const installPublishedDmg = async ({ repository, tag, assets }) => {
     if (mounted) {
       run("hdiutil", ["detach", mountDirectory], { allowFailure: true });
     }
-    if (temporaryDirectory.startsWith(`${tmpdir()}${sep}edgeever-release-`)) {
+    if (temporaryDirectory.startsWith(`${tmpdir()}${sep}stillnote-release-`)) {
       rmSync(temporaryDirectory, { recursive: true, force: true });
     }
   }
@@ -1574,7 +1574,7 @@ const releaseMain = async (options) => {
 
   if (desktopPlan.rebuild) {
     assertWindowsUpdateSigningKey({
-      privateKeyPath: process.env.EDGE_EVER_WINDOWS_UPDATE_SIGNING_KEY,
+      privateKeyPath: process.env.STILLNOTE_WINDOWS_UPDATE_SIGNING_KEY,
     });
     console.log("[release] Windows update signing key matches the pinned desktop trust anchor");
   }

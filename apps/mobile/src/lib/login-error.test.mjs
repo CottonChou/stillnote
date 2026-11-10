@@ -1,12 +1,12 @@
 import { describe, expect, test } from "bun:test";
-import { ApiRequestError } from "@edgeever/client";
+import { ApiRequestError } from "@stillnote/client";
 import { formatMobileLoginError, MISSING_MOBILE_SESSION_MESSAGE } from "./login-error.ts";
 
 describe("mobile login error messages", () => {
   test("explains a Cloudflare challenge and preserves its Ray ID", () => {
     const error = new ApiRequestError("Request failed", 403, undefined, undefined, {
       cloudflareMitigated: true,
-      isEdgeEverApiError: false,
+      isStillNoteApiError: false,
       rayId: "abc123-NRT",
     });
 
@@ -24,13 +24,13 @@ describe("mobile login error messages", () => {
       .toContain("ユーザー名またはパスワードが正しくありません。");
   });
 
-  test("distinguishes credentials, edge security blocks, and EdgeEver 403 responses", () => {
+  test("distinguishes credentials, edge security blocks, and StillNote 403 responses", () => {
     expect(formatMobileLoginError(new ApiRequestError("Unauthorized", 401), "zh-CN"))
       .toContain("用户名或密码不正确");
 
     const blocked = new ApiRequestError("Forbidden", 403, undefined, undefined, {
       cloudflareMitigated: false,
-      isEdgeEverApiError: false,
+      isStillNoteApiError: false,
       rayId: "def456-SJC",
     });
     expect(formatMobileLoginError(blocked, "zh-CN")).toContain("安全策略拦截");
@@ -38,7 +38,7 @@ describe("mobile login error messages", () => {
 
     const forbidden = new ApiRequestError("Forbidden", 403, "forbidden", undefined, {
       cloudflareMitigated: false,
-      isEdgeEverApiError: true,
+      isStillNoteApiError: true,
     });
     expect(formatMobileLoginError(forbidden, "en-US")).toContain("The instance rejected the login request");
   });

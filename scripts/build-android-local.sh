@@ -57,11 +57,11 @@ PREBUILD_FINGERPRINT="$({
     apps/mobile/app.json \
     apps/mobile/assets/adaptive-icon-foreground.svg \
     apps/mobile/assets/adaptive-icon-transparent.svg \
-    assets/brand/edgeever-icon.svg \
+    assets/brand/stillnote-icon.svg \
     patches/expo-sharing@57.0.22.patch \
     bun.lock
 } | shasum | awk '{print $1}')"
-PREBUILD_STAMP="$ANDROID_DIR/.edgeever-prebuild-fingerprint"
+PREBUILD_STAMP="$ANDROID_DIR/.stillnote-prebuild-fingerprint"
 PREVIOUS_FINGERPRINT="$(test -f "$PREBUILD_STAMP" && cat "$PREBUILD_STAMP" || true)"
 
 if [[ ! -x "$ANDROID_DIR/gradlew" || "$PREBUILD_FINGERPRINT" != "$PREVIOUS_FINGERPRINT" ]]; then
@@ -95,8 +95,8 @@ run_timed "刷新生产 JavaScript 与 DOM 资源" ./gradlew \
   :app:createBundleReleaseJsAndAssets --rerun --no-build-cache "${COMMON_ARGS[@]:1}"
 
 
-PLAY_ARCHS="${EDGE_EVER_ANDROID_PLAY_ARCHS:-arm64-v8a}"
-APK_ARCHS="${EDGE_EVER_ANDROID_APK_ARCHS:-arm64-v8a}"
+PLAY_ARCHS="${STILLNOTE_ANDROID_PLAY_ARCHS:-arm64-v8a}"
+APK_ARCHS="${STILLNOTE_ANDROID_APK_ARCHS:-arm64-v8a}"
 KEYSTORE_FILE="$(cd "$(dirname "$ANDROID_KEYSTORE_FILE")" && pwd)/$(basename "$ANDROID_KEYSTORE_FILE")"
 APK_PATH="$ANDROID_DIR/app/build/outputs/apk/release/app-release.apk"
 APKSIGNER_PATH="$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner"

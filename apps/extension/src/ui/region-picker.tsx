@@ -7,16 +7,16 @@ import { regionMarkdown, regionWrapper, RegionSelection, selectableRegion } from
 
 declare const __CLIP_REGION_CSS__: string;
 type PickerService = { dispose: () => void; busy: () => boolean };
-const scope = globalThis as typeof globalThis & { __edgeeverRegionPicker?: PickerService };
+const scope = globalThis as typeof globalThis & { __stillnoteRegionPicker?: PickerService };
 
 export function startRegionPicker() {
   // A second activation must not unlock confirmation of an in-flight save.
-  if (scope.__edgeeverRegionPicker?.busy()) return;
-  scope.__edgeeverRegionPicker?.dispose();
+  if (scope.__stillnoteRegionPicker?.busy()) return;
+  scope.__stillnoteRegionPicker?.dispose();
   const pageUrl = location.href;
   const previousFocus = document.activeElement;
   const host = document.createElement("div");
-  host.id = "edgeever-region-picker";
+  host.id = "stillnote-region-picker";
   host.style.cssText = "all:initial!important;position:fixed!important;inset:0!important;z-index:2147483646!important;pointer-events:none!important;color-scheme:light!important";
   const shadow = host.attachShadow({ mode: "open" });
   const style = document.createElement("style");
@@ -41,11 +41,11 @@ export function startRegionPicker() {
     abort.abort();
     root.unmount();
     host.remove();
-    if (scope.__edgeeverRegionPicker === service) delete scope.__edgeeverRegionPicker;
+    if (scope.__stillnoteRegionPicker === service) delete scope.__stillnoteRegionPicker;
     if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
   };
   const service: PickerService = { dispose, busy: () => busy };
-  scope.__edgeeverRegionPicker = service;
+  scope.__stillnoteRegionPicker = service;
   const target = () => selection?.element ?? hovered;
   const draw = () => {
     const element = target();

@@ -24,7 +24,7 @@ const doc = {
     content: [{
       type: "text",
       text: "附件：report.pdf",
-      marks: [{ type: "link", attrs: { href, class: "edgeever-attachment-link" } }],
+      marks: [{ type: "link", attrs: { href, class: "stillnote-attachment-link" } }],
     }],
   }],
 };
@@ -79,9 +79,9 @@ describe("mobile attachments", () => {
         {
           type: "paragraph",
           content: [{
-            type: "edgeeverFileAttachment",
+            type: "stillnoteFileAttachment",
             attrs: {
-              url: "edgeever-resource://resource/res_video",
+              url: "stillnote-resource://resource/res_video",
               label: "附件：clip.mp4",
               filename: "clip.mp4",
               mimeType: "video/mp4",
@@ -91,7 +91,7 @@ describe("mobile attachments", () => {
         {
           type: "paragraph",
           content: [{
-            type: "edgeeverPdfAttachment",
+            type: "stillnotePdfAttachment",
             attrs: {
               url: href,
               label: "附件：report.pdf",
@@ -104,19 +104,19 @@ describe("mobile attachments", () => {
 
     const renamed = renameMobileAttachmentInDoc(nodeDoc, videoTarget, "final.mp4", "附件：");
     expect(renamed.content[0].content[0]).toEqual({
-      type: "edgeeverFileAttachment",
+      type: "stillnoteFileAttachment",
       attrs: {
-        url: "edgeever-resource://resource/res_video",
+        url: "stillnote-resource://resource/res_video",
         label: "附件：final.mp4",
         filename: "final.mp4",
         mimeType: "video/mp4",
       },
     });
-    expect(renamed.content[1].content[0].type).toBe("edgeeverPdfAttachment");
+    expect(renamed.content[1].content[0].type).toBe("stillnotePdfAttachment");
     expect(deleteMobileAttachmentFromDoc(nodeDoc, videoTarget).content).toEqual([{
       type: "paragraph",
       content: [{
-        type: "edgeeverPdfAttachment",
+        type: "stillnotePdfAttachment",
         attrs: {
           url: href,
           label: "附件：report.pdf",
@@ -151,8 +151,8 @@ describe("mobile attachments", () => {
 
   test("resolves export mime types and filenames for SAF", () => {
     expect(resolveResourceMimeType("photo.webp", "")).toBe("image/webp");
-    expect(resolveResourceMimeType("EdgeEver 极客猫猫", "image/svg+xml")).toBe("image/svg+xml");
-    expect(resolveExportFilename("EdgeEver 极客猫猫", "image/svg+xml")).toBe("EdgeEver 极客猫猫.svg");
+    expect(resolveResourceMimeType("StillNote 极客猫猫", "image/svg+xml")).toBe("image/svg+xml");
+    expect(resolveExportFilename("StillNote 极客猫猫", "image/svg+xml")).toBe("StillNote 极客猫猫.svg");
     expect(resolveExportFilename("report.pdf", "application/pdf")).toBe("report.pdf");
   });
 

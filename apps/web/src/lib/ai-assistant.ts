@@ -25,7 +25,7 @@ import {
   type AiPromptResultMode,
   type AiTargetLanguage,
   type AiTone,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 
 export const targetLanguages = AI_TARGET_LANGUAGES;
 export type TargetLanguage = AiTargetLanguage;
@@ -161,7 +161,7 @@ export const buildAiAssistantRequest = ({
 export type { AiPromptParameterKind, AiPromptResultMode };
 
 export type AiAssistantMode = "instruction" | "ask";
-const AI_ASSISTANT_MODE_KEY = "edgeever.aiAssistant.mode";
+const AI_ASSISTANT_MODE_KEY = "stillnote.aiAssistant.mode";
 
 export function readStoredAiAssistantMode(): AiAssistantMode {
   try {

@@ -28,7 +28,7 @@ const createFixture = () => {
       ('ws_1_inbox', 'ws_1', '等待分类', 'inbox', 0, '2026-09-10T00:00:00.000Z', '2026-09-10T00:00:00.000Z'),
       ('nb_notes', 'ws_1', 'Notes', 'notes', 0, '2026-09-10T00:00:00.000Z', '2026-09-10T00:00:00.000Z');
   `);
-  return { sqlite, db: createSelfHostedStorageAdapter(sqlite, "/tmp/edgeever-notebook-service-test-unused").db };
+  return { sqlite, db: createSelfHostedStorageAdapter(sqlite, "/tmp/stillnote-notebook-service-test-unused").db };
 };
 
 describe("notebook identity", () => {

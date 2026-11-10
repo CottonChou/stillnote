@@ -1,12 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
-import { EdgeEverCodeBlock, selectCurrentCodeBlockContent } from "./code-block.ts";
+import { StillNoteCodeBlock, selectCurrentCodeBlockContent } from "./code-block.ts";
 
 const createEditor = () => new Editor({
   extensions: [
     StarterKit.configure({ codeBlock: false }),
-    EdgeEverCodeBlock,
+    StillNoteCodeBlock,
   ],
   content: {
     type: "doc",

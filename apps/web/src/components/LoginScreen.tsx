@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { LockKeyhole } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { normalizeInstanceUrl } from "@edgeever/shared/public-demo";
+import { normalizeInstanceUrl } from "@stillnote/shared/public-demo";
 import { getAppAssetPath } from "@/lib/app-page-path";
 import { Button } from "@/components/ui/button";
 import { GitHubRepositoryLink } from "@/components/GitHubRepositoryLink";
@@ -21,7 +21,7 @@ const DEMO_LOGIN_CREDENTIALS = {
 
 const getDefaultLoginCredentials = () => {
   const hostname = window.location.hostname;
-  const isDemoHost = hostname === "demo.edgeever.org" || hostname.startsWith("edgeever-demo.");
+  const isDemoHost = hostname === "demo.stillnote.org" || hostname.startsWith("stillnote-demo.");
 
   return isDemoHost ? DEMO_LOGIN_CREDENTIALS : { username: "", password: "" };
 };

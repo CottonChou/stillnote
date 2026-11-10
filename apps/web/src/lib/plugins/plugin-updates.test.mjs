@@ -9,7 +9,7 @@ afterAll(() => { restoreGithubInstance?.(); });
 
 const pluginManifest = {
   type: "plugin",
-  id: "org.edgeever.update-test",
+  id: "org.stillnote.update-test",
   name: "Update Test",
   version: "1.0.0",
   apiVersion: "2",
@@ -49,7 +49,7 @@ describe("plugin update checks", () => {
       id: pluginManifest.id,
       name: pluginManifest.name,
       description: "Verified plugin",
-      author: "EdgeEver",
+      author: "StillNote",
       category: "Productivity",
       repositoryUrl: "https://github.com/example/plugin",
       distribution: { type: "manifest", manifestUrl: "https://example.com/verified/manifest.json" },
@@ -93,7 +93,7 @@ describe("plugin update checks", () => {
   });
 
   test("isolates a failed source while checking other extensions", async () => {
-    const broken = installed({ manifest: { ...pluginManifest, id: "org.edgeever.broken" }, manifestUrl: "https://broken.example/manifest.json" });
+    const broken = installed({ manifest: { ...pluginManifest, id: "org.stillnote.broken" }, manifestUrl: "https://broken.example/manifest.json" });
     const request = async (input) => String(input).includes("broken")
       ? new Response(null, { status: 503 })
       : Response.json({ ...pluginManifest, version: "2.0.0" });
@@ -101,11 +101,11 @@ describe("plugin update checks", () => {
     const result = await checkPluginUpdates([broken, installed()], [], request);
 
     expect(result.updates.map((update) => update.pluginId)).toEqual([pluginManifest.id]);
-    expect(result.errors["org.edgeever.broken"]).toContain("503");
+    expect(result.errors["org.stillnote.broken"]).toContain("503");
   });
 
   test("automatically applies only checksum-pinned official marketplace updates", async () => {
-    const communityManifest = { ...pluginManifest, id: "org.edgeever.community-test" };
+    const communityManifest = { ...pluginManifest, id: "org.stillnote.community-test" };
     const extensions = [
       installed({ source: { kind: "marketplace", verified: true } }),
       installed({ manifest: communityManifest, source: { kind: "marketplace", verified: true } }),
@@ -115,8 +115,8 @@ describe("plugin update checks", () => {
         id: pluginManifest.id,
         name: pluginManifest.name,
         description: "Official plugin",
-        author: "EdgeEver",
-        publisher: "edgeever",
+        author: "StillNote",
+        publisher: "stillnote",
         category: "Productivity",
         repositoryUrl: "https://github.com/example/official-plugin",
         distribution: { type: "manifest", manifestUrl: "https://example.com/official/manifest.json" },
@@ -157,8 +157,8 @@ describe("plugin update checks", () => {
       id: pluginManifest.id,
       name: pluginManifest.name,
       description: "Official plugin",
-      author: "EdgeEver",
-      publisher: "edgeever",
+      author: "StillNote",
+      publisher: "stillnote",
       category: "Productivity",
       repositoryUrl: "https://github.com/example/official-plugin",
       distribution: { type: "manifest", manifestUrl: "https://example.com/official/manifest.json" },

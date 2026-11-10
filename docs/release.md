@@ -8,7 +8,7 @@ For any Release that rebuilds desktop assets, first point the release shell at
 the repository-external Ed25519 key used for the Windows update manifest:
 
 ```bash
-export EDGE_EVER_WINDOWS_UPDATE_SIGNING_KEY=/absolute/path/to/windows-update-ed25519-private.pem
+export STILLNOTE_WINDOWS_UPDATE_SIGNING_KEY=/absolute/path/to/windows-update-ed25519-private.pem
 ```
 
 ```bash
@@ -56,7 +56,7 @@ list, repeat `--contributor alice`; the script appends
 infer contributors automatically. Resuming an existing Draft preserves its
 notes; edit the Draft directly to adjust credits.
 
-## EdgeEver-Specific Behavior
+## StillNote-Specific Behavior
 
 - Stable tags and Release titles use `vX.Y.Z`. Pass `--bump` explicitly and
   follow SemVer; do not compress user-visible new capabilities or new platforms

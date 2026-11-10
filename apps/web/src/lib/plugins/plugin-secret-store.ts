@@ -1,4 +1,4 @@
-const DATABASE_NAME = "edgeever-plugin-secrets-v1";
+const DATABASE_NAME = "stillnote-plugin-secrets-v1";
 const DATABASE_VERSION = 1;
 const KEY_STORE = "keys";
 const SECRET_STORE = "secrets";

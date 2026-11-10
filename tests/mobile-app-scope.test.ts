@@ -22,11 +22,11 @@ const notesViewSource = readFileSync(
   "utf8"
 );
 const iosWorkspaceViewSource = readFileSync(
-  new URL("../apps/ios/EdgeEver/Features/Workspace/WorkspaceView.swift", import.meta.url),
+  new URL("../apps/ios/StillNote/Features/Workspace/WorkspaceView.swift", import.meta.url),
   "utf8"
 );
 const iosMemoDetailSource = readFileSync(
-  new URL("../apps/ios/EdgeEver/Features/Workspace/MemoDetailView.swift", import.meta.url),
+  new URL("../apps/ios/StillNote/Features/Workspace/MemoDetailView.swift", import.meta.url),
   "utf8"
 );
 const mobilePickersSource = readFileSync(
@@ -42,7 +42,7 @@ const mobileLocalMirrorSource = readFileSync(
   "utf8"
 );
 const iosLocalMirrorSource = readFileSync(
-  new URL("../apps/ios/EdgeEver/Data/Database/LocalMirrorRepository.swift", import.meta.url),
+  new URL("../apps/ios/StillNote/Data/Database/LocalMirrorRepository.swift", import.meta.url),
   "utf8"
 );
 const mobileDomSource = readFileSync(
@@ -146,7 +146,7 @@ describe("mobile app scope", () => {
     expect(workspaceEditorsSource).toContain("KeyboardAvoidingView");
     expect(workspaceEditorsSource).toContain('enabled={Platform.OS === "android"}');
     expect(localTiptapEditorSource).toContain('visualViewport?.addEventListener("resize", ensureSelectionVisible)');
-    expect(localTiptapEditorSource).toContain("--edgeever-keyboard-inset");
+    expect(localTiptapEditorSource).toContain("--stillnote-keyboard-inset");
     expect(localTiptapEditorSource).toContain("scrollEditorPositionIntoView(editor, editor.state.selection.head)");
   });
 

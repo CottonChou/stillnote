@@ -23,12 +23,12 @@ export const PHONE_IMAGE_FILL_MAX_WIDTH_PX = 640;
 /**
  * `!important` overrides the inline percent on the image figure.
  * `screen` leaves print on the stored percent.
- * Share-as-image cards (`.edgeever-image-card`) keep the stored percent:
+ * Share-as-image cards (`.stillnote-image-card`) keep the stored percent:
  * they are a fixed-width document, not the phone column.
  */
 export const PHONE_IMAGE_FILL_CSS = `
 @media screen and (max-width: ${PHONE_IMAGE_FILL_MAX_WIDTH_PX}px) {
-  :is(.edgeever-image-node, .edgeever-image-upload-result, .edgeever-image-upload-placeholder, .ProseMirror img[data-width]):not(.edgeever-image-card *) {
+  :is(.stillnote-image-node, .stillnote-image-upload-result, .stillnote-image-upload-placeholder, .ProseMirror img[data-width]):not(.stillnote-image-card *) {
     width: 100% !important;
     max-width: 100% !important;
   }
@@ -37,9 +37,9 @@ export const PHONE_IMAGE_FILL_CSS = `
 
 export const installPhoneImageFillStyle = () => {
   if (typeof document === "undefined") return;
-  if (document.head.querySelector("style[data-edgeever-phone-image-fill]")) return;
+  if (document.head.querySelector("style[data-stillnote-phone-image-fill]")) return;
   const style = document.createElement("style");
-  style.dataset.edgeeverPhoneImageFill = "true";
+  style.dataset.stillnotePhoneImageFill = "true";
   style.textContent = PHONE_IMAGE_FILL_CSS;
   document.head.appendChild(style);
 };

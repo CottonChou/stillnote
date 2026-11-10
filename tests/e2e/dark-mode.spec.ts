@@ -1,9 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 
 const installDarkTheme = (page: Page) => page.addInitScript(() => {
-  localStorage.setItem("edgeever.theme", "dark");
-  localStorage.setItem("edgeever.editor-theme", "custom-default");
-  localStorage.setItem("edgeever.custom-editor-themes", JSON.stringify([{
+  localStorage.setItem("stillnote.theme", "dark");
+  localStorage.setItem("stillnote.editor-theme", "custom-default");
+  localStorage.setItem("stillnote.custom-editor-themes", JSON.stringify([{
     id: "custom-default",
     name: "Dark mode audit",
     light: {
@@ -134,7 +134,7 @@ test.describe("dark mode visual contracts", () => {
     try {
       await page.goto(`/share/${encodeURIComponent(body.share.token)}`);
       await expect(page.locator("html")).toHaveClass(/dark/);
-      await expect(page.locator(".edgeever-public-share .ProseMirror")).toBeVisible();
+      await expect(page.locator(".stillnote-public-share .ProseMirror")).toBeVisible();
       expect(await auditVisibleTextContrast(page)).toEqual([]);
     } finally {
       await page.request.delete(`/api/v1/memos/${memoId}/share`);

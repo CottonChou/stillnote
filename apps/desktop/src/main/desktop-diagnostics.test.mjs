@@ -19,7 +19,7 @@ describe("desktop crash diagnostics", () => {
 
   test("retains packaged asset locations without exposing the installation path", () => {
     expect(sanitizeDesktopDiagnosticText(
-      "at render (file:///Applications/EdgeEver.app/Contents/Resources/web/assets/index-a1b2.js:42:7)",
+      "at render (file:///Applications/StillNote.app/Contents/Resources/web/assets/index-a1b2.js:42:7)",
     )).toBe("at render (file:///[app]/assets/index-a1b2.js:42:7)");
   });
 
@@ -51,7 +51,7 @@ describe("desktop crash diagnostics", () => {
       },
     });
     const url = new URL(issueUrl);
-    expect(url.origin + url.pathname).toBe("https://github.com/tianma-if/edgeever/issues/new");
+    expect(url.origin + url.pathname).toBe("https://github.com/CottonChou/stillnote/issues/new");
     expect(url.searchParams.get("template")).toBe("bug.yml");
     expect(url.searchParams.get("client")).toBe("macOS");
     expect(url.searchParams.get("title")).toContain("darwin x64");

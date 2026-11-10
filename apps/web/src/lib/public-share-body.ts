@@ -13,7 +13,7 @@ import {
   type PublicMemoShare,
   type TiptapDoc,
   type ShareBodyAccess,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 
 export type PublicShareBody =
   | { type: "diagram"; diagram: DiagramDocument }

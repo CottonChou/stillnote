@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import type { MemoDetail } from "@edgeever/shared";
+import type { MemoSummary } from "@stillnote/shared";
 import { filterLocalMemosByExactTag, memoHasExactTag, summarizeMobileTags } from "./mobile-tags";
 
 const memo = (id: string, tags: string[], updatedAt: string, isDeleted = false) => ({
@@ -7,7 +7,7 @@ const memo = (id: string, tags: string[], updatedAt: string, isDeleted = false) 
   tags,
   updatedAt,
   isDeleted,
-} as MemoDetail);
+} as Pick<MemoSummary, "id" | "tags" | "updatedAt" | "isDeleted">);
 
 test("matches one exact tag without depending on case or overlapping names", () => {
   expect(memoHasExactTag(["Project Alpha", "Work"], "project alpha")).toBe(true);

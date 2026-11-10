@@ -3,8 +3,8 @@ import { AnimatePresence } from "motion/react";
 import * as m from "motion/react-m";
 import { useTranslation } from "react-i18next";
 import { ArrowUp, Download, FileText, Loader2, PanelRightClose, Plus, Sparkles, X } from "lucide-react";
-import type { CompanionAction, CompanionAnswer, CompanionEvent, CompanionFailureDiagnostics, CompanionTurn, CompanionTurnInput } from "@edgeever/shared";
-import { buildRevisionDiffRows, companionFailureDiagnostics, createMemoLinkHref } from "@edgeever/shared";
+import type { CompanionAction, CompanionAnswer, CompanionEvent, CompanionFailureDiagnostics, CompanionTurn, CompanionTurnInput } from "@stillnote/shared";
+import { buildRevisionDiffRows, companionFailureDiagnostics, createMemoLinkHref } from "@stillnote/shared";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -180,7 +180,7 @@ type AiSidebarProps = AiSidebarFocus & {
   infographic?: InfographicSidebarController | null;
 };
 
-const SELECTION_TURN_STORAGE = "edgeever.aiSidebar.selectionTurns";
+const SELECTION_TURN_STORAGE = "stillnote.aiSidebar.selectionTurns";
 
 const readSelectionTurnKinds = (): Record<string, "explain" | "translate"> => {
   if (typeof window === "undefined") return {};
@@ -1620,7 +1620,7 @@ function AiSidebarSession({
                         />
                         <a
                           className="inline-flex items-center gap-1 rounded px-1 py-0.5 text-xs text-slate-600 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-                          download={`edgeever-image-${turn.id.slice(0, 8)}-${index + 1}.${image.mediaType === "image/jpeg" ? "jpg" : image.mediaType === "image/webp" ? "webp" : image.mediaType === "image/gif" ? "gif" : "png"}`}
+                          download={`stillnote-image-${turn.id.slice(0, 8)}-${index + 1}.${image.mediaType === "image/jpeg" ? "jpg" : image.mediaType === "image/webp" ? "webp" : image.mediaType === "image/gif" ? "gif" : "png"}`}
                           href={`data:${image.mediaType};base64,${image.base64}`}
                         >
                           <Download className="size-3.5" aria-hidden="true" />

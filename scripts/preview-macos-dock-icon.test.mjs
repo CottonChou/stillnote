@@ -8,10 +8,10 @@ import {
 
 describe("macOS Dock icon preview", () => {
   test("creates a regular app bundle that declares the preview icon", () => {
-    const plist = createPreviewInfoPlist("org.edgeever.logo-preview.test");
+    const plist = createPreviewInfoPlist("org.stillnote.logo-preview.test");
     expect(plist).toContain(`<string>${PREVIEW_APP_NAME}</string>`);
     expect(plist).toContain("<string>AppIcon</string>");
-    expect(plist).toContain("<string>org.edgeever.logo-preview.test</string>");
+    expect(plist).toContain("<string>org.stillnote.logo-preview.test</string>");
     expect(plist).toContain("<key>LSUIElement</key>\n  <false/>");
   });
 

@@ -17,10 +17,10 @@ describe("note image templates", () => {
     for (const theme of NOTE_IMAGE_THEME_OPTIONS) {
       const markup = buildNoteImageCardMarkup({ theme, title: "Note", bodyHtml: "<p>Text</p>", author: "天马", showAuthor: true });
       const { document } = parseHTML(markup);
-      const signature = document.querySelector(".edgeever-footer-author");
+      const signature = document.querySelector(".stillnote-footer-author");
       expect(signature?.textContent).toBe("天马");
       expect(signature?.children.length).toBe(1);
-      expect(document.querySelector(".edgeever-card-avatar")).toBeNull();
+      expect(document.querySelector(".stillnote-card-avatar")).toBeNull();
     }
   });
 
@@ -86,7 +86,7 @@ describe("note image templates", () => {
         theme, title: "Private title", notebook: "Private notebook", author: "Private author", tags: ["Private tag"],
         updatedAt: "Private date", bodyHtml: "<p>Public body</p>", showUpdatedAt: false, showBranding: false,
       });
-      for (const hidden of ["Private title", "Private notebook", "Private author", "Private tag", "Private date", "EdgeEver"]) expect(markup).not.toContain(hidden);
+      for (const hidden of ["Private title", "Private notebook", "Private author", "Private tag", "Private date", "StillNote"]) expect(markup).not.toContain(hidden);
       expect(markup).toContain("<p>Public body</p>");
     }
   });
@@ -114,27 +114,27 @@ describe("note image templates", () => {
     const shown = buildNoteImageCardMarkup({ theme: "code", title: "Visible", bodyHtml: "", showTitle: true });
     expect(shown.match(/Visible/g)).toHaveLength(1);
     const mono = buildNoteImageCardMarkup({ theme: "book", title: "Note", bodyHtml: "", fontStyle: "mono" });
-    expect(mono).not.toContain("edgeever-terminal-header");
+    expect(mono).not.toContain("stillnote-terminal-header");
   });
 
   test("an empty author does not create an empty footer when branding is hidden", () => {
     const markup = buildNoteImageCardMarkup({ title: "Note", bodyHtml: "", author: "  ", showAuthor: true, showBranding: false });
-    expect(markup).not.toContain("edgeever-card-footer");
+    expect(markup).not.toContain("stillnote-card-footer");
   });
 
   test("branding never creates an anonymous header avatar", () => {
     for (const theme of NOTE_IMAGE_THEME_OPTIONS) {
       for (const author of ["", "  ", "Hidden author"]) {
         const markup = buildNoteImageCardMarkup({ theme, title: "Note", bodyHtml: "<p>Body</p>", author, showBranding: true });
-        expect(markup).not.toContain('class="edgeever-card-avatar"');
-        expect(markup.match(/class="edgeever-brand-badge"/g)).toHaveLength(1);
+        expect(markup).not.toContain('class="stillnote-card-avatar"');
+        expect(markup.match(/class="stillnote-brand-badge"/g)).toHaveLength(1);
       }
     }
     const signed = buildNoteImageCardMarkup({ theme: "bento", title: "Note", bodyHtml: "", author: "天马", showAuthor: true, showBranding: false });
-    expect(signed).not.toContain('class="edgeever-card-avatar"');
+    expect(signed).not.toContain('class="stillnote-card-avatar"');
     expect(signed).toContain('<span>天马</span>');
     expect(signed).toContain('<span>天马</span>');
-    expect(signed).not.toContain('class="edgeever-brand-badge"');
+    expect(signed).not.toContain('class="stillnote-brand-badge"');
   });
 
   test("every metadata combination keeps date above content and auxiliary details below it", () => {
@@ -145,19 +145,19 @@ describe("note image templates", () => {
         theme, title: "Title", updatedAt: "2026/10/18", notebook: "Notebook", tags: ["tag"], author: "Author",
         bodyHtml: "<p>Content</p>", showTitle, showUpdatedAt, showNotebook, showTags, showReadingTime, showAuthor, showBranding,
       }));
-      const header = document.querySelector(".edgeever-card-header");
-      const footer = document.querySelector(".edgeever-card-footer");
+      const header = document.querySelector(".stillnote-card-header");
+      const footer = document.querySelector(".stillnote-card-footer");
       expect(Boolean(header)).toBe(showTitle || showUpdatedAt);
       expect(Boolean(footer)).toBe(showNotebook || showTags || showReadingTime || showAuthor || showBranding);
-      expect(Boolean(header?.querySelector(".edgeever-meta-date"))).toBe(showUpdatedAt);
-      expect(Boolean(header?.querySelector(".edgeever-card-title"))).toBe(showTitle);
-      expect(Boolean(footer?.querySelector(".edgeever-meta-notebook"))).toBe(showNotebook);
-      expect(Boolean(footer?.querySelector(".edgeever-meta-tag"))).toBe(showTags);
-      expect(Boolean(footer?.querySelector(".edgeever-meta-reading"))).toBe(showReadingTime);
-      expect(Boolean(footer?.querySelector(".edgeever-footer-author"))).toBe(showAuthor);
-      expect(Boolean(footer?.querySelector(".edgeever-brand-badge"))).toBe(showBranding);
-      expect(header?.querySelector(".edgeever-card-avatar")).toBeFalsy();
-      expect(document.querySelector(".edgeever-terminal-header")?.textContent || "").not.toContain("Notebook");
+      expect(Boolean(header?.querySelector(".stillnote-meta-date"))).toBe(showUpdatedAt);
+      expect(Boolean(header?.querySelector(".stillnote-card-title"))).toBe(showTitle);
+      expect(Boolean(footer?.querySelector(".stillnote-meta-notebook"))).toBe(showNotebook);
+      expect(Boolean(footer?.querySelector(".stillnote-meta-tag"))).toBe(showTags);
+      expect(Boolean(footer?.querySelector(".stillnote-meta-reading"))).toBe(showReadingTime);
+      expect(Boolean(footer?.querySelector(".stillnote-footer-author"))).toBe(showAuthor);
+      expect(Boolean(footer?.querySelector(".stillnote-brand-badge"))).toBe(showBranding);
+      expect(header?.querySelector(".stillnote-card-avatar")).toBeFalsy();
+      expect(document.querySelector(".stillnote-terminal-header")?.textContent || "").not.toContain("Notebook");
     }
   });
 
@@ -165,8 +165,8 @@ describe("note image templates", () => {
     for (const theme of NOTE_IMAGE_THEME_OPTIONS) {
       const markup = buildNoteImageCardMarkup({ theme, title: " ", updatedAt: " ", notebook: " ", tags: ["", " "], author: " ", bodyHtml: "<p>Content</p>",
         showTitle: true, showUpdatedAt: true, showNotebook: true, showTags: true, showAuthor: true, showBranding: false });
-      expect(markup).not.toContain('class="edgeever-card-header"');
-      expect(markup).not.toContain('class="edgeever-card-footer"');
+      expect(markup).not.toContain('class="stillnote-card-header"');
+      expect(markup).not.toContain('class="stillnote-card-footer"');
     }
   });
 

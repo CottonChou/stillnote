@@ -5,15 +5,15 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>zh-Hans</string>
 	<key>CFBundleDisplayName</key>
-	<string>EdgeEver</string>
+	<string>StillNote</string>
 	<key>CFBundleExecutable</key>
-	<string>EdgeEverShare</string>
+	<string>StillNoteShare</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.edgeever.desktop.share</string>
+	<string>org.stillnote.desktop.share</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>EdgeEver</string>
+	<string>StillNote</string>
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>

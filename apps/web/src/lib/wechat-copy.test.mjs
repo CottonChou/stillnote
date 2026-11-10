@@ -48,7 +48,7 @@ beforeAll(async () => {
 });
 
 const MARKDOWN = `
-> **EdgeEver** 把笔记留在你自己的账号里。
+> **StillNote** 把笔记留在你自己的账号里。
 
 正文里的行内代码是 \`#memo=<笔记ID>\`，起步价（$10+/月）。
 
@@ -66,7 +66,7 @@ $$
 
 \`\`\`sh
 # 官方 GHCR 镜像
-curl -fsSL https://edgeever.org/install.sh | bash
+curl -fsSL https://stillnote.org/install.sh | bash
 \`\`\`
 `;
 
@@ -116,7 +116,7 @@ describe("preparePublishArticle", () => {
       "<p>正文 <strong>重点</strong> <code>token</code></p>",
       "<h2>标题</h2>",
       "<hr>",
-      "<hr data-edgeever-merge-divider>",
+      "<hr data-stillnote-merge-divider>",
       "<pre><code class=\"language-sh\"># 官方 GHCR 镜像\\ncurl</code></pre>",
       "<ul data-type=\"taskList\"><li data-checked=\"true\"><label><input type=\"checkbox\" checked></label><div><p>已完成</p></div></li></ul>",
       "<span data-type=\"inline-math\" data-latex=\"E = mc^2\"></span>",

@@ -2,7 +2,7 @@
 
 [简体中文](2026-10-21-public-notebook-site.zh-CN.md)
 
-Requirements: [Issue #591](https://github.com/tianma-if/edgeever/issues/591). Design: [site plan](../public-notebook-site-plan.md). Baseline: official `e15792d0`. This document records final behavior, boundaries and acceptance.
+Requirements: [Issue #591](https://github.com/CottonChou/stillnote/issues/591). Design: [site plan](../public-notebook-site-plan.md). Baseline: official `e15792d0`. This document records final behavior, boundaries and acceptance.
 
 ## Problem, objective and risk
 

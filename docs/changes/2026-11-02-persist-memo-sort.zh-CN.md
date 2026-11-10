@@ -10,7 +10,7 @@
 
 ## 允许变更与验收
 
-1. 将现有四种排序（`updated-desc`、`created-desc`、`title-asc`、`title-desc`）保存到 `edgeever.memoSort`。沿用当前内存状态的作用范围：每个浏览器来源/桌面配置一项工作区通用偏好，不新增逐笔记本、逐账号设置或云同步。
+1. 将现有四种排序（`updated-desc`、`created-desc`、`title-asc`、`title-desc`）保存到 `stillnote.memoSort`。沿用当前内存状态的作用范围：每个浏览器来源/桌面配置一项工作区通用偏好，不新增逐笔记本、逐账号设置或云同步。
 2. 工作区状态通过惰性初始化读取偏好，在首次列表查询之前确定排序。仅在用户选择排序选项时写入一次，不在保存笔记、渲染、轮询或启动 effect 中写入。排序、缓存和分页算法保持不变，保留 #750 的修复。
 3. 没有偏好或存储值无效时，沿用原默认值 `updated-desc`。本地存储不可用时，读取使用该默认值，写入失败不阻断当前会话的排序选择。不修改或清除其他偏好。
 4. 实现前添加定向浏览器回归：依次选择四种排序，重新打开工作区，检查恢复的选中状态；如果启动时发生网络列表查询，其排序参数必须与恢复值一致（已初始化的本地镜像可以不发请求）。覆盖偏好缺失/无效及偏好存储不可用。将用例接入现有浏览器 CI job，不增加 Runner，也不改变检查名称。执行必需的 Web/移动端类型检查和 Web 构建。
@@ -27,5 +27,5 @@
 - `app-helpers.ts` 负责读取、校验和写入偏好，`WorkspaceApp.tsx` 在状态初始化和现有排序选择回调中接入；排序、缓存、分页以及服务端代码未改动。浏览器回归接入原有 CI job，未增加 Runner 或依赖。实际变更均对应上述范围。
 - 修复前的定向浏览器用例复现了选择 A–Z 后没有保存偏好。修复后 7 个 Chromium 端到端用例通过，覆盖四种排序重开、缺失/无效值、存储不可用，以及其他已有偏好不被覆盖。
 - macOS 候选复用正式 v2.16.1 的原生主进程和 Sidecar，通过文件入口加载候选 Web 构建并连接真实 Cloudflare 工作区。选择 A–Z 后完整退出并重新启动，菜单仍为 A–Z，工作区显示已同步；验证后恢复正式客户端。该验证未替换安装包。
-- `bun run typecheck`、`bun run typecheck:mobile`、`EDGE_EVER_DESKTOP_BUILD=1 bun run build:web` 及变更文件的 lint 通过。
+- `bun run typecheck`、`bun run typecheck:mobile`、`STILLNOTE_DESKTOP_BUILD=1 bun run build:web` 及变更文件的 lint 通过。
 - Windows/Linux 原生界面、安装包跨版本升级和远端 CI 尚未验证；本次没有部署服务端或发布客户端。

@@ -11,7 +11,7 @@ const composePath = resolve(projectRoot, "compose.yaml");
 const hostedComposePath = resolve(projectRoot, "apps/site/public/compose.yaml");
 
 function runBash(scriptPath, arguments_, environment) {
-  const harnessDirectory = mkdtempSync(resolve(tmpdir(), "edgeever-installer-harness-"));
+  const harnessDirectory = mkdtempSync(resolve(tmpdir(), "stillnote-installer-harness-"));
   const resultPath = resolve(harnessDirectory, "result.json");
   try {
     const harness = spawnSync(
@@ -23,10 +23,10 @@ function runBash(scriptPath, arguments_, environment) {
           'const { writeFileSync } = require("node:fs");',
           "const result = spawnSync(",
           '  "/bin/bash",',
-          "  [process.env.EDGE_EVER_TEST_INSTALLER, ...JSON.parse(process.env.EDGE_EVER_TEST_ARGUMENTS)],",
+          "  [process.env.STILLNOTE_TEST_INSTALLER, ...JSON.parse(process.env.STILLNOTE_TEST_ARGUMENTS)],",
           '  { encoding: "utf8", env: process.env },',
           ");",
-          "writeFileSync(process.env.EDGE_EVER_TEST_RESULT, JSON.stringify({",
+          "writeFileSync(process.env.STILLNOTE_TEST_RESULT, JSON.stringify({",
           "  status: result.status,",
           "  signal: result.signal,",
           '  stdout: result.stdout || "",',
@@ -38,9 +38,9 @@ function runBash(scriptPath, arguments_, environment) {
       {
         env: {
           ...environment,
-          EDGE_EVER_TEST_ARGUMENTS: JSON.stringify(arguments_),
-          EDGE_EVER_TEST_INSTALLER: scriptPath,
-          EDGE_EVER_TEST_RESULT: resultPath,
+          STILLNOTE_TEST_ARGUMENTS: JSON.stringify(arguments_),
+          STILLNOTE_TEST_INSTALLER: scriptPath,
+          STILLNOTE_TEST_RESULT: resultPath,
         },
         encoding: "utf8",
       },
@@ -64,9 +64,9 @@ describe("Docker installer", () => {
   });
 
   test("installs with TCR and preserves the generated password on rerun", async () => {
-    const fixture = await mkdtemp(resolve(tmpdir(), "edgeever-installer-"));
+    const fixture = await mkdtemp(resolve(tmpdir(), "stillnote-installer-"));
     const fakeBin = resolve(fixture, "bin");
-    const installDirectory = resolve(fixture, "edgeever");
+    const installDirectory = resolve(fixture, "stillnote");
     const dockerLog = resolve(fixture, "docker.log");
     const curlLog = resolve(fixture, "curl.log");
     const fakeDocker = resolve(fakeBin, "docker");
@@ -81,17 +81,17 @@ describe("Docker installer", () => {
         fakeDocker,
         `#!/usr/bin/env bash
 set -eu
-printf '%s\\n' "$*" >> "$EDGE_EVER_TEST_DOCKER_LOG"
+printf '%s\\n' "$*" >> "$STILLNOTE_TEST_DOCKER_LOG"
 if [[ "$1" == "version" ]]; then
   printf '27.5.1\\n'
 elif [[ "$1" == "compose" && "$2" == "version" && "\${3:-}" == "--short" ]]; then
   printf '2.32.4\\n'
 elif [[ "$1" == "inspect" && "$*" == *".Config.Image"* ]]; then
-  printf 'ccr.ccs.tencentyun.com/edgeever/edgeever:latest\\n'
+  printf 'ccr.ccs.tencentyun.com/stillnote/stillnote:latest\\n'
 elif [[ "$1" == "inspect" ]]; then
   printf 'healthy\\n'
-elif [[ "$1" == "compose" && "$*" == *" ps -q edgeever"* ]]; then
-  printf 'edgeever-test-container\\n'
+elif [[ "$1" == "compose" && "$*" == *" ps -q stillnote"* ]]; then
+  printf 'stillnote-test-container\\n'
 fi
 `,
       );
@@ -99,7 +99,7 @@ fi
         fakeCurl,
         `#!/usr/bin/env bash
 set -eu
-printf '%s\n' "$*" >> "$EDGE_EVER_TEST_CURL_LOG"
+printf '%s\n' "$*" >> "$STILLNOTE_TEST_CURL_LOG"
 output=''
 while [[ $# -gt 0 ]]; do
   if [[ "$1" == "--output" ]]; then
@@ -109,7 +109,7 @@ while [[ $# -gt 0 ]]; do
     shift
   fi
 done
-cp "$EDGE_EVER_TEST_COMPOSE_SOURCE" "$output"
+cp "$STILLNOTE_TEST_COMPOSE_SOURCE" "$output"
 `,
       );
       await writeFile(
@@ -117,13 +117,13 @@ cp "$EDGE_EVER_TEST_COMPOSE_SOURCE" "$output"
         `#!/usr/bin/env bash
 set -eu
 if [[ "\${1:-}" == "-l" ]]; then
-  if [[ -f "$EDGE_EVER_TEST_CRONTAB" ]]; then
-    cat "$EDGE_EVER_TEST_CRONTAB"
+  if [[ -f "$STILLNOTE_TEST_CRONTAB" ]]; then
+    cat "$STILLNOTE_TEST_CRONTAB"
   else
     exit 1
   fi
 else
-  cp "$1" "$EDGE_EVER_TEST_CRONTAB"
+  cp "$1" "$STILLNOTE_TEST_CRONTAB"
 fi
 `,
       );
@@ -148,11 +148,11 @@ esac
       const environment = {
         ...process.env,
         PATH: `${fakeBin}:${process.env.PATH}`,
-        EDGE_EVER_INSTALL_DIR: installDirectory,
-        EDGE_EVER_TEST_COMPOSE_SOURCE: composePath,
-        EDGE_EVER_TEST_CRONTAB: crontabStore,
-        EDGE_EVER_TEST_CURL_LOG: curlLog,
-        EDGE_EVER_TEST_DOCKER_LOG: dockerLog,
+        STILLNOTE_INSTALL_DIR: installDirectory,
+        STILLNOTE_TEST_COMPOSE_SOURCE: composePath,
+        STILLNOTE_TEST_CRONTAB: crontabStore,
+        STILLNOTE_TEST_CURL_LOG: curlLog,
+        STILLNOTE_TEST_DOCKER_LOG: dockerLog,
       };
       const first = runInstaller(["--mirror", "tcr", "--port", "18789"], environment);
       if (first.status !== 0) {
@@ -165,27 +165,27 @@ esac
 
       const firstEnvironment = await readFile(resolve(installDirectory, ".env"), "utf8");
       expect(firstEnvironment).toContain(
-        "EDGE_EVER_IMAGE='ccr.ccs.tencentyun.com/edgeever/edgeever'",
+        "STILLNOTE_IMAGE='ccr.ccs.tencentyun.com/stillnote/stillnote'",
       );
-      expect(firstEnvironment).toContain("EDGE_EVER_VERSION='latest'");
-      expect(firstEnvironment).toContain("EDGE_EVER_PORT='18789'");
-      expect(firstEnvironment).toMatch(/EDGE_EVER_AUTH_PASSWORD='[a-f0-9]{32}'/);
+      expect(firstEnvironment).toContain("STILLNOTE_VERSION='latest'");
+      expect(firstEnvironment).toContain("STILLNOTE_PORT='18789'");
+      expect(firstEnvironment).toMatch(/STILLNOTE_AUTH_PASSWORD='[a-f0-9]{32}'/);
       const generatedPassword = firstEnvironment.match(
-        /EDGE_EVER_AUTH_PASSWORD='([a-f0-9]{32})'/,
+        /STILLNOTE_AUTH_PASSWORD='([a-f0-9]{32})'/,
       )?.[1];
       if (!generatedPassword) {
         throw new Error("installer did not generate a password");
       }
       expect(first.stderr).toContain("[STEP 1/6] Validate environment");
       expect(first.stderr).toContain("[STEP 6/6] Wait for health check");
-      expect(first.stderr).toContain("[SUCCESS] EdgeEver is ready");
+      expect(first.stderr).toContain("[SUCCESS] StillNote is ready");
       expect(first.stderr).toContain("Host OS:");
       expect(first.stderr).toContain("Kernel:");
       expect(first.stderr).toContain("Architecture:");
       expect(first.stderr).toContain("Docker Engine: 27.5.1");
       expect(first.stderr).toContain("Docker Compose: 2.32.4");
       expect(first.stderr).toContain(
-        "Linux kernel 3.10.0-1160.119.1.el7.x86_64 does not meet EdgeEver's minimum 5.6 requirement",
+        "Linux kernel 3.10.0-1160.119.1.el7.x86_64 does not meet StillNote's minimum 5.6 requirement",
       );
       expect(first.stderr).toContain(
         "This host is outside the supported Docker environment",
@@ -194,14 +194,14 @@ esac
         "upgrade the host OS/kernel if startup reports EISDIR",
       );
       expect(first.stderr).toContain(
-        "EdgeEver target: ccr.ccs.tencentyun.com/edgeever/edgeever:latest",
+        "StillNote target: ccr.ccs.tencentyun.com/stillnote/stillnote:latest",
       );
       expect(first.stderr).toContain(
-        "Running image: ccr.ccs.tencentyun.com/edgeever/edgeever:latest",
+        "Running image: ccr.ccs.tencentyun.com/stillnote/stillnote:latest",
       );
       expect(first.stderr).not.toContain(generatedPassword);
       expect(first.stdout).toContain(`Password: ${generatedPassword}`);
-      expect(first.stdout).toContain("docker compose logs --tail 200 -f edgeever");
+      expect(first.stdout).toContain("docker compose logs --tail 200 -f stillnote");
       expect(first.stdout).toContain("Automatic updates: daily at 04:17 server time");
 
       const second = runInstaller([], environment);
@@ -221,14 +221,14 @@ esac
       expect(updaterSource).not.toContain(generatedPassword);
       const installedCrontab = await readFile(crontabStore, "utf8");
       expect(installedCrontab).toContain("17 4 * * *");
-      expect(installedCrontab).toContain("edgeever-auto-update:edgeever");
-      expect(installedCrontab.match(/edgeever-auto-update:edgeever/g)).toHaveLength(1);
+      expect(installedCrontab).toContain("stillnote-auto-update:stillnote");
+      expect(installedCrontab.match(/stillnote-auto-update:stillnote/g)).toHaveLength(1);
 
       const update = runBash(resolve(installDirectory, "update.sh"), [], environment);
       expect(update.status).toBe(0);
       expect(update.stdout).toContain("Checking for updates.");
       expect(update.stdout).toContain(
-        "Update complete. Running image: ccr.ccs.tencentyun.com/edgeever/edgeever:latest.",
+        "Update complete. Running image: ccr.ccs.tencentyun.com/stillnote/stillnote:latest.",
       );
 
       const disabled = runInstaller(["--no-auto-update"], environment);
@@ -240,7 +240,7 @@ esac
           () => false,
         ),
       ).toBe(false);
-      expect(await readFile(crontabStore, "utf8")).not.toContain("edgeever-auto-update:edgeever");
+      expect(await readFile(crontabStore, "utf8")).not.toContain("stillnote-auto-update:stillnote");
 
       const log = await readFile(dockerLog, "utf8");
       expect(log).toContain("compose version");
@@ -250,7 +250,7 @@ esac
       const curlRequests = await readFile(curlLog, "utf8");
       expect(
         curlRequests.match(
-          /edgeever-installer-1256854452\.cos\.ap-guangzhou\.myqcloud\.com\/compose\.yaml/g,
+          /stillnote-installer-1256854452\.cos\.ap-guangzhou\.myqcloud\.com\/compose\.yaml/g,
         ),
       ).toHaveLength(4);
     } finally {
@@ -259,9 +259,9 @@ esac
   }, 15_000);
 
   test("prints actionable diagnostics without exposing the password", async () => {
-    const fixture = await mkdtemp(resolve(tmpdir(), "edgeever-installer-failure-"));
+    const fixture = await mkdtemp(resolve(tmpdir(), "stillnote-installer-failure-"));
     const fakeBin = resolve(fixture, "bin");
-    const installDirectory = resolve(fixture, "edgeever");
+    const installDirectory = resolve(fixture, "stillnote");
     const fakeDocker = resolve(fakeBin, "docker");
     const fakeCurl = resolve(fakeBin, "curl");
     const secret = "installer-secret-must-stay-hidden";
@@ -277,7 +277,7 @@ if [[ "$*" == *" pull" ]]; then
   exit 42
 elif [[ "$*" == *" ps -a" ]]; then
   printf 'mock container status\n'
-elif [[ "$*" == *" logs --tail 80 edgeever" ]]; then
+elif [[ "$*" == *" logs --tail 80 stillnote" ]]; then
   printf 'mock recent logs\n'
 fi
 `,
@@ -288,7 +288,7 @@ fi
 set -eu
 while [[ $# -gt 0 ]]; do
   if [[ "$1" == "--output" ]]; then
-    cp "$EDGE_EVER_TEST_COMPOSE_SOURCE" "$2"
+    cp "$STILLNOTE_TEST_COMPOSE_SOURCE" "$2"
     exit 0
   fi
   shift
@@ -304,9 +304,9 @@ exit 1
         {
           ...process.env,
           PATH: `${fakeBin}:${process.env.PATH}`,
-          EDGE_EVER_AUTH_PASSWORD: secret,
-          EDGE_EVER_INSTALL_DIR: installDirectory,
-          EDGE_EVER_TEST_COMPOSE_SOURCE: composePath,
+          STILLNOTE_AUTH_PASSWORD: secret,
+          STILLNOTE_INSTALL_DIR: installDirectory,
+          STILLNOTE_TEST_COMPOSE_SOURCE: composePath,
         },
       );
 
@@ -327,10 +327,10 @@ exit 1
   });
 
   test("identifies a NAS bind-mount permission failure and prints a targeted repair", async () => {
-    const fixture = await mkdtemp(resolve(tmpdir(), "edgeever-installer-permission-"));
+    const fixture = await mkdtemp(resolve(tmpdir(), "stillnote-installer-permission-"));
     const fakeBin = resolve(fixture, "bin");
-    const installDirectory = resolve(fixture, "edgeever");
-    const nasDataDirectory = "/volume1/docker/edgeever data";
+    const installDirectory = resolve(fixture, "stillnote");
+    const nasDataDirectory = "/volume1/docker/stillnote data";
     const fakeDocker = resolve(fakeBin, "docker");
     const fakeCurl = resolve(fakeBin, "curl");
 
@@ -344,21 +344,21 @@ if [[ "$1" == "version" ]]; then
   printf '27.5.1\\n'
 elif [[ "$1" == "compose" && "$2" == "version" && "\${3:-}" == "--short" ]]; then
   printf '2.32.4\\n'
-elif [[ "$1" == "compose" && "$*" == *" ps -q edgeever"* ]]; then
-  printf 'edgeever-permission-container\\n'
+elif [[ "$1" == "compose" && "$*" == *" ps -q stillnote"* ]]; then
+  printf 'stillnote-permission-container\\n'
 elif [[ "$1" == "inspect" && "$*" == *".Config.User"* ]]; then
   printf 'bun\\n'
 elif [[ "$1" == "inspect" && "$*" == *".Mounts"* ]]; then
   printf 'bind||${nasDataDirectory}\\n'
 elif [[ "$1" == "inspect" ]]; then
   printf 'exited\\n'
-elif [[ "$1" == "compose" && "$*" == *" run --rm --no-deps --entrypoint /bin/sh edgeever"* ]]; then
-  printf '/bin/sh: cannot create /data/.edgeever-write-test: Permission denied\\n' >&2
-  printf 'EDGEEVER_DATA_WRITE_FAILED\\n' >&2
+elif [[ "$1" == "compose" && "$*" == *" run --rm --no-deps --entrypoint /bin/sh stillnote"* ]]; then
+  printf '/bin/sh: cannot create /data/.stillnote-write-test: Permission denied\\n' >&2
+  printf 'STILLNOTE_DATA_WRITE_FAILED\\n' >&2
   printf 'Runtime identity: uid=1000(bun) gid=1000(bun)\\n' >&2
   printf 'Data directory: drwxr-xr-x 2 0 0 4096 /data\\n' >&2
   exit 73
-elif [[ "$1" == "compose" && "$*" == *" logs --tail 80 edgeever"* ]]; then
+elif [[ "$1" == "compose" && "$*" == *" logs --tail 80 stillnote"* ]]; then
   printf 'SQLITE_CANTOPEN: unable to open database file\\n'
 fi
 `,
@@ -369,7 +369,7 @@ fi
 set -eu
 while [[ $# -gt 0 ]]; do
   if [[ "$1" == "--output" ]]; then
-    cp "$EDGE_EVER_TEST_COMPOSE_SOURCE" "$2"
+    cp "$STILLNOTE_TEST_COMPOSE_SOURCE" "$2"
     exit 0
   fi
   shift
@@ -385,20 +385,20 @@ exit 1
         {
           ...process.env,
           PATH: `${fakeBin}:${process.env.PATH}`,
-          EDGE_EVER_INSTALL_DIR: installDirectory,
-          EDGE_EVER_TEST_COMPOSE_SOURCE: composePath,
+          STILLNOTE_INSTALL_DIR: installDirectory,
+          STILLNOTE_TEST_COMPOSE_SOURCE: composePath,
         },
       );
 
       expect(result.status).toBe(1);
       expect(result.stderr).toContain("Persistent storage diagnostics:");
-      expect(result.stderr).toContain("Container user: bun (EdgeEver expects UID/GID 1000:1000)");
+      expect(result.stderr).toContain("Container user: bun (StillNote expects UID/GID 1000:1000)");
       expect(result.stderr).toContain(`/data mount: type=bind, source=${nasDataDirectory}`);
       expect(result.stderr).toContain("/data write test: failed");
       expect(result.stderr).toContain("Permission denied");
       expect(result.stderr).toContain("Runtime identity: uid=1000(bun) gid=1000(bun)");
       expect(result.stderr).toContain("The NAS/host directory must be writable by UID/GID 1000:1000");
-      expect(result.stderr).toContain("sudo chown -R 1000:1000 -- /volume1/docker/edgeever\\ data");
+      expect(result.stderr).toContain("sudo chown -R 1000:1000 -- /volume1/docker/stillnote\\ data");
       expect(result.stderr).toContain("NAS uses ACL permissions");
     } finally {
       await rm(fixture, { recursive: true, force: true });

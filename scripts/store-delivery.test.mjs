@@ -65,16 +65,16 @@ describe("store delivery command", () => {
     expect(workflow).toContain("Dependency install failed on attempt ${attempt}/3");
     expect(
       workflow.match(
-        /edgeever-bun-cache-\$\{GITHUB_RUN_ID\}-\$\{GITHUB_RUN_ATTEMPT\}/g,
+        /stillnote-bun-cache-\$\{GITHUB_RUN_ID\}-\$\{GITHUB_RUN_ATTEMPT\}/g,
       ),
     ).toHaveLength(2);
     expect(workflow).not.toContain("eas build");
     expect(workflow).not.toContain("--platform ios");
     expect(workflow).toContain("working-directory: apps/ios");
     expect(workflow).toContain(
-      "group: edgeever-store-delivery-${{ inputs.release_tag }}-${{ inputs.platform }}",
+      "group: stillnote-store-delivery-${{ inputs.release_tag }}-${{ inputs.platform }}",
     );
-    expect(workflow).toContain(".edgeever-ci/scripts/xcode-cloud-control.py");
+    expect(workflow).toContain(".stillnote-ci/scripts/xcode-cloud-control.py");
     expect(workflow).toContain("--wait-valid");
     expect(workflow).not.toContain("--require-sha");
     expect(workflow).not.toContain("--git-ref");
@@ -91,13 +91,13 @@ describe("store delivery command", () => {
       "Pass ios_build_number; do not build from apps/mobile or EAS.",
     );
     expect(workflow).toContain(
-      "APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.EDGEEVER_APPLE_API_ISSUER }}",
+      "APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.STILLNOTE_APPLE_API_ISSUER }}",
     );
     expect(workflow).toContain(
-      "APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.EDGEEVER_APPLE_API_KEY_ID }}",
+      "APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.STILLNOTE_APPLE_API_KEY_ID }}",
     );
     expect(workflow).toContain(
-      "APP_STORE_CONNECT_API_KEY_P8_BASE64: ${{ secrets.EDGEEVER_APPLE_API_KEY_BASE64 }}",
+      "APP_STORE_CONNECT_API_KEY_P8_BASE64: ${{ secrets.STILLNOTE_APPLE_API_KEY_BASE64 }}",
     );
     expect(workflow).toContain(
       'PRECHECK_INCLUDE_IN_APP_PURCHASES: "false"',
@@ -170,7 +170,7 @@ describe("store delivery command", () => {
       "utf8",
     );
 
-    expect(workflow).toContain("github.repository == 'tianma-if/edgeever'");
+    expect(workflow).toContain("github.repository == 'CottonChou/stillnote'");
     expect(workflow).toContain(
       "permissions:\n  # Draft Releases are only visible to a token with repository write access.\n  contents: write",
     );
@@ -183,7 +183,7 @@ describe("store delivery command", () => {
     );
     expect(workflow).not.toContain("ref: ${{ inputs.release_tag }}");
     expect(workflow).toContain(
-      "EDGE_EVER_ANDROID_ALLOWED_SIGNER_SHA256: ${{ secrets.ANDROID_PLAY_APP_SIGNER_SHA256 }}",
+      "STILLNOTE_ANDROID_ALLOWED_SIGNER_SHA256: ${{ secrets.ANDROID_PLAY_APP_SIGNER_SHA256 }}",
     );
     expect(workflow).not.toContain(
       "cb93b7637da06a3910b910d9ef7a8843fb08c8a59bc137656f8fa30cd8df8965",
@@ -200,16 +200,16 @@ describe("store delivery command", () => {
       "utf8",
     );
 
-    expect(workflow).toContain("EDGE_EVER_ANDROID_PLAY_ARCHS: arm64-v8a");
+    expect(workflow).toContain("STILLNOTE_ANDROID_PLAY_ARCHS: arm64-v8a");
     expect(workflow).toContain("Verify Play APK architecture");
     expect(workflow).toContain('if [[ "$actual_archs" != "arm64-v8a" ]]');
     expect(buildScript).toContain(
-      'PLAY_ARCHS="${EDGE_EVER_ANDROID_PLAY_ARCHS:-arm64-v8a}"',
+      'PLAY_ARCHS="${STILLNOTE_ANDROID_PLAY_ARCHS:-arm64-v8a}"',
     );
     expect(buildScript).toContain(
       'if [[ "$ACTUAL_PLAY_ARCHS" != "$PLAY_ARCHS" ]]',
     );
-    expect(buildScript).not.toContain("EDGE_EVER_ANDROID_ARCHS:-");
+    expect(buildScript).not.toContain("STILLNOTE_ANDROID_ARCHS:-");
     expect(buildScript).not.toContain("armeabi-v7a,arm64-v8a,x86,x86_64");
   });
 

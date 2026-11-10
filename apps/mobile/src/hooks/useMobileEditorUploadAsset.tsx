@@ -25,8 +25,8 @@ const requestCameraAccess = async () => {
   Alert.alert(
     "需要相机权限",
     permission.canAskAgain
-      ? "允许 EdgeEver 使用相机后，才能直接拍照插入笔记。"
-      : "相机权限已被关闭。请前往系统设置允许 EdgeEver 使用相机。",
+      ? "允许 StillNote 使用相机后，才能直接拍照插入笔记。"
+      : "相机权限已被关闭。请前往系统设置允许 StillNote 使用相机。",
     permission.canAskAgain
       ? [{ text: "确定", style: "cancel" }]
       : [

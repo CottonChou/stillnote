@@ -8,7 +8,7 @@ import { assertMacIcnsComplete } from "./desktop-icns.mjs";
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const defaultIconPath = join(projectRoot, "apps/desktop/assets/icon.icns");
 
-export const PREVIEW_APP_NAME = "EdgeEver Logo Preview";
+export const PREVIEW_APP_NAME = "StillNote Logo Preview";
 
 export const createPreviewInfoPlist = (bundleIdentifier) => `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -86,14 +86,14 @@ export const launchDockIconPreview = async ({ iconPath = defaultIconPath } = {})
   const resolvedIconPath = resolve(iconPath);
   assertMacIcnsComplete(await readFile(resolvedIconPath), resolvedIconPath);
 
-  const previewRoot = await mkdtemp(join(tmpdir(), "edgeever-dock-icon-preview-"));
+  const previewRoot = await mkdtemp(join(tmpdir(), "stillnote-dock-icon-preview-"));
   const appPath = join(previewRoot, `${PREVIEW_APP_NAME}.app`);
   const contentsPath = join(appPath, "Contents");
   const macosPath = join(contentsPath, "MacOS");
   const resourcesPath = join(contentsPath, "Resources");
   const sourcePath = join(previewRoot, "DockIconPreview.swift");
   const executablePath = join(macosPath, "DockIconPreview");
-  const bundleIdentifier = `org.edgeever.logo-preview.v${Date.now()}p${process.pid}`;
+  const bundleIdentifier = `org.stillnote.logo-preview.v${Date.now()}p${process.pid}`;
 
   await mkdir(macosPath, { recursive: true });
   await mkdir(resourcesPath, { recursive: true });

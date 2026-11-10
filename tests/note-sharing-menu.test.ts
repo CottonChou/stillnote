@@ -17,10 +17,9 @@ describe("note sharing menu", () => {
     expect(editorActionsSource).not.toContain("if (!effectiveReadOnly) setShareOpen(true)");
     expect(editorSource).toContain("canShareMemo: Boolean(memo && !readOnly)");
     expect(editorSource).toContain("{!readOnly && (\n                  <DropdownMenuItem");
-    expect(editorSource).toContain('{!readOnly && (!mobileEditingActive || isMemoShared) && (');
     expect(editorSource).toContain("isMemoShared ? <Globe");
-    expect(editorSource).toContain("aria-pressed={isMemoShared}");
-    expect(editorSource).toContain('aria-label={t(isLocalMemoId(memo.id) ? "sharing.afterSync" : isMemoShared ? "sharing.manage" : "sharing.action")}');
+    expect(editorSource).not.toContain("aria-pressed={isMemoShared}");
+    expect(editorSource).toContain('{t(isLocalMemoId(memo.id) ? "sharing.afterSync" : isMemoShared ? "sharing.manage" : "sharing.action")}');
   });
 
   test("shows a toast after copying the note for other platforms", () => {

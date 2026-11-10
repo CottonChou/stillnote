@@ -40,16 +40,16 @@ export class DesktopRendererErrorBoundary extends React.Component<{ children: Re
     };
     this.setState({ error: details });
     console.error("Caught React renderer error", error, info.componentStack);
-    void window.edgeeverDesktop?.recordRendererError(details).catch(() => undefined);
+    void window.stillnoteDesktop?.recordRendererError(details).catch(() => undefined);
     reportDesktopRendererReadyAfterPaint();
   }
 
   private report = async () => {
     const { error } = this.state;
-    if (!error || !window.edgeeverDesktop) return;
+    if (!error || !window.stillnoteDesktop) return;
     this.setState({ reporting: true });
     try {
-      await window.edgeeverDesktop.openRendererIssue(error);
+      await window.stillnoteDesktop.openRendererIssue(error);
     } finally {
       this.setState({ reporting: false });
     }
@@ -57,7 +57,7 @@ export class DesktopRendererErrorBoundary extends React.Component<{ children: Re
 
   override render() {
     if (!this.state.error) return this.props.children;
-    const desktop = Boolean(window.edgeeverDesktop?.isAvailable);
+    const desktop = Boolean(window.stillnoteDesktop?.isAvailable);
 
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-slate-900">

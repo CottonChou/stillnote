@@ -1,6 +1,6 @@
-import { getMemoDisplayTitle } from "@edgeever/shared/memo-title";
-import { isValidMemoShareSlug } from "@edgeever/shared/share-slug";
-import { PUBLIC_PAGE_HEADERS, PUBLIC_PAGE_ROBOTS } from "@edgeever/shared/public-page-headers";
+import { getMemoDisplayTitle } from "@stillnote/shared/memo-title";
+import { isValidMemoShareSlug } from "@stillnote/shared/share-slug";
+import { PUBLIC_PAGE_HEADERS, PUBLIC_PAGE_ROBOTS } from "@stillnote/shared/public-page-headers";
 import { isMemoShareExpired, recordMemoShareView } from "./memo-share-access";
 import type { DatabaseAdapter } from "./storage-contract";
 
@@ -77,7 +77,7 @@ const prefersMarkdown = (accept: string | null, markdownPath: boolean) => {
 
 const describeNote = (markdown: string) => {
   const normalized = markdown.replace(/\s+/g, " ").trim();
-  if (!normalized) return "Read a shared note on EdgeEver.";
+  if (!normalized) return "Read a shared note on StillNote.";
   return normalized.length > 160 ? `${normalized.slice(0, 160)}…` : normalized;
 };
 
@@ -174,17 +174,17 @@ export const renderPublicMemoSharePage = async (
       ? "This shared link has expired."
       : locked
         ? "This shared note requires a password."
-        : "Read a shared note on EdgeEver.";
+        : "Read a shared note on StillNote.";
   const updatedTime = readable && row && row.show_updated_at !== 0
     ? `<p style="font-size:.75rem;color:#64748b">Updated <time datetime="${escapeHtml(row.updated_at)}">${escapeHtml(new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" }).format(new Date(row.updated_at)))} UTC</time></p>`
     : "";
   const branding = readable && row && row.show_branding !== 0
-    ? `<footer style="margin-top:2rem;font-size:.75rem;text-align:center;color:#64748b"><a href="https://edgeever.org/" style="color:inherit">Published with EdgeEver</a></footer>`
+    ? `<footer style="margin-top:2rem;font-size:.75rem;text-align:center;color:#64748b"><a href="https://stillnote.org/" style="color:inherit">Published with StillNote</a></footer>`
     : "";
   const article = readable
-    ? `<article id="edgeever-shared-note" style="max-width:44rem;margin:1.5rem auto;padding:0 1rem"><h1>${escapeHtml(title)}</h1>${updatedTime}<pre style="white-space:pre-wrap;font:inherit">${escapeHtml(body)}</pre>${branding}</article>`
+    ? `<article id="stillnote-shared-note" style="max-width:44rem;margin:1.5rem auto;padding:0 1rem"><h1>${escapeHtml(title)}</h1>${updatedTime}<pre style="white-space:pre-wrap;font:inherit">${escapeHtml(body)}</pre>${branding}</article>`
     : "";
-  const metadata = `<title>${escapeHtml(`${title} · EdgeEver`)}</title>
+  const metadata = `<title>${escapeHtml(`${title} · StillNote`)}</title>
 <meta name="description" content="${escapeHtml(description)}">
 <meta name="robots" content="${PUBLIC_PAGE_ROBOTS}">
 <link rel="canonical" href="${escapeHtml(canonical)}">

@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { ApiRequestError } from "@edgeever/client";
+import { ApiRequestError } from "@stillnote/client";
 import { useQuery } from "@tanstack/react-query";
-import type { Notebook } from "@edgeever/shared";
+import type { Notebook } from "@stillnote/shared";
 import {
   getMobileCenteredScrollOffset,
   getMobileNotebookSearchVisibleIds,
-} from "@edgeever/shared/mobile-ui";
+} from "@stillnote/shared/mobile-ui";
 import {
   ActivityIndicator,
   Check,

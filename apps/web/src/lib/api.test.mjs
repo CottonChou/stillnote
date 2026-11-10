@@ -15,7 +15,7 @@ const originalFetch = Object.getOwnPropertyDescriptor(globalThis, "fetch");
 // Must be installed before importing modules that read `window` at load time.
 globalThis.window = {
   location: { hostname: "notes.example.com", origin: "https://notes.example.com" },
-  edgeeverDesktop: {
+  stillnoteDesktop: {
     isAvailable: true,
     apiBaseUrl: "",
     openAiProviderStream: (requestId, input) => aiRuntime.open(requestId, input, {
@@ -96,7 +96,7 @@ const {
 } = await import("./api.ts?desktop-ai-routing-test");
 
 describe("browser device identity", () => {
-  const deviceKey = "edgeever.web.device-id";
+  const deviceKey = "stillnote.web.device-id";
 
   test("reuses the persisted browser device id across repeated calls", () => {
     const previous = storage.get(deviceKey);
@@ -259,14 +259,14 @@ describe("desktop AI routing", () => {
       const paths = [];
       const providerRequests = [];
       const baseUrl = "http://10.20.30.40:11434/v1";
-      const boundary = { start: "<edgeever-result-x>", end: "</edgeever-result-x>" };
+      const boundary = { start: "<stillnote-result-x>", end: "</stillnote-result-x>" };
       aiRuntime = createAiDirectRuntime({ fetchImpl: async (url, init) => {
         providerRequests.push({ url, auth: new Headers(init.headers).get("Authorization") });
         if (operation === "generate") return new Response([
           `data: ${JSON.stringify({ choices: [{ delta: { content: `${boundary.start}\nlocal reply${boundary.end}` } }] })}`,
           'data: {"choices":[{"delta":{},"finish_reason":"stop"}]}', 'data: [DONE]', '',
         ].join("\n\n"), { headers: { "content-type": "text/event-stream" } });
-        return Response.json({ choices: [{ message: { content: operation === "tags" ? "<edgeever-tags>\nReact\n</edgeever-tags>" : "local reply" }, finish_reason: "stop" }] });
+        return Response.json({ choices: [{ message: { content: operation === "tags" ? "<stillnote-tags>\nReact\n</stillnote-tags>" : "local reply" }, finish_reason: "stop" }] });
       } });
       const preparePath = {
         generate: "/api/v1/ai/generate/prepare",
@@ -322,9 +322,9 @@ describe("desktop instance setup", () => {
     calls.length = 0;
     const saving = saveDesktopApiBaseUrl("demo");
     await Promise.resolve();
-    expect(calls).toEqual([["bridge:start", "https://demo.edgeever.org"]]);
+    expect(calls).toEqual([["bridge:start", "https://demo.stillnote.org"]]);
     completeSave();
-    await expect(saving).resolves.toBe("https://demo.edgeever.org");
+    await expect(saving).resolves.toBe("https://demo.stillnote.org");
   });
 
   test("prefixes https when the instance host has no protocol", async () => {
@@ -348,7 +348,7 @@ describe("desktop instance setup", () => {
 
   test("clears the cached session when the login form changes instances", async () => {
     calls.length = 0;
-    window.edgeeverDesktop.apiBaseUrl = "https://notes.example.com";
+    window.stillnoteDesktop.apiBaseUrl = "https://notes.example.com";
     storage.set(DESKTOP_API_BASE_URL_STORAGE_KEY, "https://notes.example.com");
     await cacheDesktopSession({
       authRequired: true,
@@ -371,14 +371,14 @@ describe("desktop instance setup", () => {
     await expect(saving).resolves.toBe("https://other.example.com");
     expect(storage.get(DESKTOP_API_BASE_URL_STORAGE_KEY)).toBe("https://other.example.com");
     expect(getConfiguredDesktopApiBaseUrl()).toBe("https://other.example.com");
-    window.edgeeverDesktop.apiBaseUrl = "";
+    window.stillnoteDesktop.apiBaseUrl = "";
   });
 
   test("ignores a leftover desktop instance URL in the browser", () => {
     storage.set(DESKTOP_API_BASE_URL_STORAGE_KEY, "https://example.workers.dev");
-    window.edgeeverDesktop.isAvailable = false;
+    window.stillnoteDesktop.isAvailable = false;
     expect(getConfiguredDesktopApiBaseUrl()).toBe("");
-    window.edgeeverDesktop.isAvailable = true;
+    window.stillnoteDesktop.isAvailable = true;
     expect(getConfiguredDesktopApiBaseUrl()).toBe("https://example.workers.dev");
   });
 
@@ -428,7 +428,7 @@ describe("desktop instance setup", () => {
   test("migrates a legacy localStorage token into desktop secure storage", async () => {
     clearCachedDesktopSession();
     await Promise.resolve();
-    storage.set("edgeever.desktop.session", JSON.stringify({
+    storage.set("stillnote.desktop.session", JSON.stringify({
       authRequired: true,
       authenticated: true,
       demoMode: false,
@@ -601,7 +601,7 @@ describe("desktop instance setup", () => {
       url: "https://notes.example.com/api/v1/auth/session",
       authorization: "Bearer desktop-session-token",
     }]);
-    expect(events).toEqual(["edgeever:unauthorized"]);
+    expect(events).toEqual(["stillnote:unauthorized"]);
     expect(getCachedDesktopSession()).toBeNull();
 
     globalThis.fetch = async (url, init) => {
@@ -684,7 +684,7 @@ describe("desktop instance setup", () => {
         status: 403,
         responseDiagnostics: {
           cloudflareMitigated: true,
-          isEdgeEverApiError: false,
+          isStillNoteApiError: false,
           rayId: "abc123-SJC",
         },
       });

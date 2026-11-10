@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const storageKey = "edgeever.memoSort";
+const storageKey = "stillnote.memoSort";
 const modes = [
   ["updated-desc", "最近更新"],
   ["created-desc", "创建时间"],
@@ -43,12 +43,12 @@ for (const stored of [null, "unknown-sort"]) {
     await page.addInitScript(({ key, value }) => {
       if (value === null) localStorage.removeItem(key);
       else localStorage.setItem(key, value);
-      localStorage.setItem("edgeever.notebookSort", "custom");
+      localStorage.setItem("stillnote.notebookSort", "custom");
     }, { key: storageKey, value: stored });
     await page.goto("/");
     await expect(await openSort(page)).toHaveText("排序：最近更新");
     expect(await page.evaluate(key => localStorage.getItem(key), storageKey)).toBe(stored);
-    expect(await page.evaluate(() => localStorage.getItem("edgeever.notebookSort"))).toBe("custom");
+    expect(await page.evaluate(() => localStorage.getItem("stillnote.notebookSort"))).toBe("custom");
   });
 }
 

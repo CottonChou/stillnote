@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { MemoSummary, Notebook } from "@edgeever/shared";
+import type { MemoSummary, Notebook } from "@stillnote/shared";
 import {
   filterCollapsedNotebookOptions,
   formatMemoDetailDate,
@@ -48,7 +48,7 @@ describe("mobile workspace utilities", () => {
 
   test("normalizes tags, markdown preview text, and search matches", () => {
     expect(parseTags(" one，two, one\nthree ")).toEqual(["one", "two", "three"]);
-    expect(markdownToLocalText("## Hello [EdgeEver](https://edgeever.org) ![logo](logo.png)")).toBe("Hello EdgeEver");
+    expect(markdownToLocalText("## Hello [StillNote](https://stillnote.org) ![logo](logo.png)")).toBe("Hello StillNote");
     expect(getTextSearchMatches("One one none", "one")).toEqual([
       { start: 0, end: 3 },
       { start: 4, end: 7 },

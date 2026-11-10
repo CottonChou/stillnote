@@ -35,7 +35,7 @@ export const productTimeline = [
     date: "2026-09-05",
     title: "官方插件市场上线与 Linux AppImage 自动更新 (v1.65.0)",
     summary:
-      "发布官方插件市场（EdgeEver Tasks、AI RSS）；声明式原生设置与权限受控隔离；Linux x64 AppImage 支持应用内跨版本自动更新。",
+      "发布官方插件市场（StillNote Tasks、AI RSS）；声明式原生设置与权限受控隔离；Linux x64 AppImage 支持应用内跨版本自动更新。",
     commits: ["39cf34b", "5070578", "a02e2d4", "930d2d7"],
     highlights: ["官方插件市场与任务管理插件", "声明式受控插件设置面板", "Linux AppImage 跨版本自动更新", "拖拽导入 Markdown 笔记"],
   },
@@ -43,7 +43,7 @@ export const productTimeline = [
     date: "2026-09-01",
     title: "公开分享密码保护与桌面系统集成 (v1.55.0)",
     summary:
-      "公开分享笔记支持设置自动生成的访问密码；Windows 资源管理器右键直接“发送到 EdgeEver”；支持托盘截图快捷新建笔记；内置日语多语言。",
+      "公开分享笔记支持设置自动生成的访问密码；Windows 资源管理器右键直接“发送到 StillNote”；支持托盘截图快捷新建笔记；内置日语多语言。",
     commits: ["dcfd114", "cfd73b7", "aca0f17", "ea9900b"],
     highlights: ["公开分享链接密码保护", "Windows 资源管理器右键集成", "托盘截图快捷新建笔记", "全端第一方日语支持"],
   },
@@ -67,7 +67,7 @@ export const productTimeline = [
     date: "2026-08-15",
     title: "Docker 自托管与一键安装脚本 (v1.35.x)",
     summary:
-      "发布官方 GHCR 容器镜像与一键安装脚本，单行命令即可在 VPS、NAS 或私有服务器启动 EdgeEver，存储随心扩展。",
+      "发布官方 GHCR 容器镜像与一键安装脚本，单行命令即可在 VPS、NAS 或私有服务器启动 StillNote，存储随心扩展。",
     commits: ["13c041c", "28891fd", "993307e"],
     highlights: ["Docker 一键安装脚本", "GHCR 容器镜像", "本地文件与 S3 兼容 OSS", "每日自动更新"],
   },
@@ -138,9 +138,9 @@ export const productTimeline = [
     date: "2026-06-28",
     title: "工作区重构与品牌视觉统一",
     summary:
-      "Web 端从单体 App 结构重构为模块化组件，设置页和资源页变成工作区视图；同时引入 shadcn/ui、EdgeEver 品牌色变量、移动端交互与性能拆包。",
+      "Web 端从单体 App 结构重构为模块化组件，设置页和资源页变成工作区视图；同时引入 shadcn/ui、StillNote 品牌色变量、移动端交互与性能拆包。",
     commits: ["b201d7d", "c0868dc", "e7ab278", "fa139b9", "2a0978a"],
-    highlights: ["App.tsx 模块化", "设置 / 资源全页工作区", "EdgeEver brand variables", "初始 bundle 拆分", "笔记本排序选项"],
+    highlights: ["App.tsx 模块化", "设置 / 资源全页工作区", "StillNote brand variables", "初始 bundle 拆分", "笔记本排序选项"],
   },
   {
     date: "2026-06-27",

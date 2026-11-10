@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { createDefaultDiagramDocument, serializeDiagramDocument } from "@edgeever/shared";
+import { createDefaultDiagramDocument, serializeDiagramDocument } from "@stillnote/shared";
 import { listMemos, mapMemoSummary, toFtsQuery } from "./memo-list-service.ts";
 
 const memoRow = (id, overrides = {}) => ({

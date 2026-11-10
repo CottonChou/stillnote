@@ -8,7 +8,7 @@ afterAll(() => { restoreGithubInstance?.(); });
 
 const manifest = {
   type: "plugin",
-  id: "org.edgeever.github-test",
+  id: "org.stillnote.github-test",
   name: "GitHub Test",
   version: "1.2.3",
   apiVersion: "2",
@@ -19,13 +19,13 @@ const manifest = {
 
 describe("GitHub plugin distribution", () => {
   test("accepts only canonical public GitHub repository URLs", () => {
-    expect(parseGithubRepositoryUrl("https://github.com/example/edgeever-plugin.git")).toEqual({
+    expect(parseGithubRepositoryUrl("https://github.com/example/stillnote-plugin.git")).toEqual({
       owner: "example",
-      repository: "edgeever-plugin",
-      repositoryUrl: "https://github.com/example/edgeever-plugin",
+      repository: "stillnote-plugin",
+      repositoryUrl: "https://github.com/example/stillnote-plugin",
     });
-    expect(parseGithubRepositoryUrl("https://github.com/example/edgeever-plugin/tree/main")).toBeNull();
-    expect(parseGithubRepositoryUrl("https://gitlab.com/example/edgeever-plugin")).toBeNull();
+    expect(parseGithubRepositoryUrl("https://github.com/example/stillnote-plugin/tree/main")).toBeNull();
+    expect(parseGithubRepositoryUrl("https://gitlab.com/example/stillnote-plugin")).toBeNull();
   });
 
   test("downloads the versioned release bundle and falls back to a v-prefixed tag", async () => {
@@ -55,18 +55,18 @@ describe("GitHub plugin distribution", () => {
       ).buffer;
     };
 
-    const downloaded = await downloadGithubExtension("https://github.com/example/edgeever-plugin", request, downloadAsset);
+    const downloaded = await downloadGithubExtension("https://github.com/example/stillnote-plugin", request, downloadAsset);
 
     expect(downloaded.releaseTag).toBe("v1.2.3");
-    expect(downloaded.pluginPackage?.pluginId).toBe("org.edgeever.github-test");
+    expect(downloaded.pluginPackage?.pluginId).toBe("org.stillnote.github-test");
     expect(downloaded.pluginPackage?.mainJs).toContain("activate");
     expect(downloaded.checksums.mainJs).toHaveLength(64);
     expect(assetDownloads).toEqual([
       ["v1.2.3", "manifest.json"],
       ["v1.2.3", "main.js"],
     ]);
-    expect(calls).toContain("https://api.github.com/repos/example/edgeever-plugin/contents/manifest.json");
-    expect(calls).toContain("https://api.github.com/repos/example/edgeever-plugin/releases/tags/1.2.3");
+    expect(calls).toContain("https://api.github.com/repos/example/stillnote-plugin/contents/manifest.json");
+    expect(calls).toContain("https://api.github.com/repos/example/stillnote-plugin/releases/tags/1.2.3");
     expect(calls).not.toContain("https://api.github.com/assets/1");
   });
 
@@ -86,7 +86,7 @@ describe("GitHub plugin distribution", () => {
       ).buffer;
     };
 
-    const downloaded = await downloadGithubExtension("https://github.com/example/edgeever-plugin", request, downloadAsset);
+    const downloaded = await downloadGithubExtension("https://github.com/example/stillnote-plugin", request, downloadAsset);
 
     expect(downloaded.releaseTag).toBe("v1.2.3");
     expect(downloaded.pluginPackage?.mainJs).toContain("activate");
@@ -103,7 +103,7 @@ describe("GitHub plugin distribution", () => {
       }
       return new Response(null, { status: 404 });
     };
-    await expect(downloadGithubExtension("https://github.com/example/edgeever-plugin", request)).rejects.toThrow("missing main.js");
+    await expect(downloadGithubExtension("https://github.com/example/stillnote-plugin", request)).rejects.toThrow("missing main.js");
   });
 
   test("rejects release permissions that differ from the repository manifest", async () => {
@@ -127,7 +127,7 @@ describe("GitHub plugin distribution", () => {
       asset.id === 1 ? JSON.stringify(releaseManifest) : "export default { activate() {} };",
     ).buffer;
 
-    await expect(downloadGithubExtension("https://github.com/example/edgeever-plugin", request, downloadAsset))
+    await expect(downloadGithubExtension("https://github.com/example/stillnote-plugin", request, downloadAsset))
       .rejects.toThrow("does not match the repository manifest");
   });
 
@@ -137,17 +137,17 @@ describe("GitHub plugin distribution", () => {
       const url = String(input);
       calls.push(url);
       if (url.includes("api.github.com")) throw new Error(`should not use GitHub REST: ${url}`);
-      if (url === "https://github.com/example/edgeever-plugin/releases/latest/download/manifest.json") {
+      if (url === "https://github.com/example/stillnote-plugin/releases/latest/download/manifest.json") {
         return new Response(JSON.stringify(manifest));
       }
       throw new Error(`Unexpected request: ${url}`);
     };
 
-    const loaded = await loadGithubInstallableManifest("https://github.com/example/edgeever-plugin", request);
+    const loaded = await loadGithubInstallableManifest("https://github.com/example/stillnote-plugin", request);
 
     expect(loaded.manifest.version).toBe("1.2.3");
     expect(calls).toEqual([
-      "https://github.com/example/edgeever-plugin/releases/latest/download/manifest.json",
+      "https://github.com/example/stillnote-plugin/releases/latest/download/manifest.json",
     ]);
   });
 
@@ -160,16 +160,16 @@ describe("GitHub plugin distribution", () => {
       if (url.includes("/releases/latest/download/manifest.json")) {
         return new Response("rate limited", { status: 403 });
       }
-      if (url === "https://raw.githubusercontent.com/example/edgeever-plugin/HEAD/manifest.json") {
+      if (url === "https://raw.githubusercontent.com/example/stillnote-plugin/HEAD/manifest.json") {
         return new Response(JSON.stringify(manifest));
       }
       throw new Error(`Unexpected request: ${url}`);
     };
 
-    const loaded = await loadGithubInstallableManifest("https://github.com/example/edgeever-plugin", request);
+    const loaded = await loadGithubInstallableManifest("https://github.com/example/stillnote-plugin", request);
 
     expect(loaded.manifest.version).toBe("1.2.3");
-    expect(calls).toContain("https://raw.githubusercontent.com/example/edgeever-plugin/HEAD/manifest.json");
+    expect(calls).toContain("https://raw.githubusercontent.com/example/stillnote-plugin/HEAD/manifest.json");
     expect(calls.some((url) => url.includes("api.github.com"))).toBe(false);
   });
 
@@ -179,16 +179,16 @@ describe("GitHub plugin distribution", () => {
       const url = String(input);
       calls.push(url);
       if (url.includes("/contents/manifest.json")) return new Response("rate limited", { status: 403 });
-      if (url === "https://raw.githubusercontent.com/example/edgeever-plugin/HEAD/manifest.json") {
+      if (url === "https://raw.githubusercontent.com/example/stillnote-plugin/HEAD/manifest.json") {
         return new Response(JSON.stringify(manifest));
       }
       throw new Error(`Unexpected request: ${url}`);
     };
 
-    const loaded = await loadGithubRepositoryManifest("https://github.com/example/edgeever-plugin", request);
+    const loaded = await loadGithubRepositoryManifest("https://github.com/example/stillnote-plugin", request);
 
     expect(loaded.manifest.version).toBe("1.2.3");
-    expect(calls).toContain("https://raw.githubusercontent.com/example/edgeever-plugin/HEAD/manifest.json");
+    expect(calls).toContain("https://raw.githubusercontent.com/example/stillnote-plugin/HEAD/manifest.json");
   });
 
   test("explains a renderer network failure instead of showing Failed to fetch", async () => {
@@ -196,8 +196,8 @@ describe("GitHub plugin distribution", () => {
       throw new TypeError("Failed to fetch");
     };
 
-    await expect(downloadGithubExtension("https://github.com/example/edgeever-plugin", request, async () => new ArrayBuffer(0)))
-      .rejects.toThrow("Could not read this GitHub plugin from this device or your EdgeEver instance");
+    await expect(downloadGithubExtension("https://github.com/example/stillnote-plugin", request, async () => new ArrayBuffer(0)))
+      .rejects.toThrow("Could not read this GitHub plugin from this device or your StillNote instance");
   });
 
   test("installs a marketplace GitHub plugin from the pinned release without calling GitHub's REST API", async () => {
@@ -214,13 +214,13 @@ describe("GitHub plugin distribution", () => {
       return buffer;
     };
 
-    const downloaded = await downloadPinnedGithubExtension("https://github.com/example/edgeever-plugin", "1.2.3", {
+    const downloaded = await downloadPinnedGithubExtension("https://github.com/example/stillnote-plugin", "1.2.3", {
       downloadAssetBytes: downloadAsset,
       requireStyles: true,
     });
 
     expect(downloaded.releaseTag).toBe("1.2.3");
-    expect(downloaded.manifest.id).toBe("org.edgeever.github-test");
+    expect(downloaded.manifest.id).toBe("org.stillnote.github-test");
     expect(downloaded.pluginPackage?.mainJs).toContain("activate");
     expect(downloaded.checksums.stylesCss).toHaveLength(64);
     expect(calls[0]).toEqual(["1.2.3", "manifest.json"]);
@@ -242,7 +242,7 @@ describe("GitHub plugin distribution", () => {
       return buffer;
     };
 
-    const downloaded = await downloadPinnedGithubExtension("https://github.com/example/edgeever-plugin", "1.2.3", {
+    const downloaded = await downloadPinnedGithubExtension("https://github.com/example/stillnote-plugin", "1.2.3", {
       downloadAssetBytes: downloadAsset,
     });
 
@@ -265,7 +265,7 @@ describe("GitHub plugin distribution", () => {
       return buffer;
     };
 
-    const downloaded = await downloadPinnedGithubExtension("https://github.com/example/edgeever-plugin", "1.2.3", {
+    const downloaded = await downloadPinnedGithubExtension("https://github.com/example/stillnote-plugin", "1.2.3", {
       downloadAssetBytes: downloadAsset,
     });
 
@@ -283,7 +283,7 @@ describe("GitHub plugin distribution", () => {
       ).buffer;
     };
 
-    const downloaded = await downloadPinnedGithubExtension("https://github.com/example/edgeever-plugin", "0.5.4", {
+    const downloaded = await downloadPinnedGithubExtension("https://github.com/example/stillnote-plugin", "0.5.4", {
       downloadAssetBytes: downloadAsset,
     });
 

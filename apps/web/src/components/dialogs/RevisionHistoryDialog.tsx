@@ -7,8 +7,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { cn, formatDateTime } from "@/lib/utils";
 import { getMemoTitle } from "@/lib/app-helpers";
 import { AppConfirmDialog } from "./ConfirmDialogs";
-import { buildRevisionDiffRows, type MemoDetail } from "@edgeever/shared";
-import type { EdgeEverRepository } from "@/lib/repository";
+import { buildRevisionDiffRows, type MemoDetail } from "@stillnote/shared";
+import type { StillNoteRepository } from "@/lib/repository";
 
 const formatRevisionActor = (actor: string) => {
   if (actor.startsWith("user:")) {
@@ -30,7 +30,7 @@ export const RevisionHistoryDialog = ({
   onRestored,
 }: {
   memo: MemoDetail;
-  repository: EdgeEverRepository;
+  repository: StillNoteRepository;
   currentMarkdown: string;
   onClose: () => void;
   onRestored: (memo: MemoDetail) => Promise<void>;

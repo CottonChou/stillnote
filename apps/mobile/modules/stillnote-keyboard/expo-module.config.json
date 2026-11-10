@@ -1,0 +1,6 @@
+{
+  "platforms": ["android"],
+  "android": {
+    "modules": ["org.stillnote.keyboard.StillNoteKeyboardModule"]
+  }
+}

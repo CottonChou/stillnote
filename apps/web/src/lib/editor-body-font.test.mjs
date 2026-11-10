@@ -1,4 +1,4 @@
-import { FONT_IDS, FONT_CATALOG } from "@edgeever/shared/font-catalog";
+import { FONT_IDS, FONT_CATALOG } from "@stillnote/shared/font-catalog";
 import { afterEach, describe, expect, test } from "bun:test";
 import {
   EDITOR_BODY_FONT_CUSTOM_STORAGE_KEY,
@@ -84,13 +84,13 @@ describe("editor body font preference", () => {
 
   test("resolves bundled stacks and appends a system fallback to custom names", () => {
     expect(resolveEditorBodyFontStack({ choice: "system", customFamily: "" })).toBeNull();
-    expect(resolveEditorBodyFontStack({ choice: "wenkai", customFamily: "" })).toContain("EdgeEver Kai");
-    expect(resolveEditorBodyFontStack({ choice: "wenkai-screen", customFamily: "" })).toContain("EdgeEver Kai Screen");
-    expect(resolveEditorBodyFontStack({ choice: "zhuque", customFamily: "" })).toContain("EdgeEver Fangsong");
-    expect(resolveEditorBodyFontStack({ choice: "source-han-serif", customFamily: "" })).toContain("EdgeEver Song");
-    expect(resolveEditorBodyFontStack({ choice: "neo-zhi-song", customFamily: "" })).toContain("EdgeEver Zhi Song");
+    expect(resolveEditorBodyFontStack({ choice: "wenkai", customFamily: "" })).toContain("StillNote Kai");
+    expect(resolveEditorBodyFontStack({ choice: "wenkai-screen", customFamily: "" })).toContain("StillNote Kai Screen");
+    expect(resolveEditorBodyFontStack({ choice: "zhuque", customFamily: "" })).toContain("StillNote Fangsong");
+    expect(resolveEditorBodyFontStack({ choice: "source-han-serif", customFamily: "" })).toContain("StillNote Song");
+    expect(resolveEditorBodyFontStack({ choice: "neo-zhi-song", customFamily: "" })).toContain("StillNote Zhi Song");
     expect(resolveEditorBodyFontStack({ choice: "source-han-serif", customFamily: "" })).toContain("Source Serif 4");
-    expect(resolveEditorBodyFontStack({ choice: "source-han-sans", customFamily: "" })).toContain("EdgeEver Hei");
+    expect(resolveEditorBodyFontStack({ choice: "source-han-sans", customFamily: "" })).toContain("StillNote Hei");
     expect(resolveEditorBodyFontStack({ choice: "source-serif", customFamily: "" })).toContain("Source Serif 4");
     expect(resolveEditorBodyFontStack({ choice: "custom", customFamily: "LXGW WenKai" })).toContain("LXGW WenKai");
     expect(resolveEditorBodyFontStack({ choice: "custom", customFamily: "LXGW WenKai" })).toContain("PingFang SC");
@@ -113,7 +113,7 @@ describe("editor body font preference", () => {
 
     applyEditorBodyFontPreference({ choice: "source-han-sans", customFamily: "" });
     expect(dataset.editorBodyFont).toBe("source-han-sans");
-    expect(style.get("--editor-body-font-family")).toContain("EdgeEver Hei");
+    expect(style.get("--editor-body-font-family")).toContain("StillNote Hei");
 
     applyEditorBodyFontPreference({ choice: "system", customFamily: "" });
     expect(dataset.editorBodyFont).toBeUndefined();
@@ -145,7 +145,7 @@ describe("editor body font preference", () => {
   test("returns font preview stacks for bundled choices", () => {
     expect(getFontChoicePreviewStack("system")).toBeUndefined();
     expect(getFontChoicePreviewStack("custom")).toBeUndefined();
-    expect(getFontChoicePreviewStack("wenkai")).toContain("EdgeEver Kai");
-    expect(getFontChoicePreviewStack("zhuque")).toContain("EdgeEver Fangsong");
+    expect(getFontChoicePreviewStack("wenkai")).toContain("StillNote Kai");
+    expect(getFontChoicePreviewStack("zhuque")).toContain("StillNote Fangsong");
   });
 });

@@ -31,7 +31,7 @@ const ownedDirectoriesExist = async (paths) => {
 };
 
 export class BackupManager {
-  constructor({ userData, defaultDirectory, secureStorage, platform = process.platform, workerFactory, onChange = () => {}, onSuccess = () => {}, onDiagnostic = () => {}, version = { edgeeverVersion: "unknown", buildId: "unknown" } }) {
+  constructor({ userData, defaultDirectory, secureStorage, platform = process.platform, workerFactory, onChange = () => {}, onSuccess = () => {}, onDiagnostic = () => {}, version = { stillnoteVersion: "unknown", buildId: "unknown" } }) {
     Object.assign(this, { userData, defaultDirectory, secureStorage, platform, onChange, onSuccess, onDiagnostic, version });
     this.workerFactory = workerFactory ?? ((data) => new Worker(new URL("../../build/backup-worker.mjs", import.meta.url), { workerData: data }));
     this.generation = 0; this.context = null; this.record = null; this.task = null; this.operation = null; this.closed = false; this.transitioning = false;
@@ -120,7 +120,7 @@ export class BackupManager {
     finally { if (this.startupController === controller) this.startupController = null; }
   }
 
-  assertReady() { if (this.transitioning) throw backupError("backup_account_changed", "The backup account is changing. Wait until it is ready."); if (this.initializationError) throw this.initializationError; if (this.closed || !this.context || !this.record) throw backupError("backup_login_required", "Sign in to an EdgeEver instance first."); }
+  assertReady() { if (this.transitioning) throw backupError("backup_account_changed", "The backup account is changing. Wait until it is ready."); if (this.initializationError) throw this.initializationError; if (this.closed || !this.context || !this.record) throw backupError("backup_login_required", "Sign in to a StillNote instance first."); }
   assertScope(expected) { if (expected !== undefined && expected !== this.record?.backupSetId) throw backupError("backup_account_changed", "The backup account changed. Review the current target."); }
   async approveDirectory(path) {
     const generation = this.generation;
@@ -215,7 +215,7 @@ export class BackupManager {
       const generation = this.generation;
       const encrypted = options ? options.encrypted : this.record.config.encrypted;
       if (typeof encrypted !== "boolean") throw backupError("backup_invalid_configuration", "Choose a backup format.");
-      const name = options ? backupFileName(options.name, encrypted) : `edgeever-backup-${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}-${randomUUID()}${encrypted ? ".edgeever.enc" : ".zip"}`;
+      const name = options ? backupFileName(options.name, encrypted) : `stillnote-backup-${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}-${randomUUID()}${encrypted ? ".stillnote.enc" : ".zip"}`;
       const root = this.record.config.directory;
       const folder = join(root, this.record.backupSetId);
       const finalPath = join(folder, name);

@@ -101,15 +101,15 @@ export type DesktopAcpEvent =
   | { requestId: string; type: "done" }
   | { requestId: string; type: "error"; message: string };
 
-export const AI_SIDEBAR_WIDTH_KEY = "edgeever.aiSidebar.width";
-export const AI_SIDEBAR_OPEN_KEY = "edgeever.aiSidebar.open";
-export const AI_SIDEBAR_THREAD_KEY = "edgeever.aiSidebar.thread";
-export const AI_SIDEBAR_LOCAL_THREAD_KEY = "edgeever.aiSidebar.localThread";
-export const AI_SIDEBAR_LOCAL_THREADS_KEY = "edgeever.aiSidebar.localThreads";
-export const AI_SIDEBAR_SOURCE_KEY = "edgeever.aiSidebar.source";
-export const AI_SIDEBAR_ADAPTER_KEY = "edgeever.aiSidebar.adapterId";
-export const AI_SIDEBAR_ADAPTER_PATH_KEY = "edgeever.aiSidebar.adapterPath";
-export const AI_SIDEBAR_SELECTION_EVENT = "edgeever:ai-sidebar-selection";
+export const AI_SIDEBAR_WIDTH_KEY = "stillnote.aiSidebar.width";
+export const AI_SIDEBAR_OPEN_KEY = "stillnote.aiSidebar.open";
+export const AI_SIDEBAR_THREAD_KEY = "stillnote.aiSidebar.thread";
+export const AI_SIDEBAR_LOCAL_THREAD_KEY = "stillnote.aiSidebar.localThread";
+export const AI_SIDEBAR_LOCAL_THREADS_KEY = "stillnote.aiSidebar.localThreads";
+export const AI_SIDEBAR_SOURCE_KEY = "stillnote.aiSidebar.source";
+export const AI_SIDEBAR_ADAPTER_KEY = "stillnote.aiSidebar.adapterId";
+export const AI_SIDEBAR_ADAPTER_PATH_KEY = "stillnote.aiSidebar.adapterPath";
+export const AI_SIDEBAR_SELECTION_EVENT = "stillnote:ai-sidebar-selection";
 
 export type AiSidebarSource = "builtin" | "local";
 
@@ -172,7 +172,7 @@ export const selectAiSidebarAgent = (source: AiSidebarSource, adapterId?: Deskto
   window.dispatchEvent(new Event(AI_SIDEBAR_SELECTION_EVENT));
 };
 
-const bridge = () => (typeof window === "undefined" ? undefined : window.edgeeverDesktop);
+const bridge = () => (typeof window === "undefined" ? undefined : window.stillnoteDesktop);
 
 export const desktopAcpAvailable = () => Boolean(bridge()?.listAcpAdapters);
 

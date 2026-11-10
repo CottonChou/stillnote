@@ -8,7 +8,7 @@ import {
   noteProseCodeFontSize,
   parseNoteProseLineHeight,
   type NoteProsePaletteColors,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import katex from "katex";
 import "katex/contrib/mhchem";
 import { common, createLowlight } from "lowlight";
@@ -96,13 +96,13 @@ const applyLegacyWeChatStyles = (
   };
 
   root.style.cssText = `${textStyle} background-color: #ffffff; word-break: break-word;`;
-  root.querySelectorAll("[data-edgeever-video-note]").forEach((element) => element.remove());
+  root.querySelectorAll("[data-stillnote-video-note]").forEach((element) => element.remove());
 
   root.querySelectorAll<HTMLElement>("*").forEach((element) => {
     if (element.closest("[data-ee-math]")) return;
     const tagName = element.tagName.toLowerCase();
     const isMergeDivider =
-      tagName === "hr" && element.matches("[data-edgeever-merge-divider], .edgeever-merge-divider");
+      tagName === "hr" && element.matches("[data-stillnote-merge-divider], .stillnote-merge-divider");
     const quoted = (tagName === "p" || tagName === "li") && element.closest("blockquote");
     const baseStyle = styles[tagName] || "";
     // One color declaration. A second `color` later in the attribute is easy for WeChat to drop.
@@ -369,7 +369,7 @@ const embedMermaidForWeChat = async (root: HTMLElement, editor?: Editor) => {
   }
 
   const renderedBlocks = editor
-    ? Array.from(editor.view.dom.querySelectorAll<HTMLElement>(".edgeever-mermaid-code-block"))
+    ? Array.from(editor.view.dom.querySelectorAll<HTMLElement>(".stillnote-mermaid-code-block"))
     : [];
   await Promise.all(codeBlocks.map(async (codeBlock, index) => {
     const source = codeBlock.textContent?.trim();
@@ -460,7 +460,7 @@ const embedImagesForWeChat = async (root: HTMLElement, originalImages: HTMLImage
 };
 
 const convertImageGalleriesForWeChat = (root: HTMLElement) => {
-  root.querySelectorAll<HTMLElement>("[data-edgeever-image-gallery]").forEach((gallery) => {
+  root.querySelectorAll<HTMLElement>("[data-stillnote-image-gallery]").forEach((gallery) => {
     const images = Array.from(gallery.children).filter(
       (child): child is HTMLImageElement => child.tagName === "IMG",
     );

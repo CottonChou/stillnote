@@ -26,7 +26,7 @@ export const renderBrandPng = async (
 
 export const prepareMobileIcons = async () => {
   const [iconSource, adaptiveForegroundSource, adaptiveTransparentSource] = await Promise.all([
-    readFile(path.join(projectRoot, "assets/brand/edgeever-icon.svg")),
+    readFile(path.join(projectRoot, "assets/brand/stillnote-icon.svg")),
     readFile(path.join(projectRoot, "apps/mobile/assets/adaptive-icon-foreground.svg")),
     readFile(path.join(projectRoot, "apps/mobile/assets/adaptive-icon-transparent.svg")),
   ]);

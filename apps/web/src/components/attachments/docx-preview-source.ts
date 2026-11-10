@@ -1,4 +1,4 @@
-import { normalizeAttachmentByteSize } from "@edgeever/shared";
+import { normalizeAttachmentByteSize } from "@stillnote/shared";
 
 export const MAX_INLINE_DOCX_BYTES = 10 * 1024 * 1024;
 
@@ -7,10 +7,10 @@ export class DocxPreviewTooLargeError extends Error {}
 export const isPreviewableDocx = (filename: string, url: string) =>
   /\.docx$/i.test(filename.trim())
   && (url.startsWith("/api/v1/resources/")
-    || url.startsWith("edgeever-resource://")
-    || url.startsWith("edgeever-staged://"));
+    || url.startsWith("stillnote-resource://")
+    || url.startsWith("stillnote-staged://"));
 
-const desktopResourceId = (url: string, scheme: "edgeever-resource:" | "edgeever-staged:") => {
+const desktopResourceId = (url: string, scheme: "stillnote-resource:" | "stillnote-staged:") => {
   try {
     const parsed = new URL(url);
     if (parsed.protocol !== scheme) return null;
@@ -28,11 +28,11 @@ const requireAllowedSize = (size: number) => {
 export const loadDocxPreviewBytes = async (
   url: string,
   signal?: AbortSignal,
-  bridge: Pick<EdgeEverDesktopBridge, "readResource" | "readStagedResource"> | undefined =
-    typeof window === "undefined" ? undefined : window.edgeeverDesktop,
+  bridge: Pick<StillNoteDesktopBridge, "readResource" | "readStagedResource"> | undefined =
+    typeof window === "undefined" ? undefined : window.stillnoteDesktop,
 ): Promise<Uint8Array> => {
-  const stagedId = desktopResourceId(url, "edgeever-staged:");
-  const resourceId = desktopResourceId(url, "edgeever-resource:");
+  const stagedId = desktopResourceId(url, "stillnote-staged:");
+  const resourceId = desktopResourceId(url, "stillnote-resource:");
   if (bridge && (stagedId || resourceId)) {
     const resource = stagedId
       ? await bridge.readStagedResource(stagedId)

@@ -104,14 +104,14 @@ describe("native release planning", () => {
   test("rebuilds iOS for the native client or shared editor runtime", () => {
     expect(
       planNativeRelease("ios", [
-        "apps/ios/EdgeEver/App/RootView.swift",
+        "apps/ios/StillNote/App/RootView.swift",
         "packages/shared/src/index.ts",
         "apps/mobile/src/screens/LoginScreen.tsx",
       ]),
     ).toEqual({
       rebuild: true,
       relevantChanges: [
-        "apps/ios/EdgeEver/App/RootView.swift",
+        "apps/ios/StillNote/App/RootView.swift",
         "packages/shared/src/index.ts",
       ],
     });

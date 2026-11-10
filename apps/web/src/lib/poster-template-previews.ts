@@ -1,4 +1,4 @@
-import { POSTER_DESIGN_TEMPLATES } from "@edgeever/shared";
+import { POSTER_DESIGN_TEMPLATES } from "@stillnote/shared";
 import manifest from "@/assets/poster-template-previews/manifest.json";
 
 const images = import.meta.glob<string>("../assets/poster-template-previews/*.webp", {

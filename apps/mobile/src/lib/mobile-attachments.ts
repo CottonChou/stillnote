@@ -1,4 +1,4 @@
-import type { createEdgeEverClient } from "@edgeever/client";
+import type { createStillNoteClient } from "@stillnote/client";
 import {
   docToMarkdown,
   FILE_ATTACHMENT_NODE_TYPE,
@@ -6,7 +6,7 @@ import {
   PDF_ATTACHMENT_NODE_TYPE,
   resourceUrlsReferToSameAttachment,
   type TiptapDoc,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 
 export type MobileResourceTarget = {
   filename: string;
@@ -18,7 +18,7 @@ export type MobileResourceTarget = {
 export type MobileAttachmentTarget = MobileResourceTarget & { kind: "attachment" };
 export type MobileImageTarget = MobileResourceTarget & { kind: "image" };
 
-type AttachmentClient = Pick<ReturnType<typeof createEdgeEverClient>, "getResourceBlob">;
+type AttachmentClient = Pick<ReturnType<typeof createStillNoteClient>, "getResourceBlob">;
 
 export type MobileResourceDownloadOptions = {
   baseUrl: string;
@@ -287,7 +287,7 @@ const cacheMobileResource = async (
   options: MobileResourceDownloadOptions,
 ) => {
   const { Directory, File, Paths } = await import("expo-file-system");
-  const directory = new Directory(Paths.cache, "edgeever-attachments");
+  const directory = new Directory(Paths.cache, "stillnote-attachments");
   if (!directory.exists) directory.create({ idempotent: true, intermediates: true });
   const file = new File(directory, `${target.resourceId}-${safeCacheFilename(target.filename)}`);
   if (file.exists) file.delete();

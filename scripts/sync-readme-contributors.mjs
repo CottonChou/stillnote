@@ -3,7 +3,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const DEFAULT_REPOSITORY = "tianma-if/edgeever";
+export const DEFAULT_REPOSITORY = "CottonChou/stillnote";
 export const CONTRIBUTORS_START_MARKER = "<!-- readme-contributors:start -->";
 export const CONTRIBUTORS_END_MARKER = "<!-- readme-contributors:end -->";
 
@@ -54,7 +54,7 @@ export const parseExistingReadmeContributors = (markdown) => {
 };
 
 export const mergeContributorSources = ({
-  ownerLogin = "tianma-if",
+  ownerLogin = "CottonChou",
   sidebarContributors = [],
   directContributors = [],
   statsContributors = [],
@@ -220,7 +220,7 @@ export const fetchRepositoryContributors = ({
   ghJson = runGhJson,
   sidebarJson = runSidebarJson,
 } = {}) => {
-  const ownerLogin = repository.split("/")[0] || "tianma-if";
+  const ownerLogin = repository.split("/")[0] || "CottonChou";
 
   const directRaw = ghJson([
     "api",

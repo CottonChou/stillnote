@@ -4,7 +4,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Database } from "bun:sqlite";
 import { afterEach, describe, expect, test } from "bun:test";
-import { buildWelcomeMemoContent, WELCOME_MEMO_REPAIRED_CONTENT_HASH } from "../packages/shared/src/default-workspace-seeds";
+import {
+  buildWelcomeMemoContent,
+  WELCOME_MEMO_LEGACY_SEED_TITLE,
+  WELCOME_MEMO_REPAIRED_CONTENT_HASH,
+  WELCOME_MEMO_STILLNOTE_CONTENT_HASH,
+} from "../packages/shared/src/default-workspace-seeds";
 import { createSelfHostedStorageAdapter } from "../apps/api/src/self-hosted-storage-adapter";
 import { ensureUserWorkspace } from "../apps/api/src/workspace-provisioning";
 import { createLocalDevelopmentSession } from "../scripts/local-dev-auth.mjs";
@@ -35,7 +40,6 @@ const memo = (db: Database) => db.query("SELECT * FROM memos WHERE id = 'memo_we
 const changes = (db: Database) => db.query("SELECT * FROM mobile_sync_changes ORDER BY id").all();
 const assertRepaired = (db: Database) => {
   const row = content(db);
-  expect(row.content_markdown).toBe(buildWelcomeMemoContent("zh-CN").contentMarkdown);
   expect(row.content_markdown).not.toContain("\\n");
   expect(row.content_markdown.split("\n\n")).toHaveLength(3);
   expect(row.content_hash).toBe(createHash("sha256").update(row.content_markdown + row.content_json).digest("hex"));
@@ -43,16 +47,26 @@ const assertRepaired = (db: Database) => {
   expect(row.revision).toBe(1);
 };
 
+const assertStillNoteWelcome = (db: Database) => {
+  const row = content(db);
+  expect(row.content_markdown).toBe(buildWelcomeMemoContent("zh-CN").contentMarkdown);
+  expect(row.content_markdown).not.toContain("\\n");
+  expect(row.content_markdown.split("\n\n")).toHaveLength(3);
+  expect(row.content_hash).toBe(createHash("sha256").update(row.content_markdown + row.content_json).digest("hex"));
+  expect(row.content_hash).toBe(WELCOME_MEMO_STILLNOTE_CONTENT_HASH);
+  expect(row.revision).toBe(2);
+};
+
 describe("welcome Markdown repair", () => {
   test("initializes correctly through local development auto-login without normal sign-in", async () => {
     const db = open();
     for (const path of migrations) db.exec(readFileSync(path, "utf8"));
     await createLocalDevelopmentSession(db);
-    assertRepaired(db);
+    assertStillNoteWelcome(db);
   });
 
   test("upgrades a persisted old database and announces the change exactly once", () => {
-    const directory = mkdtempSync(join(tmpdir(), "edgeever-welcome-upgrade-"));
+    const directory = mkdtempSync(join(tmpdir(), "stillnote-welcome-upgrade-"));
     directories.push(directory);
     const path = join(directory, "old.sqlite");
     const old = new Database(path);
@@ -102,11 +116,11 @@ describe("welcome Markdown repair", () => {
     const sqlite = legacy();
     if (applyRepair) sqlite.exec(repair);
     sqlite.exec("INSERT INTO users (id, username, password_hash, display_name) VALUES ('owner', 'owner', 'unused', 'Owner')");
-    const db = createSelfHostedStorageAdapter(sqlite, "/tmp/edgeever-welcome-unused").db;
+    const db = createSelfHostedStorageAdapter(sqlite, "/tmp/stillnote-welcome-unused").db;
     await ensureUserWorkspace(db, "owner", "owner", "en-US");
     expect(content(sqlite).content_markdown).toBe(buildWelcomeMemoContent("en-US").contentMarkdown);
     expect(content(sqlite).revision).toBe(applyRepair ? 2 : 1);
-    expect(memo(sqlite)).toMatchObject({ title: "Welcome to EdgeEver" });
+    expect(memo(sqlite)).toMatchObject({ title: "Welcome to StillNote" });
     const before = { memo: memo(sqlite), content: content(sqlite), changes: changes(sqlite) };
     sqlite.exec(repair);
     expect({ memo: memo(sqlite), content: content(sqlite), changes: changes(sqlite) }).toEqual(before);
@@ -125,7 +139,7 @@ describe("welcome Markdown repair", () => {
   test("preserves other notes containing the exact same content", () => {
     const db = legacy();
     db.exec(`INSERT INTO memos (id, notebook_id, title, created_by, updated_by)
-      VALUES ('memo_user', 'nb_inbox', '欢迎来到 EdgeEver', 'system', 'system');
+      VALUES ('memo_user', 'nb_inbox', '${WELCOME_MEMO_LEGACY_SEED_TITLE}', 'system', 'system');
       INSERT INTO memo_contents (memo_id, content_json, content_markdown, content_text, content_hash)
       SELECT 'memo_user', content_json, content_markdown, content_text, content_hash
       FROM memo_contents WHERE memo_id = 'memo_welcome'`);

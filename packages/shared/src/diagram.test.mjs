@@ -55,15 +55,15 @@ describe("diagram document", () => {
   test("accepts wrapped metadata and strips invalid envelopes from visible content", () => {
     const serialized = serializeDiagramDocument(createDefaultDiagramDocument("mind-map"));
     const wrapped = serialized.replace(
-      /(edgeever-diagram-v1:)([A-Za-z0-9_-]+)/,
+      /(stillnote-diagram-v1:)([A-Za-z0-9_-]+)/,
       (_match, prefix, payload) => `${prefix}${payload.match(/.{1,48}/g).join("\n")}`,
     );
     expect(parseDiagramDocument(wrapped)?.kind).toBe("mind-map");
 
-    const invalid = `${diagramFallbackMarkdown(createDefaultDiagramDocument("flowchart"))}\n\n<!-- edgeever-diagram-v1:not-json -->`;
+    const invalid = `${diagramFallbackMarkdown(createDefaultDiagramDocument("flowchart"))}\n\n<!-- stillnote-diagram-v1:not-json -->`;
     expect(hasDiagramDocumentMarker(invalid)).toBe(true);
     expect(parseDiagramDocument(invalid)).toBeNull();
-    expect(stripDiagramDocumentMarker(invalid)).not.toContain("edgeever-diagram-v1");
+    expect(stripDiagramDocumentMarker(invalid)).not.toContain("stillnote-diagram-v1");
     expect(stripDiagramDocumentMarker(invalid)).toContain("```mermaid");
   });
 
@@ -129,7 +129,7 @@ describe("diagram document", () => {
     expect(nested.attrs.underline.stroke).toBe("#55B891");
     expect(light.edges[0].attrs.line.stroke).toBe("#55B891");
     expect(light.edges[0].attrs.line.targetMarker).toBeNull();
-    expect(light.edges[0].connector.name).toBe("edgeever-mindmap");
+    expect(light.edges[0].connector.name).toBe("stillnote-mindmap");
     expect(light.edges[0].source.anchor.name).toBe("right");
     expect(light.edges.find((edge) => edge.target.cell === "topic-1-a").target.anchor.args.dy).toBeGreaterThan(0);
     const boxed = diagramDocumentToX6Cells({ ...document, structure: "box" }, "light");

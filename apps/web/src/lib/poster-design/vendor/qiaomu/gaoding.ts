@@ -1,4 +1,4 @@
-import { posterDesignTemplate } from "@edgeever/shared";
+import { posterDesignTemplate } from "@stillnote/shared";
 /**
  * Layouts drawn from the formats that dominate the Gaoding (稿定设计) recommended feed for Xiaohongshu and WeChat, kept to the
  * ones that live on type and flat shapes alone (no stock photo, no illustration), redrawn to the design rules: one focal

@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { POSTER_DESIGN_TEMPLATES, createPosterDocument } from '@edgeever/shared';
+import { POSTER_DESIGN_TEMPLATES, createPosterDocument } from '@stillnote/shared';
 import {
   paperListCurrentCopy,
   paperListSampleCopy,

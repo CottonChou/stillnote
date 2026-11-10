@@ -3,10 +3,10 @@
 // The background page turns this snapshot into the note.
 (() => {
   const root = globalThis as typeof globalThis & {
-    __edgeeverGithubClipPayload?: { requestId?: string };
+    __stillnoteGithubClipPayload?: { requestId?: string };
   };
-  const payload = root.__edgeeverGithubClipPayload;
-  delete root.__edgeeverGithubClipPayload;
+  const payload = root.__stillnoteGithubClipPayload;
+  delete root.__stillnoteGithubClipPayload;
   if (!payload || typeof payload.requestId !== "string") return;
   const requestId = payload.requestId;
 

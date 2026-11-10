@@ -1,18 +1,18 @@
 ---
 draft: false
-title: "Memos to EdgeEver Migration Guide"
-snippet: "Migrate all your Memos notes to EdgeEver automatically using the double MCP servers bridge."
+title: "Memos to StillNote Migration Guide"
+snippet: "Migrate all your Memos notes to StillNote automatically using the double MCP servers bridge."
 image: {
     src: "/images/memos-migration.jpg",
-    alt: "Migrate Memos to EdgeEver"
+    alt: "Migrate Memos to StillNote"
 }
 publishDate: "2026-07-06 19:30"
 category: "Migration"
-author: "EdgeEver Team"
+author: "StillNote Team"
 tags: [memos, migration, self-hosted, mcp]
 ---
 
-Since EdgeEver natively supports AI Agent (Model Context Protocol, MCP) integration, you don't even need to export any file backups. You can directly use your AI assistant as a bridge by mounting both **Memos MCP** and **EdgeEver MCP** servers to achieve automatic cloud-to-cloud migration.
+Since StillNote natively supports AI Agent (Model Context Protocol, MCP) integration, you don't even need to export any file backups. You can directly use your AI assistant as a bridge by mounting both **Memos MCP** and **StillNote MCP** servers to achieve automatic cloud-to-cloud migration.
 
 ---
 
@@ -23,8 +23,8 @@ Since EdgeEver natively supports AI Agent (Model Context Protocol, MCP) integrat
 1. **Configure Memos MCP**:
    Set up your old Memos instance's MCP server (using the official or community-provided Memos MCP plugin) in your AI assistant (e.g., Claude Code, Cursor).
 
-2. **Configure EdgeEver MCP**:
-   - Log in to your EdgeEver instance, and click **Profile** -> **MCP settings**.
+2. **Configure StillNote MCP**:
+   - Log in to your StillNote instance, and click **Profile** -> **MCP settings**.
    - Generate an API Token, click **Copy full MCP configuration**, and configure it in your AI assistant.
 
 Make sure your AI assistant can access and call both MCP servers simultaneously.
@@ -34,14 +34,14 @@ Make sure your AI assistant can access and call both MCP servers simultaneously.
 Copy and send the following prompt to the AI assistant that has access to both MCPs:
 
 ```text
-You are my AI assistant. You are currently connected to both my old Memos MCP server and my new EdgeEver MCP server.
-Please help me migrate all my notes from Memos to EdgeEver:
+You are my AI assistant. You are currently connected to both my old Memos MCP server and my new StillNote MCP server.
+Please help me migrate all my notes from Memos to StillNote:
 1. Call the Memos MCP tools to read all my old Memos (including text, creation time, tags, etc.) in batches.
-2. Call the EdgeEver MCP tools to write them into my new EdgeEver instance.
+2. Call the StillNote MCP tools to write them into my new StillNote instance.
 Please report the total number of successfully imported notes when finished.
 ```
 
-The AI assistant will automatically read data from Memos and write it to EdgeEver, completing the migration through double MCP data bridging.
+The AI assistant will automatically read data from Memos and write it to StillNote, completing the migration through double MCP data bridging.
 
 #### Step 3: Verify in Web Browser
-Go back to your EdgeEver web client and refresh the page to confirm that all Memos notes have been successfully recorded, and that their timestamps and tags are synchronized.
+Go back to your StillNote web client and refresh the page to confirm that all Memos notes have been successfully recorded, and that their timestamps and tags are synchronized.

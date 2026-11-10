@@ -7,7 +7,7 @@ import {
   AiPromptTemplateUpdateSchema,
   DEFAULT_AI_PROMPT_SEEDS,
   defaultAiPromptId,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { registerAiPromptRoutes } from "./ai-prompt-routes.ts";
 
 const auth = {

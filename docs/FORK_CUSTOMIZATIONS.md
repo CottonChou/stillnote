@@ -1,7 +1,6 @@
-# EdgeEver 个人 Fork 定制记录 (Fork Customizations)
+# StillNote 定制开发记录 (Customizations)
 
-本文档专门用于记录 **`CottonChou/edgeever`** 仓库中独立于官方上游（`upstream: tianma-if/edgeever`）的专属定制与优化。
-方便在后续同步上游主分支（如 `git fetch upstream && git merge upstream/main` 或 `git rebase`）时，能够清晰比对修改点并快速处理。
+本文档用于记录 **`CottonChou/stillnote`** 仓库中的体验增强、视觉重构与打包改造细节。
 
 ---
 
@@ -46,15 +45,15 @@
 ## 2. 特性 2：App 视觉图标现代化重构与方案选集
 
 ### 背景
-EdgeEver 原版 App 图标采用简单的黑色手绘猫咪线条轮廓搭配纯绿色底色，视觉冲击力与现代知识库软件（如 Evernote、Obsidian、Notion）的质感存在差距。
+StillNote 原版 App 图标采用简单的黑色手绘猫咪线条轮廓搭配纯绿色底色，视觉冲击力与现代知识库软件（如 Evernote、Obsidian、Notion）的质感存在差距。
 
-为此重新构思并设计了 4 套符合现代移动端 UI 规范与 EdgeEver 核心调性（翡翠绿 `#16A06E` / 知识沉淀 / 灵感连接）的高清图标方案：
+为此重新构思并设计了 4 套符合现代移动端 UI 规范与 StillNote 核心调性（翡翠绿 `#16A06E` / 知识沉淀 / 灵感连接）的高清图标方案：
 
 ### 最终选定方案：A-2 3D 厚磨砂玻璃底托 + A-1 精致折叠纸屋与蓝色书签
 * **设计构思与理念**：
   - **核心图案（A-1）**：折叠纸页构筑的屋顶轮廓（象征自部署、隐私安全与笔记天地），右侧由柔顺连贯的纸卷翻折而下，左上角点缀一抹鲜艳克莱因蓝书签缎带，表面刻有三道手绘笔记横线。
   - **3D 磨砂玻璃底托（A-2）**：承托在极具 depth 纵深感的厚层半透明磨砂玻璃 Squircle 托盘上，双层折射高光弧边、通透磨砂内部微光以及自然环境软阴影，底色为沉稳深邃的午夜暗蓝（`#061326`）。
-  - **高清原始文件**：[`assets/brand/edgeever-icon.png`](assets/brand/edgeever-icon.png)
+  - **高清原始文件**：[`assets/brand/stillnote-icon.png`](assets/brand/stillnote-icon.png)
   - **已应用的目标资源**：
     - 移动端 App 主图标：`apps/mobile/assets/icon.png` (1024×1024)
     - 移动端 Android 自适应图标：`apps/mobile/assets/adaptive-icon-transparent.png`（安全边距 72%，背景色设为 `#071522`）

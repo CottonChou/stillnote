@@ -1,17 +1,17 @@
 {
   "type": "theme",
-  "id": "org.edgeever.themes.nord-emerald",
+  "id": "org.stillnote.themes.nord-emerald",
   "name": "Nord Emerald",
   "version": "1.0.0",
   "themeApiVersion": "1",
-  "description": "A calm Nord-inspired EdgeEver theme using the public theme token API.",
+  "description": "A calm Nord-inspired StillNote theme using the public theme token API.",
   "locales": {
     "zh-CN": {
       "name": "Nord 翡翠",
-      "description": "一款宁静的 Nord 风格 EdgeEver 主题，基于公开主题令牌 API 构建。"
+      "description": "一款宁静的 Nord 风格 StillNote 主题，基于公开主题令牌 API 构建。"
     }
   },
-  "author": "EdgeEver",
+  "author": "StillNote",
   "modes": ["light", "dark"],
   "light": {
     "color.background": "#eceff4",

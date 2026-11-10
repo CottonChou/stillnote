@@ -47,7 +47,7 @@ test("source search replaces literal escapes with empty text, supports undo, and
     const original = await readSource(page);
     await openReplace(page, ".cm-content");
     await searchQuery(page).fill("\\");
-    await expect(page.locator(".cm-content .edgeever-search-match")).toHaveCount(6);
+    await expect(page.locator(".cm-content .stillnote-search-match")).toHaveCount(6);
     await expect(page.locator('[aria-live="polite"]').filter({ hasText: "1/6" })).toBeVisible();
     await page.getByRole("button", { name: "下一个搜索结果", exact: true }).click();
     await expect(page.locator('[aria-live="polite"]').filter({ hasText: "2/6" })).toBeVisible();
@@ -95,7 +95,7 @@ test("search follows the active mode and rich text supports whitespace deletion 
     await expect(replaceAll(page)).toBeDisabled();
     await searchQuery(page).fill(" ");
     const rich = page.locator(".ProseMirror[contenteditable='true']");
-    await expect(rich.locator(".edgeever-search-match")).toHaveCount(3);
+    await expect(rich.locator(".stillnote-search-match")).toHaveCount(3);
     await rich.evaluate((element) => {
       element.setAttribute("data-search-focus-count", "0");
       element.addEventListener("focus", () => {

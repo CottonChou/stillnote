@@ -15,7 +15,7 @@ describe("rich-text code highlight themes", () => {
   });
 
   test("scopes GitHub Dark token colors to dark rich-text code blocks", () => {
-    expect(darkTheme).toContain(":root.dark .ProseMirror .edgeever-code-block .hljs");
+    expect(darkTheme).toContain(":root.dark .ProseMirror .stillnote-code-block .hljs");
     expect(darkTheme).toContain("background: transparent;");
 
     for (const token of [
@@ -32,7 +32,7 @@ describe("rich-text code highlight themes", () => {
       "addition",
       "deletion",
     ]) {
-      expect(darkTheme).toContain(`.edgeever-code-block .hljs-${token}`);
+      expect(darkTheme).toContain(`.stillnote-code-block .hljs-${token}`);
     }
   });
 });

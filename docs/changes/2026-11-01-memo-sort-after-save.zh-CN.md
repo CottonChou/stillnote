@@ -1,6 +1,6 @@
 # 编辑笔记后保持列表排序
 
-[English](2026-11-01-memo-sort-after-save.md) · [Issue #750](https://github.com/tianma-if/edgeever/issues/750)
+[English](2026-11-01-memo-sort-after-save.md) · [Issue #750](https://github.com/CottonChou/stillnote/issues/750)
 
 ## 问题与目标
 

@@ -6,10 +6,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 
-const sidecarPath = process.env.EDGE_EVER_SIDECAR_PATH
-  ?? join(process.cwd(), "crates/desktop-sidecar/target/debug/edgeever-sidecar");
-const migrationsPath = process.env.EDGE_EVER_MIGRATIONS_PATH ?? join(process.cwd(), "migrations");
-const dataPath = join(tmpdir(), `edgeever-sidecar-benchmark-${randomUUID()}`);
+const sidecarPath = process.env.STILLNOTE_SIDECAR_PATH
+  ?? join(process.cwd(), "crates/desktop-sidecar/target/debug/stillnote-sidecar");
+const migrationsPath = process.env.STILLNOTE_MIGRATIONS_PATH ?? join(process.cwd(), "migrations");
+const dataPath = join(tmpdir(), `stillnote-sidecar-benchmark-${randomUUID()}`);
 
 if (!existsSync(sidecarPath)) {
   throw new Error(`Sidecar not found: ${sidecarPath}`);

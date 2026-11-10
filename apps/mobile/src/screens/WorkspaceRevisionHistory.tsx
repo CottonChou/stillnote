@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { DEFAULT_MEMO_TITLE, type MemoDetail, type MemoRevision } from "@edgeever/shared";
+import { DEFAULT_MEMO_TITLE, type MemoDetail, type MemoRevision } from "@stillnote/shared";
 import { History, RotateCcw, X } from "../components/icons";
 import { Modal, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

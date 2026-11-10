@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { splitMarkdownFrontMatter } from "@edgeever/shared";
+import { splitMarkdownFrontMatter } from "@stillnote/shared";
 import {
   buildMarkdownFilename,
   buildSingleNoteMarkdown,
@@ -45,8 +45,8 @@ describe("single-note Markdown properties", () => {
   });
 
   test("retains original system fields without replacing or supplementing them", () => {
-    const markdown = buildSingleNoteMarkdown("---\ntitle: Old\ncreated: 2020-01-01\nedgeever_id: original\n---\n\nBody", "New", ["work"]);
-    expect(splitMarkdownFrontMatter(markdown)!.values).toEqual({ title: "New", created: "2020-01-01", edgeever_id: "original" });
+    const markdown = buildSingleNoteMarkdown("---\ntitle: Old\ncreated: 2020-01-01\nstillnote_id: original\n---\n\nBody", "New", ["work"]);
+    expect(splitMarkdownFrontMatter(markdown)!.values).toEqual({ title: "New", created: "2020-01-01", stillnote_id: "original" });
   });
 
   test("invalid properties remain recoverable verbatim", () => {

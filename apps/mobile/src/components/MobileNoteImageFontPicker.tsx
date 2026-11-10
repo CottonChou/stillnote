@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { DOMProps } from "expo/dom";
-import { isRemoteNoteImageFont, shouldLoadFontPreview } from "@edgeever/shared/font-catalog";
-import { resolveNoteImageTypography, type NoteImageFontStyle, type NoteImageTheme } from "@edgeever/shared/note-image-card";
-import { prepareNoteImageAssets } from "@edgeever/shared/note-image-fonts";
+import { isRemoteNoteImageFont, shouldLoadFontPreview } from "@stillnote/shared/font-catalog";
+import { resolveNoteImageTypography, type NoteImageFontStyle, type NoteImageTheme } from "@stillnote/shared/note-image-card";
+import { prepareNoteImageAssets } from "@stillnote/shared/note-image-fonts";
 import { getMobileNoteImageFontLabel, MOBILE_FONT_OPTIONS, type NoteImageFontLabels } from "../lib/note-image-font-options";
 import { noteImageAssetUrls } from "./note-image-asset-urls";
 

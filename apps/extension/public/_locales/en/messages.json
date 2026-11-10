@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "EdgeEver Web Clipper"
+    "message": "StillNote Web Clipper"
   },
   "extensionDescription": {
-    "message": "Save webpages, selections, images, and Hacker News posts to your self-hosted EdgeEver instance."
+    "message": "Save webpages, selections, images, and Hacker News posts to your self-hosted StillNote instance."
   },
   "actionTitle": {
-    "message": "Save to EdgeEver"
+    "message": "Save to StillNote"
   },
   "webClipper": {
     "message": "Web Clipper"
@@ -26,14 +26,14 @@
   "completePluginConfiguration": {
     "message": "Please complete the extension setup"
   },
-  "savedToEdgeEver": {
-    "message": "Saved to EdgeEver."
+  "savedToStillNote": {
+    "message": "Saved to StillNote."
   },
   "saveFailed": {
     "message": "Failed to save."
   },
   "optionsTitle": {
-    "message": "EdgeEver Web Clipper settings"
+    "message": "StillNote Web Clipper settings"
   },
   "diagnosticsTitle": {
     "message": "About & diagnostics"
@@ -90,10 +90,10 @@
     "message": "Unknown"
   },
   "instanceAddress": {
-    "message": "EdgeEver instance URL"
+    "message": "StillNote instance URL"
   },
   "tokenPlaceholder": {
-    "message": "Create one in EdgeEver settings"
+    "message": "Create one in StillNote settings"
   },
   "defaultNotebook": {
     "message": "Default notebook"
@@ -140,13 +140,13 @@
     "message": "Failed to save settings."
   },
   "missingSettingsDetails": {
-    "message": "Enter the EdgeEver instance URL and API token in the extension settings first."
+    "message": "Enter the StillNote instance URL and API token in the extension settings first."
   },
   "instancePermissionRequired": {
-    "message": "Allow the extension to access your EdgeEver instance."
+    "message": "Allow the extension to access your StillNote instance."
   },
   "requestFailed": {
-    "message": "EdgeEver request failed ($STATUS$).",
+    "message": "StillNote request failed ($STATUS$).",
     "placeholders": {
       "status": {
         "content": "$1"
@@ -166,7 +166,7 @@
     "message": "Keyword"
   },
   "noAvailableNotebooks": {
-    "message": "No notebooks are available in EdgeEver."
+    "message": "No notebooks are available in StillNote."
   },
   "currentPageNotFound": {
     "message": "Could not find the current page."
@@ -189,10 +189,10 @@
     "message": "No further details were provided"
   },
   "instanceNetworkFailed": {
-    "message": "Could not connect to the EdgeEver instance. Check the instance URL, network connection, and CORS settings."
+    "message": "Could not connect to the StillNote instance. Check the instance URL, network connection, and CORS settings."
   },
   "saveFailedWithReason": {
-    "message": "Could not save to EdgeEver: $DETAIL$",
+    "message": "Could not save to StillNote: $DETAIL$",
     "placeholders": {
       "detail": {
         "content": "$1"
@@ -202,11 +202,11 @@
   "emptyPageContent": {
     "message": "(No readable content was found on this page)"
   },
-  "saveSelectionToEdgeEver": {
-    "message": "Save selection to EdgeEver"
+  "saveSelectionToStillNote": {
+    "message": "Save selection to StillNote"
   },
   "selectionSaveHint": {
-    "message": "Select text on a page, right-click, and choose “Save selection to EdgeEver”. It is saved as a new note in the default notebook selected below."
+    "message": "Select text on a page, right-click, and choose “Save selection to StillNote”. It is saved as a new note in the default notebook selected below."
   },
   "savingSelection": {
     "message": "Saving the selection…"
@@ -220,11 +220,11 @@
   "selectionNoteFallbackTitle": {
     "message": "Selection"
   },
-  "saveImageToEdgeEver": {
-    "message": "Save image to EdgeEver"
+  "saveImageToStillNote": {
+    "message": "Save image to StillNote"
   },
   "imageSaveHint": {
-    "message": "Right-click an image on a webpage and choose “Save image to EdgeEver”. It is saved as a new note in the default notebook selected below."
+    "message": "Right-click an image on a webpage and choose “Save image to StillNote”. It is saved as a new note in the default notebook selected below."
   },
   "savingImage": {
     "message": "Saving the image…"
@@ -242,7 +242,7 @@
     "message": "This image format cannot be saved into a note yet. PNG, JPEG, GIF, WebP, and AVIF are supported."
   },
   "imagePermissionIntro": {
-    "message": "This page cannot read the image file. After you allow the site that hosts it, EdgeEver saves it as a new note in the clipper's default notebook. Only the image you chose is read."
+    "message": "This page cannot read the image file. After you allow the site that hosts it, StillNote saves it as a new note in the clipper's default notebook. Only the image you chose is read."
   },
   "imagePermissionHost": {
     "message": "Site: $HOST$",
@@ -265,7 +265,7 @@
     "message": "Site access was not allowed, so the image was not saved."
   },
   "imageResourceScopeRequired": {
-    "message": "This API token cannot write attachments. Create a full-access token in EdgeEver settings."
+    "message": "This API token cannot write attachments. Create a full-access token in StillNote settings."
   },
   "imageNoteFallbackTitle": {
     "message": "Image"
@@ -274,16 +274,16 @@
     "message": "Image"
   },
   "imageSaveWindowTitle": {
-    "message": "Save image to EdgeEver"
+    "message": "Save image to StillNote"
   },
   "imageSaveExpired": {
     "message": "This save has expired. Right-click the image and try again."
   },
-  "saveTweetToEdgeEver": {
-    "message": "Save post to EdgeEver"
+  "saveTweetToStillNote": {
+    "message": "Save post to StillNote"
   },
   "tweetSaveHint": {
-    "message": "On X, right-click a post and choose “Save post to EdgeEver”. The post text, including text behind Show more, and the photos go into one new note in the same default notebook."
+    "message": "On X, right-click a post and choose “Save post to StillNote”. The post text, including text behind Show more, and the photos go into one new note in the same default notebook."
   },
   "savingTweet": {
     "message": "Saving this post…"
@@ -316,16 +316,16 @@
     "message": "Post"
   },
   "tweetSaveWindowTitle": {
-    "message": "Save post to EdgeEver"
+    "message": "Save post to StillNote"
   },
   "tweetTimeLabel": {
     "message": "Time"
   },
-  "saveGithubRepoToEdgeEver": {
-    "message": "Save repository info to EdgeEver"
+  "saveGithubRepoToStillNote": {
+    "message": "Save repository info to StillNote"
   },
   "githubRepoSaveHint": {
-    "message": "On a GitHub repository page or code tree, right-click the page background, the description, or the README text and choose “Save repository info to EdgeEver”. The address and description are saved as a new note in the default notebook selected above. Issue, discussion, and single-file pages are left unsaved."
+    "message": "On a GitHub repository page or code tree, right-click the page background, the description, or the README text and choose “Save repository info to StillNote”. The address and description are saved as a new note in the default notebook selected above. Issue, discussion, and single-file pages are left unsaved."
   },
   "savingGithubRepo": {
     "message": "Saving this repository…"
@@ -351,11 +351,11 @@
   "githubRepoTopicsLabel": {
     "message": "Topics"
   },
-  "saveXhsToEdgeEver": {
-    "message": "Save note to EdgeEver"
+  "saveXhsToStillNote": {
+    "message": "Save note to StillNote"
   },
   "xhsSaveHint": {
-    "message": "On Xiaohongshu, right-click the note text and choose “Save note to EdgeEver”. The title, text, and photos go into one new note. Comments are left out. Right-clicking a photo still saves that image only."
+    "message": "On Xiaohongshu, right-click the note text and choose “Save note to StillNote”. The title, text, and photos go into one new note. Comments are left out. Right-clicking a photo still saves that image only."
   },
   "savingXhs": {
     "message": "Saving this note…"
@@ -391,13 +391,13 @@
     "message": "Xiaohongshu note"
   },
   "xhsSaveWindowTitle": {
-    "message": "Save note to EdgeEver"
+    "message": "Save note to StillNote"
   },
   "xhsLocationLabel": {
     "message": "Location"
   },
-  "saveZhihuToEdgeEver": {
-    "message": "Save answer or article to EdgeEver"
+  "saveZhihuToStillNote": {
+    "message": "Save answer or article to StillNote"
   },
   "zhihuQuestionLabel": {
     "message": "Question"
@@ -415,7 +415,7 @@
     "message": "Body"
   },
   "zhihuSaveHint": {
-    "message": "On Zhihu, right-click the answer or article text and choose “Save answer or article to EdgeEver”. The title, author, text, and photos go into one new note. Comments are left out. Right-clicking a photo still saves that image only."
+    "message": "On Zhihu, right-click the answer or article text and choose “Save answer or article to StillNote”. The title, author, text, and photos go into one new note. Comments are left out. Right-clicking a photo still saves that image only."
   },
   "savingZhihu": {
     "message": "Saving this Zhihu answer or article…"
@@ -451,10 +451,10 @@
     "message": "Zhihu answer or article"
   },
   "zhihuSaveWindowTitle": {
-    "message": "Save answer or article to EdgeEver"
+    "message": "Save answer or article to StillNote"
   },
-  "saveRedditToEdgeEver": {
-    "message": "Save Reddit post to EdgeEver"
+  "saveRedditToStillNote": {
+    "message": "Save Reddit post to StillNote"
   },
   "savingReddit": {
     "message": "Saving this Reddit post…"
@@ -477,8 +477,8 @@
   "redditLinkLabel": {
     "message": "Linked page"
   },
-  "saveVideoNoteToEdgeEver": {
-    "message": "Save video note to EdgeEver"
+  "saveVideoNoteToStillNote": {
+    "message": "Save video note to StillNote"
   },
   "savingVideoNote": {
     "message": "Saving this video note…"
@@ -552,17 +552,17 @@
   "videoNoteFallbackTitle": {
     "message": "Video note"
   },
-  "saveHackerNewsToEdgeEver": {
-    "message": "Save Hacker News post to EdgeEver"
+  "saveHackerNewsToStillNote": {
+    "message": "Save Hacker News post to StillNote"
   },
-  "saveV2exToEdgeEver": {
-    "message": "Save V2EX topic to EdgeEver"
+  "saveV2exToStillNote": {
+    "message": "Save V2EX topic to StillNote"
   },
-  "saveXiaoyuzhouToEdgeEver": {
-    "message": "Save Xiaoyuzhou episode to EdgeEver"
+  "saveXiaoyuzhouToStillNote": {
+    "message": "Save Xiaoyuzhou episode to StillNote"
   },
   "savingPlatformClip": {
-    "message": "Saving this page to EdgeEver…"
+    "message": "Saving this page to StillNote…"
   },
   "platformNotDetail": {
     "message": "Open a supported post, topic, or episode detail page, then try again."
@@ -580,7 +580,7 @@
     "message": "Text saved. Some images still use external links."
   },
   "platformSavedWithImages": {
-    "message": "Saved to EdgeEver with all images archived."
+    "message": "Saved to StillNote with all images archived."
   },
   "platformNoShowNotes": {
     "message": "This episode has no Show Notes."
@@ -606,20 +606,20 @@
   "platformPodcastLabel": {
     "message": "Podcast"
   },
-  "saveFacebookToEdgeEver": {
-    "message": "Save Facebook post to EdgeEver"
+  "saveFacebookToStillNote": {
+    "message": "Save Facebook post to StillNote"
   },
-  "saveInstagramToEdgeEver": {
-    "message": "Save Instagram post to EdgeEver"
+  "saveInstagramToStillNote": {
+    "message": "Save Instagram post to StillNote"
   },
-  "saveLinkedinToEdgeEver": {
-    "message": "Save LinkedIn post to EdgeEver"
+  "saveLinkedinToStillNote": {
+    "message": "Save LinkedIn post to StillNote"
   },
-  "saveThreadsToEdgeEver": {
-    "message": "Save Threads post to EdgeEver"
+  "saveThreadsToStillNote": {
+    "message": "Save Threads post to StillNote"
   },
-  "saveBlueskyToEdgeEver": {
-    "message": "Save Bluesky post to EdgeEver"
+  "saveBlueskyToStillNote": {
+    "message": "Save Bluesky post to StillNote"
   },
   "socialSelectPost": {
     "message": "Open the post detail page, or right-click the target post again to save it."
@@ -645,8 +645,8 @@
   "platformXiaoyuzhou": {
     "message": "Xiaoyuzhou"
   },
-  "saveSubstackNoteToEdgeEver": {
-    "message": "Save Substack Note to EdgeEver"
+  "saveSubstackNoteToStillNote": {
+    "message": "Save Substack Note to StillNote"
   },
   "adaptedPlatformsTitle": {
     "message": "Deeply adapted platforms"
@@ -708,11 +708,11 @@
   "clipNotifications": {
     "message": "Clipping notifications"
   },
-  "saveBossToEdgeEver": {
-    "message": "Save BOSS Zhipin job to EdgeEver"
+  "saveBossToStillNote": {
+    "message": "Save BOSS Zhipin job to StillNote"
   },
-  "saveXueqiuToEdgeEver": {
-    "message": "Save Xueqiu post to EdgeEver"
+  "saveXueqiuToStillNote": {
+    "message": "Save Xueqiu post to StillNote"
   },
   "platformBoss": {
     "message": "BOSS Zhipin"
@@ -729,32 +729,32 @@
   "platformWechat": {
     "message": "WeChat"
   },
-  "saveWechatToEdgeEver": {
-    "message": "Save WeChat to EdgeEver"
+  "saveWechatToStillNote": {
+    "message": "Save WeChat to StillNote"
   },
   "platformJike": {
     "message": "Jike"
   },
-  "saveJikeToEdgeEver": {
-    "message": "Save Jike to EdgeEver"
+  "saveJikeToStillNote": {
+    "message": "Save Jike to StillNote"
   },
   "platformSspai": {
     "message": "SSPAI"
   },
-  "saveSspaiToEdgeEver": {
-    "message": "Save SSPAI to EdgeEver"
+  "saveSspaiToStillNote": {
+    "message": "Save SSPAI to StillNote"
   },
   "platformJuejin": {
     "message": "Juejin"
   },
-  "saveJuejinToEdgeEver": {
-    "message": "Save Juejin to EdgeEver"
+  "saveJuejinToStillNote": {
+    "message": "Save Juejin to StillNote"
   },
   "platformDouban": {
     "message": "Douban"
   },
-  "saveDoubanToEdgeEver": {
-    "message": "Save Douban to EdgeEver"
+  "saveDoubanToStillNote": {
+    "message": "Save Douban to StillNote"
   },
   "platformOfficialAccountLabel": {
     "message": "Official account"
@@ -763,7 +763,7 @@
     "message": "Source list"
   },
   "doubanSelectComment": {
-    "message": "Right-click the short comment and choose “Save Douban to EdgeEver”, or capture selected text."
+    "message": "Right-click the short comment and choose “Save Douban to StillNote”, or capture selected text."
   },
   "pageCaptureRestricted": {
     "message": "Content restricted"
@@ -813,7 +813,7 @@
     "message": "Reselect"
   },
   "regionSave": {
-    "message": "Save to EdgeEver"
+    "message": "Save to StillNote"
   },
   "regionCancel": {
     "message": "Cancel"

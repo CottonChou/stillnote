@@ -14,7 +14,7 @@ const createDatabase = () => {
   sqlite.exec(readFileSync("migrations/0020_auth_login_attempts.sql", "utf8"));
   return {
     sqlite,
-    db: createSelfHostedStorageAdapter(sqlite, ".edgeever-test-resources").db,
+    db: createSelfHostedStorageAdapter(sqlite, ".stillnote-test-resources").db,
   };
 };
 
@@ -28,9 +28,9 @@ describe("login attempt limiter", () => {
       ipCooldownSeconds: 300,
     });
     expect(resolveLoginRateLimitConfig({
-      EDGE_EVER_AUTH_LOGIN_WINDOW_SECONDS: "0",
-      EDGE_EVER_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS: "6.5",
-      EDGE_EVER_AUTH_LOGIN_IP_MAX_ATTEMPTS: "2000",
+      STILLNOTE_AUTH_LOGIN_WINDOW_SECONDS: "0",
+      STILLNOTE_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS: "6.5",
+      STILLNOTE_AUTH_LOGIN_IP_MAX_ATTEMPTS: "2000",
     })).toMatchObject({
       windowSeconds: 900,
       usernameMaxAttempts: 5,
@@ -41,10 +41,10 @@ describe("login attempt limiter", () => {
   test("blocks repeated failures and reports a retry duration", async () => {
     const { sqlite, db } = createDatabase();
     const config = resolveLoginRateLimitConfig({
-      EDGE_EVER_AUTH_LOGIN_WINDOW_SECONDS: "60",
-      EDGE_EVER_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS: "2",
-      EDGE_EVER_AUTH_LOGIN_USERNAME_COOLDOWN_SECONDS: "30",
-      EDGE_EVER_AUTH_LOGIN_IP_MAX_ATTEMPTS: "10",
+      STILLNOTE_AUTH_LOGIN_WINDOW_SECONDS: "60",
+      STILLNOTE_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS: "2",
+      STILLNOTE_AUTH_LOGIN_USERNAME_COOLDOWN_SECONDS: "30",
+      STILLNOTE_AUTH_LOGIN_IP_MAX_ATTEMPTS: "10",
     });
     const keys = [{ scope: "username" as const, key: "user-hash" }];
     const start = Date.parse("2026-07-26T00:00:00.000Z");
@@ -63,8 +63,8 @@ describe("login attempt limiter", () => {
   test("clears username and IP buckets after a successful login", async () => {
     const { sqlite, db } = createDatabase();
     const config = resolveLoginRateLimitConfig({
-      EDGE_EVER_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS: "1",
-      EDGE_EVER_AUTH_LOGIN_IP_MAX_ATTEMPTS: "1",
+      STILLNOTE_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS: "1",
+      STILLNOTE_AUTH_LOGIN_IP_MAX_ATTEMPTS: "1",
     });
     const keys = [
       { scope: "username" as const, key: "user-hash" },

@@ -65,7 +65,7 @@ export const requestInstancePermission = async (instanceUrl: string) => {
   }
 };
 
-export const edgeEverRequest = async <T>(settings: ExtensionSettings, path: string, init?: RequestInit): Promise<T> => {
+export const stillNoteRequest = async <T>(settings: ExtensionSettings, path: string, init?: RequestInit): Promise<T> => {
   const instanceUrl = normalizeInstanceUrl(settings.instanceUrl);
   if (!instanceUrl || !settings.token) {
     throw new Error(t("missingSettingsDetails"));
@@ -88,7 +88,7 @@ export const edgeEverRequest = async <T>(settings: ExtensionSettings, path: stri
   return response.json() as Promise<T>;
 };
 
-export const edgeEverFormRequest = async <T>(
+export const stillNoteFormRequest = async <T>(
   settings: ExtensionSettings,
   path: string,
   form: FormData,
@@ -124,7 +124,7 @@ export const uploadMemoImage = async (
   new Uint8Array(buffer).set(file.bytes);
   const form = new FormData();
   form.append("file", new File([buffer], file.filename, { type: file.mimeType }));
-  return edgeEverFormRequest<{ resource: { id: string } }>(
+  return stillNoteFormRequest<{ resource: { id: string } }>(
     settings,
     `/api/v1/memos/${encodeURIComponent(memoId)}/resources`,
     form,
@@ -133,7 +133,7 @@ export const uploadMemoImage = async (
 };
 
 export const listNotebooks = (settings: ExtensionSettings) =>
-  edgeEverRequest<{ notebooks: Notebook[] }>(settings, "/api/v1/notebooks");
+  stillNoteRequest<{ notebooks: Notebook[] }>(settings, "/api/v1/notebooks");
 
 export const testConnection = async (settings: ExtensionSettings) => {
   await requestInstancePermission(settings.instanceUrl);

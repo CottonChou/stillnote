@@ -30,7 +30,7 @@ globalThis.document = stubDocument;
 const StubMutationObserver = class { observe() {} disconnect() {} };
 globalThis.MutationObserver = StubMutationObserver;
 
-const { EdgeEverPluginHost } = await import("./plugin-host.ts");
+const { StillNotePluginHost } = await import("./plugin-host.ts");
 
 afterAll(() => {
   restoreTestGlobal("window", originalWindow, stubWindow);
@@ -55,7 +55,7 @@ test("enable and uninstall update the workspace catalog", async () => {
   values.clear();
   const upserts = [];
   const removals = [];
-  const host = new EdgeEverPluginHost({
+  const host = new StillNotePluginHost({
     scope: "catalog-host",
     packageStorage: { get: async () => null, put: async () => {}, remove: async () => {} },
     secretStorage,
@@ -94,7 +94,7 @@ test("enable and uninstall update the workspace catalog", async () => {
       },
     },
   });
-  const id = "org.edgeever.catalog-sync";
+  const id = "org.stillnote.catalog-sync";
   host.installManifest(pluginManifest(id), "https://example.test/manifest.json");
   await host.setEnabled(id, true);
   expect(upserts.at(-1)).toMatchObject({ extensionId: id, input: { enabled: true, version: "1.0.0" } });
@@ -107,11 +107,11 @@ test("a remote tombstone uninstalls the local extension without writing the cata
   values.clear();
   const upserts = [];
   const removals = [];
-  const id = "org.edgeever.catalog-tombstone";
+  const id = "org.stillnote.catalog-tombstone";
   // installManifest stamps catalogUpdatedAt with now; the tombstone must be newer
   // so reconcile uninstalls instead of treating the local install as a later write.
   const tombstoneAt = new Date(Date.now() + 60_000).toISOString();
-  const host = new EdgeEverPluginHost({
+  const host = new StillNotePluginHost({
     scope: "catalog-tombstone",
     packageStorage: { get: async () => null, put: async () => {}, remove: async () => {} },
     secretStorage,

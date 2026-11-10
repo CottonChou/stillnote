@@ -4,7 +4,7 @@ import {
   officialTemplateFamily,
   parseGeneratedOfficialData,
   type OfficialTemplateFamily,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 
 export { buildOfficialInfographicSyntax, officialTemplateFamily, parseGeneratedOfficialData };
 export type { OfficialTemplateFamily };

@@ -10,14 +10,14 @@ import {
 } from "./plugin-catalog.ts";
 
 const marketplaceEntry = (overrides = {}) => ({
-  id: "org.edgeever.plugins.ai-rss",
-  name: "EdgeEver AI RSS",
+  id: "org.stillnote.plugins.ai-rss",
+  name: "StillNote AI RSS",
   description: "Official RSS digest",
-  author: "EdgeEver",
-  publisher: "edgeever",
+  author: "StillNote",
+  publisher: "stillnote",
   category: "News & AI",
-  repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss",
-  distribution: { type: "github", repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss" },
+  repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss",
+  distribution: { type: "github", repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss" },
   verification: { version: "0.5.3" },
   ...overrides,
 });
@@ -28,8 +28,8 @@ const extension = (overrides = {}) => {
     manifestUrl: "https://example.com/manifest.json",
     manifest: {
       type: "plugin",
-      id: "org.edgeever.plugins.ai-rss",
-      name: "EdgeEver AI RSS",
+      id: "org.stillnote.plugins.ai-rss",
+      name: "StillNote AI RSS",
       version: "0.5.3",
       description: "Installed RSS digest",
       ...manifest,
@@ -40,7 +40,7 @@ const extension = (overrides = {}) => {
     source: {
       kind: "marketplace",
       verified: true,
-      repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss",
+      repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss",
       ...source,
     },
     ...rest,
@@ -103,16 +103,16 @@ describe("plugin catalog items", () => {
 
   test("offers replace-with-verified only for sideloaded installs listed in the marketplace", () => {
     const marketplaceInstall = {
-      id: "org.edgeever.plugins.ai-rss",
+      id: "org.stillnote.plugins.ai-rss",
       marketplaceEntry: marketplaceEntry(),
       extension: extension(),
     };
     const sideloadedListed = {
-      id: "org.edgeever.plugins.ai-rss",
+      id: "org.stillnote.plugins.ai-rss",
       marketplaceEntry: marketplaceEntry(),
       extension: extension({ source: { kind: "github", verified: false } }),
     };
-    const uninstalled = { id: "org.edgeever.plugins.ai-rss", marketplaceEntry: marketplaceEntry() };
+    const uninstalled = { id: "org.stillnote.plugins.ai-rss", marketplaceEntry: marketplaceEntry() };
 
     expect(canReplaceWithVerifiedMarketplace(marketplaceInstall)).toBe(false);
     expect(canReplaceWithVerifiedMarketplace(sideloadedListed)).toBe(true);
@@ -121,26 +121,26 @@ describe("plugin catalog items", () => {
 
   test("prefers installed metadata when a marketplace plugin is already present", () => {
     const item = {
-      id: "org.edgeever.plugins.ai-rss",
+      id: "org.stillnote.plugins.ai-rss",
       marketplaceEntry: marketplaceEntry({ name: "Market name", description: "Market copy", verification: { version: "0.5.2" } }),
       extension: extension({
         manifest: { name: "Installed name", description: "Installed copy", version: "0.5.3" },
-        source: { repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss" },
+        source: { repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss" },
       }),
     };
 
     expect(getPluginCatalogName(item)).toBe("Installed name");
     expect(getPluginCatalogDescription(item)).toBe("Installed copy");
     expect(getPluginCatalogVersion(item)).toBe("0.5.3");
-    expect(getPluginCatalogRepositoryUrl(item)).toBe("https://github.com/tianma-if/edgeever-ai-rss");
+    expect(getPluginCatalogRepositoryUrl(item)).toBe("https://github.com/CottonChou/stillnote-ai-rss");
   });
 
   test("uses localized metadata from the installed manifest or marketplace with language fallback", () => {
     const item = {
-      id: "org.edgeever.plugins.ai-rss",
+      id: "org.stillnote.plugins.ai-rss",
       marketplaceEntry: marketplaceEntry({
         locales: {
-          "zh-CN": { name: "EdgeEver AI 订阅", description: "市场中文说明" },
+          "zh-CN": { name: "StillNote AI 订阅", description: "市场中文说明" },
           ja: { description: "マーケット説明" },
         },
       }),
@@ -153,7 +153,7 @@ describe("plugin catalog items", () => {
       }),
     };
 
-    expect(getPluginCatalogName(item, "zh-CN")).toBe("EdgeEver AI 订阅");
+    expect(getPluginCatalogName(item, "zh-CN")).toBe("StillNote AI 订阅");
     expect(getPluginCatalogDescription(item, "zh-CN")).toBe("插件中文说明");
     expect(getPluginCatalogDescription(item, "ja-JP")).toBe("マーケット説明");
     expect(getPluginCatalogDescription(item, "fr-FR")).toBe("Installed RSS digest");

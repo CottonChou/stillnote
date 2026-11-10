@@ -1,9 +1,9 @@
-import type { createEdgeEverClient } from "@edgeever/client";
+import type { createStillNoteClient } from "@stillnote/client";
 import { clearMobileMemoDraft } from "./mobile-drafts";
 import { deleteLocalMemo, resolveLocalMemo, softDeleteLocalMemo, upsertLocalMemo } from "./local-mirror";
 import { cancelMobileMemoQueueItems, listMobileSyncQueueItems } from "./sync-queue";
 
-type MobileClient = ReturnType<typeof createEdgeEverClient>;
+type MobileClient = ReturnType<typeof createStillNoteClient>;
 
 const isLocalTemporaryId = (memoId: string) => memoId.startsWith("local:");
 

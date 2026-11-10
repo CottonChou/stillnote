@@ -7,35 +7,35 @@ export type Bindings = {
   publicNetworkFetch?: (input: string, init: RequestInit) => Promise<Response>;
   /** The only persistence dependency exposed to application code. */
   storage: StorageAdapter;
-  EDGE_EVER_AUTH_USERNAME?: string;
-  EDGE_EVER_RUNTIME?: string;
-  EDGE_EVER_CONTAINER_IMAGE?: string;
-  EDGE_EVER_DEPLOYMENT_TRIGGER?: string;
-  EDGE_EVER_DEPLOYMENT_METHOD?: string;
-  EDGE_EVER_BUILD_CREATED_AT?: string;
-  EDGE_EVER_BUILD_TRIGGER?: string;
-  EDGE_EVER_BUILD_METHOD?: string;
+  STILLNOTE_AUTH_USERNAME?: string;
+  STILLNOTE_RUNTIME?: string;
+  STILLNOTE_CONTAINER_IMAGE?: string;
+  STILLNOTE_DEPLOYMENT_TRIGGER?: string;
+  STILLNOTE_DEPLOYMENT_METHOD?: string;
+  STILLNOTE_BUILD_CREATED_AT?: string;
+  STILLNOTE_BUILD_TRIGGER?: string;
+  STILLNOTE_BUILD_METHOD?: string;
   /** Creation time of the active deployment version, supplied by a runtime adapter. */
   deploymentVersionCreatedAt?: string;
-  EDGE_EVER_AUTH_PASSWORD?: string;
-  EDGE_EVER_AUTH_PASSWORD_HASH?: string;
-  EDGE_EVER_AUTH_PASSWORD_FALLBACK?: string;
-  EDGE_EVER_SESSION_TTL_DAYS?: string;
-  EDGE_EVER_AUTH_LOGIN_WINDOW_SECONDS?: string;
-  EDGE_EVER_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS?: string;
-  EDGE_EVER_AUTH_LOGIN_USERNAME_COOLDOWN_SECONDS?: string;
-  EDGE_EVER_AUTH_LOGIN_IP_MAX_ATTEMPTS?: string;
-  EDGE_EVER_AUTH_LOGIN_IP_COOLDOWN_SECONDS?: string;
-  EDGE_EVER_R2_BUCKET_NAME?: string;
+  STILLNOTE_AUTH_PASSWORD?: string;
+  STILLNOTE_AUTH_PASSWORD_HASH?: string;
+  STILLNOTE_AUTH_PASSWORD_FALLBACK?: string;
+  STILLNOTE_SESSION_TTL_DAYS?: string;
+  STILLNOTE_AUTH_LOGIN_WINDOW_SECONDS?: string;
+  STILLNOTE_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS?: string;
+  STILLNOTE_AUTH_LOGIN_USERNAME_COOLDOWN_SECONDS?: string;
+  STILLNOTE_AUTH_LOGIN_IP_MAX_ATTEMPTS?: string;
+  STILLNOTE_AUTH_LOGIN_IP_COOLDOWN_SECONDS?: string;
+  STILLNOTE_R2_BUCKET_NAME?: string;
   /** Legacy decryption fallback; new credentials use auth-derived keys. */
-  EDGE_EVER_STORAGE_ENCRYPTION_KEY?: string;
-  EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY?: string;
-  EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS?: string;
-  EDGE_EVER_DEMO_MODE?: string;
-  EDGE_EVER_LOCAL_DEMO_SEED?: string;
-  EDGE_EVER_ALLOW_UNAUTHENTICATED?: string;
+  STILLNOTE_STORAGE_ENCRYPTION_KEY?: string;
+  STILLNOTE_CREDENTIALS_ENCRYPTION_KEY?: string;
+  STILLNOTE_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS?: string;
+  STILLNOTE_DEMO_MODE?: string;
+  STILLNOTE_LOCAL_DEMO_SEED?: string;
+  STILLNOTE_ALLOW_UNAUTHENTICATED?: string;
   /** HTTPS URL of the signed community registry. Unset disables the catalog. */
-  EDGE_EVER_COMMUNITY_REGISTRY_URL?: string;
+  STILLNOTE_COMMUNITY_REGISTRY_URL?: string;
 };
 
 export type WorkerBindings = Omit<Bindings, "storage" | "publicNetworkFetch" | "deploymentVersionCreatedAt"> & CloudflareStorageBindings & {

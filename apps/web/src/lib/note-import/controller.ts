@@ -1,5 +1,5 @@
-import type { Notebook } from "@edgeever/shared";
-import type { ImportFile, ImportFormat, ImportIssue, ImportNotebook, ImportNoteResult, ImportRunResult, ImportSummary } from "@edgeever/shared/note-import/types";
+import type { Notebook } from "@stillnote/shared";
+import type { ImportFile, ImportFormat, ImportIssue, ImportNotebook, ImportNoteResult, ImportRunResult, ImportSummary } from "@stillnote/shared/note-import/types";
 import type { ImportProgress } from "./execute";
 import type { BrowserImportReader } from "./browser-reader";
 import { api, createNoteImportClient } from "../api";
@@ -99,7 +99,7 @@ export class NoteImportController {
           reader, index: reader.index,
           client: createNoteImportClient(abort.signal, this.accountId, isCurrent),
           parentId: this.snapshot.parentId || null, signal: abort.signal, convertEnml: convertImportEnml,
-          pauseSync: window.edgeeverDesktop?.isAvailable ? async () => (await import("../desktop-sync")).pauseDesktopSyncForImport() : undefined,
+          pauseSync: window.stillnoteDesktop?.isAvailable ? async () => (await import("../desktop-sync")).pauseDesktopSyncForImport() : undefined,
           refresh: async () => { if (isCurrent()) await this.refresh(); },
           onProgress: progress => { if (isCurrent()) this.update({ progress }); },
         });

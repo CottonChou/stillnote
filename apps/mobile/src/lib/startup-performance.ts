@@ -12,7 +12,7 @@ let latestEditorStartupMs: number | null = null;
 let editorOpenStartedAt: number | null = null;
 
 const logPerformance = (metric: string, durationMs: number) => {
-  console.info(`[EdgeEverPerformance] ${metric}=${Math.max(0, durationMs).toFixed(0)}ms`);
+  console.info(`[StillNotePerformance] ${metric}=${Math.max(0, durationMs).toFixed(0)}ms`);
 };
 
 export const markStartup = (name: StartupMark) => {

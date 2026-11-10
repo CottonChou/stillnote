@@ -2,7 +2,7 @@
  * Ed25519 public keys for the signed community registry.
  * The first key is current. The next key is the previous one, kept for one
  * client release so a registry signed before rotation still verifies.
- * The private key stays in the tianma-if/edgeever-plugins publish environment.
+ * The private key stays in the CottonChou/stillnote-plugins publish environment.
  */
 export const COMMUNITY_REGISTRY_PUBLIC_KEYS_BASE64 = [
   "vkaOJCCApTIzFvkDRGguUW+hg7tK7oF9WsWoNfUbB8g=",

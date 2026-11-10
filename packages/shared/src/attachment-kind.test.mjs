@@ -50,15 +50,15 @@ describe("attachment kind", () => {
     expect(getAttachmentTypeLabel(null, "app.apk")).toBe("APK");
     expect(getAttachmentTypeLabel(null, "app.aab")).toBe("AAB");
 
-    expect(resolveAttachmentKind("application/octet-stream", "EdgeEver-Setup.exe")).toBe("exe");
+    expect(resolveAttachmentKind("application/octet-stream", "StillNote-Setup.exe")).toBe("exe");
     expect(resolveAttachmentKind(null, "installer.msi")).toBe("exe");
-    expect(getAttachmentTypeLabel(null, "EdgeEver-Setup.exe")).toBe("EXE");
+    expect(getAttachmentTypeLabel(null, "StillNote-Setup.exe")).toBe("EXE");
     expect(getAttachmentTypeLabel(null, "installer.msi")).toBe("MSI");
 
-    expect(resolveAttachmentKind(null, "EdgeEver-arm64.dmg")).toBe("dmg");
+    expect(resolveAttachmentKind(null, "StillNote-arm64.dmg")).toBe("dmg");
     expect(resolveAttachmentKind(null, "bundle.pkg")).toBe("dmg");
     expect(resolveAttachmentKind(null, "release.ipa")).toBe("dmg");
-    expect(getAttachmentTypeLabel(null, "EdgeEver-arm64.dmg")).toBe("DMG");
+    expect(getAttachmentTypeLabel(null, "StillNote-arm64.dmg")).toBe("DMG");
     expect(getAttachmentTypeLabel(null, "bundle.pkg")).toBe("PKG");
     expect(getAttachmentTypeLabel(null, "release.ipa")).toBe("IPA");
 

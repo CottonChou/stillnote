@@ -18,7 +18,7 @@ describe("buildGitHubFeedbackUrl", () => {
       })
     );
 
-    expect(`${url.origin}${url.pathname}`).toBe("https://github.com/tianma-if/edgeever/issues/new");
+    expect(`${url.origin}${url.pathname}`).toBe("https://github.com/CottonChou/stillnote/issues/new");
     expect(url.searchParams.get("title")).toBe("[反馈] ");
     expect(url.searchParams.get("body")).toContain("## 反馈内容");
     expect(url.searchParams.get("body")).toContain("- 版本号: v0.5.0");

@@ -191,7 +191,7 @@ const createInstance = async () => {
     verifyLogin,
   });
   registerUserRoutes(app, { authenticateRequest, getInstanceUser });
-  const environment = { storage: createSelfHostedStorageAdapter(sqlite, "/tmp/edgeever-user-routes-unused") };
+  const environment = { storage: createSelfHostedStorageAdapter(sqlite, "/tmp/stillnote-user-routes-unused") };
 
   const request = (path, { token, method = "GET", body } = {}) => app.request(path, {
     method,

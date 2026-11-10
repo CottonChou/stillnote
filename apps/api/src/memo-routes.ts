@@ -9,7 +9,7 @@ import {
   type MemoEditSession,
   type MemoRevision,
   type MemoUpdateInput,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { zValidator } from "@hono/zod-validator";
 import type { Hono } from "hono";
 import type { AppContext, AppEnv, AuditActor, Bindings } from "./api-context";

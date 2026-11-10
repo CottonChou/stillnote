@@ -1,6 +1,6 @@
 # Hacker News 剪藏
 
-打开 `https://news.ycombinator.com/item?id=<id>` 主帖详情页，点击插件的“剪藏当前网页”，或在页面上右键选择“保存 Hacker News 主帖到 EdgeEver”。工具栏操作优先保存选中文字；专用页面右键菜单保存主帖。
+打开 `https://news.ycombinator.com/item?id=<id>` 主帖详情页，点击插件的“剪藏当前网页”，或在页面上右键选择“保存 Hacker News 主帖到 StillNote”。工具栏操作优先保存选中文字；专用页面右键菜单保存主帖。
 
 笔记保留页面提供的标题、作者、原始发布时间、剪藏时的分数、外部链接和主帖正文。支持 Ask HN、Show HN 和只有链接的主帖，不包含评论。完整主帖笔记带有 `web-clip` 和 `hacker-news` 标签。
 

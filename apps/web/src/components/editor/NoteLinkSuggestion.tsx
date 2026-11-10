@@ -4,7 +4,7 @@ import { ReactRenderer } from "@tiptap/react";
 import { PluginKey } from "@tiptap/pm/state";
 import Suggestion, { type SuggestionKeyDownProps, type SuggestionProps } from "@tiptap/suggestion";
 import { Link2 } from "lucide-react";
-import { createMemoLinkHref, type MemoSummary } from "@edgeever/shared";
+import { createMemoLinkHref, type MemoSummary } from "@stillnote/shared";
 import {
   Command,
   CommandEmpty,
@@ -29,7 +29,7 @@ export type NoteLinkSuggestionHandle = {
   onKeyDown: (props: SuggestionKeyDownProps) => boolean;
 };
 
-const noteLinkSuggestionPluginKey = new PluginKey("edgeever-note-link-suggestion");
+const noteLinkSuggestionPluginKey = new PluginKey("stillnote-note-link-suggestion");
 
 export const filterNoteLinkSuggestions = (items: MemoSummary[], currentMemoId: string | null) =>
   items.filter((memo) => memo.id !== currentMemoId && !memo.isDeleted);
@@ -119,7 +119,7 @@ export const insertSuggestedNoteLink = ({
       text: item.title || labels.untitled,
       marks: [{
         type: "link",
-        attrs: { href: createMemoLinkHref(item.id), class: "edgeever-note-link" },
+        attrs: { href: createMemoLinkHref(item.id), class: "stillnote-note-link" },
       }],
     })
     .run();
@@ -134,7 +134,7 @@ export const createNoteLinkSuggestionExtension = ({
   getLabels: () => NoteLinkSuggestionLabels;
   searchMemos: (query: string) => Promise<MemoSummary[]>;
 }) => Extension.create({
-  name: "edgeeverNoteLinkSuggestion",
+  name: "stillnoteNoteLinkSuggestion",
   addProseMirrorPlugins() {
     return [Suggestion<MemoSummary, MemoSummary>({
       editor: this.editor,
@@ -144,7 +144,7 @@ export const createNoteLinkSuggestionExtension = ({
       allowedPrefixes: null,
       placement: "bottom-start",
       offset: { mainAxis: 6 },
-      decorationClass: "edgeever-note-link-query",
+      decorationClass: "stillnote-note-link-query",
       allow: ({ state, range }) => {
         const position = state.doc.resolve(range.from);
         // Check the paragraph boundary, since formatting can split a word into text nodes.

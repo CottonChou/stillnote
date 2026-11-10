@@ -1,4 +1,4 @@
-import { createExcerpt, docToText, emptyDoc, type MemoDetail, type TiptapDoc } from "@edgeever/shared";
+import { createExcerpt, docToText, emptyDoc, type MemoDetail, type TiptapDoc } from "@stillnote/shared";
 import { auditStatement } from "./audit";
 import type { AppContext, AuditActor } from "./api-context";
 import { AppError } from "./app-error";

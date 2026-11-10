@@ -1,4 +1,4 @@
-import type { AiProvider } from "@edgeever/shared";
+import type { AiProvider } from "@stillnote/shared";
 import { ApiRequestError } from "@/lib/api";
 
 export const providerDefaults: Record<AiProvider, { displayName: string; baseUrl: string; modelId: string }> = {

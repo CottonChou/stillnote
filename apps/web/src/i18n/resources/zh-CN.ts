@@ -1,1 +1,1 @@
-export { zhCN } from "@edgeever/shared/i18n/zh-CN";
+export { zhCN } from "@stillnote/shared/i18n/zh-CN";

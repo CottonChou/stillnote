@@ -1,4 +1,4 @@
-import { normalizeAttachmentByteSize } from "@edgeever/shared";
+import { normalizeAttachmentByteSize } from "@stillnote/shared";
 
 const COMPLETE_LENGTH_PATTERN = /\/(\d+)\s*$/;
 

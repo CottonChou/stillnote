@@ -84,7 +84,7 @@ export type WorkspaceExtension = {
   verified: boolean;
   repositoryUrl: string | null;
   releaseTag: string | null;
-  publisher: "edgeever" | null;
+  publisher: "stillnote" | null;
 };
 
 export type ScheduledTaskMissedRunPolicy = "run-once" | "skip";

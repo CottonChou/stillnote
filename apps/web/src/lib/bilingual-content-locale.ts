@@ -1,4 +1,4 @@
-import { matchSupportedLocale } from "@edgeever/shared/i18n/locales";
+import { matchSupportedLocale } from "@stillnote/shared/i18n/locales";
 
 /**
  * Some bundled content (docs, demo notebooks, sample audio, sample syntax, poster typography)

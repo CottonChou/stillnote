@@ -1,11 +1,11 @@
 import { describe, expect, test } from "bun:test";
-import { createEdgeEverClient } from "./index.ts";
+import { createStillNoteClient } from "./index.ts";
 import { probeAiProviderCors } from "./ai-direct-stream.ts";
 
 describe("direct AI generation client", () => {
   test("prepares on the instance then streams from the model provider", async () => {
     const calls = [];
-    const client = createEdgeEverClient({
+    const client = createStillNoteClient({
       baseUrl: "https://notes.example",
       token: "user-token",
       directAiGeneration: true,
@@ -20,7 +20,7 @@ describe("direct AI generation client", () => {
           system: "System",
           prompt: "Note content",
           maxOutputTokens: 4096,
-          resultBoundary: { start: "<edgeever-result-x>", end: "</edgeever-result-x>" },
+          resultBoundary: { start: "<stillnote-result-x>", end: "</stillnote-result-x>" },
         }), { headers: { "content-type": "application/json" } });
       },
       providerFetch: async (url, init) => {
@@ -29,8 +29,8 @@ describe("direct AI generation client", () => {
         const body = JSON.parse(String(init.body));
         expect(body.stream).toBe(true);
         return new Response([
-          `data: {"choices":[{"delta":{"content":"<edgeever-result-x>\\nHello"}}]}`,
-          `data: {"choices":[{"delta":{"content":" world</edgeever-result-x>"},"finish_reason":"stop"}],"usage":{"prompt_tokens":3,"completion_tokens":2}}`,
+          `data: {"choices":[{"delta":{"content":"<stillnote-result-x>\\nHello"}}]}`,
+          `data: {"choices":[{"delta":{"content":" world</stillnote-result-x>"},"finish_reason":"stop"}],"usage":{"prompt_tokens":3,"completion_tokens":2}}`,
           "data: [DONE]",
           "",
         ].join("\n\n"), { headers: { "content-type": "text/event-stream" } });
@@ -53,14 +53,14 @@ describe("direct AI generation client", () => {
 
   test("browser network failures never call instance generation or probe the model twice", async () => {
  const paths=[];let modelCalls=0;
- const client=createEdgeEverClient({tryDirectAiGeneration:true,fetch:async url=>{paths.push(String(url));return Response.json({provider:"openai-compatible",baseUrl:"https://model.example/v1",apiKey:"key",modelId:"model",system:"Summarize",prompt:"Body",maxOutputTokens:32,resultBoundary:{start:"<r>",end:"</r>"}});},providerFetch:async()=>{modelCalls++;throw new TypeError("Failed to fetch");}});
+ const client=createStillNoteClient({tryDirectAiGeneration:true,fetch:async url=>{paths.push(String(url));return Response.json({provider:"openai-compatible",baseUrl:"https://model.example/v1",apiKey:"key",modelId:"model",system:"Summarize",prompt:"Body",maxOutputTokens:32,resultBoundary:{start:"<r>",end:"</r>"}});},providerFetch:async()=>{modelCalls++;throw new TypeError("Failed to fetch");}});
  await expect(client.streamAiGeneration({action:"summarize",title:"Note",contentMarkdown:"Body"},{onEvent(){}})).rejects.toThrow("Failed to fetch");
  expect(paths).toEqual(["/api/v1/ai/generate/prepare"]);expect(modelCalls).toBe(1);
 });
 
   test("browser clients directly generate without a CORS probe", async () => {
  let calls=0;const paths=[];
- const client=createEdgeEverClient({fetch:async url=>{paths.push(String(url));return Response.json({provider:"openai-compatible",baseUrl:"https://model.example/v1",apiKey:"key",modelId:"model",system:"Summarize",prompt:"Body",maxOutputTokens:32,resultBoundary:{start:"<r>",end:"</r>"}});},providerFetch:async (_url,init)=>{calls++;expect(new Headers(init.headers).get("Authorization")).toBe("Bearer key");return new Response('data: {"choices":[{"delta":{"content":"<r>Hello</r>"}}]}\n\ndata: [DONE]\n\n');}});
+ const client=createStillNoteClient({fetch:async url=>{paths.push(String(url));return Response.json({provider:"openai-compatible",baseUrl:"https://model.example/v1",apiKey:"key",modelId:"model",system:"Summarize",prompt:"Body",maxOutputTokens:32,resultBoundary:{start:"<r>",end:"</r>"}});},providerFetch:async (_url,init)=>{calls++;expect(new Headers(init.headers).get("Authorization")).toBe("Bearer key");return new Response('data: {"choices":[{"delta":{"content":"<r>Hello</r>"}}]}\n\ndata: [DONE]\n\n');}});
  const events=[];await client.streamAiGeneration({action:"summarize",title:"Note",contentMarkdown:"Body"},{onEvent:e=>events.push(e)});
  expect(events.some(e=>e.type==="text-delta"&&e.text==="Hello")).toBe(true);expect(paths).toEqual(["/api/v1/ai/generate/prepare"]);expect(calls).toBe(1);
 });
@@ -69,7 +69,7 @@ describe("direct AI generation client", () => {
   const legacySignal = (aborted) => ({ aborted, addEventListener() {}, removeEventListener() {} });
 
   test("streams with a React Native AbortSignal that lacks throwIfAborted", async () => {
-    const client = createEdgeEverClient({
+    const client = createStillNoteClient({
       directAiGeneration: true,
       fetch: async () => Response.json({ provider: "openai-compatible", baseUrl: "https://model.example/v1", apiKey: "key", modelId: "model", system: "Summarize", prompt: "Body", maxOutputTokens: 32, resultBoundary: { start: "<r>", end: "</r>" } }),
       providerFetch: async () => new Response('data: {"choices":[{"delta":{"content":"<r>Hello</r>"}}]}\n\ndata: [DONE]\n\n'),
@@ -84,7 +84,7 @@ describe("direct AI generation client", () => {
 
   test("rejects an aborted React Native AbortSignal with AbortError before preparing", async () => {
     let prepared = false;
-    const client = createEdgeEverClient({
+    const client = createStillNoteClient({
       directAiGeneration: true,
       fetch: async () => { prepared = true; return new Response("{}", { status: 404 }); },
     });
@@ -97,7 +97,7 @@ describe("direct AI generation client", () => {
 
   test("fails without instance generation when direct prepare is missing", async () => {
     const urls = [];
-    const client = createEdgeEverClient({
+    const client = createStillNoteClient({
       baseUrl: "https://notes.example",
       directAiGeneration: true,
       fetch: async (url) => {
@@ -138,7 +138,7 @@ describe("AI provider CORS probe", () => {
       expect(init?.method).toBe("POST");
       expect(init?.mode).toBe("cors");
       const headers = new Headers(init?.headers);
-      expect(headers.get("Authorization")).toBe("Bearer edgeever-cors-probe");
+      expect(headers.get("Authorization")).toBe("Bearer stillnote-cors-probe");
       expect(headers.get("Content-Type")).toBe("application/json");
       expect(headers.get("Accept")).toBe("text/event-stream");
       expect(JSON.parse(String(init?.body)).stream).toBe(true);
@@ -156,7 +156,7 @@ describe("AI provider CORS probe", () => {
     }, async (url, init) => {
       expect(String(url)).toBe("https://api.anthropic.com/v1/messages");
       expect(init?.method).toBe("POST");
-      expect(new Headers(init?.headers).get("x-api-key")).toBe("edgeever-cors-probe");
+      expect(new Headers(init?.headers).get("x-api-key")).toBe("stillnote-cors-probe");
       return new Response("{}", { status: 401 });
     });
     const googleAllowed = await probeAiProviderCors({
@@ -166,7 +166,7 @@ describe("AI provider CORS probe", () => {
     }, async (url, init) => {
       expect(String(url)).toBe("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse");
       expect(init?.method).toBe("POST");
-      expect(new Headers(init?.headers).get("x-goog-api-key")).toBe("edgeever-cors-probe");
+      expect(new Headers(init?.headers).get("x-goog-api-key")).toBe("stillnote-cors-probe");
       return new Response("{}", { status: 403 });
     });
     expect(anthropicAllowed).toBe(true);

@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type { MemoTemplate } from "@edgeever/shared";
-import { listMemoTemplateGallery } from "@edgeever/shared/memo-template-gallery";
-import { localizeDefaultMemoTemplate } from "@edgeever/shared/memo-template-seeds";
-import type { createEdgeEverClient } from "@edgeever/client";
+import type { MemoTemplate } from "@stillnote/shared";
+import { listMemoTemplateGallery } from "@stillnote/shared/memo-template-gallery";
+import { localizeDefaultMemoTemplate } from "@stillnote/shared/memo-template-seeds";
+import type { createStillNoteClient } from "@stillnote/client";
 import { Modal, Pressable, ScrollView, View } from "react-native";
 import { ActivityIndicator, FileText, LayoutTemplate, X } from "./icons";
 import { Text } from "./LocalizedText";
@@ -19,7 +19,7 @@ import { useMobileTheme } from "../lib/mobile-theme";
 import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import { styles } from "../screens/workspace-styles";
 
-type MobileClient = ReturnType<typeof createEdgeEverClient>;
+type MobileClient = ReturnType<typeof createStillNoteClient>;
 
 /**
  * Template picker.

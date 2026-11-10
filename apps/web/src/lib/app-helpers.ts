@@ -1,14 +1,14 @@
-import type { MemoSummary, Notebook } from "@edgeever/shared";
-import { DEFAULT_MEMO_TITLE } from "@edgeever/shared";
-import { getMobileNotebookSearchVisibleIds } from "@edgeever/shared/mobile-ui";
-import type { MemoFilterMode, MemoSortMode } from "@edgeever/client";
+import type { MemoSummary, Notebook } from "@stillnote/shared";
+import { DEFAULT_MEMO_TITLE } from "@stillnote/shared";
+import { getMobileNotebookSearchVisibleIds } from "@stillnote/shared/mobile-ui";
+import type { MemoFilterMode, MemoSortMode } from "@stillnote/client";
 import { buildNotebookTree, type NotebookNode, type NotebookNodeComparator } from "./utils";
 import * as React from "react";
 import type { TFunction } from "i18next";
 
 export type Pane = "notebooks" | "memos" | "editor";
 export type MemoView = "notebook" | "trash";
-export type { MemoFilterMode, MemoSortMode } from "@edgeever/client";
+export type { MemoFilterMode, MemoSortMode } from "@stillnote/client";
 export type NotebookSortMode = "custom" | "name-asc" | "memo-count-desc" | "updated-desc";
 export type EditorContentAlignment = "start" | "center";
 export type MemoListDensity = "preview" | "compact";
@@ -143,23 +143,23 @@ export const filterNotebookTree = (nodes: NotebookNode[], search: string): Noteb
 export { buildNotebookTree, type NotebookNode };
 export { DEFAULT_MEMO_TITLE };
 
-export const IMAGE_COMPRESSION_STORAGE_KEY = "edgeever.imageCompressionEnabled";
-export const DESKTOP_FOCUS_MODE_STORAGE_KEY = "edgeever.desktopFocusMode";
-export const NOTEBOOK_SIDEBAR_COLLAPSED_STORAGE_KEY = "edgeever.notebookSidebarCollapsed";
-export const NOTEBOOK_SIDEBAR_WIDTH_STORAGE_KEY = "edgeever.notebookSidebarWidth";
-export const DESKTOP_READING_PROTECTION_STORAGE_KEY = "edgeever.desktopReadingProtection";
-export const EDITOR_OUTLINE_COLLAPSED_STORAGE_KEY = "edgeever.editorOutlineCollapsed";
-export const EDITOR_CONTENT_ALIGNMENT_STORAGE_KEY = "edgeever.editorContentAlignment";
-export const EDITOR_TOOLBAR_EXPANDED_STORAGE_KEY = "edgeever.editorToolbarExpanded";
-export const EDITOR_PHONE_PREVIEW_STORAGE_KEY = "edgeever.editor.phonePreviewOpen";
-export const EDITOR_PHONE_PREVIEW_FOLLOW_STORAGE_KEY = "edgeever.editor.phonePreviewFollow";
-export const MEMO_LIST_DENSITY_STORAGE_KEY = "edgeever.memoListDensity";
-export const MEMO_LIST_WIDTH_STORAGE_KEY = "edgeever.memoListWidth";
-export const MEMO_SORT_STORAGE_KEY = "edgeever.memoSort";
-export const NOTEBOOK_SORT_STORAGE_KEY = "edgeever.notebookSort";
-export const NOTEBOOK_TREE_COLLAPSED_IDS_STORAGE_KEY = "edgeever.notebookTreeCollapsedIds:v1";
-export const NOTEBOOK_SECTION_COLLAPSED_STORAGE_KEY = "edgeever.notebookSectionCollapsed";
-export const SHORTCUT_SETTINGS_STORAGE_KEY = "edgeever.shortcutSettings";
+export const IMAGE_COMPRESSION_STORAGE_KEY = "stillnote.imageCompressionEnabled";
+export const DESKTOP_FOCUS_MODE_STORAGE_KEY = "stillnote.desktopFocusMode";
+export const NOTEBOOK_SIDEBAR_COLLAPSED_STORAGE_KEY = "stillnote.notebookSidebarCollapsed";
+export const NOTEBOOK_SIDEBAR_WIDTH_STORAGE_KEY = "stillnote.notebookSidebarWidth";
+export const DESKTOP_READING_PROTECTION_STORAGE_KEY = "stillnote.desktopReadingProtection";
+export const EDITOR_OUTLINE_COLLAPSED_STORAGE_KEY = "stillnote.editorOutlineCollapsed";
+export const EDITOR_CONTENT_ALIGNMENT_STORAGE_KEY = "stillnote.editorContentAlignment";
+export const EDITOR_TOOLBAR_EXPANDED_STORAGE_KEY = "stillnote.editorToolbarExpanded";
+export const EDITOR_PHONE_PREVIEW_STORAGE_KEY = "stillnote.editor.phonePreviewOpen";
+export const EDITOR_PHONE_PREVIEW_FOLLOW_STORAGE_KEY = "stillnote.editor.phonePreviewFollow";
+export const MEMO_LIST_DENSITY_STORAGE_KEY = "stillnote.memoListDensity";
+export const MEMO_LIST_WIDTH_STORAGE_KEY = "stillnote.memoListWidth";
+export const MEMO_SORT_STORAGE_KEY = "stillnote.memoSort";
+export const NOTEBOOK_SORT_STORAGE_KEY = "stillnote.notebookSort";
+export const NOTEBOOK_TREE_COLLAPSED_IDS_STORAGE_KEY = "stillnote.notebookTreeCollapsedIds:v1";
+export const NOTEBOOK_SECTION_COLLAPSED_STORAGE_KEY = "stillnote.notebookSectionCollapsed";
+export const SHORTCUT_SETTINGS_STORAGE_KEY = "stillnote.shortcutSettings";
 export const DEFAULT_MEMO_LIST_WIDTH_PX = 360;
 export const MIN_MEMO_LIST_WIDTH_PX = 300;
 export const MAX_MEMO_LIST_WIDTH_PX = 800;
@@ -169,8 +169,8 @@ export const MIN_NOTEBOOK_SIDEBAR_WIDTH_PX = 180;
 export const MAX_NOTEBOOK_SIDEBAR_WIDTH_PX = 420;
 export const EDITOR_LOCAL_SAVE_DELAY_MS = 1_200;
 
-export const MEMO_DRAG_MIME = "application/x-edgeever-memos";
-export const NOTEBOOK_DRAG_MIME = "application/x-edgeever-notebook";
+export const MEMO_DRAG_MIME = "application/x-stillnote-memos";
+export const NOTEBOOK_DRAG_MIME = "application/x-stillnote-notebook";
 
 export const getMemoSortOptions = (t: TFunction): Array<{ value: MemoSortMode; label: string }> => [
   { value: "updated-desc", label: t("options.memoSort.updatedDesc") },
@@ -909,7 +909,7 @@ export const getMemoIdsNeedingMove = (
 
 export const hasMemoDragData = (dataTransfer: DataTransfer) => Array.from(dataTransfer.types).includes(MEMO_DRAG_MIME);
 export const hasNotebookDragData = (dataTransfer: DataTransfer) => Array.from(dataTransfer.types).includes(NOTEBOOK_DRAG_MIME);
-export const hasEdgeEverDragData = (dataTransfer: DataTransfer) => hasMemoDragData(dataTransfer) || hasNotebookDragData(dataTransfer);
+export const hasStillNoteDragData = (dataTransfer: DataTransfer) => hasMemoDragData(dataTransfer) || hasNotebookDragData(dataTransfer);
 
 export const getMemoDragIds = (dataTransfer: DataTransfer) => {
   if (!hasMemoDragData(dataTransfer)) {

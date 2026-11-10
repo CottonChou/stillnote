@@ -2,9 +2,9 @@
 
 [English](browser-clipper-acceptance-588.md)
 
-更新：2026-10-18。关联 [#588](https://github.com/tianma-if/edgeever/issues/588)。本文件是进行中的验收记录，不能用于宣称跨浏览器全部通过。
+更新：2026-10-18。关联 [#588](https://github.com/CottonChou/stillnote/issues/588)。本文件是进行中的验收记录，不能用于宣称跨浏览器全部通过。
 
-2026-10-19 补充：[#587](https://github.com/tianma-if/edgeever/issues/587) 的商店版验收发现，Substack 图片周围会保存多余的括号和原图链接。本地包与商店包的采集脚本一致，既有文章夹具也能复现；此前正文和图片回读通过，没有覆盖图片周围的排版。`0.2.1` 仅移除 Substack 无文字的图片查看链接包装，保留图片、图注和正文链接，并补充归档后文档的回归断言。此说明不代表修复已上架商店，也不扩大其他平台的历史验收范围。
+2026-10-19 补充：[#587](https://github.com/CottonChou/stillnote/issues/587) 的商店版验收发现，Substack 图片周围会保存多余的括号和原图链接。本地包与商店包的采集脚本一致，既有文章夹具也能复现；此前正文和图片回读通过，没有覆盖图片周围的排版。`0.2.1` 仅移除 Substack 无文字的图片查看链接包装，保留图片、图注和正文链接，并补充归档后文档的回归断言。此说明不代表修复已上架商店，也不扩大其他平台的历史验收范围。
 
 ## 环境与基线
 
@@ -67,7 +67,7 @@
 
 ## Firefox Android
 
-仓库 manifest 声明 `gecko_android.strict_min_version = 142.0`，扩展 README 也声明 Android 142+。2026-10-17 查询 [Mozilla 商店 API](https://addons.mozilla.org/api/v5/addons/addon/edgeever-web-clipper/)，公开版 0.1.17 同时列出 Firefox Desktop 140+ 与 Android 142+，因此当前存在 Android 兼容声明，使用同一套 Firefox 插件，并非 EdgeEver Android App。声明和上架信息不是运行时验收证据。随后用户接入 RMX5200 USB 真机（Android 17、arm64），已安装并验证 Mozilla 官方 Firefox 158.0 的 APK 签名。通过 `web-ext` 临时加载当前工作区扩展 0.1.17，使用专用 Token 和 USB 本地实例映射，用户授权主机权限后读取到 13 个笔记本。临时加载不等于商店安装或扩展升级验收。
+仓库 manifest 声明 `gecko_android.strict_min_version = 142.0`，扩展 README 也声明 Android 142+。2026-10-17 查询 [Mozilla 商店 API](https://addons.mozilla.org/api/v5/addons/addon/stillnote-web-clipper/)，公开版 0.1.17 同时列出 Firefox Desktop 140+ 与 Android 142+，因此当前存在 Android 兼容声明，使用同一套 Firefox 插件，并非 StillNote Android App。声明和上架信息不是运行时验收证据。随后用户接入 RMX5200 USB 真机（Android 17、arm64），已安装并验证 Mozilla 官方 Firefox 158.0 的 APK 签名。通过 `web-ext` 临时加载当前工作区扩展 0.1.17，使用专用 Token 和 USB 本地实例映射，用户授权主机权限后读取到 13 个笔记本。临时加载不等于商店安装或扩展升级验收。
 
 真机首先复现后台初始化失败：Android 不提供 `chrome.contextMenus`／`chrome.windows`，直接注册桌面监听导致 `TypeError`，弹窗显示“未识别”，保存时报 `Receiving end does not exist`。现仅在 API 存在时注册菜单／窗口监听，并在安装菜单注册入口检查支持情况；平台读取、权限与保存逻辑不变。新增回归先复现失败，再验证无这两项 API 时仍可初始化、判断页面及保存；既有桌面菜单安装回归继续通过。可独立撤回这三处判断；最坏风险是误停用桌面入口，因此同时保留桌面菜单测试。
 
@@ -88,7 +88,7 @@
 
 新增 5 个有证据的回归：三种图片／容器按钮语义，Medium 可见后代及后续正文标题，即刻可见正文／媒体恢复；修复前复现失败、修复后通过。复审没有新的未处理实质发现；未增加权限、接口、依赖、重试或元数据要求。补丁限于两个读取器及共用控件清理，可独立回退；主要风险是可见性／媒体过滤误差，由隐藏内容、图序、完整性、源 DOM 不变及已有身份回归约束。
 
-最新代码完整非 E2E **3,743 项通过、0 失败**，包含 **481 项扩展测试**；1 个真实 Windows cwd 锁用例在 macOS 按既有条件跳过。根／移动端类型检查、Web／Chromium／Firefox 构建及 diff 检查通过；Firefox lint 为 0 错误、0 提示、7 条既有依赖警告。本轮是代码与自动化复核，没有重复原生实站／Android 操作，不把这些修复追溯算作最新构建的真机验收。未创建业务测试剪藏或 Token，原登录配置保留。仍未提交、推送、部署、回写或关闭 Issue。证据：`/private/tmp/edgeever-issue-588-review-20261018`。
+最新代码完整非 E2E **3,743 项通过、0 失败**，包含 **481 项扩展测试**；1 个真实 Windows cwd 锁用例在 macOS 按既有条件跳过。根／移动端类型检查、Web／Chromium／Firefox 构建及 diff 检查通过；Firefox lint 为 0 错误、0 提示、7 条既有依赖警告。本轮是代码与自动化复核，没有重复原生实站／Android 操作，不把这些修复追溯算作最新构建的真机验收。未创建业务测试剪藏或 Token，原登录配置保留。仍未提交、推送、部署、回写或关闭 Issue。证据：`/private/tmp/stillnote-issue-588-review-20261018`。
 
 ## 2026-10-18 第十轮：补齐豆瓣、Medium 与排版修复
 
@@ -114,7 +114,7 @@ Edge 六条笔记在自身 Web 编辑器屏蔽原站／CDN后重开，正文与�
 
 最终 **476 项扩展测试通过、0 失败**，根／移动端类型检查、Web 构建、Chromium／Firefox 扩展构建及 diff 检查通过。三视角复审未发现未处理的实质问题。Edge 六例使用本轮前一构建（已包含加粗／角标修复），最终 Medium 构建仅追加 Medium 读取器修复，并在 ego lite 实测；Firefox 新包只构建，不追溯扩大其运行时覆盖。
 
-按 ID 删除全部 8 条测试笔记和 24 个资源，撤销专用 Token并确认 401；两个浏览器仅移除本轮 Token，其他扩展设置与站点登录保留。原有 40／74／1／13 的笔记、资源、Token、笔记本 ID 集合与全部内容摘要一致。临时辅助页及服务删除／停止，产品文件与最终构建摘要一致，测试空间已清理。证据：`/private/tmp/edgeever-issue-588-20261017-uz6mqhpj/evidence/tenth`。仍未提交、推送、发布或关闭 Issue。
+按 ID 删除全部 8 条测试笔记和 24 个资源，撤销专用 Token并确认 401；两个浏览器仅移除本轮 Token，其他扩展设置与站点登录保留。原有 40／74／1／13 的笔记、资源、Token、笔记本 ID 集合与全部内容摘要一致。临时辅助页及服务删除／停止，产品文件与最终构建摘要一致，测试空间已清理。证据：`/private/tmp/stillnote-issue-588-20261017-uz6mqhpj/evidence/tenth`。仍未提交、推送、发布或关闭 Issue。
 
 ## 2026-10-18 Edge 登录信息流第九轮补验
 
@@ -133,7 +133,7 @@ Edge 六条笔记在自身 Web 编辑器屏蔽原站／CDN后重开，正文与�
 
 两处轻微排版观察尚保留：雪球一处加粗片段显示字面 `**`，Bluesky 引用图各带一个“替代文本”标签。文字与图片没有缺失，图片替代描述保留；因此本轮不宣称像素或全部格式完全一致，也未为去掉界面标签增加依赖翻译文字或样式的推断规则。
 
-本轮按 ID 删除 4 条笔记、13 个资源并撤销专用 Token，旧 Token 回读 401；原有 40 条笔记内容摘要与 40／74／1／13 的笔记、资源、Token、笔记本 ID 集合完全一致。仅移除扩展内本轮 Token，其他扩展设置及站点登录保留；未替换或清理浏览器 Cookie。临时扩展辅助页及接收服务已删除／停止，产品构建摘要与本轮最终构建一致。证据目录：`/private/tmp/edgeever-issue-588-20261017-uz6mqhpj/evidence/ninth`。改动仍未提交、推送或发布。
+本轮按 ID 删除 4 条笔记、13 个资源并撤销专用 Token，旧 Token 回读 401；原有 40 条笔记内容摘要与 40／74／1／13 的笔记、资源、Token、笔记本 ID 集合完全一致。仅移除扩展内本轮 Token，其他扩展设置及站点登录保留；未替换或清理浏览器 Cookie。临时扩展辅助页及接收服务已删除／停止，产品构建摘要与本轮最终构建一致。证据目录：`/private/tmp/stillnote-issue-588-20261017-uz6mqhpj/evidence/ninth`。改动仍未提交、推送或发布。
 
 ## 2026-10-18 Medium 第八轮补验
 
@@ -147,7 +147,7 @@ Edge 两条和 Firefox 一条笔记分别在自身 Web 编辑器重开，正文�
 
 本轮三条笔记及三个资源已按 ID 删除，专用 Token 撤销并验证 401；Edge／Firefox 仅移除匹配的扩展 Token。Firefox 测试前没有本地会话 Cookie，本轮复制的一个 `127.0.0.1` 会话值在 Web 重开后变化，最终只清理该主机／路径／名称下的测试会话，确认剩余为零；其他站点登录和验证 Cookie 保留。Edge 原有 Cookie 未覆盖。十个临时扩展工具文件、两个辅助服务和明文凭据均已清理，产品构建摘要完全不变。原有 40 条笔记内容摘要及 40／74／1／13 的笔记、资源、Token、笔记本 ID 集合完全保留。
 
-本轮未修改产品代码，沿用之前 472 项扩展测试和构建结果；未提交、推送或发布。ego lite 本轮未补验 Medium；原会员文章全文及 Medium 代码等其他版式也不因公开短文通过而扩报。证据目录：`/private/tmp/edgeever-issue-588-20261017-uz6mqhpj/evidence/eighth`。
+本轮未修改产品代码，沿用之前 472 项扩展测试和构建结果；未提交、推送或发布。ego lite 本轮未补验 Medium；原会员文章全文及 Medium 代码等其他版式也不因公开短文通过而扩报。证据目录：`/private/tmp/stillnote-issue-588-20261017-uz6mqhpj/evidence/eighth`。
 
 ## 2026-10-18 Edge 登录态第七轮补验
 
@@ -163,7 +163,7 @@ Edge 的 Medium 样本跳转至 `scottbatson.dev` 后仍停在 Cloudflare 安全
 
 三条测试笔记和 13 个资源已按 ID 删除，专用 Token 撤销并验证 401；扩展只移除匹配 Token，其余设置一致。八个临时工具文件、两个本地辅助服务、明文 Cookie／Token 文件已清理，产品构建摘要完全不变。原有 40 条笔记内容摘要及 40／74／1／13 的笔记、资源、Token、笔记本 ID 集合完全保留；浏览器原 Cookie 未改动，Threads／LinkedIn 登录和主机授权保留。测试窗口仅留下两站及 Medium 页面用于后续验收。
 
-本轮未修改产品代码，沿用上一轮 472 项扩展测试及构建结果；未提交、推送或发布。证据目录：`/private/tmp/edgeever-issue-588-20261017-uz6mqhpj/evidence/seventh`。
+本轮未修改产品代码，沿用上一轮 472 项扩展测试及构建结果；未提交、推送或发布。证据目录：`/private/tmp/stillnote-issue-588-20261017-uz6mqhpj/evidence/seventh`。
 
 ## 2026-10-18 Firefox 与 Edge 第六轮补验
 
@@ -176,7 +176,7 @@ Edge 的 Medium 样本跳转至 `scottbatson.dev` 后仍停在 Cloudflare 安全
 
 本轮共 7 条合格测试笔记、52 个归档资源：Firefox 31 个，Edge 21 个；其中两浏览器 Instagram 共 40 个文件另与独立源下载逐一匹配。52 个 API 下载的大小／SHA-256 全部匹配元数据。七条测试笔记及 52 个资源已按 ID 删除，专用 Token 撤销后验证 401；Firefox 和 Edge 均只移除匹配 Token，Firefox 七个复制本地 Cookie 已移除，原网站登录及主机授权保留。Edge 原本地会话 Cookie 已恢复并由浏览器回送确认。18 个临时扩展工具文件、两个辅助服务和明文凭据均已清理，产品构建文件摘要完全不变。原有 40 条笔记内容摘要及 40／74／1／13 的笔记、资源、Token、笔记本 ID 集合完全保留。
 
-本轮仅补验和更新记录，没有产品代码变化，沿用上一轮 472 项扩展测试及构建结果；未提交、推送或发布。证据目录：`/private/tmp/edgeever-issue-588-20261017-uz6mqhpj/evidence/sixth`。
+本轮仅补验和更新记录，没有产品代码变化，沿用上一轮 472 项扩展测试及构建结果；未提交、推送或发布。证据目录：`/private/tmp/stillnote-issue-588-20261017-uz6mqhpj/evidence/sixth`。
 
 ## 2026-10-18 ego lite 原生工具栏补验
 
@@ -239,7 +239,7 @@ LinkedIn 实站 Markdown 的 `Dr. Nancy Grace Roman:` 在实例 `contentJson` �
 - ego lite 通过原生右键保存付费预览中明确选中的 221 字段落，仅保存选区及来源／抓取时间，未带入整篇内容；来源阻断后重开一致。最终构建的 Facebook 信息流正常自动展开仍可保存完整正文和 3 张图片，并在来源阻断后重开。
 - 新版即刻 Web 信息流再次实际右键保存，安全拒绝且零新增。目标卡片没有自身稳定 DOM 帖子链接，正文中的即刻链接属于被引用的其他帖子，不能用于身份绑定；React 私有对象不作为稳定 DOM 契约。详情通过不能替代这一信息流布局，仍保留缺口。
 - 本轮 15 条合格保存场景共 70 张实例附件完成各自浏览器重开解码（Firefox 34、Edge 33、ego lite 3）。另有 4 条用于竞态复现或非目标探针，不计为新增验收通过。本轮全部 19 条笔记、80 个资源均按 ID 清理，80 个文件均核对实际大小与 SHA-256。原有 40 条笔记内容摘要及 40／74／1／13 的笔记、资源、Token、笔记本 ID 集合保持一致。
-- Edge 本地 Web 原会话报 `http_500`，验收时仅临时替换 `127.0.0.1` 的 `edgeever_session`；已按备份恢复原 Cookie 值并由浏览器回送核对。未修改认证代码或其他网站会话。两类浏览器临时读回工具不调用捕获函数；实际保存均使用原生入口。临时工具和接收器清理、专用 Token 撤销及凭据清理另有收据；Firefox 独立配置及主机授权保留。
+- Edge 本地 Web 原会话报 `http_500`，验收时仅临时替换 `127.0.0.1` 的 `stillnote_session`；已按备份恢复原 Cookie 值并由浏览器回送核对。未修改认证代码或其他网站会话。两类浏览器临时读回工具不调用捕获函数；实际保存均使用原生入口。临时工具和接收器清理、专用 Token 撤销及凭据清理另有收据；Firefox 独立配置及主机授权保留。
 
 ### 已修复：展开期间跨文档离页
 
@@ -331,7 +331,7 @@ Firefox 不支持在 WebExtension match pattern 中写端口。旧模式 `http:/
 
 本轮 **483 项扩展测试通过、0 失败**；根／移动端类型检查、Web 构建、Chromium／Firefox 扩展构建及 diff 检查通过。Firefox lint 0 错误、0 提示、7 条既有依赖警告。完整 3,743 项非 E2E 属于前轮结果，本轮没有重复宣称最新完整套件；Firefox 本轮只构建，未将 Edge 结果扩为其运行时通过。
 
-两个定向缺口已补齐，#588 其他历史边界及 #587／#589 范围保持。清理 4 条测试笔记、3 个资源及专用 Token，撤销后 401；原有 40 笔记／74 资源／1 Token／13 笔记本 ID 集合和 40 条内容摘要完全一致。浏览器仅移除本轮 Token，其他设置和站点登录保留；六个辅助文件、两份凭据文件与两个接收服务清理，52 个产品文件摘要与最终构建一致。未提交、推送、部署、回写或关闭 Issue。证据：`/private/tmp/edgeever-issue-588-20261017-uz6mqhpj/evidence/eleventh`。
+两个定向缺口已补齐，#588 其他历史边界及 #587／#589 范围保持。清理 4 条测试笔记、3 个资源及专用 Token，撤销后 401；原有 40 笔记／74 资源／1 Token／13 笔记本 ID 集合和 40 条内容摘要完全一致。浏览器仅移除本轮 Token，其他设置和站点登录保留；六个辅助文件、两份凭据文件与两个接收服务清理，52 个产品文件摘要与最终构建一致。未提交、推送、部署、回写或关闭 Issue。证据：`/private/tmp/stillnote-issue-588-20261017-uz6mqhpj/evidence/eleventh`。
 
 ## 2026-10-18 第十二轮：最终构建跨浏览器定向复验
 
@@ -347,7 +347,7 @@ Firefox 不支持在 WebExtension match pattern 中写端口。旧模式 `http:/
 
 Firefox／ego lite 各自策略探测覆盖三来源及十一图片地址：14 次连接和14 次图片加载均实际被 CSP 阻断；各自 11 张本地附件正常。Edge 的十个来源／图片地址同样实际阻断，八张归档图正常。七条最终笔记的 30 个成功归档资源全部经 API 大小／SHA-256 核验，并与本轮独立来源下载逐字节匹配。两个 Medium 来源代码、两条 Threads 主帖／引用正文和三条即刻配文／图序另与原页面对照，未仅以“重开等于存储”代替来源完整性。
 
-本轮清理七条笔记、30 个资源和专用 Token，撤销后 401。原有 40 笔记／74 资源／1 Token／13 笔记本 ID 集合及 40 条内容摘要完全一致。三个浏览器只移除本轮 Token，其他设置和站点登录均保留；Firefox 原测试标签恢复空白、Edge 原七标签保留。八个辅助文件、两份凭据文件及两个接收服务清理，Chromium／Firefox 各52个产品文件与复验前最终构建摘要完全一致。无提交、推送、部署或 GitHub 写入。证据：`/private/tmp/edgeever-issue-588-20261017-uz6mqhpj/evidence/twelfth`。
+本轮清理七条笔记、30 个资源和专用 Token，撤销后 401。原有 40 笔记／74 资源／1 Token／13 笔记本 ID 集合及 40 条内容摘要完全一致。三个浏览器只移除本轮 Token，其他设置和站点登录均保留；Firefox 原测试标签恢复空白、Edge 原七标签保留。八个辅助文件、两份凭据文件及两个接收服务清理，Chromium／Firefox 各52个产品文件与复验前最终构建摘要完全一致。无提交、推送、部署或 GitHub 写入。证据：`/private/tmp/stillnote-issue-588-20261017-uz6mqhpj/evidence/twelfth`。
 
 ## 对照 #588 完成条件的交付核对
 
@@ -370,7 +370,7 @@ Firefox／ego lite 各自策略探测覆盖三来源及十一图片地址：14 �
 
 改动仅限 Medium 读取器与回归，可独立撤回。最坏风险为代码语言或换行误处理；现有可见性／状态不替代正文／原文与已有语言回归及新增消费方验证约束了这些边界。两位独立审查者及主审最终三个视角均未发现未处理的实质问题。
 
-最新完整非 E2E **3,746 项通过、0 失败**（3705 + 17 + 24），包含 **484 项扩展测试**；一个真实 Windows cwd 锁用例在 macOS 按既有平台条件跳过。根／移动端类型检查、Web／Chromium／Firefox 构建、Firefox lint 和 diff 检查通过；Firefox lint 0 错误、0 提示、7 条既有依赖警告。本轮为自动化和代码复审，没有新增原生实站、Android 操作、笔记或 Token；第十二轮实站结果仍绑定其当时构建，不追溯到本轮新包。无提交、推送、部署或 GitHub 写入。证据：`/private/tmp/edgeever-issue-588-review-final-20261018`。
+最新完整非 E2E **3,746 项通过、0 失败**（3705 + 17 + 24），包含 **484 项扩展测试**；一个真实 Windows cwd 锁用例在 macOS 按既有平台条件跳过。根／移动端类型检查、Web／Chromium／Firefox 构建、Firefox lint 和 diff 检查通过；Firefox lint 0 错误、0 提示、7 条既有依赖警告。本轮为自动化和代码复审，没有新增原生实站、Android 操作、笔记或 Token；第十二轮实站结果仍绑定其当时构建，不追溯到本轮新包。无提交、推送、部署或 GitHub 写入。证据：`/private/tmp/stillnote-issue-588-review-final-20261018`。
 
 ## 贡献分支提交前复验
 

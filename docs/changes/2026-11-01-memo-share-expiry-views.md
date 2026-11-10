@@ -4,7 +4,7 @@
 
 ## Problem and outcome
 
-Implements [Issue #607](https://github.com/tianma-if/edgeever/issues/607). A single-note share link stayed public until the owner remembered to revoke it, and the owner could not tell whether the link had been opened. The owner can now give a link an optional expiry and see how often it was opened. Shares without an expiry behave exactly as before.
+Implements [Issue #607](https://github.com/CottonChou/stillnote/issues/607). A single-note share link stayed public until the owner remembered to revoke it, and the owner could not tell whether the link had been opened. The owner can now give a link an optional expiry and see how often it was opened. Shares without an expiry behave exactly as before.
 
 ## Behavior
 

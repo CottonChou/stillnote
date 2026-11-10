@@ -35,7 +35,7 @@ test("desktop notebook create announces its durable id after sidecar acknowledgm
   const item = { id: 4, version: 1, kind: "notebook.create", entityId: "nb_local_1", payload: { name: "测试" } };
   globalThis.window = {
     dispatchEvent: (event) => { events.push(event); return true; },
-    edgeeverDesktop: {
+    stillnoteDesktop: {
       isAvailable: true,
       listStagedResources: async () => [],
       listStagedResourceAliases: async () => [],
@@ -57,7 +57,7 @@ test("desktop notebook create announces its durable id after sidecar acknowledgm
     const result = await syncDesktopData();
     expect(result.failed).toBe(0);
     expect(calls).toContain("sync.outbox.ack");
-    expect(events.find((event) => event.type === "edgeever:notebook-id-remapped")?.detail).toEqual({
+    expect(events.find((event) => event.type === "stillnote:notebook-id-remapped")?.detail).toEqual({
       temporaryId: "nb_local_1",
       remoteId: "nb_remote_1",
     });
@@ -84,7 +84,7 @@ test("desktop creates notebooks before notes and rereads remapped queue versions
   ];
   globalThis.window = {
     dispatchEvent: () => true,
-    edgeeverDesktop: {
+    stillnoteDesktop: {
       isAvailable: true,
       listStagedResources: async () => [],
       listStagedResourceAliases: async () => [],
@@ -143,7 +143,7 @@ test("desktop leaves dependent notes pending when their notebook upload fails", 
   const note = { id: 2, version: 1, kind: "memo.create", entityId: "memo_local_waiting", payload: { notebookId: notebook.entityId } };
   globalThis.window = {
     dispatchEvent: () => true,
-    edgeeverDesktop: {
+    stillnoteDesktop: {
       isAvailable: true,
       listStagedResources: async () => [],
       listStagedResourceAliases: async () => [],
@@ -177,7 +177,7 @@ test("desktop explicit discard clears a conflict whose cloud note is gone", asyn
   const originalGetMemo = api.getMemo;
   const calls = [];
   globalThis.window = {
-    edgeeverDesktop: {
+    stillnoteDesktop: {
       isAvailable: true,
       sidecarRequest: async (method, params) => {
         calls.push({ method, params });
@@ -207,20 +207,20 @@ describe("desktop staged resource sync", () => {
       const release = await pauseDesktopSyncForImport();
       const result = await syncDesktopData();
       expect(result.attempted).toBe(0);
-      expect(events).not.toContain("edgeever:sync-queue-changed");
+      expect(events).not.toContain("stillnote:sync-queue-changed");
       release();
       release();
-      expect(events.filter((event) => event === "edgeever:sync-queue-changed")).toHaveLength(1);
+      expect(events.filter((event) => event === "stillnote:sync-queue-changed")).toHaveLength(1);
     } finally {
       if (originalWindow !== undefined) globalThis.window = originalWindow;
     }
   });
 
   test("rewrites placeholders in memo JSON and markdown", () => {
-    const rewrites = [{ memoId: "memo-1", placeholder: "edgeever-staged://stage-1", url: "/api/v1/resources/resource-1/blob" }];
+    const rewrites = [{ memoId: "memo-1", placeholder: "stillnote-staged://stage-1", url: "/api/v1/resources/resource-1/blob" }];
     const value = {
-      contentJson: { type: "doc", content: [{ type: "image", attrs: { src: "edgeever-staged://stage-1" } }] },
-      contentMarkdown: "![photo](edgeever-staged://stage-1)",
+      contentJson: { type: "doc", content: [{ type: "image", attrs: { src: "stillnote-staged://stage-1" } }] },
+      contentMarkdown: "![photo](stillnote-staged://stage-1)",
     };
 
     expect(rewriteStagedResource(value, rewrites)).toEqual({
@@ -233,9 +233,9 @@ describe("desktop staged resource sync", () => {
     expect(normalizeDesktopMemoPayload({
       contentJson: {
         type: "doc",
-        content: [{ type: "pdfAttachment", attrs: { url: "edgeever-resource://resource/res_pdf" } }],
+        content: [{ type: "pdfAttachment", attrs: { url: "stillnote-resource://resource/res_pdf" } }],
       },
-      contentMarkdown: "[Attachment: report.pdf](edgeever-resource://resource/res_pdf)",
+      contentMarkdown: "[Attachment: report.pdf](stillnote-resource://resource/res_pdf)",
     })).toMatchObject({
       contentJson: {
         content: [{ attrs: { url: "/api/v1/resources/res_pdf/blob" } }],
@@ -249,26 +249,26 @@ describe("desktop staged resource sync", () => {
 
     expect(isStagedResourceReferenced([], stagedId)).toBe(false);
     expect(isStagedResourceReferenced([
-      { contentJson: { type: "doc", content: [{ type: "image", attrs: { src: `edgeever-staged://${stagedId}` } }] } },
+      { contentJson: { type: "doc", content: [{ type: "image", attrs: { src: `stillnote-staged://${stagedId}` } }] } },
     ], stagedId)).toBe(true);
   });
 
   test("does not confuse one staged image id with a longer id that shares its prefix", () => {
     expect(isStagedResourceReferenced([
-      { contentMarkdown: "![photo](edgeever-staged://stage-10)" },
+      { contentMarkdown: "![photo](stillnote-staged://stage-10)" },
     ], "stage-1")).toBe(false);
     expect(isStagedResourceReferenced([
-      { contentMarkdown: "![photo](edgeever-staged://stage-1)" },
+      { contentMarkdown: "![photo](stillnote-staged://stage-1)" },
     ], "stage-1")).toBe(true);
   });
 
   test("keeps staged bytes while an editor draft or visible image still uses the old URL", () => {
-    const rewrites = [{ memoId: "memo-1", placeholder: "edgeever-staged://stage-1", url: "/api/v1/resources/res-1/blob" }];
+    const rewrites = [{ memoId: "memo-1", placeholder: "stillnote-staged://stage-1", url: "/api/v1/resources/res-1/blob" }];
     expect(stagedIdsReferencedByUnsavedContent(rewrites, [
-      { contentJson: { type: "doc", content: [{ type: "image", attrs: { src: "edgeever-staged://stage-1" } }] } },
+      { contentJson: { type: "doc", content: [{ type: "image", attrs: { src: "stillnote-staged://stage-1" } }] } },
     ])).toEqual(new Set(["stage-1"]));
-    expect(stagedIdsReferencedByUnsavedContent(rewrites, ["edgeever-staged://stage-1"])).toEqual(new Set(["stage-1"]));
-    expect(stagedIdsReferencedByUnsavedContent(rewrites, ["edgeever-staged://stage-10"])).toEqual(new Set());
+    expect(stagedIdsReferencedByUnsavedContent(rewrites, ["stillnote-staged://stage-1"])).toEqual(new Set(["stage-1"]));
+    expect(stagedIdsReferencedByUnsavedContent(rewrites, ["stillnote-staged://stage-10"])).toEqual(new Set());
   });
 
   test("retains a temporary id mapping when a later sync phase fails", () => {

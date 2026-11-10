@@ -5,9 +5,9 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { BlobReader, ZipReader, ZipWriter, Uint8ArrayWriter, Uint8ArrayReader } from "@zip.js/zip.js/index-native.js";
 import { pack } from "it-tar";
-import { fetchEdgeEverApp } from "../apps/api/src/index.ts";
+import { fetchStillNoteApp } from "../apps/api/src/index.ts";
 import { createSelfHostedStorageAdapter } from "../apps/api/src/self-hosted-storage-adapter.ts";
-import { createEdgeEverClient } from "../packages/client/src/index.ts";
+import { createStillNoteClient } from "../packages/client/src/index.ts";
 import { docToMarkdown, markdownToDoc } from "../packages/shared/src/index.ts";
 import { NoteImportSession, MemoryImportIndex } from "../packages/shared/src/note-import/index.ts";
 import { executeNoteImport } from "../apps/web/src/lib/note-import/execute.ts";
@@ -42,7 +42,7 @@ const archive = async (files, format) => {
   return [{ path: "export.jex", file: new File(chunks, "export.jex") }];
 };
 const target = async () => {
-  const dir = await mkdtemp(join(tmpdir(), "edgeever-note-import-"));
+  const dir = await mkdtemp(join(tmpdir(), "stillnote-note-import-"));
   directories.push(dir);
   const db = new Database(join(dir, "db.sqlite"), { create: true });
   // Match the real self-hosted server: rollback-journal FULL sync makes this
@@ -51,11 +51,11 @@ const target = async () => {
   const migrations = new URL("../migrations/", import.meta.url);
   for (const name of (await readdir(migrations)).filter(x => x.endsWith(".sql")).sort()) db.exec(await readFile(new URL(name, migrations), "utf8"));
   db.exec("INSERT OR IGNORE INTO workspaces (id, name, is_personal) VALUES ('ws_default', 'Personal', 1)");
-  const env = { storage: createSelfHostedStorageAdapter(db, join(dir, "resources")), EDGE_EVER_ALLOW_UNAUTHENTICATED: "true", EDGE_EVER_RUNTIME: "self-hosted-bun" };
-  const server = Bun.serve({ hostname: "127.0.0.1", port: 0, fetch: request => fetchEdgeEverApp(request, env, { waitUntil() {}, passThroughOnException() {} }) });
+  const env = { storage: createSelfHostedStorageAdapter(db, join(dir, "resources")), STILLNOTE_ALLOW_UNAUTHENTICATED: "true", STILLNOTE_RUNTIME: "self-hosted-bun" };
+  const server = Bun.serve({ hostname: "127.0.0.1", port: 0, fetch: request => fetchStillNoteApp(request, env, { waitUntil() {}, passThroughOnException() {} }) });
   servers.push(server);
   let intercept = null;
-  const client = createEdgeEverClient({ baseUrl: server.url.toString(), fetch: (url, init) => intercept?.(url, init) ?? fetch(url, init) });
+  const client = createStillNoteClient({ baseUrl: server.url.toString(), fetch: (url, init) => intercept?.(url, init) ?? fetch(url, init) });
   await client.getSession();
   await client.getImportCapabilities();
   return { client, db, env, intercept: (fn) => { intercept = fn; } };
@@ -192,9 +192,9 @@ describe("native third-party import through the real API", () => {
     expect(typeof capabilities.importContext).toBe("string");
     const before = db.query("SELECT COUNT(*) AS n FROM notebooks").get().n;
     const base = servers.at(-1).url.toString();
-    const changed = createEdgeEverClient({ baseUrl: base, fetch: (url, init) => {
+    const changed = createStillNoteClient({ baseUrl: base, fetch: (url, init) => {
       const headers = new Headers(init?.headers);
-      headers.set("x-edgeever-import-context", "other-workspace");
+      headers.set("x-stillnote-import-context", "other-workspace");
       return fetch(url, { ...init, headers });
     }});
     await expect(changed.createNotebook({ name: "Must not exist" })).rejects.toThrow();
@@ -936,7 +936,7 @@ describe("real desktop-app exports", () => {
         const labels = [];
         const visit = node => {
           if (node.type === "image") labels.push(node.attrs.alt);
-          if (node.type === "edgeeverPdfAttachment" || node.type === "edgeeverFileAttachment") labels.push(node.attrs.filename);
+          if (node.type === "stillnotePdfAttachment" || node.type === "stillnoteFileAttachment") labels.push(node.attrs.filename);
           node.content?.forEach(visit);
         };
         visit(memo.contentJson);
@@ -982,8 +982,8 @@ describe("real desktop-app exports", () => {
     const emphasis = { bold: [], italic: [] };
     const visit = node => {
       if (node.type === "text") for (const mark of node.marks ?? []) if (Object.hasOwn(emphasis, mark.type)) emphasis[mark.type].push(node.text);
-      if (node.type === "edgeeverPdfAttachment") structure.pdfs.push(node.attrs.filename);
-      if (node.type === "edgeeverFileAttachment") structure.files.push(node.attrs.filename);
+      if (node.type === "stillnotePdfAttachment") structure.pdfs.push(node.attrs.filename);
+      if (node.type === "stillnoteFileAttachment") structure.files.push(node.attrs.filename);
       if (node.type === "table") structure.tableRows = node.content.length;
       for (const child of node.content ?? []) visit(child);
     };

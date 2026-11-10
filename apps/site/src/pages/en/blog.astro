@@ -14,13 +14,13 @@ const locale = getSiteLocale(Astro.url.pathname);
 const copy = siteCopy[locale].nav;
 
 const blogDescription =
-  "English EdgeEver notes about Cloudflare self-hosting, Evernote migration, product updates, and AI Agent workflows.";
+  "English StillNote notes about Cloudflare self-hosting, Evernote migration, product updates, and AI Agent workflows.";
 
 const blogUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const blogJsonLd = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  name: "EdgeEver Blog",
+  name: "StillNote Blog",
   url: blogUrl,
   inLanguage: "en-US",
   description: blogDescription,
@@ -30,7 +30,7 @@ const blogJsonLd = {
 <Layout title="Blog" description={blogDescription} jsonLd={blogJsonLd}>
   <Container>
     <section class="mx-auto max-w-4xl py-16 md:py-24">
-      <p class="text-sm font-semibold text-brand-text">EdgeEver Blog</p>
+      <p class="text-sm font-semibold text-brand-text">StillNote Blog</p>
       <h1 class="mt-3 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">Blog</h1>
 
       <!-- 标签筛选工具条 (全部默认为普通态，通过客户端 Script 激活) -->

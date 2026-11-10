@@ -51,7 +51,7 @@ const installation = () => {
       VALUES ('nb_trips', '${WORKSPACE_ID}', NULL, 'Trips', 'trips', 7),
              ('nb_other', '${OTHER_WORKSPACE_ID}', NULL, 'Theirs', 'inbox', 0);
   `);
-  const resourcesDirectory = mkdtempSync(join(tmpdir(), "edgeever-trash-"));
+  const resourcesDirectory = mkdtempSync(join(tmpdir(), "stillnote-trash-"));
   cleanups.push(() => {
     sqlite.close();
     rmSync(resourcesDirectory, { recursive: true, force: true });

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, type RefObject } from "react";
-import { ApiRequestError } from "@edgeever/client";
+import { ApiRequestError } from "@stillnote/client";
 import { useQuery } from "@tanstack/react-query";
 import type { LocalTiptapEditorRef } from "../components/LocalTiptapEditor";
 import { buildMobileAiStreamBridgePayload, parseMobileSelectionAiRequest } from "../lib/mobile-ai-selection";

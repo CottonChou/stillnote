@@ -1,7 +1,7 @@
 import { memo, useCallback, useRef, type ReactNode } from "react";
-import type { MemoFilterMode, MemoSortMode } from "@edgeever/client";
-import { DEFAULT_MEMO_TITLE, getMemoListTimestamp, getNotebookDescendantMemoCount, type MemoSummary, type Notebook } from "@edgeever/shared";
-import { toggleMobileMemoFilterMode } from "@edgeever/shared/mobile-ui";
+import type { MemoFilterMode, MemoSortMode } from "@stillnote/client";
+import { DEFAULT_MEMO_TITLE, getMemoListTimestamp, getNotebookDescendantMemoCount, type MemoSummary, type Notebook } from "@stillnote/shared";
+import { toggleMobileMemoFilterMode } from "@stillnote/shared/mobile-ui";
 import { FlatList, Platform, RefreshControl, useWindowDimensions, View } from "react-native";
 import { Gesture, GestureDetector, MouseButton, PointerType } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";

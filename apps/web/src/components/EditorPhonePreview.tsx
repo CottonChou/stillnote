@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Editor } from "@tiptap/react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import type { ResolvedNoteProse } from "@edgeever/shared";
+import type { ResolvedNoteProse } from "@stillnote/shared";
 import { useMermaidTheme } from "@/components/ThemeProvider";
 import { embedMermaidForPreview } from "@/lib/phone-preview-mermaid";
 import { Switch } from "@/components/ui/switch";
@@ -30,11 +30,11 @@ type EditorPhonePreviewProps = {
 };
 
 const BLOCK_SELECTOR =
-  "p, h1, h2, h3, h4, h5, h6, li, blockquote, pre, img, table, hr, figure, [data-edgeever-theme-block]";
+  "p, h1, h2, h3, h4, h5, h6, li, blockquote, pre, img, table, hr, figure, [data-stillnote-theme-block]";
 
 export const collectPhonePreviewBlocks = (root: Element) =>
   [...root.querySelectorAll<HTMLElement>(BLOCK_SELECTOR)].filter((element) => {
-    if (element.matches("[data-ee-publish-chrome], .edgeever-phone-shell-title") || element.closest("[data-ee-publish-chrome]")) {
+    if (element.matches("[data-ee-publish-chrome], .stillnote-phone-shell-title") || element.closest("[data-ee-publish-chrome]")) {
       return false;
     }
     const parentBlock = element.parentElement?.closest(BLOCK_SELECTOR);
@@ -187,7 +187,7 @@ export const EditorPhonePreview = ({ editor, title, noteProse, scrollContainer, 
 
   return (
     <aside
-      className={cn("edgeever-phone-stage sticky top-0 hidden xl:flex", className)}
+      className={cn("stillnote-phone-stage sticky top-0 hidden xl:flex", className)}
       aria-label={t("editor.phonePreview")}
     >
       <label className="mb-3 flex w-full items-center justify-end gap-2 px-5 text-xs text-slate-500">
@@ -198,29 +198,29 @@ export const EditorPhonePreview = ({ editor, title, noteProse, scrollContainer, 
           onCheckedChange={handleFollowChange}
         />
       </label>
-      <div className="edgeever-phone-device">
-        <span className="edgeever-phone-device__silent" aria-hidden="true" />
-        <span className="edgeever-phone-device__vol-up" aria-hidden="true" />
-        <span className="edgeever-phone-device__vol-down" aria-hidden="true" />
-        <span className="edgeever-phone-device__power" aria-hidden="true" />
-        <div className="edgeever-phone-device__screen">
-          <div className="edgeever-phone-device__top" aria-hidden="true" />
-          <div className="edgeever-phone-device__island" aria-hidden="true">
-            <span className="edgeever-phone-device__lens" />
+      <div className="stillnote-phone-device">
+        <span className="stillnote-phone-device__silent" aria-hidden="true" />
+        <span className="stillnote-phone-device__vol-up" aria-hidden="true" />
+        <span className="stillnote-phone-device__vol-down" aria-hidden="true" />
+        <span className="stillnote-phone-device__power" aria-hidden="true" />
+        <div className="stillnote-phone-device__screen">
+          <div className="stillnote-phone-device__top" aria-hidden="true" />
+          <div className="stillnote-phone-device__island" aria-hidden="true">
+            <span className="stillnote-phone-device__lens" />
           </div>
-          <div className="edgeever-phone-preview" ref={previewRef}>
-            {title?.trim() ? <p className="edgeever-phone-shell-title">{title.trim()}</p> : null}
+          <div className="stillnote-phone-preview" ref={previewRef}>
+            {title?.trim() ? <p className="stillnote-phone-shell-title">{title.trim()}</p> : null}
             {markup.html ? (
               <div
                 key={proseKey}
-                className="edgeever-phone-article"
+                className="stillnote-phone-article"
                 dangerouslySetInnerHTML={{ __html: markup.html }}
               />
             ) : (
               <p className="pt-10 text-center text-sm text-slate-400">{t("editor.phonePreviewEmpty")}</p>
             )}
           </div>
-          <div className="edgeever-phone-device__home" aria-hidden="true" />
+          <div className="stillnote-phone-device__home" aria-hidden="true" />
         </div>
       </div>
     </aside>

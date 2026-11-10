@@ -1,7 +1,7 @@
 import { expect, test, type APIRequestContext } from "@playwright/test";
 
-const E2E_USERNAME = process.env.EDGE_EVER_E2E_USERNAME || "admin";
-const E2E_PASSWORD = process.env.EDGE_EVER_E2E_PASSWORD || "admin123";
+const E2E_USERNAME = process.env.STILLNOTE_E2E_USERNAME || "admin";
+const E2E_PASSWORD = process.env.STILLNOTE_E2E_PASSWORD || "admin123";
 
 const login = async (request: APIRequestContext) => {
   const response = await request.post("/api/v1/auth/login", {

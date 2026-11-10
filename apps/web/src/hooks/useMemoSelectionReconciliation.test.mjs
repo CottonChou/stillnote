@@ -43,6 +43,7 @@ const mount = async (options = {}) => {
     const clearPendingMemoSelection = useMemoSelectionReconciliation({
       memos, selectedMemoId, setSelectedMemoId,
       rendererRecoveryMode: options.rendererRecoveryMode ?? false,
+      suppressAutoSelect: options.suppressAutoSelect ?? false,
       createdMemoEditId: options.createdMemoEditId ?? null,
       pendingOpenedMemoIdRef, pendingCreatedMemoIdRef, creatingMemoSelectionRef,
     });
@@ -149,6 +150,13 @@ describe("pending linked-note selection and list reconciliation", () => {
 
   test("renderer recovery never automatically selects the first available note", async () => {
     const h = await mount({ rendererRecoveryMode: true, initialMemoId: null });
+    expect(h.state().selectedMemoId).toBeNull();
+    await h.updateList("A", [{ id: "another-A", notebookId: "A" }]);
+    expect(h.state().selectedMemoId).toBeNull();
+  });
+
+  test("explicitly closing the note suppresses automatic selection until a note is chosen", async () => {
+    const h = await mount({ initialMemoId: null, suppressAutoSelect: true });
     expect(h.state().selectedMemoId).toBeNull();
     await h.updateList("A", [{ id: "another-A", notebookId: "A" }]);
     expect(h.state().selectedMemoId).toBeNull();

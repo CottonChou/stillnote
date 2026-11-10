@@ -14,10 +14,10 @@
   box-sizing: border-box;
 }
 
-.edgeever-print-document {
-  --edgeever-system-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans SC Variable", sans-serif;
+.stillnote-print-document {
+  --stillnote-system-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans SC Variable", sans-serif;
   color: #27272a;
-  font-family: var(--editor-body-font-family, var(--edgeever-system-font-family));
+  font-family: var(--editor-body-font-family, var(--stillnote-system-font-family));
   font-size: var(--editor-body-font-size, 16px);
   font-feature-settings: "chws" 1;
   letter-spacing: -0.005em;
@@ -25,7 +25,7 @@
   overflow-wrap: anywhere;
 }
 
-.edgeever-print-title {
+.stillnote-print-title {
   margin: 0 0 0.75rem;
   color: #1a1d21;
   font-size: 1.5em;
@@ -34,7 +34,7 @@
   line-height: 1.28;
 }
 
-.edgeever-print-meta {
+.stillnote-print-meta {
   margin: 0 0 1.5rem;
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 0.75rem;
@@ -44,21 +44,21 @@
   line-height: 1.45;
 }
 
-.edgeever-print-content > :first-child {
+.stillnote-print-content > :first-child {
   margin-top: 0;
 }
 
-.edgeever-print-content h1,
-.edgeever-print-content h2,
-.edgeever-print-content h3,
-.edgeever-print-content h4,
-.edgeever-print-content h5,
-.edgeever-print-content h6 {
+.stillnote-print-content h1,
+.stillnote-print-content h2,
+.stillnote-print-content h3,
+.stillnote-print-content h4,
+.stillnote-print-content h5,
+.stillnote-print-content h6 {
   break-after: avoid-page;
   font-weight: 600;
 }
 
-.edgeever-print-content h1 {
+.stillnote-print-content h1 {
   margin: 0 0 0.85rem;
   color: #1a1d21;
   font-size: 1.5em;
@@ -67,7 +67,7 @@
   line-height: 1.28;
 }
 
-.edgeever-print-content h2 {
+.stillnote-print-content h2 {
   margin: 1.4rem 0 0.6rem;
   color: #27272a;
   font-size: 1.25em;
@@ -75,7 +75,7 @@
   line-height: 1.32;
 }
 
-.edgeever-print-content h3 {
+.stillnote-print-content h3 {
   margin: 1.15rem 0 0.5rem;
   color: #27272a;
   font-size: 1.125em;
@@ -83,7 +83,7 @@
   line-height: 1.38;
 }
 
-.edgeever-print-content h4 {
+.stillnote-print-content h4 {
   margin: 1.05rem 0 0.45rem;
   color: #1e293b;
   font-size: 1.0625em;
@@ -91,103 +91,103 @@
   line-height: 1.4;
 }
 
-.edgeever-print-content h5 {
+.stillnote-print-content h5 {
   margin: 0.95rem 0 0.4rem;
   color: #334155;
   font-size: 1em;
   line-height: 1.42;
 }
 
-.edgeever-print-content h6 {
+.stillnote-print-content h6 {
   margin: 0.85rem 0 0.35rem;
   color: #334155;
   font-size: 0.9375em;
   line-height: 1.45;
 }
 
-.edgeever-print-content p {
+.stillnote-print-content p {
   margin: 0 0 var(--editor-paragraph-spacing, 8px);
   orphans: 3;
   widows: 3;
 }
 
-.edgeever-print-content strong,
-.edgeever-print-content b {
+.stillnote-print-content strong,
+.stillnote-print-content b {
   font-synthesis: weight style;
   font-weight: 800;
 }
 
-.edgeever-print-content em,
-.edgeever-print-content i {
+.stillnote-print-content em,
+.stillnote-print-content i {
   font-synthesis: weight style;
   font-style: italic;
 }
 
-.edgeever-print-content ul,
-.edgeever-print-content ol {
+.stillnote-print-content ul,
+.stillnote-print-content ol {
   margin: 0 0 1rem;
   padding-left: 1.5rem;
 }
 
-.edgeever-print-content ul {
+.stillnote-print-content ul {
   list-style-type: disc;
 }
 
-.edgeever-print-content ol {
+.stillnote-print-content ol {
   list-style-type: decimal;
 }
 
-.edgeever-print-content li {
+.stillnote-print-content li {
   margin: 0.25rem 0;
 }
 
-.edgeever-print-content ul[data-type="taskList"] {
+.stillnote-print-content ul[data-type="taskList"] {
   padding-left: 0;
   list-style: none;
 }
 
-.edgeever-print-content ul[data-type="taskList"] li[data-checked] {
+.stillnote-print-content ul[data-type="taskList"] li[data-checked] {
   display: flex;
   align-items: flex-start;
   gap: 0.55rem;
   break-inside: avoid-page;
 }
 
-.edgeever-print-content ul[data-type="taskList"] li[data-checked] > label {
+.stillnote-print-content ul[data-type="taskList"] li[data-checked] > label {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
   margin-top: 0.2rem;
 }
 
-.edgeever-print-content ul[data-type="taskList"] li[data-checked] > label input {
+.stillnote-print-content ul[data-type="taskList"] li[data-checked] > label input {
   width: 1rem;
   height: 1rem;
   margin: 0;
   accent-color: #1a1d21;
 }
 
-.edgeever-print-content ul[data-type="taskList"] li[data-checked] > div {
+.stillnote-print-content ul[data-type="taskList"] li[data-checked] > div {
   min-width: 0;
   flex: 1 1 auto;
 }
 
-.edgeever-print-content ul[data-type="taskList"] li[data-checked] > div > p {
+.stillnote-print-content ul[data-type="taskList"] li[data-checked] > div > p {
   margin-bottom: 0;
 }
 
-.edgeever-print-content ul[data-type="taskList"] li[data-checked="true"] > div > p {
+.stillnote-print-content ul[data-type="taskList"] li[data-checked="true"] > div > p {
   color: #737373;
   text-decoration: line-through;
   text-decoration-color: #a6a6a6;
 }
 
-.edgeever-print-content ul[data-type="taskList"] ul[data-type="taskList"] {
+.stillnote-print-content ul[data-type="taskList"] ul[data-type="taskList"] {
   margin: 0.25rem 0 0;
   padding-left: 1.5rem;
 }
 
-.edgeever-print-content blockquote {
+.stillnote-print-content blockquote {
   break-inside: avoid-page;
   margin: 0 0 1rem;
   border: 0;
@@ -197,14 +197,14 @@
   color: #3d4450;
 }
 
-.edgeever-print-content hr {
+.stillnote-print-content hr {
   margin: 1.5rem 0;
   border: 0;
   border-top: 1px solid #1a1d21;
 }
 
-.edgeever-print-content hr.edgeever-merge-divider,
-.edgeever-print-content hr[data-edgeever-merge-divider] {
+.stillnote-print-content hr.stillnote-merge-divider,
+.stillnote-print-content hr[data-stillnote-merge-divider] {
   margin: 1.5rem 0;
   border: 0;
   border-top: 2px solid #1a1d21;
@@ -212,7 +212,7 @@
   height: 0;
 }
 
-.edgeever-print-content a {
+.stillnote-print-content a {
   color: #404040;
   font-weight: 500;
   text-decoration: underline;
@@ -220,8 +220,8 @@
   text-underline-offset: 2px;
 }
 
-.edgeever-print-content a.edgeever-note-link,
-.edgeever-print-content a[href^="#memo="] {
+.stillnote-print-content a.stillnote-note-link,
+.stillnote-print-content a[href^="#memo="] {
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
@@ -237,8 +237,8 @@
   vertical-align: baseline;
 }
 
-.edgeever-print-content a.edgeever-attachment-link,
-.edgeever-print-content a[href*="/api/v1/resources/"] {
+.stillnote-print-content a.stillnote-attachment-link,
+.stillnote-print-content a[href*="/api/v1/resources/"] {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
@@ -254,14 +254,14 @@
   text-decoration: none;
 }
 
-.edgeever-print-content a.edgeever-attachment-link::before,
-.edgeever-print-content a[href*="/api/v1/resources/"]::before {
+.stillnote-print-content a.stillnote-attachment-link::before,
+.stillnote-print-content a[href*="/api/v1/resources/"]::before {
   content: "📎";
   flex: 0 0 auto;
   font-size: 0.8rem;
 }
 
-.edgeever-print-content :not(pre) > code {
+.stillnote-print-content :not(pre) > code {
   border: 0;
   border-radius: 4px;
   background: #e9edf1;
@@ -273,8 +273,8 @@
   font-weight: 400;
 }
 
-.edgeever-print-content pre,
-.edgeever-print-content .edgeever-code-source {
+.stillnote-print-content pre,
+.stillnote-print-content .stillnote-code-source {
   break-inside: avoid-page;
   max-width: 100%;
   margin: 0 0 1rem;
@@ -292,7 +292,7 @@
   white-space: pre-wrap;
 }
 
-.edgeever-print-content pre code {
+.stillnote-print-content pre code {
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -303,14 +303,14 @@
   font-weight: inherit;
 }
 
-.edgeever-print-content .tiptap-mathematics-render[data-type="block-math"] {
+.stillnote-print-content .tiptap-mathematics-render[data-type="block-math"] {
   max-width: 100%;
   margin: 1rem 0;
   overflow: hidden;
   text-align: center;
 }
 
-.edgeever-print-content img {
+.stillnote-print-content img {
   display: block;
   width: auto;
   max-width: 100%;
@@ -322,7 +322,7 @@
   object-fit: contain;
 }
 
-.edgeever-print-mermaid svg {
+.stillnote-print-mermaid svg {
   display: block;
   width: auto;
   max-width: 100%;
@@ -331,14 +331,14 @@
   object-fit: contain;
 }
 
-.edgeever-print-content figure,
-.edgeever-print-mermaid {
+.stillnote-print-content figure,
+.stillnote-print-mermaid {
   break-inside: avoid-page;
   max-width: 100%;
   margin: 1rem auto;
 }
 
-.edgeever-print-content [data-edgeever-image-gallery] {
+.stillnote-print-content [data-stillnote-image-gallery] {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.65rem;
@@ -346,15 +346,15 @@
   break-inside: avoid-page;
 }
 
-.edgeever-print-content [data-edgeever-image-gallery][data-image-gallery-layout="3"] {
+.stillnote-print-content [data-stillnote-image-gallery][data-image-gallery-layout="3"] {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.edgeever-print-content [data-edgeever-image-gallery][data-image-gallery-layout="1"] {
+.stillnote-print-content [data-stillnote-image-gallery][data-image-gallery-layout="1"] {
   grid-template-columns: minmax(0, 1fr);
 }
 
-.edgeever-print-content [data-edgeever-image-gallery] > img {
+.stillnote-print-content [data-stillnote-image-gallery] > img {
   width: 100%;
   height: 13rem;
   max-height: none;
@@ -362,25 +362,25 @@
   object-fit: cover;
 }
 
-.edgeever-print-content [data-edgeever-image-gallery][data-image-gallery-fit="height"] > img {
+.stillnote-print-content [data-stillnote-image-gallery][data-image-gallery-fit="height"] > img {
   object-fit: contain;
 }
 
-.edgeever-print-mermaid svg {
+.stillnote-print-mermaid svg {
   margin: 0 auto;
 }
 
-.edgeever-print-mermaid text {
-  font-family: var(--editor-body-font-family, var(--edgeever-system-font-family));
+.stillnote-print-mermaid text {
+  font-family: var(--editor-body-font-family, var(--stillnote-system-font-family));
 }
 
 /* The wrapper is only a scroll frame in the editor. Keeping that box in print
  * makes paged.js move the whole table to the next page. */
-.edgeever-print-content .tableWrapper {
+.stillnote-print-content .tableWrapper {
   display: contents;
 }
 
-.edgeever-print-content table {
+.stillnote-print-content table {
   width: 100%;
   margin: 1.25rem 0;
   border-collapse: collapse;
@@ -388,25 +388,25 @@
   break-inside: auto;
 }
 
-.edgeever-print-content .tableWrapper table {
+.stillnote-print-content .tableWrapper table {
   margin: 0;
 }
 
-.edgeever-print-content thead {
+.stillnote-print-content thead {
   display: table-header-group;
   break-inside: auto;
 }
 
-.edgeever-print-content tbody {
+.stillnote-print-content tbody {
   break-inside: auto;
 }
 
-.edgeever-print-content tr {
+.stillnote-print-content tr {
   break-inside: avoid;
 }
 
-.edgeever-print-content th,
-.edgeever-print-content td {
+.stillnote-print-content th,
+.stillnote-print-content td {
   break-inside: avoid;
   border: 1px solid rgb(229 229 229 / 0.8);
   padding: 0.48rem 0.8rem;
@@ -415,7 +415,7 @@
   overflow-wrap: anywhere;
 }
 
-.edgeever-print-content th {
+.stillnote-print-content th {
   background: rgb(245 245 245 / 0.75);
   color: #181818;
   font-size: 0.84em;
@@ -423,18 +423,18 @@
   letter-spacing: -0.01em;
 }
 
-.edgeever-print-content tbody tr:nth-child(even) td {
+.stillnote-print-content tbody tr:nth-child(even) td {
   background: rgb(250 250 250 / 0.5);
 }
 
-.edgeever-print-content th p,
-.edgeever-print-content td p {
+.stillnote-print-content th p,
+.stillnote-print-content td p {
   margin: 0;
   letter-spacing: inherit;
   line-height: inherit;
 }
 
-.edgeever-print-content details {
+.stillnote-print-content details {
   break-inside: avoid-page;
   margin: 0.15em 0;
   padding: 0;
@@ -442,17 +442,17 @@
   background: transparent;
 }
 
-.edgeever-print-content summary {
+.stillnote-print-content summary {
   font-weight: 500;
 }
 
-.edgeever-print-content details > :not(summary),
-.edgeever-print-content [data-type="detailsContent"],
-.edgeever-print-content [data-type="detailsContent"][hidden] {
+.stillnote-print-content details > :not(summary),
+.stillnote-print-content [data-type="detailsContent"],
+.stillnote-print-content [data-type="detailsContent"][hidden] {
   display: block !important;
 }
 
-.edgeever-print-content [data-edgeever-theme-block] {
+.stillnote-print-content [data-stillnote-theme-block] {
   break-inside: avoid-page;
   margin: 1.25rem 0;
   border: 1px solid #dbeee5;
@@ -461,16 +461,16 @@
   padding: 0.8rem 1rem;
 }
 
-.edgeever-print-content [data-theme-block-kind="chapter"] {
+.stillnote-print-content [data-theme-block-kind="chapter"] {
   border-width: 0;
   border-left: 4px solid #16a06e;
   border-radius: 6px;
   background: #f0f8f4;
 }
 
-.edgeever-print-content .edgeever-image-controls,
-.edgeever-print-content .edgeever-code-copy-button,
-.edgeever-print-content .edgeever-theme-block__toolbar,
-.edgeever-print-content .edgeever-mermaid-source {
+.stillnote-print-content .stillnote-image-controls,
+.stillnote-print-content .stillnote-code-copy-button,
+.stillnote-print-content .stillnote-theme-block__toolbar,
+.stillnote-print-content .stillnote-mermaid-source {
   display: none !important;
 }

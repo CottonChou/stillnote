@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
-import type { MemoDetail } from "@edgeever/shared";
-import type { EdgeEverRepository } from "@/lib/repository";
+import type { MemoDetail } from "@stillnote/shared";
+import type { StillNoteRepository } from "@/lib/repository";
 
 // Resolve the notebook through the repository, not through the current (possibly
 // filtered or paginated) list. Keep the current editor until the target is ready.
@@ -10,7 +10,7 @@ export const useMemoLinkNavigation = ({
   onOpen,
   onError,
 }: {
-  repository: Pick<EdgeEverRepository, "getMemo">;
+  repository: Pick<StillNoteRepository, "getMemo">;
   navigationScope: string;
   onOpen: (memo: MemoDetail) => void;
   onError: () => void;

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { api } from "@/lib/api";
-import { createEdgeEverZipTemporaryFile } from "@/lib/json-backup";
+import { createStillNoteZipTemporaryFile } from "@/lib/json-backup";
 import {
   isWebDavBackupDue,
   loadWebDavBackupConfig,
@@ -31,9 +31,9 @@ export const WebDavAutoBackup = () => {
       const attemptAt = new Date().toISOString();
       saveWebDavBackupSchedule({ ...schedule, lastAttemptAt: attemptAt });
       try {
-        const temporary = await createEdgeEverZipTemporaryFile(
+        const temporary = await createStillNoteZipTemporaryFile(
           { listNotebooks: api.listNotebooks, listPrompts: api.listAiPrompts, getPage: api.getJsonBackupPage, getResourceResponse: api.getResourceResponse },
-          { edgeeverVersion: __EDGEEVER_APP_VERSION__, buildId: __EDGEEVER_BUILD_ID__ }
+          { stillnoteVersion: __STILLNOTE_APP_VERSION__, buildId: __STILLNOTE_BUILD_ID__ }
         );
         await uploadWebDavBackup(config, password, temporary.file).finally(temporary.cleanup);
         saveWebDavBackupSchedule({ ...schedule, lastAttemptAt: attemptAt, lastSuccessAt: new Date().toISOString() });

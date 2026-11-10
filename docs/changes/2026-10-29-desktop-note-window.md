@@ -4,7 +4,7 @@
 
 ## Problem and outcome
 
-Implements [Issue #67](https://github.com/tianma-if/edgeever/issues/67). Desktop users could only edit one note at a time in the main window. A note can now be moved to its own window from the note's "More" menu or with File → Open Note in New Window (`Cmd/Ctrl+Shift+O`), so it can sit next to the main window or on another screen.
+Implements [Issue #67](https://github.com/CottonChou/stillnote/issues/67). Desktop users could only edit one note at a time in the main window. A note can now be moved to its own window from the note's "More" menu or with File → Open Note in New Window (`Cmd/Ctrl+Shift+O`), so it can sit next to the main window or on another screen.
 
 ## Behavior
 

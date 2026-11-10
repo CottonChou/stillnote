@@ -2,8 +2,8 @@ import { articlePlatform, substackPaywall } from "./article-platform";
 import { configurePlatformImageRequests, isPlatformImageUrl } from "./platform-image-requests";
 import {
   clipNotebookId,
-  edgeEverFormRequest,
-  edgeEverRequest,
+  stillNoteFormRequest,
+  stillNoteRequest,
   getInstancePermissionPattern,
   getSettings,
   listNotebooks,
@@ -222,7 +222,7 @@ const notebookForClip = async (settings: ExtensionSettings) => {
 
 const clipImageFeedback = (images: { embedded: number; total: number }) =>
   images.embedded < images.total ? t("platformImagesPartial")
-    : images.total > 0 ? t("platformSavedWithImages") : t("savedToEdgeEver");
+    : images.total > 0 ? t("platformSavedWithImages") : t("savedToStillNote");
 
 const createMemo = async (settings: ExtensionSettings, page: CapturedPage, tabId: number | null, expectedUrl?: string) => {
   const contentMarkdown = toMarkdown(page);
@@ -230,7 +230,7 @@ const createMemo = async (settings: ExtensionSettings, page: CapturedPage, tabId
   if (expectedUrl && (tabId === null || (await chrome.tabs.get(tabId)).url !== expectedUrl)) {
     throw new Error(t("platformPageChanged"));
   }
-  const created = await edgeEverRequest<{ memo?: CreatedClipMemo }>(settings, "/api/v1/memos", {
+  const created = await stillNoteRequest<{ memo?: CreatedClipMemo }>(settings, "/api/v1/memos", {
     method: "POST",
     body: JSON.stringify({
       notebookId,
@@ -243,7 +243,7 @@ const createMemo = async (settings: ExtensionSettings, page: CapturedPage, tabId
 };
 
 const createGithubRepoMemo = async (settings: ExtensionSettings, facts: GithubRepoFacts) => {
-  await edgeEverRequest(settings, "/api/v1/memos", {
+  await stillNoteRequest(settings, "/api/v1/memos", {
     method: "POST",
     body: JSON.stringify({
       notebookId: await notebookForClip(settings),
@@ -270,7 +270,7 @@ const createGithubRepoMemo = async (settings: ExtensionSettings, facts: GithubRe
 
 const imageNoteClient = (settings: ExtensionSettings): ImageNoteClient => ({
   listNotebooks: () => listNotebooks(settings),
-  createMemo: (body) => edgeEverRequest(settings, "/api/v1/memos", {
+  createMemo: (body) => stillNoteRequest(settings, "/api/v1/memos", {
     method: "POST",
     body: JSON.stringify(body),
   }),
@@ -278,17 +278,17 @@ const imageNoteClient = (settings: ExtensionSettings): ImageNoteClient => ({
     const uploaded = await uploadMemoImage(settings, memoId, file, signal);
     return uploaded.resource;
   },
-  createEditSession: (memoId) => edgeEverRequest(
+  createEditSession: (memoId) => stillNoteRequest(
     settings,
     `/api/v1/memos/${encodeURIComponent(memoId)}/edit-sessions`,
     { method: "POST" },
   ),
-  saveMemo: (memoId, body) => edgeEverRequest(
+  saveMemo: (memoId, body) => stillNoteRequest(
     settings,
     `/api/v1/memos/${encodeURIComponent(memoId)}/save`,
     { method: "POST", body: JSON.stringify(body) },
   ),
-  deleteMemo: (memoId) => edgeEverRequest(
+  deleteMemo: (memoId) => stillNoteRequest(
     settings,
     `/api/v1/memos/${encodeURIComponent(memoId)}?permanent=1`,
     { method: "DELETE" },
@@ -302,7 +302,7 @@ const imageNoteClient = (settings: ExtensionSettings): ImageNoteClient => ({
     form.append("contentMarkdown", body.contentMarkdown);
     form.append("tags", JSON.stringify(body.tags));
     form.append("file", new File([buffer], body.filename, { type: body.mimeType }));
-    const created = await edgeEverFormRequest<{ memo: { id: string }; resourceId: string }>(
+    const created = await stillNoteFormRequest<{ memo: { id: string }; resourceId: string }>(
       settings,
       "/api/v1/memos/with-image",
       form,
@@ -320,7 +320,7 @@ const injectImageHelper = async (tabId: number, frameId: number | null, payload:
   await chrome.scripting.executeScript({
     target,
     func: (value: unknown) => {
-      (globalThis as { __edgeeverImageClipPayload?: unknown }).__edgeeverImageClipPayload = value;
+      (globalThis as { __stillnoteImageClipPayload?: unknown }).__stillnoteImageClipPayload = value;
     },
     args: [payload],
   });
@@ -724,7 +724,7 @@ const injectTweetReader = async (tabId: number, frameId: number | null, payload:
   await chrome.scripting.executeScript({
     target,
     func: (value: unknown) => {
-      (globalThis as { __edgeeverTweetClipPayload?: unknown }).__edgeeverTweetClipPayload = value;
+      (globalThis as { __stillnoteTweetClipPayload?: unknown }).__stillnoteTweetClipPayload = value;
     },
     args: [payload],
   });
@@ -859,7 +859,7 @@ const injectXhsReader = async (tabId: number, frameId: number | null, payload: u
   await chrome.scripting.executeScript({
     target,
     func: (value: unknown) => {
-      (globalThis as { __edgeeverXhsClipPayload?: unknown }).__edgeeverXhsClipPayload = value;
+      (globalThis as { __stillnoteXhsClipPayload?: unknown }).__stillnoteXhsClipPayload = value;
     },
     args: [payload],
   });
@@ -983,7 +983,7 @@ const injectZhihuReader = async (tabId: number, frameId: number | null, payload:
   await chrome.scripting.executeScript({
     target,
     func: (value: unknown) => {
-      (globalThis as { __edgeeverZhihuClipPayload?: unknown }).__edgeeverZhihuClipPayload = value;
+      (globalThis as { __stillnoteZhihuClipPayload?: unknown }).__stillnoteZhihuClipPayload = value;
     },
     args: [payload],
   });
@@ -1143,7 +1143,7 @@ const readRedditFromPage = async (tabId: number, frameId: number | null, pageUrl
       await chrome.scripting.executeScript({
         target,
         func: (value: unknown) => {
-          (globalThis as { __edgeeverRedditClipPayload?: unknown }).__edgeeverRedditClipPayload = value;
+          (globalThis as { __stillnoteRedditClipPayload?: unknown }).__stillnoteRedditClipPayload = value;
         },
         args: [{ requestId, pageUrl }],
       });
@@ -1240,7 +1240,7 @@ const readGithubRepoFromPage = async (tabId: number, frameId: number | null) => 
       await chrome.scripting.executeScript({
         target,
         func: (value: unknown) => {
-          (globalThis as { __edgeeverGithubClipPayload?: unknown }).__edgeeverGithubClipPayload = value;
+          (globalThis as { __stillnoteGithubClipPayload?: unknown }).__stillnoteGithubClipPayload = value;
         },
         args: [{ requestId }],
       });
@@ -1350,7 +1350,7 @@ const readPlatformFromPage = async (tabId: number, target: PlatformTarget, selec
       await chrome.scripting.executeScript({
         target: { tabId, frameIds: [0] },
         func: (payload: unknown) => {
-          (globalThis as { __edgeeverPlatformClipPayload?: unknown }).__edgeeverPlatformClipPayload = payload;
+          (globalThis as { __stillnotePlatformClipPayload?: unknown }).__stillnotePlatformClipPayload = payload;
         },
         args: [{ requestId, url: target.url, sourceUrl, selectionFirst, selectionText, xiaoyuzhouState, jikeState }],
       });
@@ -1398,7 +1398,7 @@ const performPlatformSave = async (tabId: number, pageUrl: string, selectionFirs
   // to the detail page the user clicked, not the next active tab or episode.
   const current = await chrome.tabs.get(tabId);
   if (current.url !== pageUrl) throw new Error(t("platformPageChanged"));
-  const created = await edgeEverRequest<{ memo?: CreatedClipMemo }>(settings, "/api/v1/memos", {
+  const created = await stillNoteRequest<{ memo?: CreatedClipMemo }>(settings, "/api/v1/memos", {
     method: "POST",
     body: JSON.stringify({ notebookId, title: (clip?.title || selection!.title).slice(0, 120), contentMarkdown, tags: clip?.tags || ["web-clip"] }),
   });
@@ -1419,7 +1419,7 @@ const savePlatformFromMenu = async (info: { pageUrl?: string; frameId?: number }
         if (state?.pageUrl === pageUrl) selectedUrl = `https://m.okjike.com/originalPosts/${state.post.id}`;
       } else {
         const located = (await chrome.scripting.executeScript({ target: { tabId, frameIds: [0] }, func: () =>
-          document.querySelector("[data-edgeever-social-target]")?.getAttribute("data-edgeever-social-target") || ""
+          document.querySelector("[data-stillnote-social-target]")?.getAttribute("data-stillnote-social-target") || ""
         }))[0]?.result;
         if (typeof located === "string" && platformTarget(located)?.platform === socialPlatform(pageUrl)) selectedUrl = located;
       }
@@ -1465,7 +1465,7 @@ const readCapturedPage = async (tabId: number, frameId: number | null, mode: "pa
       await chrome.scripting.executeScript({
         target,
         func: (value: unknown) => {
-          (globalThis as { __edgeeverPageClipPayload?: unknown }).__edgeeverPageClipPayload = value;
+          (globalThis as { __stillnotePageClipPayload?: unknown }).__stillnotePageClipPayload = value;
         },
         args: [{ mode, requestId, selectionText }],
       });
@@ -1545,7 +1545,7 @@ const saveSelectionFromMenu = async (
     });
     const notebookId = await notebookForClip(settings);
     await checkPage();
-    const created = await edgeEverRequest<{ memo?: CreatedClipMemo }>(settings, "/api/v1/memos", {
+    const created = await stillNoteRequest<{ memo?: CreatedClipMemo }>(settings, "/api/v1/memos", {
       method: "POST",
       body: JSON.stringify({
         notebookId,
@@ -1654,7 +1654,7 @@ const performVideoSave = async (
     labels: videoLabels(),
     capturedOn: capturedOnDate(),
     attempt,
-    createMemo: (body) => edgeEverRequest(settings, "/api/v1/memos", {
+    createMemo: (body) => stillNoteRequest(settings, "/api/v1/memos", {
       method: "POST",
       body: JSON.stringify(body),
     }),
@@ -1715,7 +1715,7 @@ const registerClipMenus = () => {
 const createClipMenus = () => {
   chrome.contextMenus.create({
     id: SELECTION_MENU_ID,
-    title: t("saveSelectionToEdgeEver"),
+    title: t("saveSelectionToStillNote"),
     contexts: ["selection"],
     documentUrlPatterns: ["http://*/*", "https://*/*"],
   }, () => {
@@ -1723,7 +1723,7 @@ const createClipMenus = () => {
   });
   chrome.contextMenus.create({
     id: IMAGE_MENU_ID,
-    title: t("saveImageToEdgeEver"),
+    title: t("saveImageToStillNote"),
     contexts: ["image"],
     documentUrlPatterns: ["http://*/*", "https://*/*"],
   }, () => {
@@ -1731,7 +1731,7 @@ const createClipMenus = () => {
   });
   chrome.contextMenus.create({
     id: TWEET_MENU_ID,
-    title: t("saveTweetToEdgeEver"),
+    title: t("saveTweetToStillNote"),
     contexts: ["page", "video"],
     documentUrlPatterns: TWEET_DOCUMENT_PATTERNS,
   }, () => {
@@ -1739,7 +1739,7 @@ const createClipMenus = () => {
   });
   chrome.contextMenus.create({
     id: GITHUB_REPO_MENU_ID,
-    title: t("saveGithubRepoToEdgeEver"),
+    title: t("saveGithubRepoToStillNote"),
     contexts: ["page"],
     documentUrlPatterns: GITHUB_DOCUMENT_PATTERNS,
   }, () => {
@@ -1747,7 +1747,7 @@ const createClipMenus = () => {
   });
   chrome.contextMenus.create({
     id: XHS_MENU_ID,
-    title: t("saveXhsToEdgeEver"),
+    title: t("saveXhsToStillNote"),
     contexts: ["page", "video"],
     documentUrlPatterns: XHS_DOCUMENT_PATTERNS,
   }, () => {
@@ -1755,7 +1755,7 @@ const createClipMenus = () => {
   });
   chrome.contextMenus.create({
     id: ZHIHU_MENU_ID,
-    title: t("saveZhihuToEdgeEver"),
+    title: t("saveZhihuToStillNote"),
     contexts: ["page", "video"],
     documentUrlPatterns: ZHIHU_DOCUMENT_PATTERNS,
   }, () => {
@@ -1763,7 +1763,7 @@ const createClipMenus = () => {
   });
   chrome.contextMenus.create({
     id: REDDIT_MENU_ID,
-    title: t("saveRedditToEdgeEver"),
+    title: t("saveRedditToStillNote"),
     contexts: ["page", "video"],
     documentUrlPatterns: REDDIT_DOCUMENT_PATTERNS,
   }, () => {
@@ -1771,7 +1771,7 @@ const createClipMenus = () => {
   });
   chrome.contextMenus.create({
     id: REDDIT_LINK_MENU_ID,
-    title: t("saveRedditToEdgeEver"),
+    title: t("saveRedditToStillNote"),
     contexts: ["link"],
     documentUrlPatterns: REDDIT_DOCUMENT_PATTERNS,
     targetUrlPatterns: REDDIT_DOCUMENT_PATTERNS.map((pattern) => pattern.replace("/*", "/*/comments/*")),
@@ -1780,7 +1780,7 @@ const createClipMenus = () => {
   });
   chrome.contextMenus.create({
     id: VIDEO_MENU_ID,
-    title: t("saveVideoNoteToEdgeEver"),
+    title: t("saveVideoNoteToStillNote"),
     contexts: ["page", "video"],
     documentUrlPatterns: VIDEO_DOCUMENT_PATTERNS,
   }, () => {

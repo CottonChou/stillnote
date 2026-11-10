@@ -7,8 +7,8 @@ type Prompt = {
   instruction: string;
 };
 
-const E2E_USERNAME = process.env.EDGE_EVER_E2E_USERNAME || "admin";
-const E2E_PASSWORD = process.env.EDGE_EVER_E2E_PASSWORD || "admin123";
+const E2E_USERNAME = process.env.STILLNOTE_E2E_USERNAME || "admin";
+const E2E_PASSWORD = process.env.STILLNOTE_E2E_PASSWORD || "admin123";
 
 const login = async (request: APIRequestContext) => {
   const response = await request.post("/api/v1/auth/login", {
@@ -477,7 +477,7 @@ test.describe("AI custom prompts", () => {
     await expect(shortcutSwitch).toBeChecked();
     await shortcutSwitch.click();
     await expect(shortcutSwitch).not.toBeChecked();
-    await expect.poll(() => page.evaluate(() => localStorage.getItem("edgeever.editor.aiSpaceShortcutEnabled")))
+    await expect.poll(() => page.evaluate(() => localStorage.getItem("stillnote.editor.aiSpaceShortcutEnabled")))
       .toBe("false");
 
     await page.getByRole("button", { name: "返回上一页", exact: true }).click();
@@ -750,7 +750,7 @@ test.describe("AI custom prompts", () => {
   test("opens on a custom instruction when nothing is selected", async ({ page }) => {
     const memo = await createMemo(page, `e2e-ai-last-action-${Date.now()}`, "记住上次处理方式。");
     await ensureAuthenticatedPage(page);
-    await page.evaluate(() => window.localStorage.removeItem("edgeever.aiAssistant.lastAction"));
+    await page.evaluate(() => window.localStorage.removeItem("stillnote.aiAssistant.lastAction"));
     const dialog = await openMemoAssistant(page, memo.id, notebookName);
     await expect(dialog.getByRole("combobox", { name: "处理方式" })).toHaveText("自定义指令");
     await selectAction(dialog, "全文翻译");

@@ -3,21 +3,21 @@ import { inspectWindowsTaskbarShortcuts } from "./windows-taskbar-diagnostics.mj
 
 const dependencies = {
   platform: "win32", packaged: true, appData: "C:\\Users\\Example\\AppData\\Roaming",
-  executable: "C:\\Programs\\EdgeEver\\EdgeEver.exe",
-  readdir: async () => ["EdgeEver.lnk", "Other App.lnk"],
-  readShortcutLink: () => ({ target: "C:\\OldInstall\\EdgeEver.exe", appUserModelId: "org.edgeever.desktop" }),
+  executable: "C:\\Programs\\StillNote\\StillNote.exe",
+  readdir: async () => ["StillNote.lnk", "Other App.lnk"],
+  readShortcutLink: () => ({ target: "C:\\OldInstall\\StillNote.exe", appUserModelId: "org.stillnote.desktop" }),
   existsSync: () => false,
 };
 
-test("identifies stale EdgeEver shortcut targets without reading other applications", async () => {
+test("identifies stale StillNote shortcut targets without reading other applications", async () => {
   const result = await inspectWindowsTaskbarShortcuts(dependencies);
   expect(result.shortcuts).toHaveLength(1);
-  expect(result.shortcuts[0]).toMatchObject({ targetExists: false, matchesExecutable: false, target: "C:\\OldInstall\\EdgeEver.exe" });
+  expect(result.shortcuts[0]).toMatchObject({ targetExists: false, matchesExecutable: false, target: "C:\\OldInstall\\StillNote.exe" });
 });
 
 test("treats Windows executable path casing as equivalent", async () => {
   const result = await inspectWindowsTaskbarShortcuts({ ...dependencies,
-    readShortcutLink: () => ({ target: "c:\\programs\\edgeever\\edgeever.exe" }), existsSync: () => true,
+    readShortcutLink: () => ({ target: "c:\\programs\\stillnote\\stillnote.exe" }), existsSync: () => true,
   });
   expect(result.shortcuts[0]).toMatchObject({ targetExists: true, matchesExecutable: true });
 });

@@ -19,13 +19,13 @@ import {
 } from "@/components/ui/dialog";
 import { api, ApiRequestError } from "@/lib/api";
 import {
-  EdgeEverZipImportError,
-  EdgeEverZipMemoryLimitError,
-  parseEdgeEverZip,
-  restoreEdgeEverZipAndRefresh,
-  saveEdgeEverZip,
-  type EdgeEverZipProgress,
-  type ParsedEdgeEverZip,
+  StillNoteZipImportError,
+  StillNoteZipMemoryLimitError,
+  parseStillNoteZip,
+  restoreStillNoteZipAndRefresh,
+  saveStillNoteZip,
+  type StillNoteZipProgress,
+  type ParsedStillNoteZip,
 } from "@/lib/json-backup";
 
 type DataExportCardProps = {
@@ -35,7 +35,7 @@ type DataExportCardProps = {
 type OperationState = "idle" | "working" | "complete" | "error";
 type OperationKind = "export" | "import";
 
-const Progress = ({ progress }: { progress: EdgeEverZipProgress }) => {
+const Progress = ({ progress }: { progress: StillNoteZipProgress }) => {
   const percentage = progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0;
   return (
     <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
@@ -50,14 +50,14 @@ export const DataExportCard = ({ refreshWorkspaceAfterImport }: DataExportCardPr
   const [state, setState] = useState<OperationState>("idle");
   const [operation, setOperation] = useState<OperationKind>("export");
   const [scanningImport, setScanningImport] = useState(false);
-  const [progress, setProgress] = useState<EdgeEverZipProgress>({ completed: 0, total: 0 });
-  const [pendingImport, setPendingImport] = useState<ParsedEdgeEverZip | null>(null);
+  const [progress, setProgress] = useState<StillNoteZipProgress>({ completed: 0, total: 0 });
+  const [pendingImport, setPendingImport] = useState<ParsedStillNoteZip | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const busy = state === "working";
 
   const describeImportError = (error: unknown) => {
-    if (error instanceof EdgeEverZipImportError) {
+    if (error instanceof StillNoteZipImportError) {
       switch (error.code) {
         case "invalidZip": return t("dataExport.importErrors.invalidZip");
         case "missingManifest": return t("dataExport.importErrors.missingManifest");
@@ -86,9 +86,9 @@ export const DataExportCard = ({ refreshWorkspaceAfterImport }: DataExportCardPr
     setScanningImport(false);
     setErrorMessage(null);
     try {
-      await saveEdgeEverZip(
+      await saveStillNoteZip(
         { listNotebooks: api.listNotebooks, listPrompts: api.listAiPrompts, getPage: api.getJsonBackupPage, getResourceResponse: api.getResourceResponse },
-        { edgeeverVersion: __EDGEEVER_APP_VERSION__, buildId: __EDGEEVER_BUILD_ID__ },
+        { stillnoteVersion: __STILLNOTE_APP_VERSION__, buildId: __STILLNOTE_BUILD_ID__ },
         setProgress
       );
       setState("complete");
@@ -97,8 +97,8 @@ export const DataExportCard = ({ refreshWorkspaceAfterImport }: DataExportCardPr
         setState("idle");
         return;
       }
-      console.error("Failed to export EdgeEver ZIP", error);
-      setErrorMessage(error instanceof EdgeEverZipMemoryLimitError
+      console.error("Failed to export StillNote ZIP", error);
+      setErrorMessage(error instanceof StillNoteZipMemoryLimitError
         ? t("dataExport.largeBackupRequiresStreaming")
         : t("dataExport.error"));
       setState("error");
@@ -113,13 +113,13 @@ export const DataExportCard = ({ refreshWorkspaceAfterImport }: DataExportCardPr
     setScanningImport(true);
     setErrorMessage(null);
     try {
-      const parsed = await parseEdgeEverZip(file, (percentage) => {
+      const parsed = await parseStillNoteZip(file, (percentage) => {
         setProgress({ completed: percentage, total: 100 });
       });
       setPendingImport(parsed);
       setState("idle");
     } catch (error) {
-      console.error("Invalid EdgeEver ZIP", error);
+      console.error("Invalid StillNote ZIP", error);
       setErrorMessage(describeImportError(error));
       setState("error");
     } finally {
@@ -138,7 +138,7 @@ export const DataExportCard = ({ refreshWorkspaceAfterImport }: DataExportCardPr
     setScanningImport(false);
     setErrorMessage(null);
     try {
-      await restoreEdgeEverZipAndRefresh(
+      await restoreStillNoteZipAndRefresh(
         archive,
         {
           restoreNotebooks: api.restoreJsonNotebooks,
@@ -151,7 +151,7 @@ export const DataExportCard = ({ refreshWorkspaceAfterImport }: DataExportCardPr
       );
       setState("complete");
     } catch (error) {
-      console.error("Failed to import EdgeEver ZIP", error);
+      console.error("Failed to import StillNote ZIP", error);
       setErrorMessage(describeImportError(error));
       setState("error");
     }

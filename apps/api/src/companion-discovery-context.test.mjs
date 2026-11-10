@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { MockLanguageModelV4 } from "ai/test";
-import { CompanionDiscoveryOutputSchema } from "@edgeever/shared";
+import { CompanionDiscoveryOutputSchema } from "@stillnote/shared";
 import { discoveryContext, discoveryInputHash } from "./companion-discovery-context.ts";
 import { generateCompanionDiscovery } from "../../../packages/client/src/discovery-direct.ts";
 

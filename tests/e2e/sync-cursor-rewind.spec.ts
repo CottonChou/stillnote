@@ -9,7 +9,7 @@ type LocalMemoRecord = {
 
 const readLocalMemo = (page: Page, memoId: string) => page.evaluate(
   (targetMemoId) => new Promise<LocalMemoRecord | null>((resolve, reject) => {
-    const openRequest = indexedDB.open("edgeever-local");
+    const openRequest = indexedDB.open("stillnote-local");
     openRequest.onerror = () => reject(openRequest.error);
     openRequest.onsuccess = () => {
       const database = openRequest.result;
@@ -27,7 +27,7 @@ const readLocalMemo = (page: Page, memoId: string) => page.evaluate(
 
 const makeMirrorStale = (page: Page, memo: LocalMemoRecord, staleTitle: string) => page.evaluate(
   ({ localMemo, title }) => new Promise<void>((resolve, reject) => {
-    const openRequest = indexedDB.open("edgeever-local");
+    const openRequest = indexedDB.open("stillnote-local");
     openRequest.onerror = () => reject(openRequest.error);
     openRequest.onsuccess = () => {
       const database = openRequest.result;

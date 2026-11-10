@@ -91,7 +91,7 @@ const readHtmlAttr = (attrs: string, name: string) => {
 const escapeMarkdownLabel = (value: string) =>
   value.replace(/\\/g, "\\\\").replace(/\[/g, "\\[").replace(/\]/g, "\\]");
 
-/** http(s) URLs that are not already stored EdgeEver resources. */
+/** http(s) URLs that are not already stored StillNote resources. */
 const isRemoteHttpUrl = (value: string) => {
   // oxlint-disable-next-line no-control-regex -- rejects URLs containing control characters or whitespace
   if (!value || /[\u0000-\u0020"'<>`]/.test(value)) return false;
@@ -107,7 +107,7 @@ const isRemoteHttpUrl = (value: string) => {
 const isDetailsImageSrc = (value: string) => {
   // oxlint-disable-next-line no-control-regex -- rejects image sources containing control characters or whitespace
   if (!value || /[\u0000-\u0020"'<>`]/.test(value)) return false;
-  if (value.startsWith("edgeever-resource://") || value.startsWith("edgeever-staged://")) return true;
+  if (value.startsWith("stillnote-resource://") || value.startsWith("stillnote-staged://")) return true;
   if (value.startsWith("/") && !value.startsWith("//")) return true;
   try {
     const url = new URL(value);
@@ -308,7 +308,7 @@ const renderDetailsBody = (nodes: JSONContent[], helpers: MarkdownRendererHelper
 const attachmentParagraph = (document: Document, video: RemoteVideo) => {
   const paragraph = document.createElement("p");
   const span = document.createElement("span");
-  span.setAttribute("data-type", "edgeever-file-attachment");
+  span.setAttribute("data-type", "stillnote-file-attachment");
   span.setAttribute("data-file-url", video.src);
   span.setAttribute("data-file-label", video.label);
   span.setAttribute("data-file-name", video.filename);
@@ -330,7 +330,7 @@ export const wrapDetailsContentHtml = (html: string): string => {
   const blocks = [...document.querySelectorAll("details")].reverse();
   for (const details of blocks) {
     for (const video of Array.from(details.querySelectorAll("video"))) {
-      if (video.closest("[data-type='edgeever-file-attachment'], [data-edgeever-video-player]")) continue;
+      if (video.closest("[data-type='stillnote-file-attachment'], [data-stillnote-video-player]")) continue;
       const parsed = remoteVideoFromSrc(video.getAttribute("src") || "");
       if (!parsed) {
         video.remove();
@@ -366,7 +366,7 @@ export const flattenDetailsForLinearHtml = (root: HTMLElement) => {
   const blocks = [...root.querySelectorAll("details")].reverse();
   for (const details of blocks) {
     const replacement = document.createElement("div");
-    replacement.className = "edgeever-details-flat";
+    replacement.className = "stillnote-details-flat";
     const summary = details.querySelector(":scope > summary");
     const title = summary?.textContent?.trim();
     if (title) {
@@ -392,7 +392,7 @@ export const flattenDetailsForLinearHtml = (root: HTMLElement) => {
 
 export const DETAILS_EDITOR_CSS = `
 .ProseMirror [data-type="details"],
-.edgeever-editor-content [data-type="details"] {
+.stillnote-editor-content [data-type="details"] {
   display: flex;
   align-items: flex-start;
   gap: 0.1em;
@@ -402,7 +402,7 @@ export const DETAILS_EDITOR_CSS = `
   background: transparent;
 }
 .ProseMirror [data-type="details"] > button,
-.edgeever-editor-content [data-type="details"] > button {
+.stillnote-editor-content [data-type="details"] > button {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
@@ -421,16 +421,16 @@ export const DETAILS_EDITOR_CSS = `
   cursor: pointer;
 }
 .ProseMirror [data-type="details"] > button:hover,
-.edgeever-editor-content [data-type="details"] > button:hover {
+.stillnote-editor-content [data-type="details"] > button:hover {
   background: color-mix(in srgb, currentColor 8%, transparent);
 }
 .ProseMirror [data-type="details"] > button:focus-visible,
-.edgeever-editor-content [data-type="details"] > button:focus-visible {
+.stillnote-editor-content [data-type="details"] > button:focus-visible {
   outline: 2px solid color-mix(in srgb, #16a06e 55%, transparent);
   outline-offset: 1px;
 }
 .ProseMirror [data-type="details"] > button::before,
-.edgeever-editor-content [data-type="details"] > button::before {
+.stillnote-editor-content [data-type="details"] > button::before {
   content: "";
   width: 0.32em;
   height: 0.32em;
@@ -440,16 +440,16 @@ export const DETAILS_EDITOR_CSS = `
   transform: rotate(-45deg);
 }
 .ProseMirror [data-type="details"].is-open > button::before,
-.edgeever-editor-content [data-type="details"].is-open > button::before {
+.stillnote-editor-content [data-type="details"].is-open > button::before {
   transform: rotate(45deg);
 }
 .ProseMirror [data-type="details"] > div,
-.edgeever-editor-content [data-type="details"] > div {
+.stillnote-editor-content [data-type="details"] > div {
   flex: 1;
   min-width: 0;
 }
 .ProseMirror summary,
-.edgeever-editor-content summary {
+.stillnote-editor-content summary {
   display: block;
   margin: 0;
   padding: 0;
@@ -460,15 +460,15 @@ export const DETAILS_EDITOR_CSS = `
   cursor: text;
 }
 .ProseMirror summary::-webkit-details-marker,
-.edgeever-editor-content summary::-webkit-details-marker {
+.stillnote-editor-content summary::-webkit-details-marker {
   display: none;
 }
 .ProseMirror [data-type="details"]:not(.is-open) [data-type="detailsContent"],
-.edgeever-editor-content [data-type="details"]:not(.is-open) [data-type="detailsContent"] {
+.stillnote-editor-content [data-type="details"]:not(.is-open) [data-type="detailsContent"] {
   display: none !important;
 }
 .ProseMirror [data-type="details"].is-open [data-type="detailsContent"],
-.edgeever-editor-content [data-type="details"].is-open [data-type="detailsContent"] {
+.stillnote-editor-content [data-type="details"].is-open [data-type="detailsContent"] {
   margin-top: 0.15em;
 }
 `;
@@ -506,13 +506,13 @@ const renderDetailsMarkdown = (node: JSONContent, helpers: MarkdownRendererHelpe
   return `<details>\n<summary>${summaryHtml}</summary>\n\n${bodyMarkdown}\n\n</details>`;
 };
 
-export const EdgeEverDetails = Details.extend({
+export const StillNoteDetails = Details.extend({
   addOptions() {
     return {
       persist: false,
       openClassName: "is-open",
       HTMLAttributes: {
-        class: "edgeever-details",
+        class: "stillnote-details",
       },
       renderToggleButton: ({ element, isOpen }) => {
         element.setAttribute("aria-label", isOpen ? "Collapse details" : "Expand details");
@@ -556,11 +556,11 @@ export const EdgeEverDetails = Details.extend({
   },
 });
 
-export const EdgeEverDetailsSummary = DetailsSummary;
-export const EdgeEverDetailsContent = DetailsContent;
+export const StillNoteDetailsSummary = DetailsSummary;
+export const StillNoteDetailsContent = DetailsContent;
 
-export const createEdgeEverDetailsExtensions = () => [
-  EdgeEverDetails,
-  EdgeEverDetailsSummary,
-  EdgeEverDetailsContent,
+export const createStillNoteDetailsExtensions = () => [
+  StillNoteDetails,
+  StillNoteDetailsSummary,
+  StillNoteDetailsContent,
 ];

@@ -4,7 +4,7 @@ import {
   type AiStreamEvent,
   type AiTargetLanguage,
   type AiTone,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 
 export type MobileSelectionAiRequest = {
   requestId: string;

@@ -1,14 +1,14 @@
 ---
 draft: false
-title: "flomo to EdgeEver Migration Guide"
-snippet: "Export your flomo notes, configure EdgeEver MCP, and migrate everything with one prompt."
+title: "flomo to StillNote Migration Guide"
+snippet: "Export your flomo notes, configure StillNote MCP, and migrate everything with one prompt."
 image: {
     src: "/images/flomo-migration.jpg",
-    alt: "Migrating from flomo to EdgeEver"
+    alt: "Migrating from flomo to StillNote"
 }
 publishDate: "2026-07-31 22:13"
 category: "Migration"
-author: "EdgeEver Team"
+author: "StillNote Team"
 tags: [flomo, migration, mcp]
 ---
 
@@ -16,16 +16,16 @@ tags: [flomo, migration, mcp]
 
 In the flomo Web app or desktop client, click the small arrow next to your username and membership badge in the upper-left corner. Open **Settings → Account details** from the account menu, scroll the Account details pane to the very bottom, and download the full HTML export ZIP.
 
-### Step 2: Configure EdgeEver MCP
+### Step 2: Configure StillNote MCP
 
-Generate a token with memo, notebook, and resource read/write permissions in **EdgeEver Settings → API & MCP authorization**. Click **Copy full MCP config** and configure it in Codex, Claude Code, Cursor, or another AI Agent.
+Generate a token with memo, notebook, and resource read/write permissions in **StillNote Settings → API & MCP authorization**. Click **Copy full MCP config** and configure it in Codex, Claude Code, Cursor, or another AI Agent.
 
 ### Step 3: Import with one prompt
 
-Replace `/path/to/flomo-export.zip` with the real path, then send the prompt below to the Agent connected to EdgeEver MCP:
+Replace `/path/to/flomo-export.zip` with the real path, then send the prompt below to the Agent connected to StillNote MCP:
 
 ```text
-Using the configured EdgeEver MCP, migrate every note in `/path/to/flomo-export.zip` into the `flomo` notebook while preserving content, tags, creation times, images, and attachments. Verify completeness and report the result when finished.
+Using the configured StillNote MCP, migrate every note in `/path/to/flomo-export.zip` into the `flomo` notebook while preserving content, tags, creation times, images, and attachments. Verify completeness and report the result when finished.
 ```
 
 Keep the original flomo ZIP until verification is complete.

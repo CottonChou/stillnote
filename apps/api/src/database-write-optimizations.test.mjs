@@ -1,11 +1,11 @@
 import { Database } from "bun:sqlite";
 import { describe, expect, test } from "bun:test";
 import { globSync, readFileSync } from "node:fs";
-import { createPosterDocument, serializePosterDocument, parsePosterDocument, markdownToDoc, addTableField, createDefaultTableDocument, serializeTableDocument, updateTableCell } from "@edgeever/shared";
+import { createPosterDocument, serializePosterDocument, parsePosterDocument, markdownToDoc, addTableField, createDefaultTableDocument, serializeTableDocument, updateTableCell } from "@stillnote/shared";
 import {
   acquireMaintenanceLease,
   createMemoEditSession,
-  fetchEdgeEverApp,
+  fetchStillNoteApp,
   mergeMemosRecord,
   updateMemoRecord,
 } from "./index.ts";
@@ -205,7 +205,7 @@ describe("database write optimizations", () => {
       actor,
       "owner",
     );
-    expect(saved.memo.contentMarkdown).toContain("edgeever-table-v1");
+    expect(saved.memo.contentMarkdown).toContain("stillnote-table-v1");
 
     const replaced = await updateMemoRecord(
       database,
@@ -216,7 +216,7 @@ describe("database write optimizations", () => {
       "owner",
     );
     expect(replaced.error).toBe("table_update_required");
-    expect(sqlite.query("SELECT content_markdown FROM memo_contents WHERE memo_id = ?").get(memo.id).content_markdown).toContain("edgeever-table-v1");
+    expect(sqlite.query("SELECT content_markdown FROM memo_contents WHERE memo_id = ?").get(memo.id).content_markdown).toContain("stillnote-table-v1");
 
     const removed = await updateMemoRecord(
       database,
@@ -265,12 +265,12 @@ describe("database write optimizations", () => {
     const { database, sqlite } = createDatabase();
     expect(await acquireMaintenanceLease(database, "demo-reset", 60_000)).toStartWith("lease_");
 
-    const response = await fetchEdgeEverApp(
+    const response = await fetchStillNoteApp(
       new Request("https://notes.example.com/api/v1/demo/reset", { method: "POST" }),
       {
         storage: { db: database, resources: {} },
-        EDGE_EVER_ALLOW_UNAUTHENTICATED: "true",
-        EDGE_EVER_DEMO_MODE: "true",
+        STILLNOTE_ALLOW_UNAUTHENTICATED: "true",
+        STILLNOTE_DEMO_MODE: "true",
       },
       executionContext,
     );
@@ -288,12 +288,12 @@ describe("database write optimizations", () => {
     const resources = {
       put: async () => {},
     };
-    const request = () => fetchEdgeEverApp(
+    const request = () => fetchStillNoteApp(
       new Request("https://notes.example.com/api/v1/notebooks"),
       {
         storage: { db: database, resources },
-        EDGE_EVER_ALLOW_UNAUTHENTICATED: "true",
-        EDGE_EVER_DEMO_MODE: "true",
+        STILLNOTE_ALLOW_UNAUTHENTICATED: "true",
+        STILLNOTE_DEMO_MODE: "true",
       },
       executionContext,
     );
@@ -322,7 +322,7 @@ describe("database write optimizations", () => {
 
   test("touches API tokens at most once per hour", async () => {
     const { database, sqlite } = createDatabase();
-    const token = "edgeever_api_test_token";
+    const token = "stillnote_api_test_token";
     const recent = new Date(Date.now() - 5 * 60_000).toISOString();
     sqlite.query(
       `INSERT INTO api_tokens (
@@ -330,11 +330,11 @@ describe("database write optimizations", () => {
        ) VALUES ('tok_touch_test', 'ws_default', 'Touch test', ?, ?, '["read:notebooks"]', ?)`,
     ).run(await sha256(token), token, recent);
 
-    const request = () => fetchEdgeEverApp(
+    const request = () => fetchStillNoteApp(
       new Request("https://notes.example.com/api/v1/notebooks", {
         headers: { Authorization: `Bearer ${token}` },
       }),
-      { storage: { db: database, resources: {} }, EDGE_EVER_AUTH_PASSWORD: "configured" },
+      { storage: { db: database, resources: {} }, STILLNOTE_AUTH_PASSWORD: "configured" },
       executionContext,
     );
 
@@ -350,7 +350,7 @@ describe("database write optimizations", () => {
 
   test("touches login sessions at most once per hour", async () => {
     const { database, sqlite } = createDatabase();
-    const token = "edgeever_session_test_token";
+    const token = "stillnote_session_test_token";
     const recent = new Date(Date.now() - 5 * 60_000).toISOString();
     const now = new Date().toISOString();
     sqlite.query(
@@ -367,11 +367,11 @@ describe("database write optimizations", () => {
        ) VALUES ('session_touch_test', 'user_touch_test', ?, 'test-device', ?, ?, ?)`,
     ).run(await sha256(token), new Date(Date.now() + 60 * 60_000).toISOString(), now, recent);
 
-    const request = () => fetchEdgeEverApp(
+    const request = () => fetchStillNoteApp(
       new Request("https://notes.example.com/api/v1/notebooks", {
         headers: { Authorization: `Bearer ${token}` },
       }),
-      { storage: { db: database, resources: {} }, EDGE_EVER_AUTH_PASSWORD: "configured" },
+      { storage: { db: database, resources: {} }, STILLNOTE_AUTH_PASSWORD: "configured" },
       executionContext,
     );
 

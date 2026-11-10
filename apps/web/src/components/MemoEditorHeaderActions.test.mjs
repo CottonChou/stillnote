@@ -16,13 +16,21 @@ const topRowLeadingSource = readFileSync(new URL("./MemoEditorTopRowLeading.tsx"
 describe("shared memo editor header actions", () => {
   test("owns every action shared by text and diagram notes", () => {
     expect(actionsSource).toContain("<Search");
-    expect(actionsSource).toContain("<GitHubRepositoryLink");
+    expect(actionsSource).not.toContain("<GitHubRepositoryLink");
     expect(actionsSource).not.toContain("SystemInfoDialog");
     expect(actionsSource).not.toContain("systemInfo.title");
     expect(actionsSource).not.toContain("setPreference(nextTheme)");
     expect(actionsSource).not.toContain('t("common.githubRepository")');
     expect(actionsSource).toContain("<ExecutionCenterButton");
     expect(actionsSource).toContain("<MoreHorizontal");
+    expect(actionsSource).toContain("onCloseNote");
+    expect(actionsSource).toContain("<X ");
+  });
+
+  test("moves note sharing into the overflow menu rather than keeping a standalone header icon", () => {
+    const editorTopRight = editorSource.slice(editorSource.indexOf("ref={setHeaderStatusCluster}"), editorSource.indexOf("<MemoEditorHeaderActions"));
+    expect(editorTopRight).not.toContain("setShareOpen(true)");
+    expect(editorSource).toContain('onClick={() => setShareOpen(true)}');
   });
 
   test("is reused by both editors while text-only actions remain explicit slots", () => {

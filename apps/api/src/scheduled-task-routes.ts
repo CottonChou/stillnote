@@ -7,7 +7,7 @@ import {
   type ScheduledPluginCommandPayload,
   type ScheduledTask,
   type ScheduledTaskRun,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { zValidator } from "@hono/zod-validator";
 import { Cron } from "croner";
 import type { Hono } from "hono";

@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { Notebook } from "@edgeever/shared";
-import type { ImportFormat, ImportIssue } from "@edgeever/shared/note-import/types";
+import type { Notebook } from "@stillnote/shared";
+import type { ImportFormat, ImportIssue } from "@stillnote/shared/note-import/types";
 import type { NoteImportController, NoteImportSnapshot } from "@/lib/note-import/controller";
 import { EVERNOTE_MIGRATION_BLOG_URL } from "@/lib/routes";
 

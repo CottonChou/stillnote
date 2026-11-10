@@ -1,4 +1,4 @@
-import type { ExtensionManifest } from "@edgeever/plugin-api";
+import type { ExtensionManifest } from "@stillnote/plugin-api";
 import type { PluginHostSnapshot, RegisteredPluginAction } from "./plugin-host";
 
 export type PluginDetailPage = "overview" | "settings";

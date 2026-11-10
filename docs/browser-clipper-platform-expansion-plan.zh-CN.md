@@ -2,7 +2,7 @@
 
 [English](browser-clipper-platform-expansion-plan.md)
 
-关联：[Issue #493](https://github.com/tianma-if/edgeever/issues/493)。更新于 2026-10-15。用户已确认 Phase 1 为 **Facebook、Instagram、LinkedIn、Threads 和 Bluesky** 五个平台。见[使用说明与验证记录](browser-clipper-platforms.zh-CN.md)。
+关联：[Issue #493](https://github.com/CottonChou/stillnote/issues/493)。更新于 2026-10-15。用户已确认 Phase 1 为 **Facebook、Instagram、LinkedIn、Threads 和 Bluesky** 五个平台。见[使用说明与验证记录](browser-clipper-platforms.zh-CN.md)。
 
 ## 交付阶段
 

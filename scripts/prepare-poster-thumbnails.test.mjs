@@ -87,7 +87,7 @@ test("failed generation preserves previous assets and manifest, and releases the
   await expect(ensurePosterThumbnails(f.options)).rejects.toThrow("font download failed");
   expect(await readFile(path.join(f.output, "manifest.json"))).toEqual(before);
   expect(await readFile(path.join(f.output, "one.zh.webp"))).toEqual(image);
-  expect(await readdir(path.join(f.root, "node_modules/.cache/edgeever"))).toEqual([]);
+  expect(await readdir(path.join(f.root, "node_modules/.cache/stillnote"))).toEqual([]);
 });
 
 test("simultaneous dev/build requests serialize and render once", async () => {

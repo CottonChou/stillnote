@@ -6,8 +6,8 @@ import { prepareDesktopIcons } from "./prepare-desktop-icons.mjs";
 import { prepareMobileIcons, renderBrandPng } from "./prepare-mobile-icons.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const sourcePath = path.join(projectRoot, "assets/brand/edgeever-icon.png");
-const svgSourcePath = path.join(projectRoot, "assets/brand/edgeever-icon.svg");
+const sourcePath = path.join(projectRoot, "assets/brand/stillnote-icon.png");
+const svgSourcePath = path.join(projectRoot, "assets/brand/stillnote-icon.svg");
 const svgSource = await readFile(svgSourcePath);
 await sharp(svgSource, { density: 384 })
   .resize(1024, 1024, {
@@ -31,7 +31,7 @@ const pngTargets = [
   ["apps/site/public/icon-192.png", 192, { preserveAlpha: true }],
   ["apps/site/public/icon-512.png", 512, { preserveAlpha: true }],
   ["apps/site/public/apple-touch-icon.png", 180, { background: "#187958" }],
-  ["apps/ios/EdgeEver/Resources/Assets.xcassets/AppIcon.appiconset/icon.png", 1024, { background: "#187958" }],
+  ["apps/ios/StillNote/Resources/Assets.xcassets/AppIcon.appiconset/icon.png", 1024, { background: "#187958" }],
   ["apps/extension/public/icons/icon-16.png", 16, { preserveAlpha: true }],
   ["apps/extension/public/icons/icon-32.png", 32, { preserveAlpha: true }],
   ["apps/extension/public/icons/icon-48.png", 48, { preserveAlpha: true }],

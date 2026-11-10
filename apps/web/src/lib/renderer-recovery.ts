@@ -1,4 +1,4 @@
-export const RENDERER_RECOVERY_STORAGE_KEY = "edgeever.renderer-recovery-required";
+export const RENDERER_RECOVERY_STORAGE_KEY = "stillnote.renderer-recovery-required";
 
 type RecoveryStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 

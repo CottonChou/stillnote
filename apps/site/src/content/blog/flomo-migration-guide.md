@@ -1,14 +1,14 @@
 ---
 draft: false
-title: "从 flomo 迁移到 EdgeEver 指南"
-snippet: "导出 flomo 笔记，配置 EdgeEver MCP，用一条 Prompt 完成全量迁移。"
+title: "从 flomo 迁移到 StillNote 指南"
+snippet: "导出 flomo 笔记，配置 StillNote MCP，用一条 Prompt 完成全量迁移。"
 image: {
     src: "/images/flomo-migration.jpg",
-    alt: "从 flomo 迁移到 EdgeEver"
+    alt: "从 flomo 迁移到 StillNote"
 }
 publishDate: "2026-07-31 22:13"
 category: "Migration"
-author: "EdgeEver Team"
+author: "StillNote Team"
 tags: [flomo, migration, mcp]
 ---
 
@@ -16,16 +16,16 @@ tags: [flomo, migration, mcp]
 
 在 flomo 网页版或桌面客户端中，点击左上角用户名及会员标识右侧的小下拉箭头，在账户菜单中进入 **设置 → 账号详情**，然后滚动账号详情内容区到页面最下方，点击全局导出并下载 HTML 导出 ZIP。
 
-### 步骤 2：配置 EdgeEver MCP
+### 步骤 2：配置 StillNote MCP
 
-在 EdgeEver 的 **设置 → API & MCP 授权** 中生成具有笔记、笔记本和资源读写权限的 Token，点击 **复制完整 MCP 配置**，并将其配置到 Codex、Claude Code、Cursor 等 AI Agent 中。
+在 StillNote 的 **设置 → API & MCP 授权** 中生成具有笔记、笔记本和资源读写权限的 Token，点击 **复制完整 MCP 配置**，并将其配置到 Codex、Claude Code、Cursor 等 AI Agent 中。
 
 ### 步骤 3：发送一条 Prompt 完成导入
 
-把下面的 `/path/to/flomo-export.zip` 替换成真实路径，然后将整段 Prompt 发送给已经连接 EdgeEver MCP 的 Agent：
+把下面的 `/path/to/flomo-export.zip` 替换成真实路径，然后将整段 Prompt 发送给已经连接 StillNote MCP 的 Agent：
 
 ```text
-请通过已配置的 EdgeEver MCP，将 `/path/to/flomo-export.zip` 中的全部笔记迁移到 `flomo` 笔记本，完整保留正文、标签、创建时间、图片和附件。迁移完成后校验完整性并报告结果。
+请通过已配置的 StillNote MCP，将 `/path/to/flomo-export.zip` 中的全部笔记迁移到 `flomo` 笔记本，完整保留正文、标签、创建时间、图片和附件。迁移完成后校验完整性并报告结果。
 ```
 
 确认迁移完整前，请保留原始 flomo ZIP。

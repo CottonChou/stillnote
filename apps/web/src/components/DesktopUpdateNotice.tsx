@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export const DesktopUpdateNotice = () => {
   const { t } = useTranslation();
-  const bridge = window.edgeeverDesktop;
+  const bridge = window.stillnoteDesktop;
 
   const statusQuery = useQuery({
     queryKey: ["desktop-update-status"],

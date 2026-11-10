@@ -6,9 +6,9 @@ import { PLUGIN_EMBED_NODE_TYPE } from "./plugin-embed";
 import { EMPTY_EXTERNAL_LINK_NODE_TYPE } from "./empty-external-link";
 import type { SupportedLocale } from "./i18n/locales";
 
-export const UNSUPPORTED_BLOCK_NODE_TYPE = "edgeeverUnsupportedBlock" as const;
-export const UNSUPPORTED_INLINE_NODE_TYPE = "edgeeverUnsupportedInline" as const;
-export const UNSUPPORTED_MARK_TYPE = "edgeeverUnsupportedMark" as const;
+export const UNSUPPORTED_BLOCK_NODE_TYPE = "stillnoteUnsupportedBlock" as const;
+export const UNSUPPORTED_INLINE_NODE_TYPE = "stillnoteUnsupportedInline" as const;
+export const UNSUPPORTED_MARK_TYPE = "stillnoteUnsupportedMark" as const;
 
 const FALLBACK_NODE_TYPES = new Set<string>([
   UNSUPPORTED_BLOCK_NODE_TYPE,
@@ -34,13 +34,13 @@ export const NATIVE_EDITOR_NODE_TYPES = new Set<string>([
   "details",
   "detailsSummary",
   "detailsContent",
-  "edgeeverImageGallery",
+  "stillnoteImageGallery",
   "table",
   "tableRow",
   "tableHeader",
   "tableCell",
-  "edgeeverMergeDivider",
-  "edgeeverVideoNote",
+  "stillnoteMergeDivider",
+  "stillnoteVideoNote",
   EMPTY_EXTERNAL_LINK_NODE_TYPE,
   "inlineMath",
   "blockMath",
@@ -131,7 +131,7 @@ export const UnsupportedBlock = Node.create({
   },
 
   parseHTML() {
-    return [{ tag: "div[data-edgeever-unsupported-block]" }];
+    return [{ tag: "div[data-stillnote-unsupported-block]" }];
   },
 
   renderHTML({ node }) {
@@ -139,9 +139,9 @@ export const UnsupportedBlock = Node.create({
     return [
       "div",
       {
-        "data-edgeever-unsupported-block": "true",
+        "data-stillnote-unsupported-block": "true",
         "data-original-type": type,
-        class: "edgeever-unsupported-content edgeever-unsupported-content--block",
+        class: "stillnote-unsupported-content stillnote-unsupported-content--block",
         contenteditable: "false",
       },
       typeof node.attrs.displayLabel === "string" && node.attrs.displayLabel
@@ -167,7 +167,7 @@ export const UnsupportedInline = Node.create({
   },
 
   parseHTML() {
-    return [{ tag: "span[data-edgeever-unsupported-inline]" }];
+    return [{ tag: "span[data-stillnote-unsupported-inline]" }];
   },
 
   renderHTML({ node }) {
@@ -175,9 +175,9 @@ export const UnsupportedInline = Node.create({
     return [
       "span",
       {
-        "data-edgeever-unsupported-inline": "true",
+        "data-stillnote-unsupported-inline": "true",
         "data-original-type": type,
-        class: "edgeever-unsupported-content edgeever-unsupported-content--inline",
+        class: "stillnote-unsupported-content stillnote-unsupported-content--inline",
         contenteditable: "false",
       },
       typeof node.attrs.displayLabel === "string" && node.attrs.displayLabel
@@ -195,13 +195,13 @@ export const UnsupportedMark = Mark.create({
   },
 
   parseHTML() {
-    return [{ tag: "span[data-edgeever-unsupported-mark]" }];
+    return [{ tag: "span[data-stillnote-unsupported-mark]" }];
   },
 
   renderHTML() {
     return ["span", {
-      "data-edgeever-unsupported-mark": "true",
-      class: "edgeever-unsupported-mark",
+      "data-stillnote-unsupported-mark": "true",
+      class: "stillnote-unsupported-mark",
     }, 0];
   },
 });

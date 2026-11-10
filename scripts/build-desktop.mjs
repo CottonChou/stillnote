@@ -29,10 +29,10 @@ const nativeMacArchitecture = () => {
 };
 
 const requestedArchitecture = () => {
-  const override = process.env.EDGE_EVER_DESKTOP_ARCH?.trim();
+  const override = process.env.STILLNOTE_DESKTOP_ARCH?.trim();
   if (override) {
     if (!["arm64", "x64"].includes(override)) {
-      throw new Error(`EDGE_EVER_DESKTOP_ARCH must be arm64 or x64, received: ${override}`);
+      throw new Error(`STILLNOTE_DESKTOP_ARCH must be arm64 or x64, received: ${override}`);
     }
     return override;
   }
@@ -55,13 +55,13 @@ const inspectArchitecture = (path) => {
 const expectedMachArchitecture = (arch) => arch === "x64" ? "x86_64" : arch;
 
 const prepareMacSidecar = async (arch) => {
-  const sidecarOutput = join(projectRoot, "crates/desktop-sidecar/target/release/edgeever-sidecar");
-  const overridePath = process.env.EDGE_EVER_SIDECAR_PATH?.trim();
+  const sidecarOutput = join(projectRoot, "crates/desktop-sidecar/target/release/stillnote-sidecar");
+  const overridePath = process.env.STILLNOTE_SIDECAR_PATH?.trim();
   if (overridePath) {
     const sourcePath = resolve(projectRoot, overridePath);
     const actualArch = inspectArchitecture(sourcePath);
     if (actualArch !== expectedMachArchitecture(arch)) {
-      throw new Error(`EDGE_EVER_SIDECAR_PATH targets ${actualArch || "an unknown architecture"}, expected ${expectedMachArchitecture(arch)}`);
+      throw new Error(`STILLNOTE_SIDECAR_PATH targets ${actualArch || "an unknown architecture"}, expected ${expectedMachArchitecture(arch)}`);
     }
     await mkdir(join(projectRoot, "crates/desktop-sidecar/target/release"), { recursive: true });
     await copyFile(sourcePath, sidecarOutput);
@@ -94,7 +94,7 @@ const prepareMacSidecar = async (arch) => {
     "crates/desktop-sidecar/target",
     target,
     "release",
-    "edgeever-sidecar",
+    "stillnote-sidecar",
   );
   actualArch = inspectArchitecture(targetedSidecar);
   if (actualArch !== expectedMachArchitecture(arch)) {
@@ -108,8 +108,8 @@ const main = async () => {
   const arch = requestedArchitecture();
   const desktopEnv = {
     ...process.env,
-    EDGE_EVER_DESKTOP_BUILD: "1",
-    EDGE_EVER_DESKTOP_ARCH: arch,
+    STILLNOTE_DESKTOP_BUILD: "1",
+    STILLNOTE_DESKTOP_ARCH: arch,
   };
 
   run("bun", ["run", "prepare:desktop:icons"], { env: desktopEnv });
@@ -126,10 +126,10 @@ const main = async () => {
     ? null
     : arch === "x64" ? "mac" : `mac-${arch}`;
   if (unpackedDirectory) {
-    const executable = join(projectRoot, "release/desktop", unpackedDirectory, "EdgeEver.app/Contents/MacOS/EdgeEver");
+    const executable = join(projectRoot, "release/desktop", unpackedDirectory, "StillNote.app/Contents/MacOS/StillNote");
     if (!existsSync(executable)) throw new Error(`Packaged macOS executable is missing: ${executable}`);
     run("bun", ["run", "verify:desktop-package"], {
-      env: { ...desktopEnv, EDGE_EVER_VERIFY_TARGET: "darwin" },
+      env: { ...desktopEnv, STILLNOTE_VERIFY_TARGET: "darwin" },
     });
   }
 

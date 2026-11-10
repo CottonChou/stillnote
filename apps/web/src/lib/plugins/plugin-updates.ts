@@ -1,4 +1,4 @@
-import { parseExtensionManifest, type ExtensionManifest, type MarketplaceEntry, type PluginPermission } from "@edgeever/plugin-api";
+import { parseExtensionManifest, type ExtensionManifest, type MarketplaceEntry, type PluginPermission } from "@stillnote/plugin-api";
 import type { InstalledExtension } from "@/lib/plugins/plugin-host";
 import { readRevokedPluginIds } from "@/lib/plugins/community-registry-store";
 import { loadGithubInstallableManifest } from "@/lib/plugins/github-plugin-distribution";
@@ -20,7 +20,7 @@ export interface PluginUpdateCheckResult {
 }
 
 type PluginUpdateHost = Pick<
-  import("@/lib/plugins/plugin-host").EdgeEverPluginHost,
+  import("@/lib/plugins/plugin-host").StillNotePluginHost,
   "getSnapshot" | "installMarketplaceEntry" | "installFromGithubRepository" | "installFromManifestUrl"
 >;
 
@@ -140,7 +140,7 @@ export const updateOfficialMarketplacePlugins = async (
   const checked = await checkPluginUpdates(host.getSnapshot().extensions, marketplaceEntries, request, { revokedIds });
   const officialUpdates = checked.updates.filter((update) => {
     if (revokedIds.has(update.pluginId)) return false;
-    if (update.marketplaceEntry?.publisher !== "edgeever") return false;
+    if (update.marketplaceEntry?.publisher !== "stillnote") return false;
     if (!update.marketplaceEntry.verification.checksums?.manifestJson) return false;
     return update.latestManifest.type !== "plugin" || Boolean(update.marketplaceEntry.verification.checksums.mainJs);
   });

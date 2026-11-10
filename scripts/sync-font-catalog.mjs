@@ -3,7 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { FONT_CATALOG, FONT_IDS } from '../packages/shared/src/font-catalog.ts';
 import { NOTE_IMAGE_TEMPLATE_TYPOGRAPHY } from '../packages/shared/src/note-image-card.ts';
 import { zhCN, enUS, ja, pl } from '../packages/shared/src/i18n/index.ts';
-const file = new URL('../apps/ios/EdgeEver/Data/Preferences/PreferencesStore.swift', import.meta.url);
+const file = new URL('../apps/ios/StillNote/Data/Preferences/PreferencesStore.swift', import.meta.url);
 const begin = '// BEGIN GENERATED FONT CATALOG — bun scripts/sync-font-catalog.mjs';
 const end = '// END GENERATED FONT CATALOG';
 const text = await readFile(file, 'utf8');

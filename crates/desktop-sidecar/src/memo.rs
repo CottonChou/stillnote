@@ -386,7 +386,7 @@ fn sidecar_doc_has_non_text_content(value: &Value) -> bool {
             | "orderedList"
             | "blockquote"
             | "horizontalRule"
-            | "edgeeverThemeBlock"
+            | "stillnoteThemeBlock"
     ) {
         return true;
     }
@@ -627,7 +627,7 @@ pub(crate) fn update_memo(database: &Connection, params: &Value) -> Result<Value
             );
         }
         let conflicts: i64 = tx.query_row(
-            "SELECT COUNT(*) FROM _edgeever_sidecar_outbox WHERE entity_id = ?1 AND status = 'conflict'",
+            "SELECT COUNT(*) FROM _stillnote_sidecar_outbox WHERE entity_id = ?1 AND status = 'conflict'",
             [&memo_id], |row| row.get(0),
         ).map_err(|e| e.to_string())?;
         if conflicts > 0 {
@@ -665,7 +665,7 @@ pub(crate) fn update_memo(database: &Connection, params: &Value) -> Result<Value
     if consumed_remap_base {
         database
             .execute(
-                "DELETE FROM _edgeever_sidecar_meta WHERE key = ?1",
+                "DELETE FROM _stillnote_sidecar_meta WHERE key = ?1",
                 [memo_remap_base_key(&memo_id)],
             )
             .map_err(|e| e.to_string())?;
@@ -683,12 +683,12 @@ pub(crate) fn delete_memo(database: &Connection, params: &Value) -> Result<Value
             .unchecked_transaction()
             .map_err(|e| e.to_string())?;
         let pending_create: i64 = tx.query_row(
-            "SELECT COUNT(*) FROM _edgeever_sidecar_outbox WHERE kind = 'memo.create' AND entity_id = ?1 AND status = 'pending'",
+            "SELECT COUNT(*) FROM _stillnote_sidecar_outbox WHERE kind = 'memo.create' AND entity_id = ?1 AND status = 'pending'",
             [&memo_id],
             |row| row.get(0),
         ).map_err(|e| e.to_string())?;
         let other_changes: i64 = tx.query_row(
-            "SELECT COUNT(*) FROM _edgeever_sidecar_outbox WHERE entity_id = ?1 AND kind <> 'memo.create'",
+            "SELECT COUNT(*) FROM _stillnote_sidecar_outbox WHERE entity_id = ?1 AND kind <> 'memo.create'",
             [&memo_id],
             |row| row.get(0),
         ).map_err(|e| e.to_string())?;
@@ -702,7 +702,7 @@ pub(crate) fn delete_memo(database: &Connection, params: &Value) -> Result<Value
             return Err("Local memo no longer exists".to_owned());
         }
         tx.execute(
-            "DELETE FROM _edgeever_sidecar_outbox WHERE kind = 'memo.create' AND entity_id = ?1 AND status = 'pending'",
+            "DELETE FROM _stillnote_sidecar_outbox WHERE kind = 'memo.create' AND entity_id = ?1 AND status = 'pending'",
             [&memo_id],
         ).map_err(|e| e.to_string())?;
         tx.commit().map_err(|e| e.to_string())?;

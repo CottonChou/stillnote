@@ -1,9 +1,8 @@
 import { type ReactNode } from "react";
-import { MoreHorizontal, Search } from "lucide-react";
+import { MoreHorizontal, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ExecutionCenterButton } from "@/components/execution/ExecutionCenterButton";
-import { GitHubRepositoryLink } from "@/components/GitHubRepositoryLink";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +16,7 @@ export const MemoEditorHeaderActions = ({
   moreButtonClassName,
   moreMenuClassName,
   moreMenuItems,
+  onCloseNote,
   onOpenExecutionCenter,
   onSearch,
   textNoteActions,
@@ -25,7 +25,8 @@ export const MemoEditorHeaderActions = ({
   moreButtonClassName?: string;
   moreMenuClassName?: string;
   moreMenuItems: ReactNode;
-  onOpenExecutionCenter: () => void;
+  onCloseNote?: () => void;
+  onOpenExecutionCenter?: () => void;
   onSearch?: () => void;
   textNoteActions?: ReactNode;
   textNoteMenuItems?: ReactNode;
@@ -35,14 +36,9 @@ export const MemoEditorHeaderActions = ({
   return (
     <>
       {textNoteActions}
-      <GitHubRepositoryLink
-        className={cn(
-          buttonVariants({ variant: "ghost", size: "icon" }),
-          "hidden text-slate-500 hover:text-slate-950 sm:inline-flex",
-        )}
-        iconClassName="h-4 w-4"
-      />
-      <ExecutionCenterButton className="h-8 w-8" onClick={onOpenExecutionCenter} />
+      {onOpenExecutionCenter ? (
+        <ExecutionCenterButton className="h-8 w-8" onClick={onOpenExecutionCenter} />
+      ) : null}
       <DropdownMenu>
         <IconTooltip label={t("editor.more")}><DropdownMenuTrigger asChild>
           <Button
@@ -71,6 +67,20 @@ export const MemoEditorHeaderActions = ({
           {moreMenuItems}
         </DropdownMenuContent>
       </DropdownMenu>
+      {onCloseNote ? (
+        <IconTooltip label={t("editor.closeNote")}>
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8 text-slate-500 hover:text-slate-950"
+            aria-label={t("editor.closeNote")}
+            onClick={onCloseNote}
+          >
+            <X className="h-4 w-4" aria-hidden="true" />
+          </Button>
+        </IconTooltip>
+      ) : null}
     </>
   );
 };

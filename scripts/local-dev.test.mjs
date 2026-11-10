@@ -65,7 +65,7 @@ describe("local development environment", () => {
   });
 
   test("inspects a stopped WAL-mode D1 database", () => {
-    const statePath = mkdtempSync(join(tmpdir(), "edgeever-local-dev-"));
+    const statePath = mkdtempSync(join(tmpdir(), "stillnote-local-dev-"));
     const directory = join(statePath, "v3/d1/miniflare-D1DatabaseObject");
     mkdirSync(directory, { recursive: true });
     const database = new Database(join(directory, "test.sqlite"), { create: true });
@@ -91,27 +91,27 @@ describe("local development environment", () => {
   test("parses local-only environment files without exposing comments", () => {
     expect(parseEnvironmentFile([
       "# ignored",
-      "EDGE_EVER_LOCAL_AI_API_KEY='local-key'",
-      "EDGE_EVER_LOCAL_AI_MODEL_ID=gpt-4.1-mini",
+      "STILLNOTE_LOCAL_AI_API_KEY='local-key'",
+      "STILLNOTE_LOCAL_AI_MODEL_ID=gpt-4.1-mini",
       "",
     ].join("\n"))).toEqual({
-      EDGE_EVER_LOCAL_AI_API_KEY: "local-key",
-      EDGE_EVER_LOCAL_AI_MODEL_ID: "gpt-4.1-mini",
+      STILLNOTE_LOCAL_AI_API_KEY: "local-key",
+      STILLNOTE_LOCAL_AI_MODEL_ID: "gpt-4.1-mini",
     });
-    expect(parseEnvironmentFile('EDGE_EVER_LOCAL_AI_API_KEY="key\\nwith-escape"')).toEqual({
-      EDGE_EVER_LOCAL_AI_API_KEY: "key\nwith-escape",
+    expect(parseEnvironmentFile('STILLNOTE_LOCAL_AI_API_KEY="key\\nwith-escape"')).toEqual({
+      STILLNOTE_LOCAL_AI_API_KEY: "key\nwith-escape",
     });
   });
 
   test("skips AI bootstrap until a local API key is configured", () => {
-    expect(buildLocalAiSeed({ EDGE_EVER_LOCAL_AI_API_KEY: "" })).toBeNull();
+    expect(buildLocalAiSeed({ STILLNOTE_LOCAL_AI_API_KEY: "" })).toBeNull();
   });
 
   test("builds one deterministic local AI provider seed", () => {
     expect(buildLocalAiSeed({
-      EDGE_EVER_LOCAL_AI_API_KEY: "local-key",
-      EDGE_EVER_LOCAL_AI_BASE_URL: "https://openrouter.ai/api/v1/",
-      EDGE_EVER_LOCAL_AI_MODEL_ID: "gpt-4.1-mini",
+      STILLNOTE_LOCAL_AI_API_KEY: "local-key",
+      STILLNOTE_LOCAL_AI_BASE_URL: "https://openrouter.ai/api/v1/",
+      STILLNOTE_LOCAL_AI_MODEL_ID: "gpt-4.1-mini",
     })).toEqual({
       provider: "openai-compatible",
       displayName: "openai-compatible",
@@ -124,15 +124,15 @@ describe("local development environment", () => {
 
   test("rejects invalid provider and base URL values", () => {
     expect(() => buildLocalAiSeed({
-      EDGE_EVER_LOCAL_AI_API_KEY: "local-key",
-      EDGE_EVER_LOCAL_AI_PROVIDER: "unknown",
-      EDGE_EVER_LOCAL_AI_BASE_URL: "https://example.com",
-      EDGE_EVER_LOCAL_AI_MODEL_ID: "model",
-    })).toThrow("Unsupported EDGE_EVER_LOCAL_AI_PROVIDER");
+      STILLNOTE_LOCAL_AI_API_KEY: "local-key",
+      STILLNOTE_LOCAL_AI_PROVIDER: "unknown",
+      STILLNOTE_LOCAL_AI_BASE_URL: "https://example.com",
+      STILLNOTE_LOCAL_AI_MODEL_ID: "model",
+    })).toThrow("Unsupported STILLNOTE_LOCAL_AI_PROVIDER");
     expect(() => buildLocalAiSeed({
-      EDGE_EVER_LOCAL_AI_API_KEY: "local-key",
-      EDGE_EVER_LOCAL_AI_BASE_URL: "file:///tmp/model",
-      EDGE_EVER_LOCAL_AI_MODEL_ID: "model",
+      STILLNOTE_LOCAL_AI_API_KEY: "local-key",
+      STILLNOTE_LOCAL_AI_BASE_URL: "file:///tmp/model",
+      STILLNOTE_LOCAL_AI_MODEL_ID: "model",
     })).toThrow("must use HTTP(S)");
   });
 });

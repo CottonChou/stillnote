@@ -1,6 +1,6 @@
 # Hacker News clipping
 
-Open a main-post detail page at `https://news.ycombinator.com/item?id=<id>`. Use **Clip current page**, or right-click the page and choose **Save Hacker News post to EdgeEver**. A selected passage takes priority for the toolbar action; the dedicated page menu saves the main post.
+Open a main-post detail page at `https://news.ycombinator.com/item?id=<id>`. Use **Clip current page**, or right-click the page and choose **Save Hacker News post to StillNote**. A selected passage takes priority for the toolbar action; the dedicated page menu saves the main post.
 
 The note keeps the title, author, original publication time as supplied by the page, points at capture, external link and main-post text when available. Ask HN, Show HN and link-only posts are supported. Comments are excluded. Each full-post note has `web-clip` and `hacker-news` tags.
 

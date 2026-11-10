@@ -1,7 +1,7 @@
 import { automaticPosterThumbnails } from "./poster-thumbnails.ts";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { resolveDeploymentBuildMetadata } from "@edgeever/shared/deployment-metadata";
+import { resolveDeploymentBuildMetadata } from "@stillnote/shared/deployment-metadata";
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { fileURLToPath, URL } from "node:url";
@@ -91,11 +91,11 @@ const appVersion = resolveAppVersion(packageVersion, gitDescription);
 const releaseSummary = readReleaseSummary(packageVersion);
 const OPTIONAL_CHUNK_WARNING_LIMIT_KB = 1_700;
 const TARGET_VENDOR_CHUNK_BYTES = 450 * 1024;
-const releaseTimestamp = resolveReleaseTimestamp(process.env.EDGE_EVER_RELEASED_AT) || readLatestReleaseCommitTimestamp();
+const releaseTimestamp = resolveReleaseTimestamp(process.env.STILLNOTE_RELEASED_AT) || readLatestReleaseCommitTimestamp();
 const deploymentMetadata = resolveDeploymentBuildMetadata(process.env);
-const isDesktopBuild = process.env.EDGE_EVER_DESKTOP_BUILD === "1";
+const isDesktopBuild = process.env.STILLNOTE_DESKTOP_BUILD === "1";
 const developmentServiceWorkerReset: Plugin = {
-  name: "edgeever-development-service-worker-reset",
+  name: "stillnote-development-service-worker-reset",
   apply: "serve",
   configureServer(server) {
     server.middlewares.use((request, response, next) => {
@@ -135,15 +135,15 @@ export default defineConfig({
   // asset URLs resolve to the filesystem root and leave a blank window.
   base: isDesktopBuild ? "./" : "/",
   define: {
-    __EDGEEVER_APP_VERSION__: JSON.stringify(appVersion),
-    __EDGEEVER_BUILD_ID__: JSON.stringify(buildId),
-    __EDGEEVER_BUILD_LABEL__: JSON.stringify(buildId === "local" ? "local" : buildId.slice(0, 7)),
-    __EDGEEVER_RELEASED_AT__: JSON.stringify(releaseTimestamp),
-    __EDGEEVER_RELEASE_SUMMARY__: JSON.stringify(releaseSummary),
-    __EDGEEVER_DEPLOYMENT_TRIGGER__: JSON.stringify(deploymentMetadata.trigger),
-    __EDGEEVER_DEPLOYMENT_METHOD__: JSON.stringify(deploymentMetadata.method),
-    __EDGEEVER_DEVELOPMENT_PROFILE__: JSON.stringify(process.env.EDGE_EVER_DEVELOPMENT_PROFILE ?? ""),
-    __EDGEEVER_DESKTOP_BUILD__: JSON.stringify(isDesktopBuild),
+    __STILLNOTE_APP_VERSION__: JSON.stringify(appVersion),
+    __STILLNOTE_BUILD_ID__: JSON.stringify(buildId),
+    __STILLNOTE_BUILD_LABEL__: JSON.stringify(buildId === "local" ? "local" : buildId.slice(0, 7)),
+    __STILLNOTE_RELEASED_AT__: JSON.stringify(releaseTimestamp),
+    __STILLNOTE_RELEASE_SUMMARY__: JSON.stringify(releaseSummary),
+    __STILLNOTE_DEPLOYMENT_TRIGGER__: JSON.stringify(deploymentMetadata.trigger),
+    __STILLNOTE_DEPLOYMENT_METHOD__: JSON.stringify(deploymentMetadata.method),
+    __STILLNOTE_DEVELOPMENT_PROFILE__: JSON.stringify(process.env.STILLNOTE_DEVELOPMENT_PROFILE ?? ""),
+    __STILLNOTE_DESKTOP_BUILD__: JSON.stringify(isDesktopBuild),
   },
   plugins: [
     automaticPosterThumbnails(),
@@ -157,9 +157,9 @@ export default defineConfig({
       includeAssets: [],
       includeManifestIcons: false,
       manifest: {
-        name: "EdgeEver",
-        short_name: "EdgeEver",
-        description: "EdgeEver：基于 Cloudflare 与 Docker 自托管的现代化开源笔记与 AI 个人知识库。",
+        name: "StillNote",
+        short_name: "StillNote",
+        description: "StillNote：基于 Cloudflare 与 Docker 自托管的现代化开源笔记与 AI 个人知识库。",
         start_url: "/",
         scope: "/",
         display: "standalone",
@@ -204,7 +204,7 @@ export default defineConfig({
               !["/mobile-edit.html", "/note-print.html", "/tiptap-ime-test.html"].includes(url.pathname),
             handler: "NetworkFirst",
             options: {
-              cacheName: "edgeever-app-shell",
+              cacheName: "stillnote-app-shell",
               networkTimeoutSeconds: 5,
               cacheableResponse: {
                 statuses: [0, 200],
@@ -215,7 +215,7 @@ export default defineConfig({
             urlPattern: ({ url }) => /^\/api\/v1\/resources\/[^/]+\/blob$/.test(url.pathname),
             handler: "CacheFirst",
             options: {
-              cacheName: "edgeever-resource-blobs",
+              cacheName: "stillnote-resource-blobs",
               cacheableResponse: {
                 statuses: [0, 200],
               },
@@ -229,7 +229,7 @@ export default defineConfig({
             urlPattern: ({ url }) => /\/assets\/i18n-(?:ja|pl|ru)-/.test(url.pathname),
             handler: "CacheFirst",
             options: {
-              cacheName: "edgeever-optional-locales",
+              cacheName: "stillnote-optional-locales",
               expiration: {
                 maxEntries: 8,
                 maxAgeSeconds: 60 * 60 * 24 * 30,
@@ -240,7 +240,7 @@ export default defineConfig({
             urlPattern: ({ url }) => /\/assets\/(?:.*beautiful-mermaid|vendor-mermaid|.*mermaid\.core|.*Diagram-|vendor-x6|vendor-codemirror)/.test(url.pathname),
             handler: "CacheFirst",
             options: {
-              cacheName: "edgeever-optional-diagrams",
+              cacheName: "stillnote-optional-diagrams",
               expiration: {
                 maxEntries: 120,
                 maxAgeSeconds: 60 * 60 * 24 * 30,
@@ -251,7 +251,7 @@ export default defineConfig({
             urlPattern: ({ url }) => /\/assets\/(?:vendor~pdf-|pdf\.worker\.min-)/.test(url.pathname),
             handler: "CacheFirst",
             options: {
-              cacheName: "edgeever-optional-pdf",
+              cacheName: "stillnote-optional-pdf",
               expiration: {
                 maxEntries: 4,
                 maxAgeSeconds: 30 * 24 * 60 * 60,

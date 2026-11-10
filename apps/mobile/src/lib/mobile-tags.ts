@@ -1,4 +1,6 @@
-import type { MemoDetail, TagSummary } from "@edgeever/shared";
+import type { MemoSummary, TagSummary } from "@stillnote/shared";
+
+type TagSourceMemo = Pick<MemoSummary, "isDeleted" | "tags" | "updatedAt">;
 
 export const memoHasExactTag = (tags: readonly string[] | null | undefined, tag: string) => {
   const normalized = tag.trim().toLocaleLowerCase();
@@ -15,7 +17,7 @@ export const filterLocalMemosByExactTag = <T extends { tags: string[] }>(
   return memos.filter((memo) => memoHasExactTag(memo.tags, normalized));
 };
 
-export const summarizeMobileTags = (memos: MemoDetail[]): TagSummary[] => {
+export const summarizeMobileTags = (memos: readonly TagSourceMemo[]): TagSummary[] => {
   const tags = new Map<string, { memoCount: number; updatedAt: string | null }>();
 
   for (const memo of memos) {

@@ -131,7 +131,7 @@ import { EDITOR_CONTENT_MAX_WIDTH, EDITOR_OUTLINE_WIDTH } from "@/lib/workspace-
 import {
   resolveResourceUploadMimeType,
   countMemoCharacters,
-  createEdgeEverDocumentExtensions,
+  createStillNoteDocumentExtensions,
   getFrontMatterSource,
   getMappedNoteProperties,
   parseNoteProperties,
@@ -158,11 +158,11 @@ import {
   isAiSelectionSnapshotCurrent,
   parseMemoLinkHref,
   getMemoDisplayTitle,
-} from "@edgeever/shared";
-import { NEW_IMAGE_WIDTH_PERCENT } from "@edgeever/shared/image-display";
-import { EdgeEverLink } from "@edgeever/shared/editor-link";
-import { createEdgeEverMathematics } from "@edgeever/shared/mathematics";
-import { codeBlockLowlight, EdgeEverCodeBlock } from "@/lib/code-block";
+} from "@stillnote/shared";
+import { NEW_IMAGE_WIDTH_PERCENT } from "@stillnote/shared/image-display";
+import { StillNoteLink } from "@stillnote/shared/editor-link";
+import { createStillNoteMathematics } from "@stillnote/shared/mathematics";
+import { codeBlockLowlight, StillNoteCodeBlock } from "@/lib/code-block";
 import { activeExternalImageHost, uploadImageWithPicGo } from "@/lib/picgo";
 import { compressImageForUpload } from "@/lib/image-compression";
 import { LOCAL_DATABASE_INTERRUPTED_EVENT, localDb, selectNewestLocalDraft, type MemoUpdateSyncPayload } from "@/lib/local-db";
@@ -175,7 +175,7 @@ import { copyResourceToClipboard, copyTextToClipboard } from "@/lib/clipboard";
 import { createClientUuid } from "@/lib/client-id";
 import { isLocalMemoId, remapLocalDraftMemoId } from "@/lib/local-mirror";
 import { shouldAcceptRemoteMemoDetail } from "@/lib/memo-detail-freshness";
-import type { EdgeEverRepository } from "@/lib/repository";
+import type { StillNoteRepository } from "@/lib/repository";
 import {
   EDITOR_LOCAL_SAVE_DELAY_MS,
   formatShortcutBinding,
@@ -292,7 +292,7 @@ import {
   shouldInsertPendingEditorFiles,
   usablePendingInsertFiles,
 } from "./editor/editor-pending-insert";
-import type { EdgeEverPluginHost, PluginEditorAdapter } from "@/lib/plugins/plugin-host";
+import type { StillNotePluginHost, PluginEditorAdapter } from "@/lib/plugins/plugin-host";
 import {
   useEditorResourceActions,
   type AttachmentMenuTarget,
@@ -327,7 +327,7 @@ import {
 type EditorPaneProps = {
   onCreatePoster?: (memo: MemoDetail, text: string) => Promise<void>;
   memo: MemoDetail | null;
-  repository: EdgeEverRepository;
+  repository: StillNoteRepository;
   desktopFocusMode: boolean;
   onToggleDesktopFocusMode: () => void;
   noteProse: ResolvedNoteProse;
@@ -342,6 +342,7 @@ type EditorPaneProps = {
   contentSearchQuery?: string;
   imageCompressionEnabled: boolean;
   onBackToList: () => void;
+  onCloseNote?: () => void;
   onSaved: (memo: MemoDetail) => Promise<void>;
   onDeleted: (memoId: string) => Promise<void>;
   onPermanentDeleted: (memoId: string) => Promise<void>;
@@ -371,7 +372,7 @@ type EditorPaneProps = {
   beforeCompanionApply?: () => Promise<void>;
   onCompanionNotesChanged?: () => Promise<void>;
   onOpenCompanionNote?: (id: string, notebookId: string) => void;
-  pluginHost: EdgeEverPluginHost;
+  pluginHost: StillNotePluginHost;
   pluginNavigationRequest?: { id: number; noteId: string; search: string } | null;
   onOpenExecutionCenter: () => void;
   demoMode?: boolean;
@@ -425,6 +426,7 @@ const RichEditorPane = ({
   contentSearchQuery = "",
   imageCompressionEnabled,
   onBackToList,
+  onCloseNote,
   onSaved,
   onDeleted,
   onPermanentDeleted,
@@ -717,7 +719,7 @@ const RichEditorPane = ({
   const openMathFormulaRef = useRef<(kind?: "inline" | "block", range?: { from: number; to: number }) => void>(() => undefined);
   const mathFormulaDraftRef = useRef<MathFormulaDraft | null>(null);
   const mathClickRef = useRef<(node: { attrs: Record<string, unknown> }, pos: number, kind: "inline" | "block") => void>(() => undefined);
-  const mathematicsExtensionsRef = useRef(createEdgeEverMathematics({
+  const mathematicsExtensionsRef = useRef(createStillNoteMathematics({
     onInlineClick: (node, pos) => mathClickRef.current(node, pos, "inline"),
     onBlockClick: (node, pos) => mathClickRef.current(node, pos, "block"),
   }));
@@ -1056,7 +1058,7 @@ const RichEditorPane = ({
         filename: uploadFile.name,
         mimeType: uploadFile.type || null,
         byteSize: uploadFile.size,
-        url: `edgeever-staged://${staged.id}`,
+        url: `stillnote-staged://${staged.id}`,
       };
     }
   }, [repository, t]);
@@ -1165,7 +1167,7 @@ const RichEditorPane = ({
             return {
               type: "paragraph",
               content: [{
-                type: "edgeeverPdfAttachment",
+                type: "stillnotePdfAttachment",
                 attrs: {
                   url: resource.url,
                   label: t("editor.attachmentLabel", { filename }),
@@ -1180,7 +1182,7 @@ const RichEditorPane = ({
           return {
             type: "paragraph",
             content: [{
-              type: "edgeeverFileAttachment",
+              type: "stillnoteFileAttachment",
               attrs: {
                 url: resource.url,
                 label: t("editor.attachmentLabel", { filename }),
@@ -1260,7 +1262,7 @@ const RichEditorPane = ({
   const inlineFieldExtension = useMemo(() => createInlineFieldExtension(i18n.getFixedT(i18n.language)), [i18n, i18n.language]);
   const editor = useEditor({
     extensions: [
-      ...createEdgeEverDocumentExtensions({
+      ...createStillNoteDocumentExtensions({
         mathematics: mathematicsExtensionsRef.current,
         starterKit: {
           codeBlock: false,
@@ -1274,9 +1276,9 @@ const RichEditorPane = ({
         pluginEmbed: pluginEmbedExtension,
         table: { table: { renderWrapper: true } },
       }),
-      EdgeEverLink.configure({ openOnClick: false }),
+      StillNoteLink.configure({ openOnClick: false }),
       inlineFieldExtension,
-      EdgeEverCodeBlock.configure({ lowlight: codeBlockLowlight, defaultLanguage: "plaintext" }),
+      StillNoteCodeBlock.configure({ lowlight: codeBlockLowlight, defaultLanguage: "plaintext" }),
       ThemeBlock,
       ResizableImage.configure({
         allowBase64: false,
@@ -1298,7 +1300,7 @@ const RichEditorPane = ({
     editorProps: {
       clipboardTextSerializer: editorClipboardTextSerializer,
       attributes: {
-        class: "edgeever-note-rich-editor prose prose-slate max-w-none focus:outline-none min-h-[240px] lg:min-h-[180px]",
+        class: "stillnote-note-rich-editor prose prose-slate max-w-none focus:outline-none min-h-[240px] lg:min-h-[180px]",
         spellcheck: spellcheckEnabled ? "true" : "false",
       },
       handleKeyDown: (view, event) => {
@@ -1578,7 +1580,7 @@ const RichEditorPane = ({
       .insertContent({
         type: "text",
         text: selectedText || getMemoDisplayTitle(target.title, t("common.untitledMemo")),
-        marks: [{ type: "link", attrs: { href: createMemoLinkHref(target.id), class: "edgeever-note-link" } }],
+        marks: [{ type: "link", attrs: { href: createMemoLinkHref(target.id), class: "stillnote-note-link" } }],
       })
       .run();
     setNoteLinkPickerOpen(false);
@@ -2536,7 +2538,7 @@ const RichEditorPane = ({
       ) {
         const [listed, staged] = await Promise.all([
           repository.listResources().catch(() => ({ resources: [] as Array<{ memoId?: string; url: string; filename?: string | null; kind?: string | null }> })),
-          window.edgeeverDesktop?.listStagedResources?.().catch(() => []) ?? Promise.resolve([]),
+          window.stillnoteDesktop?.listStagedResources?.().catch(() => []) ?? Promise.resolve([]),
         ]);
         if (cancelled) return;
         const liveStagedIds = new Set((staged ?? []).filter((item) => item.memoId === memo.id).map((item) => item.id));
@@ -2744,7 +2746,7 @@ const RichEditorPane = ({
 
   useEffect(() => {
     if (!isEditorReady(editor)) {
-      window.edgeeverDesktop?.setRichTextHeadingShortcutActive?.(false);
+      window.stillnoteDesktop?.setRichTextHeadingShortcutActive?.(false);
       return;
     }
 
@@ -2754,7 +2756,7 @@ const RichEditorPane = ({
         && editor.isFocused
         && !surface.markdown
         && !surface.plainText;
-      window.edgeeverDesktop?.setRichTextHeadingShortcutActive?.(active);
+      window.stillnoteDesktop?.setRichTextHeadingShortcutActive?.(active);
     };
     editor.on("focus", syncHeadingShortcutTarget);
     editor.on("blur", syncHeadingShortcutTarget);
@@ -2762,12 +2764,12 @@ const RichEditorPane = ({
     return () => {
       editor.off("focus", syncHeadingShortcutTarget);
       editor.off("blur", syncHeadingShortcutTarget);
-      window.edgeeverDesktop?.setRichTextHeadingShortcutActive?.(false);
+      window.stillnoteDesktop?.setRichTextHeadingShortcutActive?.(false);
     };
   }, [editor, effectiveReadOnly, hydratedEditorMemoId, memo, useMarkdownSourceEditor, useMobilePlainTextEditor]);
 
   useEffect(() => {
-    const unsubscribe = window.edgeeverDesktop?.onHeadingShortcut?.((level) => {
+    const unsubscribe = window.stillnoteDesktop?.onHeadingShortcut?.((level) => {
       if (level !== 0) return;
       const surface = headingShortcutSurfaceRef.current;
       if (surface.markdown || surface.plainText) return;
@@ -2886,10 +2888,10 @@ const RichEditorPane = ({
     };
 
     window.addEventListener(MEMO_SYNC_ACKNOWLEDGED_EVENT, handleMemoSyncAcknowledged);
-    window.addEventListener("edgeever:sync-completed", handleSyncCompleted);
+    window.addEventListener("stillnote:sync-completed", handleSyncCompleted);
     return () => {
       window.removeEventListener(MEMO_SYNC_ACKNOWLEDGED_EVENT, handleMemoSyncAcknowledged);
-      window.removeEventListener("edgeever:sync-completed", handleSyncCompleted);
+      window.removeEventListener("stillnote:sync-completed", handleSyncCompleted);
     };
   }, []);
 
@@ -2965,7 +2967,7 @@ const RichEditorPane = ({
 
     window.addEventListener("pagehide", persistBeforeSuspend);
     document.addEventListener("visibilitychange", persistWhenHidden);
-    const stopHibernatePrepare = window.edgeeverDesktop?.onHibernatePrepare?.(async () => {
+    const stopHibernatePrepare = window.stillnoteDesktop?.onHibernatePrepare?.(async () => {
       await persistCurrentDraft(title, tagsText, getMobilePlainTextValue());
     });
 
@@ -3348,7 +3350,7 @@ const RichEditorPane = ({
     target.kind === "image" ? t("editor.imageActions.failed") : t("editor.attachmentActions.failed"), [t]);
 
   const fetchResourceResponse = useCallback(async (target: ResourceMenuTarget) => {
-    const response = target.url.startsWith("edgeever-resource:") || target.url.startsWith("edgeever-staged:")
+    const response = target.url.startsWith("stillnote-resource:") || target.url.startsWith("stillnote-staged:")
       ? await fetch(target.url)
       : await api.getResourceResponse(target.url);
     if (!response.ok) throw new Error(response.statusText || getResourceActionFailure(target));
@@ -3511,10 +3513,10 @@ const RichEditorPane = ({
 
     startResourceAction();
     try {
-      if (target.kind === "image" && target.url.startsWith("edgeever-staged://") && window.edgeeverDesktop) {
+      if (target.kind === "image" && target.url.startsWith("stillnote-staged://") && window.stillnoteDesktop) {
         const stagedUrl = new URL(target.url);
         const stagedId = decodeURIComponent(stagedUrl.hostname || stagedUrl.pathname.replace(/^\//, ""));
-        if (stagedId) await window.edgeeverDesktop.removeStagedResource(stagedId);
+        if (stagedId) await window.stillnoteDesktop.removeStagedResource(stagedId);
       } else if (target.resourceId && !target.resourceId.startsWith("local_resource_")) {
         await repository.deleteResource(target.resourceId);
         await queryClient.invalidateQueries({ queryKey: ["resources"] });
@@ -4212,22 +4214,6 @@ const RichEditorPane = ({
               desktopFocusMode={desktopFocusMode}
               onToggleDesktopFocusMode={onToggleDesktopFocusMode}
             />
-            {!readOnly && (!mobileEditingActive || isMemoShared) && (
-              <IconTooltip label={t(isLocalMemoId(memo.id) ? "sharing.afterSync" : isMemoShared ? "sharing.manage" : "sharing.action")}>
-                <Button
-                  className="h-8 w-8 text-slate-500"
-                  size="icon"
-                  variant="ghost"
-                  type="button"
-                  aria-pressed={isMemoShared}
-                  aria-label={t(isLocalMemoId(memo.id) ? "sharing.afterSync" : isMemoShared ? "sharing.manage" : "sharing.action")}
-                  disabled={isLocalMemoId(memo.id)}
-                  onClick={() => setShareOpen(true)}
-                >
-                  {isMemoShared ? <Globe className="h-4 w-4" aria-hidden="true" /> : <Share2 className="h-4 w-4" aria-hidden="true" />}
-                </Button>
-              </IconTooltip>
-            )}
             {mobileEditingActive && !readOnly && (
               <button
                 className="inline-flex h-8 items-center justify-center rounded-full bg-slate-700 px-3 text-xs font-semibold text-slate-50 transition hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-500 sm:hidden"
@@ -4279,6 +4265,12 @@ const RichEditorPane = ({
             <MemoEditorHeaderActions
               moreButtonClassName={cn(!mobileEditingActive && !readOnly && "hidden sm:inline-flex")}
               moreMenuClassName="w-56 rounded-md"
+              onCloseNote={onCloseNote ? () => {
+                void (async () => {
+                  if (!await savePendingEditsRef.current()) return;
+                  onCloseNote();
+                })();
+              } : undefined}
               onOpenExecutionCenter={onOpenExecutionCenter}
               onSearch={() => openNoteSearch()}
               textNoteMenuItems={(
@@ -4513,7 +4505,7 @@ const RichEditorPane = ({
           "--memo-content-divider-spacing": `${MEMO_CONTENT_STYLE.divider.marginVertical}px`,
         } as CSSProperties}
         className={cn(
-          "edgeever-editor relative h-full min-h-0 bg-transparent",
+          "stillnote-editor relative h-full min-h-0 bg-transparent",
           MEMO_EDITOR_READING_GUTTER_PROPERTIES_CLASS_NAME,
           useMobilePlainTextEditor
             ? "overflow-visible"
@@ -4573,7 +4565,7 @@ const RichEditorPane = ({
                   inputMode="text"
                   name="memo-body"
                   spellCheck={spellcheckEnabled}
-                  data-edgeever-mobile-editor="plain-textarea"
+                  data-stillnote-mobile-editor="plain-textarea"
                   aria-label={t("editor.noteBodyAria")}
                   className="block min-h-[60dvh] w-full resize-none border border-slate-200 bg-card px-4 py-3 pr-32 text-base leading-7 text-slate-950 outline-none placeholder:text-slate-400 sm:px-7"
                   placeholder={t("editor.placeholder")}

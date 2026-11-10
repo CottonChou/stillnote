@@ -1,12 +1,12 @@
 import { dirname, join } from "node:path";
 
-export const SHARE_EXTENSION_BUNDLE_ID = "org.edgeever.desktop.share";
+export const SHARE_EXTENSION_BUNDLE_ID = "org.stillnote.desktop.share";
 
 export const macShareExtensionPath = (executablePath) =>
-  join(dirname(executablePath), "..", "PlugIns", "EdgeEverShare.appex");
+  join(dirname(executablePath), "..", "PlugIns", "StillNoteShare.appex");
 
 // macOS leaves a newly installed share extension disabled. The host app has to
-// elect it, or WeChat's share sheet never lists EdgeEver for that user.
+// elect it, or WeChat's share sheet never lists StillNote for that user.
 // Note: Embedded app extensions must not be registered via `pluginkit -a`, which
 // treats them as uncontained plug-ins and causes LaunchServices/pkd to mark them
 // as uninstalled. Only elect the extension via `pluginkit -e use`.

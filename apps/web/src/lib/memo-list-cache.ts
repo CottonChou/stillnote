@@ -1,5 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query";
-import { DEFAULT_MEMO_TITLE, type MemoSummary } from "@edgeever/shared";
+import { DEFAULT_MEMO_TITLE, type MemoSummary } from "@stillnote/shared";
 import { isNativeDesktopRuntime } from "./runtime";
 
 export type MemoListQueryData = {

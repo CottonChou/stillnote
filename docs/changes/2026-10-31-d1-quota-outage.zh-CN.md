@@ -2,7 +2,7 @@
 
 ## 已观察到的故障
 
-2026-10-31，桌面登录界面对 `tianma.edgeever.org` 显示 `http_500`。只读检查发现：`/api/release` 仍报告服务端 2.16.0，`/api/health` 返回 500，未登录会话探测返回 200。失败健康请求的 Worker 日志明确记录 `D1_ERROR: Your account has exceeded D1's free tier daily row read limit`。数据库检查在登录之前失败；这些观察不能确定历史读取由哪项操作产生，也不能证明数据丢失。
+2026-10-31，桌面登录界面对 `tianma.stillnote.org` 显示 `http_500`。只读检查发现：`/api/release` 仍报告服务端 2.16.0，`/api/health` 返回 500，未登录会话探测返回 200。失败健康请求的 Worker 日志明确记录 `D1_ERROR: Your account has exceeded D1's free tier daily row read limit`。数据库检查在登录之前失败；这些观察不能确定历史读取由哪项操作产生，也不能证明数据丢失。
 
 此前 Release 的 Demo 部署已经因同一账号级额度错误失败。Release 资产验证并不能证明个人实例可用。更新桌面应用不会部署服务端的读取预算修复。
 

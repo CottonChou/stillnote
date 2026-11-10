@@ -23,7 +23,7 @@ import * as m from "motion/react-m";
 import { Button } from "@/components/ui/button";
 
 import type { ShortcutSettings } from "@/lib/app-helpers";
-import type { NoteProsePatch, ResolvedNoteProse } from "@edgeever/shared";
+import type { NoteProsePatch, ResolvedNoteProse } from "@stillnote/shared";
 import { BETA_BADGE_CLASSNAME, WORKSPACE_PAGE_TITLE_CLASSNAME } from "@/lib/workspace-ui";
 import { cn } from "@/lib/utils";
 import { AccountInfoCard } from "./settings/AccountInfoCard";
@@ -46,7 +46,7 @@ import { AiModelCard } from "./settings/AiModelCard";
 import { SpeechTranscriptionCard } from "./settings/SpeechTranscriptionCard";
 import { DesktopAcpAgentCard } from "./settings/DesktopAcpAgentCard";
 import { ThemeToggle } from "./ThemeToggle";
-import type { AuthUser } from "@edgeever/shared";
+import type { AuthUser } from "@stillnote/shared";
 import { contentEnterMotion } from "@/lib/motion";
 import { useDeployedUpdateNotice } from "@/hooks/useDeployedUpdateNotice";
 import { ExecutionCenterButton } from "@/components/execution/ExecutionCenterButton";
@@ -121,7 +121,7 @@ export const SettingsPane = ({
   const requestedTab = searchParams.get("tab");
   const selectTab = (tab: TabKey | null) => setSearchParams(tab ? { tab } : {}, { replace: true });
   const { unseen: deployedUpdateUnseen } = useDeployedUpdateNotice();
-  const canClearLocalData = Boolean(window.edgeeverDesktop?.canClearLocalData);
+  const canClearLocalData = Boolean(window.stillnoteDesktop?.canClearLocalData);
 
   const tabItems: TabItem[] = [
     {
@@ -254,7 +254,7 @@ export const SettingsPane = ({
       case "data":
         return (
           <SettingsGroup>
-            {window.edgeeverDesktop?.backup ? <DesktopScheduledBackupCard /> : <DataExportCard refreshWorkspaceAfterImport={refreshWorkspaceAfterImport} />}
+            {window.stillnoteDesktop?.backup ? <DesktopScheduledBackupCard /> : <DataExportCard refreshWorkspaceAfterImport={refreshWorkspaceAfterImport} />}
             <ThirdPartyImportCard controller={noteImport} onOpenMemo={onOpenMemo} />
           </SettingsGroup>
         );

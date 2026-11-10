@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
-import { parseMarketplaceRegistry } from "@edgeever/plugin-api";
+import { parseMarketplaceRegistry } from "@stillnote/plugin-api";
 import { sha256Hex } from "./github-plugin-distribution.ts";
 import { loadPluginMarketplace, resolveOfficialPluginMarketplace } from "./plugin-marketplace.ts";
 import { stubUnavailableGithubInstance } from "./github-plugin-test-api.mjs";
@@ -20,16 +20,16 @@ describe("bundled plugin marketplace", () => {
       "/extensions/registry.json",
       request,
       "./",
-      "file:///Applications/EdgeEver.app/Contents/Resources/web/index.html",
+      "file:///Applications/StillNote.app/Contents/Resources/web/index.html",
     );
 
-    expect(requestedUrl).toBe("file:///Applications/EdgeEver.app/Contents/Resources/web/extensions/registry.json");
+    expect(requestedUrl).toBe("file:///Applications/StillNote.app/Contents/Resources/web/extensions/registry.json");
   });
 
   test("keeps verified checksums aligned with bundled extension files", async () => {
     const registry = parseMarketplaceRegistry(await Bun.file(new URL("../../../public/extensions/registry.json", import.meta.url)).json());
-    expect(registry.entries.map((entry) => entry.id)).not.toContain("org.edgeever.examples.recent-notes");
-    expect(registry.entries.map((entry) => entry.id)).not.toContain("org.edgeever.themes.nord-emerald");
+    expect(registry.entries.map((entry) => entry.id)).not.toContain("org.stillnote.examples.recent-notes");
+    expect(registry.entries.map((entry) => entry.id)).not.toContain("org.stillnote.themes.nord-emerald");
     for (const entry of registry.entries) {
       if (entry.distribution.type !== "manifest") continue;
       const relativeManifestPath = entry.distribution.manifestUrl.replace(/^\/extensions\//, "");
@@ -45,12 +45,12 @@ describe("bundled plugin marketplace", () => {
 
   test("pins the official Tasks release and all distributed assets", async () => {
     const registry = parseMarketplaceRegistry(await Bun.file(new URL("../../../public/extensions/registry.json", import.meta.url)).json());
-    const entry = registry.entries.find((candidate) => candidate.id === "org.edgeever.tasks");
+    const entry = registry.entries.find((candidate) => candidate.id === "org.stillnote.tasks");
 
     expect(entry).toMatchObject({
-      publisher: "edgeever",
-      repositoryUrl: "https://github.com/tianma-if/edgeever-tasks",
-      distribution: { type: "github", repositoryUrl: "https://github.com/tianma-if/edgeever-tasks" },
+      publisher: "stillnote",
+      repositoryUrl: "https://github.com/CottonChou/stillnote-tasks",
+      distribution: { type: "github", repositoryUrl: "https://github.com/CottonChou/stillnote-tasks" },
       verification: {
         version: "0.6.4",
         checksums: {
@@ -64,12 +64,12 @@ describe("bundled plugin marketplace", () => {
 
   test("pins the official AI RSS release and all distributed assets", async () => {
     const registry = parseMarketplaceRegistry(await Bun.file(new URL("../../../public/extensions/registry.json", import.meta.url)).json());
-    const entry = registry.entries.find((candidate) => candidate.id === "org.edgeever.plugins.ai-rss");
+    const entry = registry.entries.find((candidate) => candidate.id === "org.stillnote.plugins.ai-rss");
 
     expect(entry).toMatchObject({
-      publisher: "edgeever",
-      repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss",
-      distribution: { type: "github", repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss" },
+      publisher: "stillnote",
+      repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss",
+      distribution: { type: "github", repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss" },
       verification: {
         version: "0.5.9",
         checksums: {
@@ -86,21 +86,21 @@ describe("bundled plugin marketplace", () => {
       registryVersion: "1",
       updatedAt: "2026-09-08T00:00:00.000Z",
       entries: [{
-        id: "org.edgeever.plugins.ai-rss",
-        name: "EdgeEver AI RSS",
+        id: "org.stillnote.plugins.ai-rss",
+        name: "StillNote AI RSS",
         description: "RSS",
-        author: "EdgeEver",
-        publisher: "edgeever",
+        author: "StillNote",
+        publisher: "stillnote",
         category: "News & AI",
-        repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss",
-        distribution: { type: "github", repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss" },
+        repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss",
+        distribution: { type: "github", repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss" },
         verification: { version: "0.5.2", checksums: { manifestJson: "a".repeat(64), mainJs: "b".repeat(64) } },
       }],
     });
     const manifest = {
       type: "plugin",
-      id: "org.edgeever.plugins.ai-rss",
-      name: "EdgeEver AI RSS",
+      id: "org.stillnote.plugins.ai-rss",
+      name: "StillNote AI RSS",
       version: "0.5.3",
       apiVersion: "2",
       settingsUi: "host",
@@ -162,14 +162,14 @@ describe("bundled plugin marketplace", () => {
       registryVersion: "1",
       updatedAt: "2026-09-08T00:00:00.000Z",
       entries: [{
-        id: "org.edgeever.plugins.ai-rss",
-        name: "EdgeEver AI RSS",
+        id: "org.stillnote.plugins.ai-rss",
+        name: "StillNote AI RSS",
         description: "RSS",
-        author: "EdgeEver",
-        publisher: "edgeever",
+        author: "StillNote",
+        publisher: "stillnote",
         category: "News & AI",
-        repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss",
-        distribution: { type: "github", repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss" },
+        repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss",
+        distribution: { type: "github", repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss" },
         verification: { version: "0.5.5", checksums },
       }],
     });
@@ -179,8 +179,8 @@ describe("bundled plugin marketplace", () => {
       if (String(input).includes("/releases/latest/download/manifest.json")) {
         return new Response(JSON.stringify({
           type: "plugin",
-          id: "org.edgeever.plugins.ai-rss",
-          name: "EdgeEver AI RSS",
+          id: "org.stillnote.plugins.ai-rss",
+          name: "StillNote AI RSS",
           version: "0.5.5",
           apiVersion: "2",
           settingsUi: "host",
@@ -211,14 +211,14 @@ describe("bundled plugin marketplace", () => {
       registryVersion: "1",
       updatedAt: "2026-09-08T00:00:00.000Z",
       entries: [{
-        id: "org.edgeever.plugins.ai-rss",
-        name: "EdgeEver AI RSS",
+        id: "org.stillnote.plugins.ai-rss",
+        name: "StillNote AI RSS",
         description: "RSS",
-        author: "EdgeEver",
-        publisher: "edgeever",
+        author: "StillNote",
+        publisher: "stillnote",
         category: "News & AI",
-        repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss",
-        distribution: { type: "github", repositoryUrl: "https://github.com/tianma-if/edgeever-ai-rss" },
+        repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss",
+        distribution: { type: "github", repositoryUrl: "https://github.com/CottonChou/stillnote-ai-rss" },
         verification: { version: "0.5.3", checksums: { manifestJson: "a".repeat(64), mainJs: "b".repeat(64) } },
       }],
     });

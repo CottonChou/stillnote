@@ -3,14 +3,12 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "edgeever",
+      "name": "stillnote",
       "dependencies": {
         "@ai-sdk/anthropic": "4.0.78",
         "@ai-sdk/google": "4.0.93",
         "@ai-sdk/openai-compatible": "3.0.67",
         "@aws-sdk/client-s3": "^3.1095.0",
-        "@edgeever/plugin-api": "workspace:*",
-        "@edgeever/shared": "workspace:*",
         "@hono/zod-validator": "0.8.0",
         "@radix-ui/react-checkbox": "^1.3.11",
         "@radix-ui/react-collapsible": "^1.1.20",
@@ -22,6 +20,8 @@
         "@radix-ui/react-switch": "^1.3.7",
         "@radix-ui/react-toggle-group": "^1.1.19",
         "@radix-ui/react-tooltip": "^1.2.16",
+        "@stillnote/plugin-api": "workspace:*",
+        "@stillnote/shared": "workspace:*",
         "@tanstack/react-query": "5.104.2",
         "@tanstack/react-table": "^8.21.3",
         "@tanstack/react-virtual": "^3.14.13",
@@ -99,19 +99,19 @@
       },
     },
     "apps/api": {
-      "name": "@edgeever/api",
+      "name": "@stillnote/api",
       "version": "0.1.3",
       "dependencies": {
-        "@edgeever/public-network": "workspace:*",
+        "@stillnote/public-network": "workspace:*",
         "content-type": "3.1.1",
       },
     },
     "apps/desktop": {
-      "name": "@edgeever/desktop",
+      "name": "@stillnote/desktop",
       "version": "2.16.1",
       "dependencies": {
         "@agentclientprotocol/sdk": "^1.5.1",
-        "@edgeever/public-network": "workspace:*",
+        "@stillnote/public-network": "workspace:*",
         "croner": "^10.0.1",
         "electron-updater": "^6.6.2",
         "fflate": "0.8.3",
@@ -124,7 +124,7 @@
       },
     },
     "apps/extension": {
-      "name": "@edgeever/extension",
+      "name": "@stillnote/extension",
       "version": "0.4.0",
       "dependencies": {
         "@joplin/turndown-plugin-gfm": "1.0.68",
@@ -144,14 +144,14 @@
       },
     },
     "apps/mobile": {
-      "name": "@edgeever/mobile",
+      "name": "@stillnote/mobile",
       "version": "1.0.0",
       "dependencies": {
         "@antv/x6": "3.1.8",
-        "@edgeever/client": "workspace:*",
-        "@edgeever/shared": "workspace:*",
         "@expo/vector-icons": "^15.1.1",
         "@react-native-async-storage/async-storage": "2.2.0",
+        "@stillnote/client": "workspace:*",
+        "@stillnote/shared": "workspace:*",
         "@tanstack/query-async-storage-persister": "5.104.2",
         "@tanstack/react-query": "5.104.2",
         "@tanstack/react-query-persist-client": "5.104.2",
@@ -187,6 +187,7 @@
         "react": "19.2.3",
         "react-dom": "19.2.3",
         "react-native": "0.86.3",
+        "react-native-drawer-layout": "^4.2.7",
         "react-native-gesture-handler": "~2.32.0",
         "react-native-reanimated": "4.5.1",
         "react-native-safe-area-context": "~5.7.0",
@@ -205,7 +206,7 @@
       },
     },
     "apps/site": {
-      "name": "@edgeever/site",
+      "name": "@stillnote/site",
       "version": "0.1.0",
       "dependencies": {
         "@astrojs/mdx": "^8.0.3",
@@ -234,7 +235,7 @@
       },
     },
     "apps/web": {
-      "name": "@edgeever/web",
+      "name": "@stillnote/web",
       "version": "0.1.3",
       "dependencies": {
         "@antv/infographic": "0.2.20",
@@ -244,7 +245,6 @@
         "@codemirror/lang-markdown": "^6.5.2",
         "@codemirror/search": "6.7.1",
         "@codemirror/state": "6.7.1",
-        "@edgeever/client": "workspace:*",
         "@floating-ui/react-dom": "^2.1.8",
         "@fontsource-variable/noto-sans-sc": "^5.2.8",
         "@joplin/turndown-plugin-gfm": "1.0.68",
@@ -255,6 +255,7 @@
         "@radix-ui/react-slot": "^1.3.3",
         "@radix-ui/react-tooltip": "^1.2.16",
         "@radix-ui/react-use-controllable-state": "^1.2.6",
+        "@stillnote/client": "workspace:*",
         "@streamdown/cjk": "^1.0.3",
         "@streamdown/code": "^1.1.1",
         "@streamdown/math": "^1.0.2",
@@ -285,29 +286,29 @@
       },
     },
     "packages/client": {
-      "name": "@edgeever/client",
+      "name": "@stillnote/client",
       "version": "0.1.3",
       "dependencies": {
         "@ai-sdk/anthropic": "4.0.78",
         "@ai-sdk/google": "4.0.93",
         "@ai-sdk/openai-compatible": "3.0.67",
-        "@edgeever/shared": "workspace:*",
+        "@stillnote/shared": "workspace:*",
         "ai": "7.0.137",
       },
     },
     "packages/plugin-api": {
-      "name": "@edgeever/plugin-api",
+      "name": "@stillnote/plugin-api",
       "version": "0.1.0",
     },
     "packages/public-network": {
-      "name": "@edgeever/public-network",
+      "name": "@stillnote/public-network",
       "version": "0.1.3",
       "dependencies": {
         "ipaddr.js": "^2.2.0",
       },
     },
     "packages/shared": {
-      "name": "@edgeever/shared",
+      "name": "@stillnote/shared",
       "version": "0.1.3",
       "dependencies": {
         "@dagrejs/dagre": "3.1.1",
@@ -339,14 +340,14 @@
     },
     "packages/wrangler": {
       "name": "wrangler",
-      "version": "4.112.0-edgeever.1",
+      "version": "4.112.0-stillnote.1",
       "bin": {
         "wrangler": "bin/wrangler.js",
         "wrangler2": "bin/wrangler.js",
         "cf-wrangler": "bin/wrangler.js",
       },
       "dependencies": {
-        "edgeever-wrangler-cli": "npm:wrangler@4.112.0",
+        "stillnote-wrangler-cli": "npm:wrangler@4.112.0",
       },
     },
   },
@@ -809,26 +810,6 @@
     "@devicefarmer/adbkit-logcat": ["@devicefarmer/adbkit-logcat@2.1.3", "", {}, "sha512-yeaGFjNBc/6+svbDeul1tNHtNChw6h8pSHAt5D+JsedUrMTN7tla7B15WLDyekxsuS2XlZHRxpuC6m92wiwCNw=="],
 
     "@devicefarmer/adbkit-monkey": ["@devicefarmer/adbkit-monkey@1.2.1", "", {}, "sha512-ZzZY/b66W2Jd6NHbAhLyDWOEIBWC11VizGFk7Wx7M61JZRz7HR9Cq5P+65RKWUU7u6wgsE8Lmh9nE4Mz+U2eTg=="],
-
-    "@edgeever/api": ["@edgeever/api@workspace:apps/api"],
-
-    "@edgeever/client": ["@edgeever/client@workspace:packages/client"],
-
-    "@edgeever/desktop": ["@edgeever/desktop@workspace:apps/desktop"],
-
-    "@edgeever/extension": ["@edgeever/extension@workspace:apps/extension"],
-
-    "@edgeever/mobile": ["@edgeever/mobile@workspace:apps/mobile"],
-
-    "@edgeever/plugin-api": ["@edgeever/plugin-api@workspace:packages/plugin-api"],
-
-    "@edgeever/public-network": ["@edgeever/public-network@workspace:packages/public-network"],
-
-    "@edgeever/shared": ["@edgeever/shared@workspace:packages/shared"],
-
-    "@edgeever/site": ["@edgeever/site@workspace:apps/site"],
-
-    "@edgeever/web": ["@edgeever/web@workspace:apps/web"],
 
     "@egjs/hammerjs": ["@egjs/hammerjs@2.0.17", "", { "dependencies": { "@types/hammerjs": "^2.0.36" } }, "sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A=="],
 
@@ -1507,6 +1488,26 @@
     "@speed-highlight/core": ["@speed-highlight/core@1.2.17", "", {}, "sha512-Z92FwKpCtfaW1V0jTU/fh3QzYEZN8wDwrzRIBoADCJfn4mJCNcJN/XegifX7BDrQ8/h9Xh/JnbyMchL0FqXrkg=="],
 
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
+
+    "@stillnote/api": ["@stillnote/api@workspace:apps/api"],
+
+    "@stillnote/client": ["@stillnote/client@workspace:packages/client"],
+
+    "@stillnote/desktop": ["@stillnote/desktop@workspace:apps/desktop"],
+
+    "@stillnote/extension": ["@stillnote/extension@workspace:apps/extension"],
+
+    "@stillnote/mobile": ["@stillnote/mobile@workspace:apps/mobile"],
+
+    "@stillnote/plugin-api": ["@stillnote/plugin-api@workspace:packages/plugin-api"],
+
+    "@stillnote/public-network": ["@stillnote/public-network@workspace:packages/public-network"],
+
+    "@stillnote/shared": ["@stillnote/shared@workspace:packages/shared"],
+
+    "@stillnote/site": ["@stillnote/site@workspace:apps/site"],
+
+    "@stillnote/web": ["@stillnote/web@workspace:apps/web"],
 
     "@streamdown/cjk": ["@streamdown/cjk@1.0.3", "", { "dependencies": { "remark-cjk-friendly": "^2.0.1", "remark-cjk-friendly-gfm-strikethrough": "^2.0.1", "unist-util-visit": "^5.0.0" }, "peerDependencies": { "react": "^18.0.0 || ^19.0.0" } }, "sha512-WRg8HR/gHbBoTgsMd91OKFUClIoDcEFVofJvluvEAyjx3KpU0aGgD9tGDqHkHj14ShoMSkX0IYetWGegTcwIJw=="],
 
@@ -2439,8 +2440,6 @@
     "duplexer2": ["duplexer2@0.1.4", "", { "dependencies": { "readable-stream": "^2.0.2" } }, "sha512-asLFVfWWtJ90ZyOUHMqk7/S2w2guQKxUI2itj3d92ADHhxUSbCMGi1f1cBcJ7xM1To+pE/Khbwo1yuNbMEPKeA=="],
 
     "ecdsa-sig-formatter": ["ecdsa-sig-formatter@1.0.11", "", { "dependencies": { "safe-buffer": "^5.0.1" } }, "sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ=="],
-
-    "edgeever-wrangler-cli": ["wrangler@4.112.0", "", { "dependencies": { "@cloudflare/kv-asset-handler": "0.5.0", "@cloudflare/unenv-preset": "2.16.1", "blake3-wasm": "2.1.5", "esbuild": "0.28.1", "miniflare": "4.20260714.0", "path-to-regexp": "6.3.0", "unenv": "2.0.0-rc.24", "workerd": "1.20260714.1" }, "optionalDependencies": { "fsevents": "2.3.3" }, "peerDependencies": { "@cloudflare/workers-types": "^5.20260714.1" }, "optionalPeers": ["@cloudflare/workers-types"], "bin": { "cf-wrangler": "bin/cf-wrangler.js", "wrangler": "bin/wrangler.js", "wrangler2": "bin/wrangler.js" } }, "sha512-5H+XUD0TySCv1LuktFHDIEOkboH2nTfQs+35L+USt3MtntjDTMVIJprLgQcL2WBjulOyjxpd1vyTiSTJVW5MjQ=="],
 
     "ee-first": ["ee-first@1.1.1", "", {}, "sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow=="],
 
@@ -4028,6 +4027,8 @@
 
     "statuses": ["statuses@2.0.2", "", {}, "sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw=="],
 
+    "stillnote-wrangler-cli": ["wrangler@4.112.0", "", { "dependencies": { "@cloudflare/kv-asset-handler": "0.5.0", "@cloudflare/unenv-preset": "2.16.1", "blake3-wasm": "2.1.5", "esbuild": "0.28.1", "miniflare": "4.20260714.0", "path-to-regexp": "6.3.0", "unenv": "2.0.0-rc.24", "workerd": "1.20260714.1" }, "optionalDependencies": { "fsevents": "2.3.3" }, "peerDependencies": { "@cloudflare/workers-types": "^5.20260714.1" }, "optionalPeers": ["@cloudflare/workers-types"], "bin": { "cf-wrangler": "bin/cf-wrangler.js", "wrangler": "bin/wrangler.js", "wrangler2": "bin/wrangler.js" } }, "sha512-5H+XUD0TySCv1LuktFHDIEOkboH2nTfQs+35L+USt3MtntjDTMVIJprLgQcL2WBjulOyjxpd1vyTiSTJVW5MjQ=="],
+
     "stop-iteration-iterator": ["stop-iteration-iterator@1.1.0", "", { "dependencies": { "es-errors": "^1.3.0", "internal-slot": "^1.1.0" } }, "sha512-eLoXW/DHyl62zxY4SCaIgnRhuMr6ri4juEYARS8E6sCEqzKpOiE521Ucofdx+KnDZl5xmvGYaaKCk5FEOxJCoQ=="],
 
     "stream-buffers": ["stream-buffers@2.2.0", "", {}, "sha512-uyQK/mx5QjHun80FLJTfaWE7JtwfRMKBLkMne6udYOmvH0CawotVa7TfgYHzAnpphn4+TweIx1QKMnRIbipmUg=="],
@@ -4534,12 +4535,6 @@
 
     "@devicefarmer/adbkit/debug": ["debug@4.3.7", "", { "dependencies": { "ms": "^2.1.3" }, "peerDependencies": { "supports-color": "*" }, "optionalPeers": ["supports-color"] }, "sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ=="],
 
-    "@edgeever/mobile/react": ["react@19.2.3", "", {}, "sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA=="],
-
-    "@edgeever/mobile/react-dom": ["react-dom@19.2.3", "", { "dependencies": { "scheduler": "^0.27.0" }, "peerDependencies": { "react": "^19.2.3" } }, "sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg=="],
-
-    "@edgeever/shared/marked": ["marked@17.0.6", "", { "bin": { "marked": "bin/marked.js" } }, "sha512-gB0gkNafnonOw0obSTEGZTT86IuhILt2Wfx0mWH/1Au83kybTayroZ/V6nS25mN7u8ASy+5fMhgB3XPNrOZdmA=="],
-
     "@electron/fuses/chalk": ["chalk@4.1.2", "", { "dependencies": { "ansi-styles": "^4.1.0", "supports-color": "^7.1.0" } }, "sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA=="],
 
     "@electron/fuses/fs-extra": ["fs-extra@9.1.0", "", { "dependencies": { "at-least-node": "^1.0.0", "graceful-fs": "^4.2.0", "jsonfile": "^6.0.1", "universalify": "^2.0.0" } }, "sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ=="],
@@ -4697,6 +4692,12 @@
     "@shikijs/primitive/@types/hast": ["@types/hast@3.0.5", "", { "dependencies": { "@types/unist": "*" } }, "sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g=="],
 
     "@shikijs/types/@types/hast": ["@types/hast@3.0.5", "", { "dependencies": { "@types/unist": "*" } }, "sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g=="],
+
+    "@stillnote/mobile/react": ["react@19.2.3", "", {}, "sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA=="],
+
+    "@stillnote/mobile/react-dom": ["react-dom@19.2.3", "", { "dependencies": { "scheduler": "^0.27.0" }, "peerDependencies": { "react": "^19.2.3" } }, "sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg=="],
+
+    "@stillnote/shared/marked": ["marked@17.0.6", "", { "bin": { "marked": "bin/marked.js" } }, "sha512-gB0gkNafnonOw0obSTEGZTT86IuhILt2Wfx0mWH/1Au83kybTayroZ/V6nS25mN7u8ASy+5fMhgB3XPNrOZdmA=="],
 
     "@streamdown/code/shiki": ["shiki@3.23.0", "", { "dependencies": { "@shikijs/core": "3.23.0", "@shikijs/engine-javascript": "3.23.0", "@shikijs/engine-oniguruma": "3.23.0", "@shikijs/langs": "3.23.0", "@shikijs/themes": "3.23.0", "@shikijs/types": "3.23.0", "@shikijs/vscode-textmate": "^10.0.2", "@types/hast": "^3.0.4" } }, "sha512-55Dj73uq9ZXL5zyeRPzHQsK7Nbyt6Y10k5s7OjuFZGMhpp4r/rsLBH0o/0fstIzX1Lep9VxefWljK/SKCzygIA=="],
 

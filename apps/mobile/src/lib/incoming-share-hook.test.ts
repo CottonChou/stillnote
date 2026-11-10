@@ -57,7 +57,7 @@ function mountHook(initialPayloads = article) {
     shareAgain: (payloads = article) => { nativePayloads = payloads; },
     mount: () => effects.shift()?.(),
     foreground: () => listeners.get("app:change")?.("active"),
-    incomingShare: () => listeners.get("link:url")?.({ url: "edgeever://expo-sharing" }),
+    incomingShare: () => listeners.get("link:url")?.({ url: "stillnote://expo-sharing" }),
     requests,
   };
 }

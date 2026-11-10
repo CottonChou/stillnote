@@ -70,7 +70,7 @@ for (const kind of ["image", "attachment"]) {
       releaseUpload();
       await expect(placeholder).toHaveCount(0);
       if (kind === "image") {
-        const image = editor.locator(".edgeever-image-node");
+        const image = editor.locator(".stillnote-image-node");
         await expect(image).toBeVisible();
         await expect.poll(() => editor.evaluate((element) => {
           const imageBlock = Array.from(element.children).find((child) => child.querySelector("img"));

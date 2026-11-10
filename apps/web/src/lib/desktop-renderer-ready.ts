@@ -3,7 +3,7 @@ const RENDERER_READY_FALLBACK_MS = 1_000;
 export const reportDesktopRendererReadyAfterPaint = () => {
   if (
     typeof window === "undefined"
-    || document.documentElement.dataset.edgeeverRendererReady === "true"
+    || document.documentElement.dataset.stillnoteRendererReady === "true"
   ) return () => {};
 
   let cancelled = false;
@@ -11,12 +11,12 @@ export const reportDesktopRendererReadyAfterPaint = () => {
   const reportReadyIfMounted = () => {
     if (
       cancelled
-      || document.documentElement.dataset.edgeeverRendererReady === "true"
+      || document.documentElement.dataset.stillnoteRendererReady === "true"
       || !document.querySelector("#root > *")
     ) return;
 
-    document.documentElement.dataset.edgeeverRendererReady = "true";
-    window.edgeeverDesktop?.rendererBootstrapReady();
+    document.documentElement.dataset.stillnoteRendererReady = "true";
+    window.stillnoteDesktop?.rendererBootstrapReady();
   };
 
   const firstFrame = window.requestAnimationFrame(() => {

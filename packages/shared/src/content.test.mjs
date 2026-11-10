@@ -82,7 +82,7 @@ describe("PDF attachment Markdown compatibility", () => {
             type: "link",
             attrs: {
               href: "/api/v1/resources/res_pdf/blob",
-              class: "edgeever-attachment-link edgeever-attachment-kind-pdf",
+              class: "stillnote-attachment-link stillnote-attachment-kind-pdf",
               attachmentFilename: "报告.pdf",
               attachmentMimeType: "application/pdf",
               attachmentByteSize: 12582912,
@@ -174,7 +174,7 @@ describe("file attachment Markdown compatibility", () => {
   });
 
   test("keeps an ordinary standalone web link as text", () => {
-    const doc = markdownToDoc("[EdgeEver](https://edgeever.org)");
+    const doc = markdownToDoc("[StillNote](https://stillnote.org)");
     expect(doc.content[0]?.content?.[0]?.type).toBe("text");
   });
 
@@ -222,7 +222,7 @@ describe("file attachment Markdown compatibility", () => {
     const markdown = "Before [](https://example.com/path) and [named](https://example.com).";
     const doc = markdownToDoc(markdown);
     expect(doc.content[0]?.content?.[1]).toMatchObject({
-      type: "edgeeverEmptyExternalLink",
+      type: "stillnoteEmptyExternalLink",
       attrs: { href: "https://example.com/path" },
     });
     expect(docToMarkdown(doc)).toBe(markdown);
@@ -261,9 +261,9 @@ describe("file attachment Markdown compatibility", () => {
 
 describe("memo character count", () => {
   test("counts punctuation while excluding whitespace and formatting", () => {
-    const doc = markdownToDoc("你好， **EdgeEver**!\n\n下一行");
+    const doc = markdownToDoc("你好， **StillNote**!\n\n下一行");
 
-    expect(countMemoCharacters(doc)).toBe(15);
+    expect(countMemoCharacters(doc)).toBe(16);
   });
 
   test("counts grapheme clusters and ignores image labels", () => {
@@ -518,7 +518,7 @@ describe("Theme block compatibility", () => {
     const doc = {
       type: "doc",
       content: [{
-        type: "edgeeverThemeBlock",
+        type: "stillnoteThemeBlock",
         attrs: { kind: "key-point" },
         content: [{ type: "paragraph", content: [{ type: "text", text: "Important" }] }],
       }],
@@ -531,7 +531,7 @@ describe("Theme block compatibility", () => {
     const doc = {
       type: "doc",
       content: [{
-        type: "edgeeverThemeBlock",
+        type: "stillnoteThemeBlock",
         attrs: { kind: "intro" },
         content: [{ type: "paragraph", content: [{ type: "text", text: "Read this first" }] }],
       }],
@@ -743,7 +743,7 @@ describe("image gallery compatibility", () => {
   const galleryDoc = {
     type: "doc",
     content: [{
-      type: "edgeeverImageGallery",
+      type: "stillnoteImageGallery",
       attrs: { layout: "auto" },
       content: [
         { type: "image", attrs: { src: "/one.png", alt: "one" } },
@@ -819,7 +819,7 @@ describe("plugin embed Markdown compatibility", () => {
   test("round-trips a generic plugin embed without requiring the plugin renderer", () => {
     const attributes = {
       id: "embed_1",
-      pluginId: "org.edgeever.excalidraw",
+      pluginId: "org.stillnote.excalidraw",
       type: "drawing",
       resourceId: "res_scene",
       previewResourceId: "res_preview",

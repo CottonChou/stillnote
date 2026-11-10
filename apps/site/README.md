@@ -1,12 +1,12 @@
-# EdgeEver 官方网站
+# StillNote 官方网站
 
-本目录是 **EdgeEver** monorepo 内的官方网站应用，位于 `apps/site`。
+本目录是 **StillNote** monorepo 内的官方网站应用，位于 `apps/site`。
 
-> **EdgeEver：基于 Cloudflare 自托管的免费开源『印象笔记』，原生支持 AI Agent 接入。**
+> **StillNote：基于 Cloudflare 自托管的免费开源『印象笔记』，原生支持 AI Agent 接入。**
 >
-> 核心项目仓库：[GitHub - tianma-if/edgeever](https://github.com/tianma-if/edgeever)
+> 核心项目仓库：[GitHub - CottonChou/stillnote](https://github.com/CottonChou/stillnote)
 > 
-> 官方网站地址：[https://edgeever.org](https://edgeever.org) (演示环境：[https://demo.edgeever.org](https://demo.edgeever.org))
+> 官方网站地址：[https://stillnote.org](https://stillnote.org) (演示环境：[https://demo.stillnote.org](https://demo.stillnote.org))
 
 ---
 

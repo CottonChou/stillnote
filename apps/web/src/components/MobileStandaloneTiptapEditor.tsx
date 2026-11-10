@@ -7,14 +7,14 @@ import { FileAttachment } from "@/components/editor/FileAttachment";
 import Image from "@tiptap/extension-image";
 import { mergeAttributes } from "@tiptap/core";
 import Placeholder from "@tiptap/extension-placeholder";
-import { ImageGallery, createExcerpt, createEdgeEverDocumentExtensions, docToMarkdown, docToText, emptyDoc, getImageReferrerPolicy, isPdfAttachment, wrapDetailsContentHtml, type MemoDetail, type MemoEditSession, type Notebook, type TagSummary, type TiptapDoc } from "@edgeever/shared";
-import { createEdgeEverMathematics } from "@edgeever/shared/mathematics";
-import { createNativeImageGalleryView, NATIVE_IMAGE_GALLERY_CSS } from "@edgeever/shared/native-image-gallery";
-import { NEW_IMAGE_WIDTH_PERCENT } from "@edgeever/shared/image-display";
+import { ImageGallery, createExcerpt, createStillNoteDocumentExtensions, docToMarkdown, docToText, emptyDoc, getImageReferrerPolicy, isPdfAttachment, wrapDetailsContentHtml, type MemoDetail, type MemoEditSession, type Notebook, type TagSummary, type TiptapDoc } from "@stillnote/shared";
+import { createStillNoteMathematics } from "@stillnote/shared/mathematics";
+import { createNativeImageGalleryView, NATIVE_IMAGE_GALLERY_CSS } from "@stillnote/shared/native-image-gallery";
+import { NEW_IMAGE_WIDTH_PERCENT } from "@stillnote/shared/image-display";
 import { insertUploadedResources } from "@/lib/resource-insertion";
 import { getResourceInsertionTarget } from "@/lib/resource-insertion-target";
-import { clearMobileEditorUndoHistory, getMobileEditorInputAttributes, getMobileEditorPlaceholder } from "@edgeever/shared/mobile-editor";
-import { EdgeEverLink } from "@edgeever/shared/editor-link";
+import { clearMobileEditorUndoHistory, getMobileEditorInputAttributes, getMobileEditorPlaceholder } from "@stillnote/shared/mobile-editor";
+import { StillNoteLink } from "@stillnote/shared/editor-link";
 import { activateHeadingAnchorClick } from "@/lib/editor-heading-anchor";
 import { createInlineFieldExtension } from "@/components/editor/InlineField";
 import {
@@ -203,8 +203,8 @@ export const MobileStandaloneTiptapEditor = ({
   const inlineFieldExtension = useMemo(() => createInlineFieldExtension(i18n.getFixedT(locale)), [i18n, locale]);
   const editor = useEditor({
     extensions: [
-      ...createEdgeEverDocumentExtensions({
-        mathematics: createEdgeEverMathematics(),
+      ...createStillNoteDocumentExtensions({
+        mathematics: createStillNoteMathematics(),
         starterKit: { link: false },
         image: ProtectedExternalImage.configure({
           allowBase64: false,
@@ -217,7 +217,7 @@ export const MobileStandaloneTiptapEditor = ({
         file: FileAttachment,
         table: { table: { renderWrapper: true } },
       }),
-      EdgeEverLink,
+      StillNoteLink,
       inlineFieldExtension,
       ThemeBlock,
       Placeholder.configure({
@@ -226,7 +226,7 @@ export const MobileStandaloneTiptapEditor = ({
     ],
     content: emptyDoc(),
     editorProps: {
-      attributes: getMobileEditorInputAttributes("edgeever-mobile-tiptap-content"),
+      attributes: getMobileEditorInputAttributes("stillnote-mobile-tiptap-content"),
       transformPastedHTML: (html) => wrapDetailsContentHtml(html),
       handleKeyDown: (view, event) => {
         if (event.key !== "Backspace" || !preserveEmptyListIndentOnBackspace(view.state, view.dispatch)) {
@@ -653,7 +653,7 @@ export const MobileStandaloneTiptapEditor = ({
           .insertContent({
             type: "paragraph",
             content: [{
-              type: "edgeeverPdfAttachment",
+              type: "stillnotePdfAttachment",
               attrs: {
                 url: resource.url,
                 label: `附件：${resource.filename || file.name}`,
@@ -673,7 +673,7 @@ export const MobileStandaloneTiptapEditor = ({
           .insertContent({
             type: "paragraph",
             content: [{
-              type: "edgeeverFileAttachment",
+              type: "stillnoteFileAttachment",
               attrs: {
                 url: resource.url,
                 label: `附件：${filename}`,
@@ -1046,7 +1046,7 @@ export const MobileStandaloneTiptapEditor = ({
         )}
 
         <div
-          className="edgeever-mobile-tiptap-editor"
+          className="stillnote-mobile-tiptap-editor"
           onClickCapture={(event) => {
             activateHeadingAnchorClick(event, editor && !editor.isDestroyed ? editor.view : null);
           }}

@@ -13,7 +13,7 @@ import type {
   AiTranscriptionSettings,
   AiTargetLanguage,
   AiTone,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import {
   AI_GENERATION_MAX_OUTPUT_TOKENS,
   createAiGenerationResultBoundary,
@@ -21,7 +21,7 @@ import {
   getDefaultAiPromptSeed,
   isAiTextAttachment,
   normalizeAiGenerationText,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 
 import type { ModelMessage, UserContent } from "ai";
 import { AppError } from "./app-error";
@@ -33,7 +33,7 @@ export {
   createAiGenerationStreamNormalizer,
   normalizeAiGenerationText,
 };
-export type { AiGenerationResultBoundary, AiPreparedGeneration } from "@edgeever/shared";
+export type { AiGenerationResultBoundary, AiPreparedGeneration } from "@stillnote/shared";
 
 export type AiProviderConfigRow = {
   id: string;
@@ -78,38 +78,38 @@ export const resolveCredentialEncryptionKey = (value: string | undefined) => {
 };
 
 export type AiCredentialEnvironment = {
-  EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY?: string;
-  EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS?: string;
-  EDGE_EVER_STORAGE_ENCRYPTION_KEY?: string;
-  EDGE_EVER_AUTH_PASSWORD?: string;
-  EDGE_EVER_AUTH_PASSWORD_HASH?: string;
-  EDGE_EVER_AUTH_PASSWORD_FALLBACK?: string;
+  STILLNOTE_CREDENTIALS_ENCRYPTION_KEY?: string;
+  STILLNOTE_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS?: string;
+  STILLNOTE_STORAGE_ENCRYPTION_KEY?: string;
+  STILLNOTE_AUTH_PASSWORD?: string;
+  STILLNOTE_AUTH_PASSWORD_HASH?: string;
+  STILLNOTE_AUTH_PASSWORD_FALLBACK?: string;
 };
 
 const uniqueKeys = (values: Array<string | undefined>) => Array.from(new Set(values.filter(Boolean) as string[]));
 const deriveAiCredentialKey = (value: string | undefined) => value
-  ? `edgeever:ai-credentials:v1:${value}`
+  ? `stillnote:ai-credentials:v1:${value}`
   : undefined;
 
 /**
- * Authentication is already required by a normal EdgeEver deployment, so its
+ * Authentication is already required by a normal StillNote deployment, so its
  * stable deployment secret is the zero-configuration credential-encryption
  * root. A dedicated key is an optional advanced override. The legacy storage
  * key remains in the decryption ring for AI credentials saved before v1.15.
  */
 export const resolveAiCredentialEncryptionKeys = (environment: AiCredentialEnvironment) => uniqueKeys([
-  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY)),
-  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.EDGE_EVER_AUTH_PASSWORD)),
-  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.EDGE_EVER_AUTH_PASSWORD_HASH)),
-  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS)),
-  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.EDGE_EVER_AUTH_PASSWORD_FALLBACK)),
-  resolveCredentialEncryptionKey(environment.EDGE_EVER_STORAGE_ENCRYPTION_KEY),
+  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.STILLNOTE_CREDENTIALS_ENCRYPTION_KEY)),
+  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.STILLNOTE_AUTH_PASSWORD)),
+  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.STILLNOTE_AUTH_PASSWORD_HASH)),
+  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.STILLNOTE_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS)),
+  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.STILLNOTE_AUTH_PASSWORD_FALLBACK)),
+  resolveCredentialEncryptionKey(environment.STILLNOTE_STORAGE_ENCRYPTION_KEY),
 ]);
 
 export const resolvePrimaryAiCredentialEncryptionKey = (environment: AiCredentialEnvironment) => [
-  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY)),
-  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.EDGE_EVER_AUTH_PASSWORD)),
-  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.EDGE_EVER_AUTH_PASSWORD_HASH)),
+  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.STILLNOTE_CREDENTIALS_ENCRYPTION_KEY)),
+  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.STILLNOTE_AUTH_PASSWORD)),
+  deriveAiCredentialKey(resolveCredentialEncryptionKey(environment.STILLNOTE_AUTH_PASSWORD_HASH)),
 ].find(Boolean);
 
 export const decryptAiCredential = async (

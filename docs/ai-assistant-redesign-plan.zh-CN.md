@@ -1,6 +1,6 @@
-# EdgeEver AI 助手重构与本地 Agent 接入方案设计
+# StillNote AI 助手重构与本地 Agent 接入方案设计
 
-本文档面向 EdgeEver 核心团队，梳理并评估 AI 助手交互升级、UI 组件重构、模式收敛以及本地 AI Agent（Codex、Antigravity 等）调用的落地技术方案。
+本文档面向 StillNote 核心团队，梳理并评估 AI 助手交互升级、UI 组件重构、模式收敛以及本地 AI Agent（Codex、Antigravity 等）调用的落地技术方案。
 
 ---
 
@@ -16,7 +16,7 @@
 1. **交互形态升级**：由“居中浮动弹窗”升级为现代知识工具标准的“右侧伴随式侧边栏（Right Sidebar）”，支持宽度调节与自适应折叠。
 2. **UI 组件标准化**：全面基于 Vercel `ai-elements`（与项目 `shadcn/ui` 深度整合）重构对话流、思考链（Reasoning）与状态展示，彻底消除手工样板代码。
 3. **消除模式割裂**：废弃多余的“问答 vs Agent”双 Tab，统一收敛为单一的全局 Companion Agent；常用写作意图通过快捷技能（Skills / Slash Commands）触发，选区作为 Agent 上下文。旧问答和行内改写链路不作为新架构的兼容目标。
-4. **标准化本地 Agent 接入**：采用轻量且符合行业开放标准的 **ACP (Agent Client Protocol)** 及本地服务通道，让 EdgeEver 能够丝滑调度本机已有的 AI Agent。
+4. **标准化本地 Agent 接入**：采用轻量且符合行业开放标准的 **ACP (Agent Client Protocol)** 及本地服务通道，让 StillNote 能够丝滑调度本机已有的 AI Agent。
 5. **附件成为基础输入**：统一 Agent 支持用户主动添加图片、PDF 与常见文本文件，用于分析截图、文档和资料；附件必须真正送达所选执行通道，不以仅有上传按钮或文件名展示作为完成标准。
 
 ---
@@ -26,11 +26,11 @@
 ### 决策一：采用 ACP (Agent Client Protocol) 连接本地 Agent
 
 * **核心结论**：桌面版以 **`@agentclientprotocol/sdk` (ACP)** 作为本地 Agent 的首选接入协议。AI SDK Harness 并非不能在本机运行，但其沙箱、会话和适配层不直接解决“调用用户电脑上已配置 Agent”的需求，本阶段不引入。
-* **背景与定位**：ACP 标准化客户端与 Agent 之间的会话、进度和权限交互，适合由 EdgeEver 桌面应用充当客户端。首版采用稳定的 ACP v1；是否支持某个 Agent，以具体 ACP 适配器和真实握手结果为准。[ACP 协议概览](https://agentclientprotocol.com/protocol/v1/overview)
+* **背景与定位**：ACP 标准化客户端与 Agent 之间的会话、进度和权限交互，适合由 StillNote 桌面应用充当客户端。首版采用稳定的 ACP v1；是否支持某个 Agent，以具体 ACP 适配器和真实握手结果为准。[ACP 协议概览](https://agentclientprotocol.com/protocol/v1/overview)
 * **通信方式**：
   * **首版本地子进程模式**：Electron 主进程启动明确支持的 ACP 服务程序，通过 JSON-RPC over `stdio` 通信，渲染进程只通过受限的 preload / IPC 接口发送请求与接收事件。Codex 对应 [codex-acp](https://github.com/agentclientprotocol/codex-acp)，Antigravity 对应 [ACP 注册表中的适配器](https://github.com/agentclientprotocol/registry/blob/main/antigravity-acp/agent.json)；普通 `codex`、`agy` 命令或已打开的桌面 App 不能直接视为 ACP 服务。其他 Agent 逐个验证后再加入。
   * **远程连接暂不纳入首版**：ACP 也面向远程场景，但 HTTP / WebSocket 的完整支持仍在演进；不让网页前端自行连接任意 `127.0.0.1` 端口。
-* **协议优势与边界**：ACP 提供 `initialize`、认证协商、会话创建与可选续接、进度通知、取消及权限请求等接口；具体能力取决于 Agent 握手声明，文件 Diff 也不等于 EdgeEver 笔记修改提案。
+* **协议优势与边界**：ACP 提供 `initialize`、认证协商、会话创建与可选续接、进度通知、取消及权限请求等接口；具体能力取决于 Agent 握手声明，文件 Diff 也不等于 StillNote 笔记修改提案。
 * **附件能力边界**：`session/prompt` 可以携带内容块，但图片与内嵌资源分别受 Agent 的 `promptCapabilities.image`、`promptCapabilities.embeddedContext` 约束；不能因侧栏允许选择文件，就假定每个 ACP 适配器都能读取它。[ACP 提示内容](https://agentclientprotocol.com/protocol/v1/prompt-turn) · [ACP 能力协商](https://agentclientprotocol.com/protocol/v1/initialization)
 * **本地 Agent 可用性验证**：
   * 用户选择 Agent 时，先查找已知 ACP 适配器的可执行程序，允许手动指定路径；不扫描凭据目录，也不根据某个 App 是否安装推断登录状态。
@@ -47,8 +47,8 @@
   * 现有 `<Conversation>` / `<ConversationContent>` 提供对话容器与滚动控制；现有 `<Message>` / `<MessageContent>` / `<MessageResponse>` 用于消息布局与流式 Markdown。
   * 从官方组件仓库按需引入 `reasoning`、`prompt-input` 和 `attachments`；用 `<Reasoning>` / `<ReasoningTrigger>` / `<ReasoningContent>` 展示实际提供的推理内容，用 `<PromptInput>` 与 `<Attachments>` 等组件构建含附件的侧栏输入区。[Reasoning 文档](https://elements.ai-sdk.dev/components/reasoning) · [Prompt Input 文档](https://elements.ai-sdk.dev/components/prompt-input) · [Attachments 文档](https://elements.ai-sdk.dev/components/attachments)
   * `Thinking` 不作为独立组件或接入目标；若通道只提供运行状态而不提供推理文本，只展示状态，不伪造推理内容。
-* **EdgeEver 专有能力适配**：
-  * **新笔记编辑流程**：不要求复用旧 `CompanionActionCard` 或行内替换交互。后续以结构化编辑提案、EdgeEver 后端校验、Diff 预览和用户确认建立新的写入流程；ACP 工具事件与文件 Diff 可以展示执行进度，但不能直接转换成可应用的笔记动作。
+* **StillNote 专有能力适配**：
+  * **新笔记编辑流程**：不要求复用旧 `CompanionActionCard` 或行内替换交互。后续以结构化编辑提案、StillNote 后端校验、Diff 预览和用户确认建立新的写入流程；ACP 工具事件与文件 Diff 可以展示执行进度，但不能直接转换成可应用的笔记动作。
   * **富文本渲染**：当前 `MessageResponse` 的 Streamdown 只配置了 `cjk`。`@streamdown/code`、`@streamdown/mermaid`、`@streamdown/math` 已在 Web 依赖中，但还需接入消息渲染，并检查插件样式与 KaTeX 样式。先明确插件只作用于新助手消息还是作用于共享的 `MessageResponse`；若修改共享组件，须同时回归使用它的信息图对话。[Streamdown 插件用法](https://streamdown.ai/docs/usage)
 
 ---
@@ -78,7 +78,7 @@
   2. **常用写作意图作为 Agent 快捷入口**：
      * 总结、翻译、润色等可提供快捷技能胶囊（Pills）与斜杠命令（Slash Commands），其结果先作为 Agent 回复呈现，不承诺旧版的一键替换行为；
      * 编辑器选区随请求提供给 Agent，并在侧栏显示上下文徽标，避免用户重复复制。
-  3. **重新设计笔记写入**：Agent 如需修改笔记，必须提交结构化提案；EdgeEver 后端校验目标、权限与版本后，侧栏展示 Diff，由用户确认后应用。旧气泡菜单的 AI 改写、行内 Diff、直接替换和 `CompanionActionCard` 均可随旧链路移除；新写入流程完成前，相关任务只返回文本建议。
+  3. **重新设计笔记写入**：Agent 如需修改笔记，必须提交结构化提案；StillNote 后端校验目标、权限与版本后，侧栏展示 Diff，由用户确认后应用。旧气泡菜单的 AI 改写、行内 Diff、直接替换和 `CompanionActionCard` 均可随旧链路移除；新写入流程完成前，相关任务只返回文本建议。
 
 ---
 
@@ -94,7 +94,7 @@
 
 ### 现有模型路由策略（保留）
 
-EdgeEver 的 `packages/client/src/index.ts` 已实现模型 API 直连、浏览器端 CORS 探测及服务端代理回退；Companion 也已有相应的准备、执行和检查点接口。本方案保留路由策略，不新增“客户端永远直连”的原则；附件功能需要扩展 Companion 输入与模型消息，但不应无意改变凭据准备、服务端工具调用或回退行为。模型请求是否经过实例服务端，取决于运行环境、模型提供方和当前调用路径；隐私、延迟与带宽效果需按实际路径测量，不能一概保证。
+StillNote 的 `packages/client/src/index.ts` 已实现模型 API 直连、浏览器端 CORS 探测及服务端代理回退；Companion 也已有相应的准备、执行和检查点接口。本方案保留路由策略，不新增“客户端永远直连”的原则；附件功能需要扩展 Companion 输入与模型消息，但不应无意改变凭据准备、服务端工具调用或回退行为。模型请求是否经过实例服务端，取决于运行环境、模型提供方和当前调用路径；隐私、延迟与带宽效果需按实际路径测量，不能一概保证。
 
 ---
 
@@ -154,7 +154,7 @@ sequenceDiagram
     participant Sidebar as AI 助手右侧栏 (ai-elements)
     participant Client as Electron 主进程 ACP 客户端
     participant Agent as 已验证的本机 ACP Agent
-    participant API as EdgeEver 后端动作接口
+    participant API as StillNote 后端动作接口
 
     User->>Editor: 选中文本或阅读长篇笔记
     Editor-->>Sidebar: 提供选区与笔记 Context
@@ -178,7 +178,7 @@ sequenceDiagram
     end
 ```
 
-本机 ACP 首版仅向 Agent 提供用户选定的只读笔记上下文和明确添加且受适配器支持的附件，不提供写入 EdgeEver 的工具；Agent 自身的本机工具权限另按其适配器配置。ACP 的工具事件或文件 Diff 不会自动成为 EdgeEver 笔记操作；开放笔记写入前必须另行设计受限工具、结构化提案、工作区权限、笔记版本校验和服务端确认接口，禁止本机 Agent 绕过现有门禁直接改写笔记。
+本机 ACP 首版仅向 Agent 提供用户选定的只读笔记上下文和明确添加且受适配器支持的附件，不提供写入 StillNote 的工具；Agent 自身的本机工具权限另按其适配器配置。ACP 的工具事件或文件 Diff 不会自动成为 StillNote 笔记操作；开放笔记写入前必须另行设计受限工具、结构化提案、工作区权限、笔记版本校验和服务端确认接口，禁止本机 Agent 绕过现有门禁直接改写笔记。
 
 ---
 
@@ -230,13 +230,13 @@ sequenceDiagram
   * 完成 `initialize`、必要的认证流程与会话创建，再显示“可用”；分别展示未安装、需登录、连接失败等状态。
   * 首版提供安装与配置指引，不自动下载或安装二进制程序；按平台验证登录态是否能够复用。
 - [ ] 在设置中增加“Agent 来源”选择项：
-  * **内置服务模式**（默认）：继续连接当前 EdgeEver 后端 / Companion 接口；
+  * **内置服务模式**（默认）：继续连接当前 StillNote 后端 / Companion 接口；
   * **本地 Agent 模式**：桌面版从已验证的 ACP 适配器中选择，支持手动指定适配器程序路径；首版不接受任意本地网络地址。
 - [ ] 分别联调 Codex 与 Antigravity 的 ACP 适配器，验证握手、认证、真实会话、流式事件、取消和只读笔记上下文；其他 Agent 通过同样的验证后再加入。
 - [ ] 对每个本机 ACP 适配器验证图片与文件内容块能力；支持的附件能够真实进入会话，不支持时保留待发送列表并明确提示，不将本机任意路径自动暴露给 Agent。
 - [ ] 若后续开放本机 Agent 修改笔记，先完成服务端结构化提案与确认门禁设计，并验证版本冲突与失败恢复；不得将 ACP 文件 Diff 直接交给编辑器写入。
 
 ### 第五阶段：新架构下的笔记编辑（New Editing Flow）
-- [ ] 定义 Agent 编辑提案的数据结构与受限接口，由 EdgeEver 后端校验笔记目标、权限、内容范围和版本；内置 Agent 先接入，本机 ACP Agent 在工具权限边界明确后接入。
+- [ ] 定义 Agent 编辑提案的数据结构与受限接口，由 StillNote 后端校验笔记目标、权限、内容范围和版本；内置 Agent 先接入，本机 ACP Agent 在工具权限边界明确后接入。
 - [ ] 在侧栏设计新的提案预览与 Diff 确认交互；用户拒绝、取消或关闭侧栏时不得写入，确认后才应用。
 - [ ] 按新流程验收：选区与目标笔记正确、提案可理解、确认后内容正确、拒绝或取消无写入、版本冲突不覆盖新内容、失败后状态可恢复。无需补齐旧版一键改写、行内 Diff 或替换操作。

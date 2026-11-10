@@ -1,5 +1,5 @@
 /** Immutable original files shared by Web, desktop and native WebViews. No note text is sent. */
-const SOURCE = "https://cdn.jsdelivr.net/gh/tianma-if/edgeever@cb13c0759256caed174b4063845c7948d90fc1bd/";
+const SOURCE = "https://cdn.jsdelivr.net/gh/CottonChou/stillnote@cb13c0759256caed174b4063845c7948d90fc1bd/";
 export const PINNED_FONT_RESOURCES: Record<string, { path: string; bytes: number; sha256: string }> = {
   "template/geist/GeistMono.ttf": {
     "path": "packages/shared/src/note-image-assets/geist/GeistMono.ttf",

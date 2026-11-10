@@ -4,21 +4,21 @@ import { AppError } from "./app-error";
 import { decryptSecret, encryptSecret } from "./secret-encryption";
 
 type Environment = Pick<Bindings,
-  "EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY" | "EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS" |
-  "EDGE_EVER_AUTH_PASSWORD" | "EDGE_EVER_AUTH_PASSWORD_HASH" | "EDGE_EVER_AUTH_PASSWORD_FALLBACK">;
+  "STILLNOTE_CREDENTIALS_ENCRYPTION_KEY" | "STILLNOTE_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS" |
+  "STILLNOTE_AUTH_PASSWORD" | "STILLNOTE_AUTH_PASSWORD_HASH" | "STILLNOTE_AUTH_PASSWORD_FALLBACK">;
 
 // Bind the ciphertext to its share, and separate it from AI/storage credentials.
 const keys = (env: Environment, token: string) => [
-  env.EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY,
-  env.EDGE_EVER_AUTH_PASSWORD,
-  env.EDGE_EVER_AUTH_PASSWORD_HASH,
-  env.EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS,
-  env.EDGE_EVER_AUTH_PASSWORD_FALLBACK,
-].flatMap((value) => value?.trim() ? [`edgeever:share-password:v1:${token}:${value.trim()}`] : []);
+  env.STILLNOTE_CREDENTIALS_ENCRYPTION_KEY,
+  env.STILLNOTE_AUTH_PASSWORD,
+  env.STILLNOTE_AUTH_PASSWORD_HASH,
+  env.STILLNOTE_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS,
+  env.STILLNOTE_AUTH_PASSWORD_FALLBACK,
+].flatMap((value) => value?.trim() ? [`stillnote:share-password:v1:${token}:${value.trim()}`] : []);
 
 export const encryptSharePassword = async (password: string, token: string, env: Environment) => {
-  const key = keys({ ...env, EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS: undefined,
-    EDGE_EVER_AUTH_PASSWORD_FALLBACK: undefined }, token)[0];
+  const key = keys({ ...env, STILLNOTE_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS: undefined,
+    STILLNOTE_AUTH_PASSWORD_FALLBACK: undefined }, token)[0];
   if (!key) throw new AppError("share_encryption_unavailable", "Configure a deployment credential encryption key before generating a share password.", 503);
   return encryptSecret(password, key);
 };

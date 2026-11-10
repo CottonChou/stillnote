@@ -1,1 +1,1 @@
-export * from "@edgeever/shared/companion-discovery-context";
+export * from "@stillnote/shared/companion-discovery-context";

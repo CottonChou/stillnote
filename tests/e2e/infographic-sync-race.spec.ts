@@ -12,7 +12,7 @@ const openMemo = async (page: Page, id: string, title: string) => {
   await page.getByRole("button", { name: "全部笔记", exact: true }).click();
   await page.getByPlaceholder("搜索笔记").fill(title);
   await page.locator(`[data-memo-id="${id}"]`).locator("button").first().click();
-  await expect(page.locator(".edgeever-infographic-preview svg")).toBeVisible();
+  await expect(page.locator(".stillnote-infographic-preview svg")).toBeVisible();
 };
 const createMemo = async (page: Page, title: string) => {
   const { notebooks } = await (await page.request.get("/api/v1/notebooks")).json();
@@ -28,7 +28,7 @@ const changeRemote = async (page: Page, id: string, heading: string) => {
   } });
   expect(response.ok(), await response.text()).toBe(true);
   const { memo } = await response.json();
-  await page.evaluate((detail) => window.dispatchEvent(new CustomEvent("edgeever:memo-detail-refreshed", { detail })), memo);
+  await page.evaluate((detail) => window.dispatchEvent(new CustomEvent("stillnote:memo-detail-refreshed", { detail })), memo);
   return memo;
 };
 const removeMemo = async (page: Page, id: string) => {
@@ -36,7 +36,7 @@ const removeMemo = async (page: Page, id: string) => {
   await page.request.delete(`/api/v1/memos/${id}?permanent=1`);
 };
 const queuedUpdate = (page: Page, id: string) => page.evaluate((memoId) => new Promise<{ status: string; payload: { expectedRevision: number; expectedContentHash: string; title: string } } | undefined>((resolve, reject) => {
-  const open = indexedDB.open("edgeever-local");
+  const open = indexedDB.open("stillnote-local");
   open.onerror = () => reject(open.error);
   open.onsuccess = () => {
     const database = open.result;
@@ -65,10 +65,10 @@ test("infographic keeps newer title, tags and inline text when an older save is 
   try {
     await openMemo(page, memo.id, marker);
     const title = page.getByRole("textbox", { name: "信息图", exact: true });
-    const preview = page.locator(".edgeever-infographic-preview");
+    const preview = page.locator(".stillnote-infographic-preview");
     await title.fill(`${marker}-first`);
     await expect.poll(async () => (await queuedUpdate(page, memo.id))?.payload.title).toBe(`${marker}-first`);
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("edgeever:sync-queue-changed")));
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("stillnote:sync-queue-changed")));
     await firstStored;
     await page.clock.install();
     await page.clock.pauseAt(new Date(await page.evaluate(() => Date.now()) + 1_000));
@@ -82,7 +82,7 @@ test("infographic keeps newer title, tags and inline text when an older save is 
     const inline = preview.locator('[contenteditable="true"]');
     await inline.fill("New inline draft");
     const originalSvg = await preview.locator("svg").elementHandle();
-    const completed = page.evaluate(() => new Promise<void>((resolve) => window.addEventListener("edgeever:sync-completed", () => resolve(), { once: true })));
+    const completed = page.evaluate(() => new Promise<void>((resolve) => window.addEventListener("stillnote:sync-completed", () => resolve(), { once: true })));
     release();
     await completed;
     await expect(title).toHaveValue(`${marker}-newer`);
@@ -95,7 +95,7 @@ test("infographic keeps newer title, tags and inline text when an older save is 
       && new URL(response.url()).pathname === `/api/v1/memos/${memo.id}`
       && response.request().postDataJSON()?.contentMarkdown?.includes("New inline draft"));
     await page.clock.runFor(1_600);
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("edgeever:sync-queue-changed")));
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("stillnote:sync-queue-changed")));
     const response = await nextSaved;
     expect(response.ok(), await response.text()).toBe(true);
     const { memo: saved } = await (await page.request.get(`/api/v1/memos/${memo.id}`)).json();
@@ -118,7 +118,7 @@ test("infographic applies idle remote changes but retains a draft's original con
   const memo = await createMemo(page, marker);
   try {
     await openMemo(page, memo.id, marker);
-    const preview = page.locator(".edgeever-infographic-preview");
+    const preview = page.locator(".stillnote-infographic-preview");
     await changeRemote(page, memo.id, "Remote while idle");
     await expect(preview).toContainText("Remote while idle");
     await page.clock.install();
@@ -151,7 +151,7 @@ test("infographic applies idle remote changes but retains a draft's original con
     await expect.poll(async () => (await queuedUpdate(page, memo.id))?.payload.title).toBe(`${marker}-draft`);
     const queued = (await queuedUpdate(page, memo.id))!;
     expect(queued.payload.expectedRevision).toBe(incoming.revision - 1);
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("edgeever:sync-queue-changed")));
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("stillnote:sync-queue-changed")));
     await expect.poll(async () => (await queuedUpdate(page, memo.id))?.status).toBe("conflict");
     // A newer remote base must never authorize uploading the older graphic.
     const { memo: stored } = await (await page.request.get(`/api/v1/memos/${memo.id}`)).json();
@@ -183,7 +183,7 @@ test("infographic does not roll back an already queued successor when the older 
     const title = page.getByRole("textbox", { name: "信息图", exact: true });
     await title.fill(`${marker}-first`);
     await expect.poll(async () => (await queuedUpdate(page, memo.id))?.payload.title).toBe(`${marker}-first`);
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("edgeever:sync-queue-changed")));
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("stillnote:sync-queue-changed")));
     await firstStored;
     await page.clock.install();
     await page.clock.pauseAt(new Date(await page.evaluate(() => Date.now()) + 1_000));
@@ -193,17 +193,17 @@ test("infographic does not roll back an already queued successor when the older 
     // Replay the real first receipt through the same two editor notifications.
     // The successor is locally saved (clean), but has not reached the server.
     await page.evaluate((detail) => {
-      window.dispatchEvent(new CustomEvent("edgeever:memo-sync-acknowledged", { detail }));
-      window.dispatchEvent(new CustomEvent("edgeever:memo-detail-refreshed", { detail }));
+      window.dispatchEvent(new CustomEvent("stillnote:memo-sync-acknowledged", { detail }));
+      window.dispatchEvent(new CustomEvent("stillnote:memo-detail-refreshed", { detail }));
     }, receipt);
     await page.clock.runFor(50);
     await expect(title).toHaveValue(`${marker}-second`);
     const nextSaved = page.waitForResponse((response) => response.request().method() === "PATCH"
       && new URL(response.url()).pathname === `/api/v1/memos/${memo.id}` && response.request().postDataJSON()?.title === `${marker}-second`);
-    const completed = page.evaluate(() => new Promise<void>((resolve) => window.addEventListener("edgeever:sync-completed", () => resolve(), { once: true })));
+    const completed = page.evaluate(() => new Promise<void>((resolve) => window.addEventListener("stillnote:sync-completed", () => resolve(), { once: true })));
     release();
     await completed;
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("edgeever:sync-queue-changed")));
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("stillnote:sync-queue-changed")));
     expect((await nextSaved).ok()).toBe(true);
     await page.clock.resume();
     await openMemo(page, memo.id, `${marker}-second`);
@@ -240,7 +240,7 @@ test("infographic keeps title input and focus across temporary id remapping", as
     const marker = `infographic-remap-${Date.now()}`;
     await title.fill(marker);
     const originalInput = await title.elementHandle();
-    const mapped = page.evaluate(() => new Promise<void>((resolve) => window.addEventListener("edgeever:memo-id-remapped", () => resolve(), { once: true })));
+    const mapped = page.evaluate(() => new Promise<void>((resolve) => window.addEventListener("stillnote:memo-id-remapped", () => resolve(), { once: true })));
     release();
     await mapped;
     await expect(page.locator(`[data-memo-id="${id}"]`)).toBeVisible();
@@ -249,7 +249,7 @@ test("infographic keeps title input and focus across temporary id remapping", as
     expect(await originalInput!.evaluate((input) => input.isConnected)).toBe(true);
     const saved = page.waitForResponse((response) => response.request().method() === "PATCH" && new URL(response.url()).pathname === `/api/v1/memos/${id}`);
     await page.clock.runFor(1_300);
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("edgeever:sync-queue-changed")));
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("stillnote:sync-queue-changed")));
     expect((await saved).ok()).toBe(true);
     await page.clock.resume();
     await page.reload();

@@ -121,7 +121,7 @@ export const getDefaultAiTargetLanguage = (locale: string | undefined): AiTarget
   return uiLocale ? DEFAULT_AI_TARGET_LANGUAGE_BY_UI_LOCALE[uiLocale] : "zh-CN";
 };
 
-export const AI_ASSISTANT_LAST_ACTION_STORAGE_KEY = "edgeever.aiAssistant.lastAction";
+export const AI_ASSISTANT_LAST_ACTION_STORAGE_KEY = "stillnote.aiAssistant.lastAction";
 
 export type AiPromptSeedAction = Exclude<AiAction, "custom">;
 

@@ -2,7 +2,7 @@ import {
   WorkspaceExtensionUpsertSchema,
   type WorkspaceExtension,
   type WorkspaceExtensionSourceKind,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { zValidator } from "@hono/zod-validator";
 import type { Hono } from "hono";
 import { audit } from "./audit";
@@ -25,7 +25,7 @@ type WorkspaceExtensionRow = {
   manifest_url: string;
   repository_url: string | null;
   release_tag: string | null;
-  publisher: "edgeever" | null;
+  publisher: "stillnote" | null;
   installed_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -48,7 +48,7 @@ export const mapWorkspaceExtensionRow = (row: WorkspaceExtensionRow): WorkspaceE
   verified: row.verified === 1,
   repositoryUrl: row.repository_url,
   releaseTag: row.release_tag,
-  publisher: row.publisher === "edgeever" ? "edgeever" : null,
+  publisher: row.publisher === "stillnote" ? "stillnote" : null,
 });
 
 const getWorkspaceExtensionRow = async (

@@ -21,7 +21,7 @@ const openDatabase = () => {
   const sqlite = new Database(":memory:");
   opened.push(sqlite);
   const puts = [];
-  const { db } = createSelfHostedStorageAdapter(sqlite, "/tmp/edgeever-example-seed-unused");
+  const { db } = createSelfHostedStorageAdapter(sqlite, "/tmp/stillnote-example-seed-unused");
   const env = {
     storage: {
       db,
@@ -115,7 +115,7 @@ describe("workspace example seed", () => {
 
     await ensureWorkspaceExampleSeed(env, "ws_default");
 
-    expect(sqlite.query("SELECT title FROM memos WHERE id = 'memo_welcome'").get()).toEqual({ title: "Witaj w EdgeEver" });
+    expect(sqlite.query("SELECT title FROM memos WHERE id = 'memo_welcome'").get()).toEqual({ title: "Witaj w StillNote" });
     expect(exampleCounts(sqlite)).toEqual({ "demo-features": 7, "feature-demos": 7 });
   });
 
@@ -173,7 +173,7 @@ describe("workspace example seed", () => {
       `SELECT c.content_markdown
        FROM memo_contents c
        INNER JOIN memos m ON m.id = c.memo_id
-       WHERE m.workspace_id = ? AND m.title LIKE '欢迎使用 EdgeEver%'`,
+       WHERE m.workspace_id = ? AND m.title LIKE '欢迎使用 StillNote%'`,
     ).get(workspace.workspaceId).content_markdown;
     expect(markdown).toContain(`/api/v1/resources/${workspace.workspaceId}_res_demo_logo/blob`);
     expect(markdown).not.toContain("/api/v1/resources/res_demo_logo/blob");
@@ -192,7 +192,7 @@ describe("workspace example seed", () => {
 
   test("leaves the catalog to demo mode", async () => {
     const { sqlite, env } = freshInstallation();
-    env.EDGE_EVER_DEMO_MODE = "true";
+    env.STILLNOTE_DEMO_MODE = "true";
 
     await ensureWorkspaceExampleSeed(env, "ws_default");
 

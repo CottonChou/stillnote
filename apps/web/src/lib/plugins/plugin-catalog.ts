@@ -1,4 +1,4 @@
-import type { ExtensionLocales, LocalizedExtensionMetadata, MarketplaceEntry } from "@edgeever/plugin-api";
+import type { ExtensionLocales, LocalizedExtensionMetadata, MarketplaceEntry } from "@stillnote/plugin-api";
 import type { InstalledExtension } from "./plugin-host";
 
 export interface PluginCatalogItem {
@@ -29,7 +29,7 @@ export const buildPluginCatalogItems = (
 };
 
 export const getPluginCatalogSourceKey = (item: PluginCatalogItem): PluginCatalogSourceKey | null => {
-  if (item.marketplaceEntry?.publisher === "edgeever") return "official";
+  if (item.marketplaceEntry?.publisher === "stillnote") return "official";
   if (item.marketplaceEntry?.listing === "community") return "community";
   if (item.marketplaceEntry || item.extension?.source.verified) return "verified";
   return item.extension?.source.kind ?? null;

@@ -1,38 +1,35 @@
 {
   "expo": {
-    "name": "EdgeEver",
-    "slug": "edgeever",
-    "scheme": "edgeever",
-    "version": "2.16.1",
+    "name": "StillNote",
+    "slug": "stillnote",
+    "scheme": "stillnote",
+    "version": "2.17.0",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/59d2a8c8-fe8f-4e59-874f-a5887f584a20",
+      "enabled": false,
       "checkAutomatically": "NEVER",
-      "fallbackToCacheTimeout": 0,
-      "requestHeaders": {
-        "expo-channel-name": "production"
-      }
+      "fallbackToCacheTimeout": 0
     },
     "icon": "./assets/icon.png",
     "orientation": "default",
     "userInterfaceStyle": "light",
     "ios": {
-      "bundleIdentifier": "org.edgeever.mobile",
+      "bundleIdentifier": "org.stillnote.mobile",
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
         "UIRequiresFullScreen": true,
-        "NSMicrophoneUsageDescription": "EdgeEver only uses the microphone if web content inside a note explicitly requests it.",
-        "NSCameraUsageDescription": "Allow EdgeEver to use your camera to take photos and insert them into your notes."
+        "NSMicrophoneUsageDescription": "StillNote only uses the microphone if web content inside a note explicitly requests it.",
+        "NSCameraUsageDescription": "Allow StillNote to use your camera to take photos and insert them into your notes."
       }
     },
     "android": {
-      "package": "org.edgeever.mobile",
-      "versionCode": 254,
+      "package": "org.stillnote.mobile",
+      "versionCode": 255,
       "adaptiveIcon": {
         "backgroundColor": "#187958",
         "foregroundImage": "./assets/adaptive-icon-transparent.png"
@@ -44,9 +41,9 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "Allow EdgeEver to take photos and insert them into your notes.",
+          "cameraPermission": "Allow StillNote to take photos and insert them into your notes.",
           "microphonePermission": false,
-          "photosPermission": "Allow EdgeEver to choose photos to insert into your notes."
+          "photosPermission": "Allow StillNote to choose photos to insert into your notes."
         }
       ],
       [
@@ -101,6 +98,6 @@
         "projectId": "59d2a8c8-fe8f-4e59-874f-a5887f584a20"
       }
     },
-    "owner": "tianma-if-edgeever"
+    "owner": "cottonchou-stillnote"
   }
 }

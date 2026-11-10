@@ -8,7 +8,7 @@
 更新清单 Ed25519 私钥：
 
 ```bash
-export EDGE_EVER_WINDOWS_UPDATE_SIGNING_KEY=/absolute/path/to/windows-update-ed25519-private.pem
+export STILLNOTE_WINDOWS_UPDATE_SIGNING_KEY=/absolute/path/to/windows-update-ed25519-private.pem
 ```
 
 ```bash
@@ -51,7 +51,7 @@ bun run release -- \
 `贡献者 / Contributors：@alice`。该参数不自动推断贡献者。
 续跑已有 Draft 时保留原说明，调整署名需直接编辑 Draft。
 
-## EdgeEver 特有规则
+## StillNote 特有规则
 
 - 正式 Tag 和 Release 标题使用 `vX.Y.Z`。`--bump` 须显式指定，按 SemVer 选择；
   禁止因发版节奏把用户可感知的新能力或新平台压成 patch（详见 `AGENTS.md`）。

@@ -1,79 +1,78 @@
 <div align="center">
   <h1>
-    <img src="assets/brand/edgeever-icon.svg" alt="EdgeEver のロゴ" width="56" align="absmiddle" /> EdgeEver · Editorial Flow Edition
+    <img src="assets/brand/stillnote-icon.svg" alt="StillNote のロゴ" width="56" align="absmiddle" /> StillNote · Editorial Flow Edition
   </h1>
   <p>
-    <b>オープンソースプロジェクト <a href="https://github.com/tianma-if/edgeever">EdgeEver</a>（v2.16.1）をベースに再設計・機能拡張した AI ネイティブ知識ベースワークスペース — Editorial Flow UI、松緑ブックマークアイコン、モバイル向けジェスチャー操作を搭載。Cloudflare 無料枠または Docker で運用可能。</b>
+    <b>オープンソースの個人向け AI ネイティブ知識ベース・3 ペインワークスペース（<a href="https://github.com/CottonChou/stillnote">CottonChou/stillnote</a>、v2.17.0）— Editorial Flow UI、松緑ブックマークアイコン、メタデータ優先のオンデマンドノート同期、モバイルジェスチャー操作を搭載。Cloudflare 無料枠または Docker で運用可能。</b>
   </p>
   <p>
-    <a href="https://github.com/CottonChou/edgeever/releases/latest"><img src="https://img.shields.io/github/v/release/CottonChou/edgeever?include_prereleases&color=187958&label=Fork%20Release" alt="Fork 最新リリース" /></a>
-    <a href="https://github.com/CottonChou/edgeever/stargazers"><img src="https://img.shields.io/github/stars/CottonChou/edgeever?style=social" alt="Fork Stars" /></a>
-    <a href="https://github.com/tianma-if/edgeever"><img src="https://img.shields.io/badge/Based_on-tianma--if%2Fedgeever_v2.16.1-187958" alt="Based on tianma-if/edgeever" /></a>
-    <a href="https://demo.edgeever.org"><img src="https://img.shields.io/badge/Upstream_Demo-Live-2c5a48" alt="オンラインデモ" /></a>
+    <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="https://img.shields.io/github/v/release/CottonChou/stillnote?include_prereleases&color=187958&label=Release" alt="最新リリース" /></a>
+    <a href="https://github.com/CottonChou/stillnote/stargazers"><img src="https://img.shields.io/github/stars/CottonChou/stillnote?style=social" alt="GitHub Stars" /></a>
+    <a href="https://github.com/CottonChou/stillnote/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-187958" alt="AGPL-3.0 ライセンス" /></a>
+    <a href="https://stillnote.org"><img src="https://img.shields.io/badge/Docs-stillnote.org-2c5a48" alt="ドキュメント" /></a>
   </p>
   <p>
     <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文</a> | <a href="README.md">English</a> | <b>日本語</b> | <a href="README.pl-PL.md">Polski</a>
   </p>
   <p>
     <a href="#downloads">📦 MAC / APK ダウンロード</a> &nbsp;|&nbsp;
-    <a href="#editorial-flow-の主な強化点">✨ Editorial Flow 強化点</a> &nbsp;|&nbsp;
+    <a href="#editorial-flow-の主な強化点">✨ Editorial Flow 主な特徴</a> &nbsp;|&nbsp;
     <a href="#features">🧩 機能マトリクス</a> &nbsp;|&nbsp;
     <a href="#導入">☁️ 導入方法</a> &nbsp;|&nbsp;
     <a href="#開発ローカルビルド">🛠️ ローカルビルド</a>
   </p>
   <p align="center">
-    <img src="assets/readme/edgeever-hero-v6.png" alt="EdgeEver ワークスペースプレビュー" width="800" />
+    <img src="assets/readme/stillnote-hero-v6.png" alt="StillNote ワークスペースプレビュー" width="800" />
   </p>
 </div>
-
-> **Fork に関する注記**: `CottonChou/edgeever` はオープンソースプロジェクト [`tianma-if/edgeever`](https://github.com/tianma-if/edgeever)（上流 `v2.16.1` に追従）を基にした個人カスタマイズ版であり、上流の公式リリースではありません。
 
 クラシックで高効率な 3 ペイン構成（**ノートブックツリー · ノート一覧 · エディタ**）、低遅延クラウド同期、ローカル SQLite オフライン編集、ネイティブ AI Agent 連携（MCP &amp; ACP）をそのまま備えています。
 
 ---
 
 <a id="editorial-flow-の主な強化点"></a>
-## ✨ Editorial Flow の主な強化点
+## ✨ Editorial Flow の主な特徴（`v2.17.0`）
 
-上流 `v2.16.1` の全機能に加え、本エディションでは視認性とモバイル操作性を中心に再設計しています：
+長時間の執筆に最適化された視認性、統一されたブランド設計、モバイル操作性と同期速度を中心に強化しています：
 
-- **Editorial Flow リーディングファースト UI**：Web、macOS デスクトップ、Expo / React Native モバイルアプリ全体で、暖かみのあるコットン紙基調（`#f4f1ea` / `#f9f7f2` / `#fdfcf9`）、落ち着いたチャコールダーク（`#151513` / `#1d1c1a` / `#22211e`）、アクセントの Editorial Pine（`#187958` / `#43b88c`）を採用。Electron ウィンドウの背景色も `nativeTheme` と同期します（[index.mjs](apps/desktop/src/main/index.mjs)）。
+- **Editorial Flow リーディングファースト UI**：Web、macOS デスクトップ、Expo / React Native モバイルアプリ全体で、暖かみのあるコットン紙基調（`#f4f1ea` / `#f9f7f2` / `#fdfcf9`）、落ち着いたチャコールダーク（`#151513` / `#1d1c1a` / `#22211e`）、アクセントの Editorial Pine（`#187958` / `#43b88c`）を採用。Electron ウィンドウの背景色も `nativeTheme` と同期し（[index.mjs](apps/desktop/src/main/index.mjs)）、ヘッダーの共有操作を「...」メニューへ整理して閉じるボタンを追加しました。
 - **Editorial Pine ブックマーク・フォリオアイコン**：macOS（1024px `icon.icns` および 1x/2x メニューバー用モノクロ `trayTemplate`）、Android（`#187958` アダプティブアイコン＆スプラッシュ）、iOS アセットスロット、Web/PWA、Astro 公式サイト、ブラウザ拡張機能、ログイン画面まで一貫して刷新。
-- **モバイルジェスチャー操作の強化**（詳細は [`docs/FORK_CUSTOMIZATIONS.md`](docs/FORK_CUSTOMIZATIONS.md)）：
-  - **右スワイプでノートブックドロワーを開閉**：一覧画面のどこからでもツリー階層、リアルタイム検索、インライン作成、ゴミ箱へ即アクセス（`WorkspaceDrawer.tsx`）。
+- **モバイルジェスチャーとオンデマンドノート同期**（詳細は [`docs/FORK_CUSTOMIZATIONS.md`](docs/FORK_CUSTOMIZATIONS.md)）：
+  - **DrawerLayout によるスムーズな開閉と誤終了防止**：`react-native-drawer-layout` でスワイプ閉じを安定化し、Android 戻る操作の 2 度押し終了確認を追加（`WorkspaceDrawer.tsx`）。
+  - **メタデータ優先同期とノートブック単位同期**：同期時はまずノートブック階層とノート見出しを取得し、本文は開いた際にオンデマンド読込。手動のノートブック単位同期にも対応。
   - **カード左スワイプでスター／削除**：1 回のスワイプで楽観的スター切替とゴミ箱確認付き削除を実行（`WorkspaceNotesView.tsx`）。
-  - **ノートを跨いだ連続画像スワイプ**：全画面画像プレビューの端から次の画像付きノートへシームレスに移動し、閉じた際の一覧選択も自動同期（`ZoomableImagePreview.tsx`）。
+  - **ノートを跨いだ連続画像スワイプ**：全画面画像プレビューの端から次の画像付きノートへシームレスに移動（`ZoomableImagePreview.tsx`）。
 
 ---
 
 <a id="downloads"></a>
 ## 📦 クライアントダウンロード（MAC / Android APK）
 
-### Fork カスタムリリース（`CottonChou/edgeever`）
+### StillNote リリース（`CottonChou/stillnote`）
 
-**Editorial Flow UI** と **新ブランドアイコン** を収録した macOS / Android パッケージは [CottonChou/edgeever Releases](https://github.com/CottonChou/edgeever/releases/latest) から入手できます：
+**Editorial Flow UI** と **新ブランドアイコン** を収録した macOS / Android パッケージは [CottonChou/stillnote Releases](https://github.com/CottonChou/stillnote/releases/latest) から入手できます：
 
 | プラットフォーム | アーキテクチャ | 形式 | 備考 |
 | :--- | :--- | :--- | :--- |
-| **macOS** | Apple Silicon (`arm64`) | `.dmg` / `.zip` | ネイティブ `arm64` Rust Sidecar・刷新されたメニューバーアイコン・`EdgeEverShare.appex` 同梱（ローカル Ad-hoc 署名のため初回は Finder で右クリック→「開く」推奨） |
-| **Android** | `arm64-v8a` | `.apk` | Hermes エンジンと `#187958` スプラッシュ／アダプティブアイコン同梱の本番署名済み APK |
+| **macOS** | Apple Silicon (`arm64`) | `.dmg` / `.zip` | ネイティブ `arm64` Rust Sidecar・刷新されたメニューバーアイコン・`StillNoteShare.appex` 同梱（ローカル Ad-hoc 署名のため初回は Finder で右クリック→「開く」推奨） |
+| **Android** | `arm64-v8a` | `.apk` | Hermes エンジンと `#187958` スプラッシュ／アダプティブアイコン同梱の本番署名済み APK（`org.stillnote.mobile`） |
 
 <p>
-  <a href="https://github.com/CottonChou/edgeever/releases/latest"><img src="assets/readme/platforms/macos.svg" alt="Fork 版 macOS クライアントをダウンロード" width="40" height="40" /></a>&nbsp;&nbsp;
-  <a href="https://github.com/CottonChou/edgeever/releases/latest"><img src="assets/readme/platforms/google-play.svg" alt="Fork 版 Android APK をダウンロード" width="40" height="40" /></a>&nbsp;&nbsp;
-  <a href="https://github.com/tianma-if/edgeever/releases/latest"><img src="assets/readme/platforms/windows.svg" alt="公式 Windows 版" width="40" height="40" /></a>&nbsp;&nbsp;
-  <a href="https://github.com/tianma-if/edgeever/releases/latest"><img src="assets/readme/platforms/tux.svg" alt="公式 Linux AppImage" width="40" height="40" /></a>&nbsp;&nbsp;
-  <a href="https://apps.apple.com/jp/app/edgeever/id6792625631"><img src="assets/readme/platforms/app-store.svg" alt="公式 iOS App Store" width="40" height="40" /></a>
+  <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="assets/readme/platforms/macos.svg" alt="StillNote macOS クライアントをダウンロード" width="40" height="40" /></a>&nbsp;&nbsp;
+  <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="assets/readme/platforms/google-play.svg" alt="StillNote Android APK をダウンロード" width="40" height="40" /></a>&nbsp;&nbsp;
+  <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="assets/readme/platforms/windows.svg" alt="Windows 版" width="40" height="40" /></a>&nbsp;&nbsp;
+  <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="assets/readme/platforms/tux.svg" alt="Linux AppImage" width="40" height="40" /></a>&nbsp;&nbsp;
+  <a href="https://apps.apple.com/jp/app/stillnote/id6792625631"><img src="assets/readme/platforms/app-store.svg" alt="iOS App Store" width="40" height="40" /></a>
 </p>
 
-> Windows・Linux・iOS App Store のアイコンは上流 [`tianma-if/edgeever`](https://github.com/tianma-if/edgeever/releases/latest) にリンクしています（iOS 版は中国本土以外の Apple ID が必要です）。
+> デスクトップ版および Android 版の更新確認先は [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote/releases/latest) に設定されています。
 
 ### ブラウザ Web Clipper
 
 <p>
-  <a href="https://chromewebstore.google.com/detail/edgeever-web-clipper/gjadpfmanienmlofajibkfkkpfdkclgo"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/chrome/chrome.svg" alt="Chrome 向け拡張機能" width="36" height="36" /></a>&nbsp;&nbsp;
-  <a href="https://chromewebstore.google.com/detail/edgeever-web-clipper/gjadpfmanienmlofajibkfkkpfdkclgo"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/edge/edge.svg" alt="Edge 向け拡張機能" width="36" height="36" /></a>&nbsp;&nbsp;
-  <a href="https://addons.mozilla.org/ja/firefox/addon/edgeever-web-clipper/"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/firefox/firefox.svg" alt="Firefox 向け拡張機能" width="36" height="36" /></a>
+  <a href="https://chromewebstore.google.com/detail/stillnote-web-clipper/gjadpfmanienmlofajibkfkkpfdkclgo"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/chrome/chrome.svg" alt="Chrome 向け拡張機能" width="36" height="36" /></a>&nbsp;&nbsp;
+  <a href="https://chromewebstore.google.com/detail/stillnote-web-clipper/gjadpfmanienmlofajibkfkkpfdkclgo"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/edge/edge.svg" alt="Edge 向け拡張機能" width="36" height="36" /></a>&nbsp;&nbsp;
+  <a href="https://addons.mozilla.org/ja/firefox/addon/stillnote-web-clipper/"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/firefox/firefox.svg" alt="Firefox 向け拡張機能" width="36" height="36" /></a>
 </p>
 
 - Web 記事をクリーンな Markdown に変換し、X、小紅書、WeChat、知乎、Reddit、GitHub、YouTube、Bilibili など 20+ サイトを構造化クリップします。
@@ -102,19 +101,19 @@ Cloudflare の無料枠を使ったサーバーレス構成、または VPS / NA
 ### 方法 A: AI Agent に任せて導入（推奨）
 
 ```text
-GitHub と Cloudflare のオンライン操作だけで EdgeEver を導入してください:
-1. Fork https://github.com/tianma-if/edgeever。
-2. Cloudflare で D1 `edgeever` と R2 `edgeever-resources` を作成します。
-3. Workers & Pages で Fork の `main` ブランチから `edgeever` という名前の Worker を作成します。
+GitHub と Cloudflare のオンライン操作だけで StillNote を導入してください:
+1. Fork https://github.com/CottonChou/stillnote。
+2. Cloudflare で D1 `stillnote` と R2 `stillnote-resources` を作成します。
+3. Workers & Pages で Fork の `main` ブランチから `stillnote` という名前の Worker を作成します。
    リポジトリのルートを使い、Cloudflare Workers Builds の既定のデプロイコマンドを維持します。
    その API トークンに D1 の読み取り・編集権限があることを確認して Save and Deploy を選択します。
 4. Worker の作成後、ユーザーが指定したパスワードを実行時 Secret
-   `EDGE_EVER_AUTH_PASSWORD` に設定します
+   `STILLNOTE_AUTH_PASSWORD` に設定します
    （32 文字以上を推奨）。管理者ユーザー名の既定値は `admin` です。別の名前を指定された場合は、
-   次のビルド前に Workers Builds 変数 `EDGE_EVER_AUTH_USERNAME` を設定します。
+   次のビルド前に Workers Builds 変数 `STILLNOTE_AUTH_USERNAME` を設定します。
 5. 再度ビルドし、`/api/health` と `/api/openapi.json` を確認してから、
    その管理者ユーザー名とパスワードでログインできることを確認します。
-6. GitHub Actions の `Update deployed EdgeEver` を有効にし、一度手動実行して、
+6. GitHub Actions の `Update deployed StillNote` を有効にし、一度手動実行して、
    Fork が今後の安定版と修正を自動で受け取れるようにします。
 ```
 
@@ -124,7 +123,7 @@ GitHub と Cloudflare のオンライン操作だけで EdgeEver を導入して
 - VPS / NAS で Docker を導入する場合：
 
 ```sh
-curl -fsSL https://edgeever.org/install.sh | bash
+curl -fsSL https://stillnote.org/install.sh | bash
 ```
 
 ---
@@ -138,15 +137,14 @@ bun run dev                        # Web + API ローカル開発起動
 bun run prepare:brand:icons        # 全プラットフォームのアイコンを再生成
 bun run build:desktop              # macOS arm64 DMG / ZIP をローカルビルド
 bun run build:android:apk:local    # 本番署名済み Android arm64 APK をビルド
-git fetch upstream && git merge upstream/main
 ```
 
 ---
 
-## コミュニティ・商標・免責
+## コミュニティ・ブランド・免責
 
-- **上流プロジェクト**: [`tianma-if/edgeever`](https://github.com/tianma-if/edgeever) · [Issues](https://github.com/tianma-if/edgeever/issues) · [Telegram](https://t.me/+wwUx1BYLrIdiZjY1)
-- **商標とブランド**: EdgeEver の名称および公式ブランドは [`tianma-if/edgeever`](https://github.com/tianma-if/edgeever) に帰属します。本 Fork は EdgeEver に基づく派生版であり、公式リリースを示すものではありません。
+- **リポジトリ**: [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) · [Issues](https://github.com/CottonChou/stillnote/issues) · [Telegram](https://t.me/+wwUx1BYLrIdiZjY1)
+- **ブランドとリリース**: 本リポジトリの StillNote ソースコードとリリースは [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) にて管理されています。
 - **免責事項**: 独立したオープンソースソフトウェアであり、Evernote Corporation とは無関係です。セルフホストされたデータの管理責任は各運用者に帰属します。
 
 ## コントリビューター

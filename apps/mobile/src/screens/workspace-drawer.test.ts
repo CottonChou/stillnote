@@ -1,5 +1,11 @@
 import { describe, expect, it } from "bun:test";
-import { resolveCardSwipe, resolveDrawerDrag } from "./workspace-utils";
+import {
+  ANDROID_EXIT_CONFIRM_WINDOW_MS,
+  DRAWER_CLOSE_BACK_GRACE_MS,
+  resolveAndroidRootBackAction,
+  resolveCardSwipe,
+  resolveDrawerDrag,
+} from "./workspace-utils";
 
 describe("WorkspaceDrawer resolution logic", () => {
   const drawerWidth = 320;
@@ -131,5 +137,47 @@ describe("MemoCard swipe action resolution logic", () => {
       isCurrentlyOpen: true,
     });
     expect(result).toBe(false);
+  });
+});
+
+describe("Android root back guard logic", () => {
+  it("swallows accidental hardware back right after drawer closes", () => {
+    expect(
+      resolveAndroidRootBackAction({
+        now: 10_000 + DRAWER_CLOSE_BACK_GRACE_MS - 1,
+        lastDrawerCloseAt: 10_000,
+        lastExitPromptAt: 0,
+      })
+    ).toBe("swallow-recent-drawer-close");
+  });
+
+  it("prompts once before exiting at the root view", () => {
+    expect(
+      resolveAndroidRootBackAction({
+        now: 20_000,
+        lastDrawerCloseAt: 10_000,
+        lastExitPromptAt: 0,
+      })
+    ).toBe("prompt-exit");
+  });
+
+  it("allows exiting when back is pressed a second time within the confirmation window", () => {
+    expect(
+      resolveAndroidRootBackAction({
+        now: 20_000 + ANDROID_EXIT_CONFIRM_WINDOW_MS - 100,
+        lastDrawerCloseAt: 10_000,
+        lastExitPromptAt: 20_000,
+      })
+    ).toBe("allow-exit");
+  });
+
+  it("requires another double-back sequence after the confirmation window expires", () => {
+    expect(
+      resolveAndroidRootBackAction({
+        now: 20_000 + ANDROID_EXIT_CONFIRM_WINDOW_MS + 1,
+        lastDrawerCloseAt: 10_000,
+        lastExitPromptAt: 20_000,
+      })
+    ).toBe("prompt-exit");
   });
 });

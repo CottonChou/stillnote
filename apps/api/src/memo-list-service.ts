@@ -8,7 +8,7 @@ import {
   getPosterSummary,
   getTableSummary,
   type MemoSummary,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { clampNumber, parseJsonArray } from "./entity-utils";
 import type { DatabaseAdapter } from "./storage-contract";
 

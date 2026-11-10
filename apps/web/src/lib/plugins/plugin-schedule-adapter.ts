@@ -1,5 +1,5 @@
-import type { PluginSchedule, PluginScheduleInput } from "@edgeever/plugin-api";
-import type { ScheduledTask } from "@edgeever/shared";
+import type { PluginSchedule, PluginScheduleInput } from "@stillnote/plugin-api";
+import type { ScheduledTask } from "@stillnote/shared";
 import { api } from "@/lib/api";
 import type { PluginScheduleAdapter } from "@/lib/plugins/plugin-host";
 import { createPluginScheduleQueue } from "@/lib/plugins/plugin-schedule-queue";

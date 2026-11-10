@@ -1,5 +1,5 @@
-import { ImageGallery, MergeDivider } from "@edgeever/shared";
-import { createNativeImageGalleryView } from "@edgeever/shared/native-image-gallery";
+import { ImageGallery, MergeDivider } from "@stillnote/shared";
+import { createNativeImageGalleryView } from "@stillnote/shared/native-image-gallery";
 
 export { ImageGallery, MergeDivider };
 

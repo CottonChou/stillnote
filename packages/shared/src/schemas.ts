@@ -157,7 +157,7 @@ export const WorkspaceExtensionUpsertSchema = z.object({
   verified: z.boolean(),
   repositoryUrl: httpUrl.max(500).nullable().optional(),
   releaseTag: z.string().trim().min(1).max(80).nullable().optional(),
-  publisher: z.literal("edgeever").nullable().optional(),
+  publisher: z.literal("stillnote").nullable().optional(),
 }).refine((input) => {
   if (input.sourceKind === "github") return Boolean(input.repositoryUrl);
   if (input.sourceKind === "marketplace") return Boolean(input.repositoryUrl || input.manifestUrl);

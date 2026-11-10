@@ -11,14 +11,14 @@ import {
 describe("renderer storage origin migration", () => {
   test("covers every persistent IndexedDB database", () => {
     expect(rendererStorageMigrationDatabaseNames()).toEqual([
-      "edgeever-local",
-      "edgeever-plugin-packages-v1",
-      "edgeever-plugin-secrets-v1",
+      "stillnote-local",
+      "stillnote-plugin-packages-v1",
+      "stillnote-plugin-secrets-v1",
     ]);
   });
 
   test("writes the marker only after export and import both succeed", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "edgeever-origin-migration-"));
+    const directory = await mkdtemp(join(tmpdir(), "stillnote-origin-migration-"));
     const markerPath = join(directory, RENDERER_STORAGE_MIGRATION_MARKER);
     const loadedUrls = [];
     const destroyed = [];
@@ -42,13 +42,13 @@ describe("renderer storage origin migration", () => {
       const result = await migrateRendererStorageOrigin({
         createWindow,
         legacyBridgeUrl: "file:///bundle/desktop-storage-bridge.html",
-        targetBridgeUrl: "edgeever-app://app/desktop-storage-bridge.html",
+        targetBridgeUrl: "stillnote-app://app/desktop-storage-bridge.html",
         markerPath,
       });
       expect(result.state).toBe("migrated");
       expect(loadedUrls).toEqual([
         "file:///bundle/desktop-storage-bridge.html",
-        "edgeever-app://app/desktop-storage-bridge.html",
+        "stillnote-app://app/desktop-storage-bridge.html",
       ]);
       expect(destroyed).toEqual([0]);
       expect(JSON.parse(await readFile(markerPath, "utf8"))).toMatchObject({
@@ -59,7 +59,7 @@ describe("renderer storage origin migration", () => {
       const second = await migrateRendererStorageOrigin({
         createWindow: () => { throw new Error("should not create a window"); },
         legacyBridgeUrl: "file:///ignored",
-        targetBridgeUrl: "edgeever-app://app/ignored",
+        targetBridgeUrl: "stillnote-app://app/ignored",
         markerPath,
       });
       expect(second.state).toBe("already-migrated");
@@ -69,7 +69,7 @@ describe("renderer storage origin migration", () => {
   });
 
   test("does not mark a failed import as migrated", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "edgeever-origin-migration-failure-"));
+    const directory = await mkdtemp(join(tmpdir(), "stillnote-origin-migration-failure-"));
     const markerPath = join(directory, RENDERER_STORAGE_MIGRATION_MARKER);
     let executionIndex = 0;
     try {
@@ -89,7 +89,7 @@ describe("renderer storage origin migration", () => {
           };
         },
         legacyBridgeUrl: "file:///bundle/desktop-storage-bridge.html",
-        targetBridgeUrl: "edgeever-app://app/desktop-storage-bridge.html",
+        targetBridgeUrl: "stillnote-app://app/desktop-storage-bridge.html",
         markerPath,
       })).rejects.toThrow("import failed");
       expect(await Bun.file(markerPath).exists()).toBe(false);

@@ -7,7 +7,7 @@ const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
 globalThis.window = {
   location: { hostname: "notes.example.com", origin: "https://notes.example.com" },
   dispatchEvent: () => true,
-  edgeeverDesktop: {
+  stillnoteDesktop: {
     isAvailable: true,
     listStagedResources: async () => [],
     listStagedResourceAliases: async (memoId) => memoId === "memo_alias"
@@ -24,10 +24,10 @@ globalThis.window = {
               type: "doc",
               content: [{
                 type: "image",
-                attrs: { alt: filename, src: "edgeever-staged://stage_dead" },
+                attrs: { alt: filename, src: "stillnote-staged://stage_dead" },
               }],
             },
-            contentMarkdown: `![${filename}](edgeever-staged://stage_dead)\n\n`,
+            contentMarkdown: `![${filename}](stillnote-staged://stage_dead)\n\n`,
           },
         };
       }
@@ -120,17 +120,17 @@ describe("desktop repository memo saves", () => {
           type: "doc",
           content: [{
             type: "image",
-            attrs: { alt: "screenshot.webp", src: "edgeever-staged://stage_dead" },
+            attrs: { alt: "screenshot.webp", src: "stillnote-staged://stage_dead" },
           }],
         },
-        contentMarkdown: "![screenshot.webp](edgeever-staged://stage_dead)\n\n",
+        contentMarkdown: "![screenshot.webp](stillnote-staged://stage_dead)\n\n",
         tags: [],
       },
     );
 
     expect(lastRequest.method).toBe("memo.update");
     expect(lastRequest.params.contentMarkdown).toContain("/api/v1/resources/res_shot/blob");
-    expect(lastRequest.params.contentMarkdown).not.toContain("edgeever-staged://");
+    expect(lastRequest.params.contentMarkdown).not.toContain("stillnote-staged://");
     expect(lastRequest.params.contentJson.content[0].attrs.src).toBe("/api/v1/resources/res_shot/blob");
   });
 
@@ -140,9 +140,9 @@ describe("desktop repository memo saves", () => {
       {
         title: "Image",
         contentJson: { type: "doc", content: [{ type: "image", attrs: {
-          alt: "unrelated-original-name.jpg", src: "edgeever-staged://stage_exact",
+          alt: "unrelated-original-name.jpg", src: "stillnote-staged://stage_exact",
         } }] },
-        contentMarkdown: "![unrelated-original-name.jpg](edgeever-staged://stage_exact)",
+        contentMarkdown: "![unrelated-original-name.jpg](stillnote-staged://stage_exact)",
         tags: [],
       },
     );
@@ -157,9 +157,9 @@ describe("desktop repository memo saves", () => {
       {
         title: "Image",
         contentJson: { type: "doc", content: [{ type: "image", attrs: {
-          alt: "missing.jpg", src: "edgeever-staged://stage_missing",
+          alt: "missing.jpg", src: "stillnote-staged://stage_missing",
         } }] },
-        contentMarkdown: "![missing.jpg](edgeever-staged://stage_missing)",
+        contentMarkdown: "![missing.jpg](stillnote-staged://stage_missing)",
         tags: [],
       },
     )).rejects.toThrow("missing staged resource");
@@ -170,15 +170,15 @@ describe("desktop repository memo saves", () => {
 describe("desktop repository memo reads", () => {
   test("rewrites a dead staged screenshot URL when opening the memo", async () => {
     const result = await createDesktopRepository().getMemo("memo_shot");
-    expect(result.memo.contentMarkdown).toContain("edgeever-resource://resource/res_shot");
-    expect(result.memo.contentMarkdown).not.toContain("edgeever-staged://");
-    expect(result.memo.contentJson.content[0].attrs.src).toBe("edgeever-resource://resource/res_shot");
+    expect(result.memo.contentMarkdown).toContain("stillnote-resource://resource/res_shot");
+    expect(result.memo.contentMarkdown).not.toContain("stillnote-staged://");
+    expect(result.memo.contentJson.content[0].attrs.src).toBe("stillnote-resource://resource/res_shot");
   });
 
   test("recovers an imported WeChat image after jpg compression changed its extension", async () => {
     const result = await createDesktopRepository().getMemo("memo_wechat");
-    expect(result.memo.contentJson.content[0].attrs.src).toBe("edgeever-resource://resource/res_wechat");
-    expect(result.memo.contentMarkdown).toContain("edgeever-resource://resource/res_wechat");
+    expect(result.memo.contentJson.content[0].attrs.src).toBe("stillnote-resource://resource/res_wechat");
+    expect(result.memo.contentMarkdown).toContain("stillnote-resource://resource/res_wechat");
   });
 });
 
@@ -191,16 +191,16 @@ describe("guarded desktop plugin saves", () => {
   });
 
   test("reports conflicts and refuses unsupported old hosts without an unguarded fallback", async () => {
-    const request = window.edgeeverDesktop.sidecarRequest;
+    const request = window.stillnoteDesktop.sidecarRequest;
     const memo = { id: "guarded", revision: 2, contentHash: "base", title: "Title", tags: [], contentMarkdown: "Original", contentJson: { type: "doc", content: [] } };
     try {
       for (const [message, code] of [["NOTE_CONFLICT: Changed locally", "NOTE_CONFLICT"], ["Unknown sidecar method: memo.updateGuarded", "HOST_UPGRADE_REQUIRED"]]) {
         const calls = [];
-        window.edgeeverDesktop.sidecarRequest = async method => { calls.push(method); throw new Error(message); };
+        window.stillnoteDesktop.sidecarRequest = async method => { calls.push(method); throw new Error(message); };
         await expect(createDesktopRepository().updateMemo(memo, { title: "Title", contentJson: memo.contentJson, tags: [] }, { guardLocalSnapshot: true })).rejects.toMatchObject({ code });
         expect(calls).toEqual(["memo.updateGuarded"]);
       }
-    } finally { window.edgeeverDesktop.sidecarRequest = request; }
+    } finally { window.stillnoteDesktop.sidecarRequest = request; }
   });
 });
 
@@ -211,7 +211,7 @@ describe("desktop note duplication", () => {
     const { pauseDesktopSyncForImport } = await import("./desktop-sync.ts");
     const resumeSync = await pauseDesktopSyncForImport();
     const { api } = await import("./api.ts");
-    const request = window.edgeeverDesktop.sidecarRequest;
+    const request = window.stillnoteDesktop.sidecarRequest;
     const duplicate = api.duplicateMemo;
     const onLine = Object.getOwnPropertyDescriptor(globalThis.navigator, "onLine");
     Object.defineProperty(globalThis.navigator, "onLine", { configurable: true, value: true });
@@ -221,7 +221,7 @@ describe("desktop note duplication", () => {
       apiCalls.push({ memoId, input });
       return { memo: { id: "memo_copy", title: input.title, contentMarkdown: "Copy", contentJson: { type: "doc", content: [] } } };
     };
-    window.edgeeverDesktop.sidecarRequest = async (method, params) => {
+    window.stillnoteDesktop.sidecarRequest = async (method, params) => {
       calls.push({ method, params });
       // Like the sidecar (crates/desktop-sidecar/src/sync.rs): the list holds
       // pending, error and conflict items in queue order, at most 200 of them.
@@ -240,7 +240,7 @@ describe("desktop note duplication", () => {
       await run({ calls, apiCalls });
     } finally {
       resumeSync();
-      window.edgeeverDesktop.sidecarRequest = request;
+      window.stillnoteDesktop.sidecarRequest = request;
       api.duplicateMemo = duplicate;
       if (onLine) Object.defineProperty(globalThis.navigator, "onLine", onLine);
       else delete globalThis.navigator.onLine;

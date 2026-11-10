@@ -1,8 +1,8 @@
-# EdgeEver 插件开发指南
+# StillNote 插件开发指南
 
 [English](plugin-development.md)
 
-EdgeEver 提供客户端插件与无代码主题扩展能力。用户可从官方市场、公开 GitHub 仓库或 Manifest 地址安装扩展。已安装扩展随当前工作区在 Web 与桌面端之间同步，在应用打开期间运行；Android 与 iOS 原生端暂不运行插件。
+StillNote 提供客户端插件与无代码主题扩展能力。用户可从官方市场、公开 GitHub 仓库或 Manifest 地址安装扩展。已安装扩展随当前工作区在 Web 与桌面端之间同步，在应用打开期间运行；Android 与 iOS 原生端暂不运行插件。
 
 > [!NOTE]
 > **安全模型**：客户端插件采用受信任代码模型（类似 Obsidian）。启用插件即代表信任其在客户端 JavaScript 环境中运行并调用插件 API。清单中的能力声明（Permissions）用于向用户披露插件涉及的功能范围，不构成强制安全沙箱。主题包为纯声明式 JSON，不执行任何 JavaScript。 `networkHosts` 同样只是用途声明，不限制插件代码的网络访问。桌面插件还可以通过客户端桥访问登录凭据、本地数据及 Agent 能力。
@@ -103,7 +103,7 @@ export default {
       id: "hello-world",
       title: "Say Hello",
       run() {
-        context.ui.showNotice("Hello from EdgeEver Plugin!");
+        context.ui.showNotice("Hello from StillNote Plugin!");
       }
     });
 
@@ -115,10 +115,10 @@ export default {
 };
 ```
 
-TypeScript 项目可使用 `@edgeever/plugin-api` 提供的辅助工具：
+TypeScript 项目可使用 `@stillnote/plugin-api` 提供的辅助工具：
 
 ```ts
-import { definePlugin } from "@edgeever/plugin-api";
+import { definePlugin } from "@stillnote/plugin-api";
 
 export default definePlugin({
   activate(context) {
@@ -303,7 +303,7 @@ await context.infographics.edit(infographicNoteId, {
 
 插件保存还会在本地仓库事务内检查内容快照，防止多个窗口在宿主校验后互相覆盖；未解决的同步冲突会拒绝后续插件写入，并保留冲突队列的草稿与诊断。桌面插件保存使用专用原生接口，将正文、历史快照和同步入队一起提交；不支持该接口的旧宿主会抛出 `HOST_UPGRADE_REQUIRED`，不会回退到无保护写入。原有普通编辑器保存行为保持不变。服务器历史版本沿用现有五分钟快照规则，不保证每次插件写入都产生独立云端版本。
 
-维护者可在构建 sidecar 后运行 `bun run test:plugin-sync`，验证隔离的 Web IndexedDB → 本地 API/SQLite → 原生 sidecar → Web 往返、离线持久化、重启与冲突恢复。`test:desktop:sidecar` 已包含此验证。设置 `EDGE_EVER_LEGACY_SIDECAR_PATH` 和可选的 `EDGE_EVER_LEGACY_MIGRATIONS_PATH` 可额外验证旧原生服务创建的数据升级到当前构建；所有原生进程只访问临时测试目录，不启动已安装的桌面应用，不读取真实账户数据。该验证覆盖当前主机的原生服务，不替代其他平台的实机与应用内验收。
+维护者可在构建 sidecar 后运行 `bun run test:plugin-sync`，验证隔离的 Web IndexedDB → 本地 API/SQLite → 原生 sidecar → Web 往返、离线持久化、重启与冲突恢复。`test:desktop:sidecar` 已包含此验证。设置 `STILLNOTE_LEGACY_SIDECAR_PATH` 和可选的 `STILLNOTE_LEGACY_MIGRATIONS_PATH` 可额外验证旧原生服务创建的数据升级到当前构建；所有原生进程只访问临时测试目录，不启动已安装的桌面应用，不读取真实账户数据。该验证覆盖当前主机的原生服务，不替代其他平台的实机与应用内验收。
 
 
 ### 2. 模板管理（Templates）
@@ -389,7 +389,7 @@ if (doc) {
 
 #### 自定义块级 Embed
 
-插件可注册自定义块级渲染器并插入到文档中（保存为通用的 `edgeever-plugin-embed` 块）：
+插件可注册自定义块级渲染器并插入到文档中（保存为通用的 `stillnote-plugin-embed` 块）：
 
 ```ts
 // 1. 注册 Embed 渲染器
@@ -492,7 +492,7 @@ await context.ui.panels.open("task-dashboard", { state: { initialTab: "all" } })
 
 ### 8. 统一设置（Settings）
 
-EdgeEver 由宿主统一渲染插件设置界面。在 `manifest.json` 中声明配置字段，无需手写设置页 UI：
+StillNote 由宿主统一渲染插件设置界面。在 `manifest.json` 中声明配置字段，无需手写设置页 UI：
 
 ```json
 {
@@ -578,7 +578,7 @@ const xml = await publicRes.text();
 
 ### 11. 定时任务（Schedules，仅桌面端）
 
-桌面端插件可注册定时计划执行已注册的命令（在 EdgeEver 打开期间运行）：
+桌面端插件可注册定时计划执行已注册的命令（在 StillNote 打开期间运行）：
 
 ```ts
 // 注册命令
@@ -697,21 +697,21 @@ if (status.configured) {
 - `main.js`：打包后的单文件脚本（上限 5 MB）
 - `styles.css`：可选样式表（上限 1 MB）
 
-若使用 `@edgeever/plugin-api`，请在构建时将其内联打入 `main.js`。
+若使用 `@stillnote/plugin-api`，请在构建时将其内联打入 `main.js`。
 
 ### GitHub 分发
 
 1. 将包含最新 `manifest.json` 的仓库发布在 GitHub（公开仓库）。
 2. 创建 GitHub Release，Release Tag 匹配 Manifest 版本（如 `1.0.0` 或 `v1.0.0`）。
 3. 在 Release 资产中上传 `manifest.json`、`main.js` 和可选的 `styles.css`。
-4. 用户可在 EdgeEver 的「插件市场」页面直接输入仓库地址安装：
+4. 用户可在 StillNote 的「插件市场」页面直接输入仓库地址安装：
    ```text
-   https://github.com/owner/edgeever-plugin
+   https://github.com/owner/stillnote-plugin
    ```
 
 ### 本地测试与调试
 
-开发 EdgeEver 时，可直接在插件市场中输入本地 Manifest 地址进行调试：
+开发 StillNote 时，可直接在插件市场中输入本地 Manifest 地址进行调试：
 - `/extensions/recent-notes/manifest.json`（官方示例插件）
 - `/extensions/nord-emerald/manifest.json`（官方示例主题）
 

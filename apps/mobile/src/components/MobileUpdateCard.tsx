@@ -1,5 +1,4 @@
 import Constants from "expo-constants";
-import * as Updates from "expo-updates";
 import { StyleSheet, View } from "react-native";
 import { ActivityIndicator, RefreshCw } from "./icons";
 import { Pressable, Text } from "./LocalizedText";
@@ -12,21 +11,13 @@ export const MobileUpdateCard = () => {
   const { resolvedLocale } = useMobileLocale();
   const { resolvedTheme } = useMobileTheme();
   const palette = getMobileEditorialPalette(resolvedTheme);
-  const { checkForUpdate, hasUpdate, isSupported, openUpdate, status, updateKind } = useMobileUpdate();
-  const busy = status === "checking" || status === "downloading";
+  const { checkForUpdate, hasUpdate, installedVersion, isSupported, openUpdate, status } = useMobileUpdate();
+  const busy = status === "checking";
   const styles = resolveMobileThemeStyles(baseStyles, resolvedTheme);
   const checkLabel = status === "checking"
     ? getMobileCatalog(resolvedLocale).mobile.update.checking
     : getMobileCatalog(resolvedLocale).mobile.update.checkForUpdates;
-  const openLabel = status === "downloading"
-    ? getMobileCatalog(resolvedLocale).mobile.update.downloadingUpdate
-    : status === "ready"
-      ? getMobileCatalog(resolvedLocale).mobile.update.restartToApply
-      : updateKind === "ota"
-        ? getMobileCatalog(resolvedLocale).mobile.update.downloadUpdate
-        : updateKind === "play"
-          ? getMobileCatalog(resolvedLocale).mobile.update.updateWithGooglePlay
-          : getMobileCatalog(resolvedLocale).mobile.update.chooseSource;
+  const openLabel = getMobileCatalog(resolvedLocale).mobile.update.sources.github;
 
   return (
     <View style={styles.card}>
@@ -36,7 +27,7 @@ export const MobileUpdateCard = () => {
           {getMobileCatalog(resolvedLocale).mobile.update.description}
         </Text>
         <Text style={styles.version}>
-          {getMobileCatalog(resolvedLocale).mobile.update.currentVersion}: v{Updates.runtimeVersion ?? Constants.expoConfig?.version ?? "unknown"}
+          {getMobileCatalog(resolvedLocale).mobile.update.currentVersion}: v{installedVersion ?? Constants.expoConfig?.version ?? "unknown"}
         </Text>
       </View>
       {hasUpdate ? (
@@ -47,7 +38,7 @@ export const MobileUpdateCard = () => {
           onPress={() => void openUpdate()}
           style={[styles.button, busy && styles.buttonDisabled]}
         >
-          {status === "downloading" ? <ActivityIndicator color={palette.accentText} size="small" /> : <RefreshCw color={palette.accentText} size={16} />}
+          <RefreshCw color={palette.accentText} size={16} />
           <Text style={styles.buttonText}>{openLabel}</Text>
         </Pressable>
       ) : null}

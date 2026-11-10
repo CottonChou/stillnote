@@ -15,7 +15,7 @@ import {
   type MemoDetail,
   type Notebook,
   type TiptapDoc,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import {
   clearMobileMemoDraft,
   clearMobileNewMemoDraft,
@@ -38,7 +38,7 @@ import {
   MOBILE_EDITOR_AUTOSAVE_DELAY_MS,
   shouldScheduleMobileEditorAutosave,
 } from "../hooks/mobile-editor-save-chrome";
-import { showEdgeEverKeyboard } from "../../modules/edgeever-keyboard";
+import { showStillNoteKeyboard } from "../../modules/stillnote-keyboard";
 import { MobileResourceActions } from "../components/MobileResourceActions";
 import { MobileTemplatePickerModal } from "../components/MobileTemplatePicker";
 import { useMobileTheme } from "../lib/mobile-theme";
@@ -266,7 +266,7 @@ export const CreateMemoModal = ({
       if (Platform.OS === "android") {
         keyboardTimerRef.current = setTimeout(() => {
           keyboardTimerRef.current = null;
-          showEdgeEverKeyboard();
+          showStillNoteKeyboard();
         }, focusEditor ? 120 : 0);
       }
     }, delayMs);
@@ -1162,7 +1162,7 @@ export const RichEditorModal = ({
           if (Platform.OS === "android" && initialFocus === "body") {
             initialFocusTimerRef.current = setTimeout(() => {
               initialFocusTimerRef.current = null;
-              showEdgeEverKeyboard();
+              showStillNoteKeyboard();
             }, 180);
           }
         }}

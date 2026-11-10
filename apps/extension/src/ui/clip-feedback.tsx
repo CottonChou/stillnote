@@ -7,17 +7,17 @@ import { Toaster, toast, notificationDuration } from "./components/sonner";
 declare const __CLIP_FEEDBACK_CSS__: string;
 type Kind = "normal" | "success" | "error";
 const scope = globalThis as typeof globalThis & {
-  __edgeeverImageClipPayload?: { action?: string; message?: string; kind?: string; closeLabel?: string; regionLabel?: string };
-  __edgeeverClipFeedback?: { host: HTMLElement; show: (message: string, kind: Kind) => void; dispose: () => void };
+  __stillnoteImageClipPayload?: { action?: string; message?: string; kind?: string; closeLabel?: string; regionLabel?: string };
+  __stillnoteClipFeedback?: { host: HTMLElement; show: (message: string, kind: Kind) => void; dispose: () => void };
 };
-const payload = scope.__edgeeverImageClipPayload;
-delete scope.__edgeeverImageClipPayload;
+const payload = scope.__stillnoteImageClipPayload;
+delete scope.__stillnoteImageClipPayload;
 if (payload?.action === "toast") {
-  let service = scope.__edgeeverClipFeedback;
+  let service = scope.__stillnoteClipFeedback;
   if (!service?.host.isConnected) {
     service?.dispose();
     const host = document.createElement("div");
-    host.id = "edgeever-clipper-toast";
+    host.id = "stillnote-clipper-toast";
     host.style.cssText = "all:initial!important;position:fixed!important;inset:0!important;z-index:2147483647!important;pointer-events:none!important";
     const shadow = host.attachShadow({ mode: "open" });
     const style = document.createElement("style");
@@ -30,14 +30,14 @@ if (payload?.action === "toast") {
     service = {
       host,
       show(message, kind) {
-        const options = { id: "edgeever-clip", duration: notificationDuration[kind] };
+        const options = { id: "stillnote-clip", duration: notificationDuration[kind] };
         if (kind === "error") toast.error(message, options);
         else if (kind === "success") toast.success(message, options);
         else toast(message, options);
       },
       dispose: () => { root.unmount(); host.remove(); },
     };
-    scope.__edgeeverClipFeedback = service;
+    scope.__stillnoteClipFeedback = service;
   }
   service.show(typeof payload.message === "string" ? payload.message : "", payload.kind === "error" ? "error" : payload.kind === "normal" ? "normal" : "success");
 }

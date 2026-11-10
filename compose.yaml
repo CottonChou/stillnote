@@ -1,16 +1,16 @@
 services:
-  edgeever:
-    image: "${EDGE_EVER_IMAGE:-ghcr.io/tianma-if/edgeever}:${EDGE_EVER_VERSION:-latest}"
+  stillnote:
+    image: "${STILLNOTE_IMAGE:-ghcr.io/cottonchou/stillnote}:${STILLNOTE_VERSION:-latest}"
     restart: unless-stopped
     init: true
     ports:
-      - "${EDGE_EVER_PORT:-8787}:8787"
+      - "${STILLNOTE_PORT:-8787}:8787"
     environment:
-      EDGE_EVER_AUTH_USERNAME: "${EDGE_EVER_AUTH_USERNAME:-admin}"
-      EDGE_EVER_AUTH_PASSWORD: "${EDGE_EVER_AUTH_PASSWORD:?Set EDGE_EVER_AUTH_PASSWORD before starting EdgeEver}"
-      EDGE_EVER_CONTAINER_IMAGE: "${EDGE_EVER_IMAGE:-ghcr.io/tianma-if/edgeever}"
+      STILLNOTE_AUTH_USERNAME: "${STILLNOTE_AUTH_USERNAME:-admin}"
+      STILLNOTE_AUTH_PASSWORD: "${STILLNOTE_AUTH_PASSWORD:?Set STILLNOTE_AUTH_PASSWORD before starting StillNote}"
+      STILLNOTE_CONTAINER_IMAGE: "${STILLNOTE_IMAGE:-ghcr.io/cottonchou/stillnote}"
     volumes:
-      - edgeever-data:/data
+      - stillnote-data:/data
     security_opt:
       - no-new-privileges:true
     cap_drop:
@@ -18,4 +18,4 @@ services:
     stop_grace_period: 30s
 
 volumes:
-  edgeever-data:
+  stillnote-data:

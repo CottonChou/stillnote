@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { DEFAULT_MEMO_TEMPLATE_SEEDS } from "@edgeever/shared/memo-template-seeds";
+import { DEFAULT_MEMO_TEMPLATE_SEEDS } from "@stillnote/shared/memo-template-seeds";
 import { createTemplateCards, createTemplateDraft, templateDraftToPayload } from "./template-center.ts";
 
 const quickNote = DEFAULT_MEMO_TEMPLATE_SEEDS.find((seed) => seed.key === "quick-note");

@@ -1,6 +1,6 @@
-import type { MarketplaceRevocation } from "@edgeever/plugin-api";
+import type { MarketplaceRevocation } from "@stillnote/plugin-api";
 
-const DATABASE_NAME = "edgeever-community-registry-v1";
+const DATABASE_NAME = "stillnote-community-registry-v1";
 const DATABASE_VERSION = 1;
 const REGISTRY_STORE = "registries";
 const REVOCATION_STORE = "revocations";

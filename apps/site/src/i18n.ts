@@ -6,8 +6,8 @@ export type SiteLocale = (typeof siteLocales)[number];
 
 export const defaultSiteLocale: SiteLocale = "zh-CN";
 export const unmatchedSiteLocale: SiteLocale = "en-US";
-export const siteLocaleStorageKey = "edgeever.site.locale";
-export const siteLocaleDataAttribute = "data-edgeever-site-locale";
+export const siteLocaleStorageKey = "stillnote.site.locale";
+export const siteLocaleDataAttribute = "data-stillnote-site-locale";
 
 export const siteLocalePrefixes: Record<SiteLocale, string> = {
   "zh-CN": "",
@@ -96,13 +96,13 @@ export const siteCopy = {
   "zh-CN": {
     layout: {
       defaultDescription:
-        "EdgeEver 是开源、原生支持 AI 的自托管笔记与知识库工作区。保留经典三栏高效体验，支持 ACP 本机 Agent 深度协同、AI 伴侣侧边栏、可视化图表笔记与多端同步，覆盖 macOS、Windows、Linux、iOS、Android 与浏览器剪藏，支持在 Cloudflare 免费额度内运行或使用 Docker 一键自托管。",
-      defaultTitle: `EdgeEver - ${siteTaglines["zh-CN"]}`,
-      imageAlt: "EdgeEver 笔记应用截图",
+        "StillNote 是开源、原生支持 AI 的自托管笔记与知识库工作区。保留经典三栏高效体验，支持 ACP 本机 Agent 深度协同、AI 伴侣侧边栏、可视化图表笔记与多端同步，覆盖 macOS、Windows、Linux、iOS、Android 与浏览器剪藏，支持在 Cloudflare 免费额度内运行或使用 Docker 一键自托管。",
+      defaultTitle: `StillNote - ${siteTaglines["zh-CN"]}`,
+      imageAlt: "StillNote 笔记应用截图",
       ogLocale: "zh_CN",
     },
     nav: {
-      homeAria: "EdgeEver 首页",
+      homeAria: "StillNote 首页",
       features: "功能特性",
       guides: "使用指南",
       deploy: "部署",
@@ -138,11 +138,11 @@ export const siteCopy = {
       clipper: "剪藏插件",
       windows: "Windows",
       linux: "Linux",
-      imageAlt: "EdgeEver product preview",
+      imageAlt: "StillNote product preview",
       badgeText: "💡 全平台覆盖：macOS、Windows、Linux、iOS、Android、剪藏插件 · 原生 MCP / ACP 协同 · Cloudflare 免费额度 & Docker 一键安装",
     },
     bento: {
-      eyebrow: "WHY EDGEEVER",
+      eyebrow: "WHY STILLNOTE",
       heading: "重新定义自托管知识工作区",
       subheading: "告别商业笔记的臃肿广告、设备限制与昂贵订阅。每一个设计细节，都旨在打造流畅、开放、隐私可控且原生支持 AI 的第二大脑。",
       showcaseCta: "查看 19 个真机案例演示与最佳实践",
@@ -157,12 +157,12 @@ export const siteCopy = {
         folder3: "03_归档笔记",
         folder4: "↳ 2026_阅读精选",
         listTitle: "笔记 (18)",
-        note1Title: "EdgeEver 核心架构设计",
+        note1Title: "StillNote 核心架构设计",
         note1Sub: "基于 Cloudflare Worker / Docker 与 SQLite...",
         note2Title: "本机 ACP Agent 接入",
         note2Sub: "Codex / Antigravity 本地协同...",
-        editorTitle: "EdgeEver 核心架构设计",
-        editorBody: "EdgeEver 将经典的 3 栏工作区、原生 AI Agent 联动与自由部署架构完美结合。",
+        editorTitle: "StillNote 核心架构设计",
+        editorBody: "StillNote 将经典的 3 栏工作区、原生 AI Agent 联动与自由部署架构完美结合。",
         editorSaveTag: "已自动保存至 SQLite",
       },
       card2: {
@@ -200,7 +200,7 @@ export const siteCopy = {
         title: "全平台客户端覆盖与无损 ZIP 归档",
         desc: "覆盖 macOS、Windows、Linux、原生 iOS（SwiftUI）、Android 及全功能剪藏插件；基于标准 SQLite 与无损 ZIP 导出，数据完全自主掌控。",
         subBadge: "全平台客户端 + ZIP",
-        archiveTitle: "edgeever-backup.zip",
+        archiveTitle: "stillnote-backup.zip",
         archiveSub: "包含 Markdown、Front Matter、附件与历史版本",
       },
     },
@@ -327,7 +327,7 @@ export const siteCopy = {
           points: [
             "不限设备登录数：自建专属 API，彻底打碎商业笔记“免费版仅限 2 台设备”的枷锁。",
             "macOS 桌面端：基于 Electron + Rust sidecar + SQLite，兼顾极致本地性能、ACP 本机协同与离线编辑同步。",
-            "Windows x64：提供本地 SQLite、资源管理器右键“发送到 EdgeEver”与自动更新。",
+            "Windows x64：提供本地 SQLite、资源管理器右键“发送到 StillNote”与自动更新。",
             "移动原生端：iOS 原生 SwiftUI App（已上架 App Store）与 Android App（Google Play / APK），支持撤销重做与微信文章剪藏。",
             "全能浏览器剪藏：Chrome、Microsoft Edge 与 Firefox 全上架，支持网页全文、右键图片、X 推文与选中文本剪藏。",
           ],
@@ -345,19 +345,19 @@ export const siteCopy = {
       ],
     },
     guides: {
-      eyebrow: "EdgeEver Guides",
+      eyebrow: "StillNote Guides",
       heading: "从部署、迁移到 AI Agent 玩法",
-      description: "快速上手 EdgeEver 的核心路径：自由部署专属实例、无缝迁移旧笔记，并通过 MCP 接入 AI 助手构建第二大脑。",
+      description: "快速上手 StillNote 的核心路径：自由部署专属实例、无缝迁移旧笔记，并通过 MCP 接入 AI 助手构建第二大脑。",
       items: [
         {
-          title: "选择 EdgeEver 部署方式",
+          title: "选择 StillNote 部署方式",
           summary: "让 AI Agent 辅助或手动完成 Cloudflare 部署，也可使用单行脚本在 VPS/NAS 上 Docker 自托管。",
           href: "/blog/ai-agent-deploy-cloudflare",
           cta: "查看部署指南",
         },
         {
           title: "从印象笔记迁移",
-          summary: "通过 EdgeEver MCP、evernote-backup 和 ENEX 导入脚本，把旧笔记库迁移到自托管实例。",
+          summary: "通过 StillNote MCP、evernote-backup 和 ENEX 导入脚本，把旧笔记库迁移到自托管实例。",
           href: "/blog/evernote-migration-guide",
           cta: "查看迁移指南",
         },
@@ -379,13 +379,13 @@ export const siteCopy = {
   "en-US": {
     layout: {
       defaultDescription:
-        "EdgeEver is an open-source, AI-native knowledge base and modern notes workspace. Enjoy a classic three-pane productivity workflow (Tree View · Note List · Editor) across macOS, Windows, Linux, iOS, Android, and Web Clipper, with native ACP local agent synergy, companion sidebar, and visual diagram notes, running within Cloudflare's free tier or on Docker.",
-      defaultTitle: `EdgeEver - ${siteTaglines["en-US"]}`,
-      imageAlt: "EdgeEver notes app screenshot",
+        "StillNote is an open-source, AI-native knowledge base and modern notes workspace. Enjoy a classic three-pane productivity workflow (Tree View · Note List · Editor) across macOS, Windows, Linux, iOS, Android, and Web Clipper, with native ACP local agent synergy, companion sidebar, and visual diagram notes, running within Cloudflare's free tier or on Docker.",
+      defaultTitle: `StillNote - ${siteTaglines["en-US"]}`,
+      imageAlt: "StillNote notes app screenshot",
       ogLocale: "en_US",
     },
     nav: {
-      homeAria: "EdgeEver home",
+      homeAria: "StillNote home",
       features: "Features",
       guides: "Guides",
       deploy: "Deploy",
@@ -421,11 +421,11 @@ export const siteCopy = {
       clipper: "Clipper",
       windows: "Windows",
       linux: "Linux",
-      imageAlt: "EdgeEver product preview",
+      imageAlt: "StillNote product preview",
       badgeText: "💡 All Platforms: macOS, Windows, Linux, iOS, Android, Web Clipper · Native MCP & ACP Synergy · Cloudflare Free Tier & Docker",
     },
     bento: {
-      eyebrow: "WHY EDGEEVER",
+      eyebrow: "WHY STILLNOTE",
       heading: "Rebuilt for Self-Hosted Knowledge & AI Workflows",
       subheading: "Say goodbye to ads, device caps, and expensive subscriptions. Every detail is crafted for a fast, open, and private second brain.",
       showcaseCta: "Explore 19 real-world workflows & screenshots",
@@ -440,12 +440,12 @@ export const siteCopy = {
         folder3: "03_Archive_Notes",
         folder4: "↳ 2026_Reading",
         listTitle: "Notes (18)",
-        note1Title: "EdgeEver Architecture",
+        note1Title: "StillNote Architecture",
         note1Sub: "Cloudflare Workers / Docker & SQLite...",
         note2Title: "Local ACP Agent Connection",
         note2Sub: "Codex / Antigravity local synergy...",
-        editorTitle: "EdgeEver Architecture",
-        editorBody: "EdgeEver combines the classic 3-pane layout with AI Agent synergy and flexible deployment options.",
+        editorTitle: "StillNote Architecture",
+        editorBody: "StillNote combines the classic 3-pane layout with AI Agent synergy and flexible deployment options.",
         editorSaveTag: "Auto-saved to SQLite",
       },
       card2: {
@@ -483,7 +483,7 @@ export const siteCopy = {
         title: "Apps Across Platforms & Lossless ZIP Backup",
         desc: "Available on macOS, Windows, Linux, native iOS (SwiftUI), Android, and full-featured Web Clipper. Lossless ZIP export and standard SQLite ensure total ownership.",
         subBadge: "Multi-Platform + ZIP",
-        archiveTitle: "edgeever-backup.zip",
+        archiveTitle: "stillnote-backup.zip",
         archiveSub: "Markdown + Attachments + Revision History",
       },
     },
@@ -610,7 +610,7 @@ export const siteCopy = {
           points: [
             "Unlimited Devices: Self-hosted API eliminates commercial restrictions like the '2-device login limit'.",
             "macOS Desktop App: Electron + Rust sidecar + SQLite for blazing fast local performance, ACP synergy, and offline sync.",
-            "Windows x64: Local SQLite, Explorer right-click 'Send to EdgeEver', and automatic updates.",
+            "Windows x64: Local SQLite, Explorer right-click 'Send to StillNote', and automatic updates.",
             "Mobile Native Apps: Native SwiftUI iOS App (on App Store) and Android App (on Google Play & GitHub APK) with undo/redo and WeChat clipping.",
             "Web Clipper Extension: Official extensions on Chrome, Edge, and Firefox for full articles, right-click images, X posts, and selections.",
           ],
@@ -628,19 +628,19 @@ export const siteCopy = {
       ],
     },
     guides: {
-      eyebrow: "EdgeEver Guides",
+      eyebrow: "StillNote Guides",
       heading: "Deploy, migrate, and put AI agents to work",
-      description: "The fastest paths into EdgeEver: deploy your own instance, move an existing Evernote archive, then connect MCP-powered AI workflows.",
+      description: "The fastest paths into StillNote: deploy your own instance, move an existing Evernote archive, then connect MCP-powered AI workflows.",
       items: [
         {
-          title: "Choose how to deploy EdgeEver",
+          title: "Choose how to deploy StillNote",
           summary: "Use an AI Agent or manual setup for Cloudflare, or run a one-line Docker installer on a VPS or NAS.",
           href: "/blog/ai-agent-deploy-cloudflare",
           cta: "Read deployment guide",
         },
         {
           title: "Migrate from Evernote",
-          summary: "Use EdgeEver MCP, evernote-backup, and the ENEX import script to migrate an old notes library into your self-hosted instance.",
+          summary: "Use StillNote MCP, evernote-backup, and the ENEX import script to migrate an old notes library into your self-hosted instance.",
           href: "/blog/evernote-migration-guide",
           cta: "Read migration guide",
         },

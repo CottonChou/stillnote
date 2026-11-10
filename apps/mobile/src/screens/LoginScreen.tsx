@@ -7,7 +7,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { PUBLIC_DEMO_INSTANCE_URL } from "@edgeever/shared";
+import { PUBLIC_DEMO_INSTANCE_URL } from "@stillnote/shared";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path, Rect } from "react-native-svg";
 import { ActivityIndicator, GitHub } from "../components/icons";
@@ -18,7 +18,7 @@ import { resolveMobileThemeStyles, useMobileTheme, type MobileResolvedTheme } fr
 import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import { useSession } from "../lib/session";
 
-const GITHUB_REPOSITORY_URL = "https://github.com/tianma-if/edgeever";
+const GITHUB_REPOSITORY_URL = "https://github.com/CottonChou/stillnote";
 
 export const LoginScreen = () => {
   const { resolvedTheme } = useMobileTheme();
@@ -80,7 +80,7 @@ export const LoginScreen = () => {
                 </Svg>
               </View>
               <View style={styles.headerText}>
-                <Text style={styles.title}>EdgeEver</Text>
+                <Text style={styles.title}>StillNote</Text>
                 <Text style={styles.subtitle}>连接你的自托管笔记空间</Text>
               </View>
             </View>

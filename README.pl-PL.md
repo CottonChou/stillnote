@@ -1,15 +1,15 @@
 <div align="center">
   <h1>
-    <img src="assets/brand/edgeever-icon.svg" alt="Logo EdgeEver" width="56" align="absmiddle" /> EdgeEver · Editorial Flow Edition
+    <img src="assets/brand/stillnote-icon.svg" alt="Logo StillNote" width="56" align="absmiddle" /> StillNote · Editorial Flow Edition
   </h1>
   <p>
-    <b>Osobista baza wiedzy open-source oparta na projekcie <a href="https://github.com/tianma-if/edgeever">EdgeEver</a> (v2.16.1) — z przeprojektowanym interfejsem Editorial Flow, ikoną sosnowej zakładki i płynnymi gestami mobilnymi. Bezpłatnie na Cloudflare lub przez Docker.</b>
+    <b>Otwartoźródłowa osobista baza wiedzy AI i trzypanelowy edytor notatek (<a href="https://github.com/CottonChou/stillnote">CottonChou/stillnote</a>, v2.17.0) — z interfejsem Editorial Flow, ikoną sosnowej zakładki, leniwą synchronizacją notatników i płynnymi gestami mobilnymi. Bezpłatnie na Cloudflare lub przez Docker.</b>
   </p>
   <p>
-    <a href="https://github.com/CottonChou/edgeever/releases/latest"><img src="https://img.shields.io/github/v/release/CottonChou/edgeever?include_prereleases&color=187958&label=Fork%20Release" alt="Najnowsze wydanie Forka" /></a>
-    <a href="https://github.com/CottonChou/edgeever/stargazers"><img src="https://img.shields.io/github/stars/CottonChou/edgeever?style=social" alt="Gwiazdki Forka" /></a>
-    <a href="https://github.com/tianma-if/edgeever"><img src="https://img.shields.io/badge/Based_on-tianma--if%2Fedgeever_v2.16.1-187958" alt="Oparte na tianma-if/edgeever" /></a>
-    <a href="https://demo.edgeever.org"><img src="https://img.shields.io/badge/Upstream_Demo-Live-2c5a48" alt="Demo online" /></a>
+    <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="https://img.shields.io/github/v/release/CottonChou/stillnote?include_prereleases&color=187958&label=Release" alt="Najnowsze wydanie" /></a>
+    <a href="https://github.com/CottonChou/stillnote/stargazers"><img src="https://img.shields.io/github/stars/CottonChou/stillnote?style=social" alt="Gwiazdki GitHub" /></a>
+    <a href="https://github.com/CottonChou/stillnote/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-187958" alt="Licencja AGPL-3.0" /></a>
+    <a href="https://stillnote.org"><img src="https://img.shields.io/badge/Docs-stillnote.org-2c5a48" alt="Dokumentacja" /></a>
   </p>
   <p>
     <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文</a> | <a href="README.md">English</a> | <a href="README.ja.md">日本語</a> | <b>Polski</b>
@@ -22,58 +22,57 @@
     <a href="#przewodnik-lokalne-budowanie">🛠️ Budowanie lokalne</a>
   </p>
   <p align="center">
-    <img src="assets/readme/edgeever-hero-v6.png" alt="Podgląd przestrzeni roboczej EdgeEver" width="800" />
+    <img src="assets/readme/stillnote-hero-v6.png" alt="Podgląd przestrzeni roboczej StillNote" width="800" />
   </p>
 </div>
 
-> **Informacja o Forku**: `CottonChou/edgeever` to osobista edycja rozwojowa oparta na otwartoźródłowym projekcie [`tianma-if/edgeever`](https://github.com/tianma-if/edgeever) (obecnie zsynchronizowana z wersją `v2.16.1`). Nie jest to oficjalne wydanie autorów projektu głównego.
-
-EdgeEver zachowuje klasyczny układ trzech paneli (**Notatniki · Lista notatek · Edytor**), natychmiastową synchronizację w chmurze, lokalne wsparcie offline w SQLite oraz natywną integrację z agentami AI (MCP i ACP).
+StillNote zachowuje klasyczny układ trzech paneli (**Notatniki · Lista notatek · Edytor**), natychmiastową synchronizację w chmurze, lokalne wsparcie offline w SQLite oraz natywną integrację z agentami AI (MCP i ACP).
 
 ---
 
 <a id="nowoci-w-editorial-flow-edition"></a>
-## ✨ Nowości w Editorial Flow Edition
+## ✨ Nowości Editorial Flow (`v2.17.0`)
 
-Poza pełnym zestawem funkcji wersji `v2.16.1`, ten Fork wprowadza spójny wygląd i ulepszenia mobilne:
+Edycja dopracowuje czytelność przy długim pisaniu, spójność wizualną, ergonomię dotykową oraz szybkość synchronizacji mobilnej:
 
-- **Interfejs Editorial Flow**: Aplikacja Web, klient desktopowy macOS oraz klient mobilny Expo / React Native korzystają ze stonowanej palety ciepłego papieru (`#f4f1ea` / `#f9f7f2` / `#fdfcf9`), trybu ciemnego Charcoal (`#151513` / `#1d1c1a` / `#22211e`) i akcentów sosnowej zieleni (`#187958` / `#43b88c`). Tło okien Electron dostosowuje się natywnie do motywu systemowego ([index.mjs](apps/desktop/src/main/index.mjs)).
+- **Interfejs Editorial Flow**: Aplikacja Web, klient desktopowy macOS oraz klient mobilny Expo / React Native korzystają ze stonowanej palety ciepłego papieru (`#f4f1ea` / `#f9f7f2` / `#fdfcf9`), trybu ciemnego Charcoal (`#151513` / `#1d1c1a` / `#22211e`) i akcentów sosnowej zieleni (`#187958` / `#43b88c`). Nagłówek notatki grupuje udostępnianie w menu `...` obok przycisku zamknięcia notatki.
 - **Nowa ikona Editorial Pine Bookmark Folio**: Jednolity zestaw zasobów dla macOS (`icon.icns` i ikony zasobnika `trayTemplate`), Androida (`#187958` ikona adaptacyjna i ekran startowy), iOS, Web/PWA, witryny Astro oraz rozszerzeń przeglądarki.
-- **Płynne gesty mobilne** *(szczegóły w [`docs/FORK_CUSTOMIZATIONS.md`](docs/FORK_CUSTOMIZATIONS.md))*:
-  - **Szuflada notatników gestem w prawo**: Przesuń od lewej w liście notatek, aby otworzyć drzewo folderów, wyszukiwarkę, szybkie tworzenie i Kosz (`WorkspaceDrawer.tsx`).
-  - **Szybkie akcje na karcie w lewo**: Przesuń kartę notatki w lewo, aby jednym dotknięciem oznaczyć gwiazdką lub usunąć (`WorkspaceNotesView.tsx`).
-  - **Ciągłe przeglądanie zdjęć między notatkami**: Przesuwanie poza pierwsze lub ostatnie zdjęcie płynnie przechodzi do kolejnej notatki z obrazami i synchronizuje wybór listy po wyjściu (`ZoomableImagePreview.tsx`).
+- **Płynne gesty mobilne i synchronizacja na żądanie** *(szczegóły w [`docs/FORK_CUSTOMIZATIONS.md`](docs/FORK_CUSTOMIZATIONS.md))*:
+  - **Płynna szuflada DrawerLayout i ochrona przed przypadkowym wyjściem**: Przesuwanie w prawo/lewo bez błędnego zamykania aplikacji na Androidzie (`WorkspaceDrawer.tsx`).
+  - **Leniwa synchronizacja z metadanymi i ręczne odświeżanie notatnika**: Najpierw pobierane są notatniki i tytuły, a treść doczytuje się po otwarciu notatki (`Sync Notebook`).
+  - **Szybkie akcje na karcie w lewo**: Oznaczanie gwiazdką lub przenoszenie do Kosza jednym gestem (`WorkspaceNotesView.tsx`).
+  - **Ciągłe przeglądanie zdjęć między notatkami**: Płynne przejście poza pierwsze/ostatnie zdjęcie (`ZoomableImagePreview.tsx`).
 
 ---
 
 <a id="downloads"></a>
 ## 📦 Pobieranie (macOS DMG i Android APK)
 
-### Niestandardowe wydania Forka (`CottonChou/edgeever`)
+### Wydania StillNote (`CottonChou/stillnote`)
 
-Gotowe pakiety z interfejsem **Editorial Flow**, **nową ikoną** i **ulepszeniami mobilnymi** są publikowane w [CottonChou/edgeever Releases](https://github.com/CottonChou/edgeever/releases/latest):
+Gotowe pakiety z interfejsem **Editorial Flow**, **nową ikoną** i **ulepszeniami synchronizacji/gestów mobilnych** są publikowane w [CottonChou/stillnote Releases](https://github.com/CottonChou/stillnote/releases/latest):
 
 | Platforma | Architektura | Format | Uwagi |
 | :--- | :--- | :--- | :--- |
-| **macOS** | Apple Silicon (`arm64`) | `.dmg` / `.zip` | Zawiera natywny Rust Sidecar (`arm64`), nowe ikony paska menu i rozszerzenie udostępniania `EdgeEverShare.appex` (podpis Ad-hoc) |
-| **Android** | `arm64-v8a` | `.apk` | Podpisany pakiet produkcyjny z silnikiem Hermes i ikoną adaptacyjną `#187958` |
+| **macOS** | Apple Silicon (`arm64`) | `.dmg` / `.zip` | Zawiera natywny Rust Sidecar (`arm64`), nowe ikony paska menu i rozszerzenie udostępniania `StillNoteShare.appex` (podpis Ad-hoc) |
+| **Android** | `arm64-v8a` | `.apk` | Podpisany pakiet produkcyjny (`org.stillnote.mobile`) z silnikiem Hermes i ikoną adaptacyjną `#187958` |
 
 <p>
-  <a href="https://github.com/CottonChou/edgeever/releases/latest"><img src="assets/readme/platforms/macos.svg" alt="Pobierz Fork macOS" width="40" height="40" /></a>&nbsp;&nbsp;
-  <a href="https://github.com/CottonChou/edgeever/releases/latest"><img src="assets/readme/platforms/google-play.svg" alt="Pobierz Fork Android APK" width="40" height="40" /></a>&nbsp;&nbsp;
-  <a href="https://github.com/tianma-if/edgeever/releases/latest"><img src="assets/readme/platforms/windows.svg" alt="Oficjalny Windows" width="40" height="40" /></a>&nbsp;&nbsp;
-  <a href="https://github.com/tianma-if/edgeever/releases/latest"><img src="assets/readme/platforms/tux.svg" alt="Oficjalny Linux AppImage" width="40" height="40" /></a>&nbsp;&nbsp;
-  <a href="https://apps.apple.com/pl/app/edgeever/id6792625631"><img src="assets/readme/platforms/app-store.svg" alt="Oficjalny iOS" width="40" height="40" /></a>
+  <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="assets/readme/platforms/macos.svg" alt="Pobierz StillNote macOS" width="40" height="40" /></a>&nbsp;&nbsp;
+  <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="assets/readme/platforms/google-play.svg" alt="Pobierz StillNote Android APK" width="40" height="40" /></a>&nbsp;&nbsp;
+  <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="assets/readme/platforms/windows.svg" alt="Windows" width="40" height="40" /></a>&nbsp;&nbsp;
+  <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="assets/readme/platforms/tux.svg" alt="Linux AppImage" width="40" height="40" /></a>&nbsp;&nbsp;
+  <a href="https://apps.apple.com/pl/app/stillnote/id6792625631"><img src="assets/readme/platforms/app-store.svg" alt="iOS App Store" width="40" height="40" /></a>
 </p>
 
-> Linki do Windows, Linuxa i iOS App Store kierują do oficjalnego projektu [`tianma-if/edgeever`](https://github.com/tianma-if/edgeever/releases/latest). Aplikacja na iOS wymaga Apple ID spoza Chin kontynentalnych.
+> Sprawdzanie aktualizacji na desktopie i Androidzie wskazuje bezpośrednio na [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote/releases/latest).
 
 ### Rozszerzenie Web Clipper
 
 <p>
-  <a href="https://chromewebstore.google.com/detail/edgeever-web-clipper/gjadpfmanienmlofajibkfkkpfdkclgo"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/chrome/chrome.svg" alt="Chrome" width="36" height="36" /></a>&nbsp;&nbsp;
-  <a href="https://chromewebstore.google.com/detail/edgeever-web-clipper/gjadpfmanienmlofajibkfkkpfdkclgo"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/edge/edge.svg" alt="Edge" width="36" height="36" /></a>&nbsp;&nbsp;
-  <a href="https://addons.mozilla.org/firefox/addon/edgeever-web-clipper/"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/firefox/firefox.svg" alt="Firefox" width="36" height="36" /></a>
+  <a href="https://chromewebstore.google.com/detail/stillnote-web-clipper/gjadpfmanienmlofajibkfkkpfdkclgo"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/chrome/chrome.svg" alt="Chrome" width="36" height="36" /></a>&nbsp;&nbsp;
+  <a href="https://chromewebstore.google.com/detail/stillnote-web-clipper/gjadpfmanienmlofajibkfkkpfdkclgo"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/edge/edge.svg" alt="Edge" width="36" height="36" /></a>&nbsp;&nbsp;
+  <a href="https://addons.mozilla.org/firefox/addon/stillnote-web-clipper/"><img src="https://raw.githubusercontent.com/alrra/browser-logos/58881b84c4d73adc03c06fa2c275a7abee02d935/src/firefox/firefox.svg" alt="Firefox" width="36" height="36" /></a>
 </p>
 
 ---
@@ -98,20 +97,20 @@ Gotowe pakiety z interfejsem **Editorial Flow**, **nową ikoną** i **ulepszenia
 ### Opcja A: Wdrożenie z agentem AI (zalecane)
 
 ```text
-Wdróż EdgeEver przez GitHub i Cloudflare:
-1. Utwórz Fork repozytorium https://github.com/tianma-if/edgeever.
-2. Utwórz bazę D1 `edgeever` i zasobnik R2 `edgeever-resources` w Cloudflare.
-3. W Workers & Pages utwórz Worker o nazwie `edgeever` z gałęzi `main` Forka.
+Wdróż StillNote przez GitHub i Cloudflare:
+1. Utwórz Fork repozytorium https://github.com/CottonChou/stillnote.
+2. Utwórz bazę D1 `stillnote` i zasobnik R2 `stillnote-resources` w Cloudflare.
+3. W Workers & Pages utwórz Worker o nazwie `stillnote` z gałęzi `main` Forka.
    Użyj katalogu głównego repozytorium, zachowaj domyślne polecenie wdrożenia
    Workers Builds i upewnij się, że token API może odczytywać i modyfikować D1.
    Wybierz Save and Deploy.
 4. Po utworzeniu Workera zapisz wybrane hasło jako sekret środowiska
-   uruchomieniowego `EDGE_EVER_AUTH_PASSWORD` (najlepiej co najmniej 32 znaki).
+   uruchomieniowego `STILLNOTE_AUTH_PASSWORD` (najlepiej co najmniej 32 znaki).
    Domyślna nazwa użytkownika to `admin`. Aby ją zmienić, ustaw zmienną
-   Workers Builds `EDGE_EVER_AUTH_USERNAME` przed kolejnym buildem.
+   Workers Builds `STILLNOTE_AUTH_USERNAME` przed kolejnym buildem.
 5. Ponów build, sprawdź `/api/health` i `/api/openapi.json`, a następnie
    zaloguj się nazwą administratora i hasłem.
-6. Włącz i ręcznie uruchom raz workflow GitHub Actions `Update deployed EdgeEver`,
+6. Włącz i ręcznie uruchom raz workflow GitHub Actions `Update deployed StillNote`,
    aby Fork automatycznie otrzymywał przyszłe stabilne wersje i poprawki.
 ```
 
@@ -121,7 +120,7 @@ Wdróż EdgeEver przez GitHub i Cloudflare:
 - Szybka instalacja Docker:
 
 ```sh
-curl -fsSL https://edgeever.org/install.sh | bash
+curl -fsSL https://stillnote.org/install.sh | bash
 ```
 
 ---
@@ -135,15 +134,14 @@ bun run dev                        # Lokalne uruchomienie Web + API
 bun run prepare:brand:icons        # Wygeneruj ikony dla wszystkich platform
 bun run build:desktop              # Zbuduj paczkę macOS arm64 DMG / ZIP
 bun run build:android:apk:local    # Zbuduj podpisany APK Android arm64
-git fetch upstream && git merge upstream/main
 ```
 
 ---
 
 ## Społeczność, marka i zastrzeżenia
 
-- **Repozytorium główne**: [`tianma-if/edgeever`](https://github.com/tianma-if/edgeever) · [Issues](https://github.com/tianma-if/edgeever/issues) · [Telegram](https://t.me/+wwUx1BYLrIdiZjY1)
-- **Znak towarowy**: Nazwa EdgeEver i oficjalna identyfikacja należą do [`tianma-if/edgeever`](https://github.com/tianma-if/edgeever). Niniejszy Fork zaznacza swoje pochodzenie i nie jest oficjalnym wydaniem.
+- **Repozytorium**: [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) · [Issues](https://github.com/CottonChou/stillnote/issues) · [Telegram](https://t.me/+wwUx1BYLrIdiZjY1)
+- **Marka i wydania**: Kod źródłowy oraz wydania StillNote dla tej edycji są utrzymywane w [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote).
 - **Zastrzeżenie**: Niezależne oprogramowanie open-source niezwiązane z Evernote Corporation. Operatorzy instancji odpowiadają za przechowywane treści.
 
 ## Współtwórcy

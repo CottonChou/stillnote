@@ -1,6 +1,6 @@
 import { useCallback, type MutableRefObject } from "react";
 import { Alert } from "react-native";
-import type { createEdgeEverClient } from "@edgeever/client";
+import type { createStillNoteClient } from "@stillnote/client";
 import type { LocalTiptapEditorRef } from "../components/LocalTiptapEditor";
 import {
   openMobileResource,
@@ -12,7 +12,7 @@ import { loadProtectedResourceDataUrl, type ProtectedResourceLoadFailure } from 
 import { safeDomCall } from "../lib/safe-dom-call";
 import { formatMobileCopy, getMobileCatalog, type MobileLocale } from "../lib/mobile-locale";
 
-type Client = ReturnType<typeof createEdgeEverClient> | null;
+type Client = ReturnType<typeof createStillNoteClient> | null;
 
 type Options = {
   baseUrl: string;

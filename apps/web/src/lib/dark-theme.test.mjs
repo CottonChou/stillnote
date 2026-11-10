@@ -16,7 +16,7 @@ const BUILT_IN_EDITOR_THEMES = [
 
 const readDarkThemeTokens = (theme) => {
   const css = readFileSync(new URL(`../styles/editor-themes/${theme}.css`, import.meta.url), "utf8");
-  const selector = `:root.dark .edgeever-editor[data-editor-theme="${theme}"]:not([data-editor-theme="default"])`;
+  const selector = `:root.dark .stillnote-editor[data-editor-theme="${theme}"]:not([data-editor-theme="default"])`;
   const blockStart = css.indexOf(`${selector} {`);
   expect(blockStart).toBeGreaterThanOrEqual(0);
   const blockEnd = css.indexOf("}", blockStart);
@@ -40,11 +40,11 @@ describe("dark theme contracts", () => {
   test("public shares and divided surfaces have explicit dark rules", () => {
     const css = readFileSync(new URL("../styles/globals.css", import.meta.url), "utf8");
     const memoCard = readFileSync(new URL("../components/MemoCard.tsx", import.meta.url), "utf8");
-    expect(css).toContain(":root.dark .edgeever-public-share .ProseMirror");
+    expect(css).toContain(":root.dark .stillnote-public-share .ProseMirror");
     expect(css).toContain("color: hsl(var(--foreground));");
     expect(css).toContain("--workspace-memo-divider: #2e2c28;");
-    expect(css).toContain(":root.dark .edgeever-workspace-memo-list .edgeever-memo-divider");
-    expect(memoCard).toContain("edgeever-memo-divider");
+    expect(css).toContain(":root.dark .stillnote-workspace-memo-list .stillnote-memo-divider");
+    expect(memoCard).toContain("stillnote-memo-divider");
     expect(memoCard).not.toContain("dark:lg:border-slate-300");
     expect(memoCard).not.toContain("dark:lg:border-slate-300/70");
   });
@@ -86,12 +86,12 @@ describe("dark theme contracts", () => {
     expect(css).toContain("--tooltip-bg: #2c2a26;");
     expect(css).toContain("--scrollbar-thumb: rgb(148 142 132 / 0.35);");
     expect(css).toContain("--search-match: rgb(67 184 140 / 0.28);");
-    expect(css).toContain(":root.dark .ProseMirror .edgeever-mermaid-preview");
+    expect(css).toContain(":root.dark .ProseMirror .stillnote-mermaid-preview");
     expect(css).toContain("background: var(--workspace-editor);");
     expect(css).toContain("border-color: var(--workspace-divider);");
     expect(css).not.toContain("background: #0f172a;");
     expect(css).not.toContain("border-color: #334155;");
-    expect(css).toContain(":root.dark .edgeever-paper");
+    expect(css).toContain(":root.dark .stillnote-paper");
     expect(css).toContain("--tw-ring-offset-color: var(--workspace-canvas);");
   });
 
@@ -122,7 +122,7 @@ describe("dark theme contracts", () => {
     expect(editorPane).toContain("noteProseCssVariables(noteProse)");
     expect(editorPane).not.toContain("useEditorTheme()");
     expect(editorPane).not.toContain("resolvedTheme");
-    expect(editorThemeCss).toContain(':root.dark .edgeever-editor[data-editor-theme="custom"]:not([data-editor-theme="default"])');
+    expect(editorThemeCss).toContain(':root.dark .stillnote-editor[data-editor-theme="custom"]:not([data-editor-theme="default"])');
     expect(editorThemeCss).toContain("--editor-theme-dark-bg");
   });
 });

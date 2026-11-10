@@ -29,22 +29,22 @@ export type PlatformLabels = {
 };
 
 export const PLATFORM_MENUS = [
-  { id: "save-hacker-news", title: "saveHackerNewsToEdgeEver", patterns: ["https://news.ycombinator.com/item?*"] },
-  { id: "save-v2ex", title: "saveV2exToEdgeEver", patterns: ["https://www.v2ex.com/t/*", "https://v2ex.com/t/*"] },
-  { id: "save-xiaoyuzhou", title: "saveXiaoyuzhouToEdgeEver", patterns: ["https://www.xiaoyuzhoufm.com/episode/*"] },
-  { id: "save-boss", title: "saveBossToEdgeEver", patterns: ["https://www.zhipin.com/job_detail/*", "https://zhipin.com/job_detail/*"] },
-  { id: "save-xueqiu", title: "saveXueqiuToEdgeEver", patterns: ["https://xueqiu.com/*", "https://www.xueqiu.com/*"] },
-  { id: "save-wechat", title: "saveWechatToEdgeEver", patterns: ["https://mp.weixin.qq.com/s", "https://mp.weixin.qq.com/s?*", "https://mp.weixin.qq.com/s/*"] },
-  { id: "save-jike", title: "saveJikeToEdgeEver", patterns: ["https://m.okjike.com/originalPosts/*", "https://m.okjike.com/topics/*", "https://web.okjike.com/*"] },
-  { id: "save-sspai", title: "saveSspaiToEdgeEver", patterns: ["https://sspai.com/post/*", "https://www.sspai.com/post/*"] },
-  { id: "save-juejin", title: "saveJuejinToEdgeEver", patterns: ["https://juejin.cn/post/*"] },
-  { id: "save-douban", title: "saveDoubanToEdgeEver", patterns: ["https://book.douban.com/review/*", "https://movie.douban.com/review/*", "https://music.douban.com/review/*", "https://book.douban.com/comment/*", "https://movie.douban.com/comment/*", "https://music.douban.com/comment/*", "https://www.douban.com/note/*", "https://book.douban.com/subject/*/comments*", "https://movie.douban.com/subject/*/comments*", "https://music.douban.com/subject/*/comments*"] },
-  { id: "save-facebook", title: "saveFacebookToEdgeEver", patterns: ["https://www.facebook.com/*", "https://facebook.com/*", "https://m.facebook.com/*"] },
-  { id: "save-instagram", title: "saveInstagramToEdgeEver", patterns: ["https://www.instagram.com/*", "https://instagram.com/*"] },
-  { id: "save-linkedin", title: "saveLinkedinToEdgeEver", patterns: ["https://www.linkedin.com/*", "https://linkedin.com/*"] },
-  { id: "save-threads", title: "saveThreadsToEdgeEver", patterns: ["https://www.threads.com/*", "https://threads.com/*", "https://www.threads.net/*", "https://threads.net/*"] },
-  { id: "save-bluesky", title: "saveBlueskyToEdgeEver", patterns: ["https://bsky.app/*"] },
-  { id: "save-substack-note", title: "saveSubstackNoteToEdgeEver", patterns: ["https://substack.com/@*/note/*", "https://www.substack.com/@*/note/*"] },
+  { id: "save-hacker-news", title: "saveHackerNewsToStillNote", patterns: ["https://news.ycombinator.com/item?*"] },
+  { id: "save-v2ex", title: "saveV2exToStillNote", patterns: ["https://www.v2ex.com/t/*", "https://v2ex.com/t/*"] },
+  { id: "save-xiaoyuzhou", title: "saveXiaoyuzhouToStillNote", patterns: ["https://www.xiaoyuzhoufm.com/episode/*"] },
+  { id: "save-boss", title: "saveBossToStillNote", patterns: ["https://www.zhipin.com/job_detail/*", "https://zhipin.com/job_detail/*"] },
+  { id: "save-xueqiu", title: "saveXueqiuToStillNote", patterns: ["https://xueqiu.com/*", "https://www.xueqiu.com/*"] },
+  { id: "save-wechat", title: "saveWechatToStillNote", patterns: ["https://mp.weixin.qq.com/s", "https://mp.weixin.qq.com/s?*", "https://mp.weixin.qq.com/s/*"] },
+  { id: "save-jike", title: "saveJikeToStillNote", patterns: ["https://m.okjike.com/originalPosts/*", "https://m.okjike.com/topics/*", "https://web.okjike.com/*"] },
+  { id: "save-sspai", title: "saveSspaiToStillNote", patterns: ["https://sspai.com/post/*", "https://www.sspai.com/post/*"] },
+  { id: "save-juejin", title: "saveJuejinToStillNote", patterns: ["https://juejin.cn/post/*"] },
+  { id: "save-douban", title: "saveDoubanToStillNote", patterns: ["https://book.douban.com/review/*", "https://movie.douban.com/review/*", "https://music.douban.com/review/*", "https://book.douban.com/comment/*", "https://movie.douban.com/comment/*", "https://music.douban.com/comment/*", "https://www.douban.com/note/*", "https://book.douban.com/subject/*/comments*", "https://movie.douban.com/subject/*/comments*", "https://music.douban.com/subject/*/comments*"] },
+  { id: "save-facebook", title: "saveFacebookToStillNote", patterns: ["https://www.facebook.com/*", "https://facebook.com/*", "https://m.facebook.com/*"] },
+  { id: "save-instagram", title: "saveInstagramToStillNote", patterns: ["https://www.instagram.com/*", "https://instagram.com/*"] },
+  { id: "save-linkedin", title: "saveLinkedinToStillNote", patterns: ["https://www.linkedin.com/*", "https://linkedin.com/*"] },
+  { id: "save-threads", title: "saveThreadsToStillNote", patterns: ["https://www.threads.com/*", "https://threads.com/*", "https://www.threads.net/*", "https://threads.net/*"] },
+  { id: "save-bluesky", title: "saveBlueskyToStillNote", patterns: ["https://bsky.app/*"] },
+  { id: "save-substack-note", title: "saveSubstackNoteToStillNote", patterns: ["https://substack.com/@*/note/*", "https://www.substack.com/@*/note/*"] },
 ] as const;
 
 export const platformTarget = (pageUrl: string): PlatformTarget | null => {
@@ -296,7 +296,7 @@ export const platformHtmlMarkdown = (body: Element | DocumentFragment, baseUrl: 
     table.parentNode!.insertBefore(paragraph,table);
     caption.remove();
   }
-  // EdgeEver stores Markdown, so Joplin's HTML fallback would display source
+  // StillNote stores Markdown, so Joplin's HTML fallback would display source
   // text. Keep the grid and use inline Markdown for rich cell contents.
   const options: TurndownService.Options & {preserveTableHtml: boolean} = { bulletListMarker: "-", codeBlockStyle: "fenced", headingStyle: "atx", linkStyle: "inlined", preserveTableHtml:false };
   const turndown = new TurndownService(options);

@@ -8,7 +8,7 @@ import { bootstrapI18n } from "./i18n";
 import { emitPwaUpdateNotice } from "./lib/pwa-update-notice";
 import { withEnvironmentTitlePrefix } from "./lib/environment-title";
 import { initializeTheme, ThemeProvider } from "./components/ThemeProvider";
-import { installPhoneImageFillStyle } from "@edgeever/shared/image-display";
+import { installPhoneImageFillStyle } from "@stillnote/shared/image-display";
 import { installDesktopClipboardBridge } from "./lib/clipboard";
 import { applyEditorBodyFontPreference } from "./lib/editor-body-font";
 import { installEditorBodyFontFaces } from "./lib/editor-body-font-faces";
@@ -22,8 +22,8 @@ installPhoneImageFillStyle();
 installDesktopClipboardBridge();
 
 const PWA_UPDATE_CHECK_INTERVAL_MS = 10 * 60 * 1_000;
-const DEVELOPMENT_PWA_RELOAD_KEY = "edgeever.dev-pwa-reset";
-const isDesktopRenderer = __EDGEEVER_DESKTOP_BUILD__ || window.edgeeverDesktop?.isAvailable === true;
+const DEVELOPMENT_PWA_RELOAD_KEY = "stillnote.dev-pwa-reset";
+const isDesktopRenderer = __STILLNOTE_DESKTOP_BUILD__ || window.stillnoteDesktop?.isAvailable === true;
 
 const DesktopBootstrapReady = () => {
   useEffect(() => reportDesktopRendererReadyAfterPaint(), []);
@@ -31,12 +31,12 @@ const DesktopBootstrapReady = () => {
 };
 
 if (import.meta.env.DEV) {
-  if (__EDGEEVER_DEVELOPMENT_PROFILE__) {
-    document.documentElement.dataset.edgeeverEnvironment = __EDGEEVER_DEVELOPMENT_PROFILE__;
+  if (__STILLNOTE_DEVELOPMENT_PROFILE__) {
+    document.documentElement.dataset.stillnoteEnvironment = __STILLNOTE_DEVELOPMENT_PROFILE__;
   }
   document.title = withEnvironmentTitlePrefix(document.title, {
     development: true,
-    profile: __EDGEEVER_DEVELOPMENT_PROFILE__,
+    profile: __STILLNOTE_DEVELOPMENT_PROFILE__,
   });
 }
 

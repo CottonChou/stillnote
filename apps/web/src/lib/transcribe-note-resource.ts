@@ -234,7 +234,7 @@ export async function transcribePreparedAudioParts(
     } catch {
       if (signal?.aborted) signal.throwIfAborted();
       throw new SpeechProviderReachabilityError(
-        typeof window !== "undefined" && window.edgeeverDesktop?.isAvailable ? "desktop" : "browser",
+        typeof window !== "undefined" && window.stillnoteDesktop?.isAvailable ? "desktop" : "browser",
       );
     }
     if (!response.ok) throw new Error(`The speech provider returned HTTP ${response.status}.`);

@@ -4,7 +4,7 @@
 
 ## Problem and outcome
 
-Implements [Issue #717](https://github.com/tianma-if/edgeever/issues/717). Chemistry had to be written by hand with subscripts, superscripts, arrow commands and `\mathrm{}`. Note math now understands the KaTeX `mhchem` extension: `\ce{…}` for formulas and equations and `\pu{…}` for quantities with units. The "Insert formula" dialog has a Math / Chemistry switch with one-click examples.
+Implements [Issue #717](https://github.com/CottonChou/stillnote/issues/717). Chemistry had to be written by hand with subscripts, superscripts, arrow commands and `\mathrm{}`. Note math now understands the KaTeX `mhchem` extension: `\ce{…}` for formulas and equations and `\pu{…}` for quantities with units. The "Insert formula" dialog has a Math / Chemistry switch with one-click examples.
 
 ## Behavior
 

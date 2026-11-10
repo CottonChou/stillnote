@@ -1,4 +1,4 @@
-const DATABASE_NAME = "edgeever-local-agent-images-v1";
+const DATABASE_NAME = "stillnote-local-agent-images-v1";
 const STORE_NAME = "images";
 const TURN_INDEX = "turnId";
 

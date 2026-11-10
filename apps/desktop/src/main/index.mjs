@@ -96,12 +96,12 @@ const noteWindowHeadingShortcutGuards = new WeakMap();
 
 const linuxUpdateTestMode = process.platform === "linux"
   && process.env.GITHUB_ACTIONS === "true"
-  && process.env.EDGE_EVER_DESKTOP_UPDATE_TEST === "1";
+  && process.env.STILLNOTE_DESKTOP_UPDATE_TEST === "1";
 const linuxUpdateTestFeedUrl = linuxUpdateTestMode
-  ? process.env.EDGE_EVER_DESKTOP_UPDATE_TEST_FEED_URL || ""
+  ? process.env.STILLNOTE_DESKTOP_UPDATE_TEST_FEED_URL || ""
   : "";
 const requestedUserDataDirectory = linuxUpdateTestMode
-  ? process.env.EDGE_EVER_DESKTOP_UPDATE_TEST_USER_DATA || userDataDirectoryFromArguments(process.argv)
+  ? process.env.STILLNOTE_DESKTOP_UPDATE_TEST_USER_DATA || userDataDirectoryFromArguments(process.argv)
   : userDataDirectoryFromArguments(process.argv);
 if (requestedUserDataDirectory) app.setPath("userData", requestedUserDataDirectory);
 
@@ -130,16 +130,16 @@ const applyMacDockIcon = () => {
     }
   }
 };
-const webUrl = process.env.EDGE_EVER_DESKTOP_WEB_URL || "http://127.0.0.1:5173";
+const webUrl = process.env.STILLNOTE_DESKTOP_WEB_URL || "http://127.0.0.1:5173";
 // A packaged desktop app is self-hosted-client software: its instance URL must
 // come from the user-facing first-run setup, never from the build environment.
 // Environment URLs are intentionally limited to local development.
-const apiBaseUrl = (!app.isPackaged && (process.env.EDGE_EVER_API_URL || process.env.EDGE_EVER_DESKTOP_WEB_URL)
-  ? process.env.EDGE_EVER_API_URL || webUrl
+const apiBaseUrl = (!app.isPackaged && (process.env.STILLNOTE_API_URL || process.env.STILLNOTE_DESKTOP_WEB_URL)
+  ? process.env.STILLNOTE_API_URL || webUrl
   : "").replace(/\/$/, "");
 let configuredApiBaseUrl = apiBaseUrl;
-const packagedSidecarName = process.platform === "win32" ? "edgeever-sidecar.exe" : "edgeever-sidecar";
-const sidecarPath = process.env.EDGE_EVER_SIDECAR_PATH || (app.isPackaged
+const packagedSidecarName = process.platform === "win32" ? "stillnote-sidecar.exe" : "stillnote-sidecar";
+const sidecarPath = process.env.STILLNOTE_SIDECAR_PATH || (app.isPackaged
   ? join(process.resourcesPath, "sidecar", packagedSidecarName)
   : join(projectRoot, "crates/desktop-sidecar/target/debug", packagedSidecarName));
 
@@ -338,10 +338,10 @@ const migrateLegacyAccountData = async (accountId) => {
   if (!accountId) return;
   const source = legacyDataDirectory();
   const destination = sidecarDataDirectory(accountId);
-  if (existsSync(join(destination, "edgeever.sqlite")) || !existsSync(join(source, "edgeever.sqlite"))) return;
+  if (existsSync(join(destination, "stillnote.sqlite")) || !existsSync(join(source, "stillnote.sqlite"))) return;
   await mkdir(destination, { recursive: true });
   await restrictDirectory(destination);
-  for (const name of ["edgeever.sqlite", "edgeever.sqlite-wal", "edgeever.sqlite-shm", "backups", "resource-outbox", "resource-cache"]) {
+  for (const name of ["stillnote.sqlite", "stillnote.sqlite-wal", "stillnote.sqlite-shm", "backups", "resource-outbox", "resource-cache"]) {
     const sourcePath = join(source, name);
     if (existsSync(sourcePath)) await rename(sourcePath, join(destination, name));
   }
@@ -352,10 +352,10 @@ protocol.registerSchemesAsPrivileged([{
   scheme: DESKTOP_APP_SCHEME,
   privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true, codeCache: true },
 }, {
-  scheme: "edgeever-resource",
+  scheme: "stillnote-resource",
   privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true },
 }, {
-  scheme: "edgeever-staged",
+  scheme: "stillnote-staged",
   privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true },
 }]);
 
@@ -586,7 +586,7 @@ const ejectMountedMacInstallers = async () => {
         "-",
         infoPlist,
       ]);
-      if (stdout.trim() !== "org.edgeever.desktop") continue;
+      if (stdout.trim() !== "org.stillnote.desktop") continue;
       let ejectError;
       for (let attempt = 1; attempt <= 3; attempt += 1) {
         try {
@@ -907,7 +907,7 @@ const flushPendingWeChatImports = () => {
 };
 
 const handleProtocolUrl = (target) => {
-  if (typeof target !== "string" || !target.startsWith("edgeever://")) return;
+  if (typeof target !== "string" || !target.startsWith("stillnote://")) return;
   try {
     const url = new URL(target);
     if (url.hostname === "wechat-import" || url.hostname === "share-import") {
@@ -934,7 +934,7 @@ const importSharedCommandLineFiles = (commandLine) => {
 };
 
 const handleOpenTarget = (commandLine) => {
-  const target = commandLine.find((value) => value.startsWith("edgeever://"));
+  const target = commandLine.find((value) => value.startsWith("stillnote://"));
   if (target) handleProtocolUrl(target);
   if (importSharedCommandLineFiles(commandLine)) return;
   const associatedFile = commandLine.find((value) => !value.startsWith("-") && isSupportedAssociatedFile(value));
@@ -1014,7 +1014,7 @@ const createTray = () => {
   const icon = existsSync(iconPath) ? nativeImage.createFromPath(iconPath) : nativeImage.createEmpty();
   if (process.platform === "darwin") icon.setTemplateImage(true);
   tray = new Tray(icon);
-  tray.setToolTip("EdgeEver");
+  tray.setToolTip("StillNote");
   tray.setContextMenu(buildTrayContextMenu());
   tray.on("double-click", () => showWindow(mainWindow));
 };
@@ -1131,9 +1131,9 @@ const handleResourceProtocolRequest = async (request) => {
 };
 
 const registerResourceProtocol = () => {
-  protocol.handle("edgeever-resource", handleResourceProtocolRequest);
+  protocol.handle("stillnote-resource", handleResourceProtocolRequest);
 
-  protocol.handle("edgeever-staged", async (request) => {
+  protocol.handle("stillnote-staged", async (request) => {
     const stagedId = resourceIdFromRequest(request.url);
     if (!stagedId) return new Response("Invalid staged resource", { status: 400 });
 
@@ -1143,7 +1143,7 @@ const registerResourceProtocol = () => {
       const path = join(directory, `${stagedId}.bin`);
       const size = await stat(path).then((details) => details.size).catch(() => null);
       if (size === null && isSafeResourceId(metadata.resourceId)) {
-        const target = new URL(`edgeever-resource://resource/${encodeURIComponent(metadata.resourceId)}`);
+        const target = new URL(`stillnote-resource://resource/${encodeURIComponent(metadata.resourceId)}`);
         target.search = new URL(request.url).search;
         return handleResourceProtocolRequest(new Request(target, { headers: request.headers }));
       }
@@ -1168,8 +1168,8 @@ const registerDesktopAppProtocol = () => {
 };
 
 const preparePackagedRendererOrigin = async () => {
-  if (!app.isPackaged || process.env.EDGE_EVER_DESKTOP_WEB_URL) return;
-  if (process.env.EDGE_EVER_FORCE_FILE_RENDERER === "1") {
+  if (!app.isPackaged || process.env.STILLNOTE_DESKTOP_WEB_URL) return;
+  if (process.env.STILLNOTE_FORCE_FILE_RENDERER === "1") {
     void writeDiagnostic("renderer.app-protocol-disabled");
     return;
   }
@@ -1303,7 +1303,7 @@ const promptForDownloadedUpdate = async (version) => {
 };
 
 const checkForDesktopUpdate = (reason, { force = false, throwOnError = false } = {}) => {
-  if (!app.isPackaged || process.env.EDGE_EVER_DISABLE_AUTO_UPDATE === "1" || updateState === "downloaded") {
+  if (!app.isPackaged || process.env.STILLNOTE_DISABLE_AUTO_UPDATE === "1" || updateState === "downloaded") {
     return Promise.resolve(null);
   }
   if (updateCheckInFlight) {
@@ -1361,7 +1361,7 @@ const checkForDesktopUpdate = (reason, { force = false, throwOnError = false } =
 };
 
 const configureAutoUpdater = () => {
-  if (!app.isPackaged || process.env.EDGE_EVER_DISABLE_AUTO_UPDATE === "1") return;
+  if (!app.isPackaged || process.env.STILLNOTE_DISABLE_AUTO_UPDATE === "1") return;
   // Observe the exact session used by electron-updater, plus net.fetch metadata.
   // No setProxy, request headers, bodies, credentials or response bodies are collected.
   for (const [name, getSession] of [
@@ -1525,7 +1525,7 @@ const startSidecar = async (accountId = null) => {
   await waitForChildProcessSpawn(spawnedProcess);
   spawnedSuccessfully = true;
   if (spawnedProcess.exitCode !== null || sidecarProcess !== spawnedProcess) {
-    throw new Error(`EdgeEver sidecar exited during startup (${spawnedProcess.exitCode ?? "unknown"})`);
+    throw new Error(`StillNote sidecar exited during startup (${spawnedProcess.exitCode ?? "unknown"})`);
   }
   sidecar = new SidecarRpcClient(spawnedProcess);
   return sidecar;
@@ -1552,7 +1552,7 @@ const scheduleSidecarRestart = () => {
     sidecarRestartInFlight = true;
     try {
       const restarted = await startSidecar(activeAccountId);
-      if (!restarted) throw new Error("EdgeEver sidecar is unavailable");
+      if (!restarted) throw new Error("StillNote sidecar is unavailable");
       await restarted.waitUntilReady();
       void writeDiagnostic("sidecar.restarted", { attempt: sidecarRestartAttempts, delayMs });
     } catch (error) {
@@ -1582,7 +1582,7 @@ const attachEditContextMenu = (contents) => {
   });
 };
 
-const desktopRendererEntryUrl = () => app.isPackaged && !process.env.EDGE_EVER_DESKTOP_WEB_URL
+const desktopRendererEntryUrl = () => app.isPackaged && !process.env.STILLNOTE_DESKTOP_WEB_URL
   ? (usePrivateAppProtocol ? DESKTOP_APP_ENTRY_URL : pathToFileURL(join(process.resourcesPath, "web/index.html")).href)
   : webUrl;
 
@@ -1714,7 +1714,7 @@ const createWindow = async ({ show = true } = {}) => {
   });
 
   try {
-    if (app.isPackaged && !process.env.EDGE_EVER_DESKTOP_WEB_URL) {
+    if (app.isPackaged && !process.env.STILLNOTE_DESKTOP_WEB_URL) {
       if (usePrivateAppProtocol) await mainWindow.loadURL(DESKTOP_APP_ENTRY_URL);
       else await mainWindow.loadFile(join(process.resourcesPath, "web/index.html"));
     } else {
@@ -1855,7 +1855,7 @@ const startApplication = async () => {
   }
   await loadConfiguredApiBaseUrl();
   await loadDesktopSessionToken();
-  app.setAsDefaultProtocolClient("edgeever");
+  app.setAsDefaultProtocolClient("stillnote");
   recoveredAfterAbnormalExit = existsSync(crashMarkerPath());
   void writeDiagnostic(recoveredAfterAbnormalExit ? "session.recovered-after-abnormal-exit" : "session.started");
   void inspectWindowsTaskbarShortcuts({
@@ -1871,7 +1871,7 @@ const startApplication = async () => {
   registerResourceProtocol();
   await preparePackagedRendererOrigin();
   const initialSidecar = await startSidecar();
-  if (!initialSidecar) throw new Error("EdgeEver sidecar is unavailable");
+  if (!initialSidecar) throw new Error("StillNote sidecar is unavailable");
   await initialSidecar.waitUntilReady();
   void writeDiagnostic("sidecar.ready", { scope: sidecarScopeKey });
   createTray();
@@ -1922,7 +1922,7 @@ const startApplication = async () => {
     return event.sender.printToPDF(PRINT_PDF_OPTIONS);
   });
   ipcMain.handle("desktop:sidecar-request", async (_event, method, params) => {
-    if (!sidecar) throw new Error("EdgeEver sidecar is unavailable");
+    if (!sidecar) throw new Error("StillNote sidecar is unavailable");
     const result = await sidecar.request(method, params);
     if (method === "resource.delete" && isSafeResourceId(params?.resourceId)) {
       const directory = resourceCacheDirectory();
@@ -1934,12 +1934,12 @@ const startApplication = async () => {
     return result;
   });
   backupManager = new BackupManager({
-    userData: app.getPath("userData"), defaultDirectory: join(app.getPath("documents"), "EdgeEver Backups"), secureStorage: safeStorage,
-    version: { edgeeverVersion: app.getVersion(), buildId: app.getVersion() },
+    userData: app.getPath("userData"), defaultDirectory: join(app.getPath("documents"), "StillNote Backups"), secureStorage: safeStorage,
+    version: { stillnoteVersion: app.getVersion(), buildId: app.getVersion() },
     onChange: (status) => { if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send("desktop:backup-status", status); },
     onDiagnostic: (event, details) => writeDiagnostic(event, details),
     onSuccess: () => {
-      if (Notification.isSupported()) new Notification({ title: "EdgeEver", body: desktopDialogCopy(app.getLocale()).backupComplete }).show();
+      if (Notification.isSupported()) new Notification({ title: "StillNote", body: desktopDialogCopy(app.getLocale()).backupComplete }).show();
     },
   });
   registerBackupIpc({ ipcMain, manager: backupManager, getWindow: () => mainWindow, dialog, shell });
@@ -1988,7 +1988,7 @@ const startApplication = async () => {
     if (backupManager.context?.baseUrl !== configuredApiBaseUrl || backupManager.context?.accountId !== normalizedAccountId) await backupManager.setContext(null);
     await stopSidecar();
     const nextSidecar = await startSidecar(normalizedAccountId);
-    if (!nextSidecar) throw new Error("EdgeEver sidecar is unavailable");
+    if (!nextSidecar) throw new Error("StillNote sidecar is unavailable");
     await nextSidecar.waitUntilReady();
     await refreshBackupContext(); void backupManager.tick();
     return { ready: true, scope: nextScopeKey };
@@ -2027,7 +2027,7 @@ const startApplication = async () => {
   ipcMain.handle("desktop:copy-file", (_event, bytes, filename) => writeFileClipboard(clipboard, ClipboardItem, {
     bytes,
     filename,
-  }, { directory: join(app.getPath("temp"), "edgeever-clipboard") }));
+  }, { directory: join(app.getPath("temp"), "stillnote-clipboard") }));
   registerClipboardReadIpc(ipcMain, {
     clipboard,
     getMainWindow: () => mainWindow,
@@ -2121,8 +2121,8 @@ const startApplication = async () => {
     onDiagnostic: (details) => { void writeDiagnostic("acp.adapter-stderr", details); },
     onProcessDiagnostic: ({ event, ...details }) => { void writeDiagnostic(`acp.adapter-${event}`, details); },
     mcpScriptPath: app.isPackaged
-      ? join(process.resourcesPath, "mcp-bridge", "edgeever-mcp-stdio.mjs")
-      : join(projectRoot, "scripts", "edgeever-mcp-stdio.mjs"),
+      ? join(process.resourcesPath, "mcp-bridge", "stillnote-mcp-stdio.mjs")
+      : join(projectRoot, "scripts", "stillnote-mcp-stdio.mjs"),
     mcpAccess: () => {
       const baseUrl = configuredApiBaseUrl;
       const sessionToken = credentialForUrl(desktopSessionToken, desktopSessionTokenOrigin, baseUrl);
@@ -2318,7 +2318,7 @@ const startApplication = async () => {
       if (sidecar) {
         await stopSidecar();
         const nextSidecar = await startSidecar(activeAccountId);
-        if (!nextSidecar) throw new Error("EdgeEver sidecar is unavailable after changing instance");
+        if (!nextSidecar) throw new Error("StillNote sidecar is unavailable after changing instance");
         await nextSidecar.waitUntilReady();
       }
       await refreshBackupContext(); void backupManager.tick();
@@ -2438,7 +2438,7 @@ const startApplication = async () => {
     const metadata = await readStagedResourceMetadata(directory, id);
     const bytes = await readFile(join(directory, `${id}.bin`)).catch(async (error) => {
       if (!isSafeResourceId(metadata.resourceId)) throw error;
-      const response = await handleResourceProtocolRequest(new Request(`edgeever-resource://resource/${encodeURIComponent(metadata.resourceId)}`));
+      const response = await handleResourceProtocolRequest(new Request(`stillnote-resource://resource/${encodeURIComponent(metadata.resourceId)}`));
       if (!response.ok) throw new Error(`Resource request failed (${response.status})`);
       return Buffer.from(await response.arrayBuffer());
     });
@@ -2466,7 +2466,7 @@ const startApplication = async () => {
   ipcMain.handle("desktop:read-resource", async (_event, id) => {
     if (!isSafeResourceId(id)) throw new Error("Invalid resource id");
     const response = await handleResourceProtocolRequest(new Request(
-      `edgeever-resource://resource/${encodeURIComponent(id)}`,
+      `stillnote-resource://resource/${encodeURIComponent(id)}`,
     ));
     if (!response.ok) throw new Error(`Resource request failed (${response.status})`);
     return {

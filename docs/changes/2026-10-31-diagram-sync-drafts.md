@@ -2,7 +2,7 @@
 
 ## Problem and goal
 
-[Issue #737](https://github.com/tianma-if/edgeever/issues/737) reports disappearing mind-map edits while the client displays a synchronized status. The shared diagram editor clears its dirty state when a memo revision changes and reloads the canvas when its content hash changes, including while newer local edits are unsaved. Preserve those edits and keep the save status accurate.
+[Issue #737](https://github.com/CottonChou/stillnote/issues/737) reports disappearing mind-map edits while the client displays a synchronized status. The shared diagram editor clears its dirty state when a memo revision changes and reloads the canvas when its content hash changes, including while newer local edits are unsaved. Preserve those edits and keep the save status accurate.
 
 ## Allowed changes and acceptance
 

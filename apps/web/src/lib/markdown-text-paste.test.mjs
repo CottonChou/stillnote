@@ -1,15 +1,15 @@
 import { describe, expect, test } from "bun:test";
 import { Editor } from "@tiptap/core";
 import { TextSelection } from "@tiptap/pm/state";
-import { createEdgeEverDocumentExtensions } from "@edgeever/shared";
-import { createEdgeEverMathematics } from "@edgeever/shared/mathematics";
+import { createStillNoteDocumentExtensions } from "@stillnote/shared";
+import { createStillNoteMathematics } from "@stillnote/shared/mathematics";
 import { ensureTestWindowDom } from "./restore-test-global.mjs";
 import { isBlockMarkdownText, pasteBlockMarkdown } from "./markdown-text-paste.ts";
 
 const createEditor = (content = { type: "doc", content: [{ type: "paragraph" }] }) => {
   ensureTestWindowDom();
   return new Editor({
-    extensions: createEdgeEverDocumentExtensions({ mathematics: createEdgeEverMathematics() }),
+    extensions: createStillNoteDocumentExtensions({ mathematics: createStillNoteMathematics() }),
     content,
   });
 };

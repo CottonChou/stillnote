@@ -57,7 +57,7 @@ export async function thumbnailsCurrent(output, state) {
 
 async function launchBrowser(root) {
   const { chromium } = await import("@playwright/test");
-  const executablePath = process.env.EDGE_EVER_POSTER_CHROME_EXECUTABLE;
+  const executablePath = process.env.STILLNOTE_POSTER_CHROME_EXECUTABLE;
   if (executablePath) return chromium.launch({ executablePath, headless: true });
   try { return await chromium.launch({ channel: "chrome", headless: true }); }
   catch { /* Standard desktop/CI Chrome may not be installed. */ }
@@ -70,14 +70,32 @@ async function launchBrowser(root) {
     return chromium.launch({ headless: true });
   }
 }
+async function readGitPinnedAsset(root, url) {
+  const jsdelivr = /^https:\/\/cdn\.jsdelivr\.net\/gh\/CottonChou\/stillnote@([0-9a-f]{40})\/(.+)$/.exec(url);
+  const rawGithub = /^https:\/\/raw\.githubusercontent\.com\/CottonChou\/stillnote\/([0-9a-f]{40})\/(.+)$/.exec(url);
+  const match = jsdelivr ?? rawGithub;
+  if (!match) return null;
+  const [, commit, assetPath] = match;
+  try {
+    const { stdout } = await promisify(execFile)(
+      "git",
+      ["show", `${commit}:${assetPath}`],
+      { cwd: root, encoding: "buffer", maxBuffer: 32 * 1024 * 1024 },
+    );
+    return stdout;
+  } catch {
+    return null;
+  }
+}
+
 async function cacheGeneratorFonts(root, page) {
-  const directory = path.join(root, "node_modules/.cache/edgeever/poster-thumbnail-fonts");
+  const directory = path.join(root, "node_modules/.cache/stillnote/poster-thumbnail-fonts");
   await mkdir(directory, { recursive: true });
   const cacheable = bytes => bytes.length > 48 && bytes.length <= 24_000_000 &&
     ([0x774f4632, 0x00010000, 0x4f54544f].includes(bytes.readUInt32BE(0)) || bytes.toString("utf8").includes("@font-face"));
   await page.route("**/*", async route => {
     const request = route.request();
-    if (!request.url().startsWith("https:") || !["xhr", "font"].includes(request.resourceType())) return route.continue();
+    if (!request.url().startsWith("https:") || !["xhr", "fetch", "font"].includes(request.resourceType())) return route.continue();
     const file = path.join(directory, `${digest(request.url())}.json`);
     const respond = (body, contentType) => route.fulfill({ status: 200, body, contentType, headers: { "access-control-allow-origin": "*" } });
     try {
@@ -86,15 +104,30 @@ async function cacheGeneratorFonts(root, page) {
         const body = Buffer.from(cached.base64, "base64");
         if (digest(body) === cached.sha256 && cacheable(body)) return respond(body, cached.contentType);
       }
-      const response = await route.fetch({ timeout: 20_000, maxRetries: 1 });
-      const body = await response.body();
-      const contentType = response.headers()["content-type"] ?? "application/octet-stream";
-      if (response.ok() && cacheable(body)) {
-        const temporary = `${file}.${process.pid}.tmp`;
-        await writeFile(temporary, JSON.stringify({ base64: body.toString("base64"), sha256: digest(body), contentType }));
-        await rename(temporary, file);
+      const response = await route.fetch({ timeout: 20_000, maxRetries: 1 }).catch(() => null);
+      if (response && response.ok()) {
+        const body = await response.body();
+        const contentType = response.headers()["content-type"] ?? "application/octet-stream";
+        if (cacheable(body)) {
+          const temporary = `${file}.${process.pid}.tmp`;
+          await writeFile(temporary, JSON.stringify({ base64: body.toString("base64"), sha256: digest(body), contentType }));
+          await rename(temporary, file);
+        }
+        return route.fulfill({ response, body });
       }
-      return route.fulfill({ response, body });
+      const localGitBytes = await readGitPinnedAsset(root, request.url());
+      if (localGitBytes && cacheable(localGitBytes)) {
+        const contentType = request.url().endsWith(".ttf") ? "font/ttf" : "font/woff2";
+        const temporary = `${file}.${process.pid}.tmp`;
+        await writeFile(temporary, JSON.stringify({ base64: localGitBytes.toString("base64"), sha256: digest(localGitBytes), contentType }));
+        await rename(temporary, file);
+        return respond(localGitBytes, contentType);
+      }
+      if (response) {
+        const body = await response.body();
+        return route.fulfill({ response, body });
+      }
+      await route.abort().catch(() => {});
     } catch {
       await route.abort().catch(() => {});
     }
@@ -104,7 +137,7 @@ async function cacheGeneratorFonts(root, page) {
 export async function openRenderer(root) {
   root = await realpath(root);
   const { build } = await import("vite");
-  const bundle = await mkdtemp(path.join(tmpdir(), "edgeever-poster-renderer-"));
+  const bundle = await mkdtemp(path.join(tmpdir(), "stillnote-poster-renderer-"));
   const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".woff2": "font/woff2", ".ttf": "font/ttf", ".png": "image/png" };
   const server = createHttpServer(async (request, response) => {
     try {
@@ -160,7 +193,7 @@ export async function openRenderer(root) {
 }
 
 async function acquireLock(root) {
-  const file = path.join(root, "node_modules/.cache/edgeever/poster-thumbnails.lock");
+  const file = path.join(root, "node_modules/.cache/stillnote/poster-thumbnails.lock");
   await mkdir(path.dirname(file), { recursive: true });
   const started = Date.now();
   while (true) {
@@ -196,7 +229,7 @@ export async function ensurePosterThumbnails({ root = projectRoot, output = path
     runtime = await renderer(root);
     const templates = await runtime.list();
     if (!templates.length || new Set(templates.map(template => template.id)).size !== templates.length) throw new Error("Invalid poster template catalog");
-    temporary = await mkdtemp(path.join(tmpdir(), "edgeever-poster-thumbnails-"));
+    temporary = await mkdtemp(path.join(tmpdir(), "stillnote-poster-thumbnails-"));
     let generated = 0;
     for (const template of templates) {
       if (!/^[a-z0-9-]+$/.test(template.id)) throw new Error("Invalid poster template ID");

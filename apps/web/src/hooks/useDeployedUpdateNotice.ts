@@ -8,10 +8,10 @@ import {
 import { api, getConfiguredDesktopApiBaseUrl, type InstanceRelease } from "@/lib/api";
 import { getReleaseTagForVersion } from "@/lib/version-check";
 
-const isDesktopClient = () => window.edgeeverDesktop?.isAvailable === true;
+const isDesktopClient = () => window.stillnoteDesktop?.isAvailable === true;
 const bundledRelease: InstanceRelease = {
-  version: __EDGEEVER_RELEASE_SUMMARY__.version,
-  changes: __EDGEEVER_RELEASE_SUMMARY__.changes,
+  version: __STILLNOTE_RELEASE_SUMMARY__.version,
+  changes: __STILLNOTE_RELEASE_SUMMARY__.changes,
 };
 
 const subscribe = (notify: () => void) => {

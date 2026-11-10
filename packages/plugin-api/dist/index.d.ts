@@ -16,7 +16,7 @@ export interface PluginManifest {
     name: string;
     version: string;
     apiVersion: typeof PLUGIN_API_VERSION;
-    /** Plugins must delegate ordinary persistent configuration to EdgeEver. */
+    /** Plugins must delegate ordinary persistent configuration to StillNote. */
     settingsUi: "host";
     description?: string;
     /** Localized marketplace and manager copy keyed by a BCP 47 language tag. */
@@ -38,7 +38,7 @@ export interface PluginSettingList {
     items: PluginSettingListItem[];
 }
 /**
- * Declarative setting metadata. EdgeEver owns the layout, controls, validation,
+ * Declarative setting metadata. StillNote owns the layout, controls, validation,
  * state feedback, and responsive behavior; plugins cannot supply presentation code or styles.
  */
 interface PluginSettingBase {
@@ -114,7 +114,7 @@ export interface MarketplaceEntry {
     description: string;
     locales?: ExtensionLocales;
     author: string;
-    publisher?: "edgeever";
+    publisher?: "stillnote";
     category: string;
     repositoryUrl: string;
     distribution: {
@@ -415,7 +415,7 @@ export interface PluginPanelEmptyState {
     action?: PluginPanelAction;
 }
 /**
- * Host-rendered panel chrome. Plugins describe intent; EdgeEver owns layout and controls.
+ * Host-rendered panel chrome. Plugins describe intent; StillNote owns layout and controls.
  * Callbacks stay in-memory and are not serialized with panel open state.
  */
 export interface PluginPanelChrome {
@@ -699,11 +699,11 @@ export interface PluginContext {
         };
     };
 }
-export interface EdgeEverPlugin {
+export interface StillNotePlugin {
     activate(context: PluginContext): void | (() => void) | Promise<void | (() => void)>;
     deactivate?(): void | Promise<void>;
 }
-export declare const definePlugin: <T extends EdgeEverPlugin>(plugin: T) => T;
+export declare const definePlugin: <T extends StillNotePlugin>(plugin: T) => T;
 export declare const defineTheme: <T extends ThemeManifest>(theme: T) => T;
 /** Strips unknown fields and clamps sizes so host chrome rendering stays bounded. */
 export declare const normalizePluginPanelChrome: (value: PluginPanelChrome | null | undefined) => PluginPanelChrome;
@@ -712,7 +712,7 @@ export declare const isReservedMarketplacePluginId: (id: string) => boolean;
 export declare const parseMarketplaceRegistry: (value: unknown) => MarketplaceRegistry;
 /**
  * Overlay a signed community registry onto the bundled official list.
- * Official entries, their repository URLs, and `publisher: "edgeever"` stay
+ * Official entries, their repository URLs, and `publisher: "stillnote"` stay
  * on the bundled list. A signature does not make a remote entry official.
  */
 export declare const mergeCommunityMarketplace: (bundled: MarketplaceRegistry, community: MarketplaceRegistry | null, revokedIds: ReadonlySet<string>) => MarketplaceRegistry;

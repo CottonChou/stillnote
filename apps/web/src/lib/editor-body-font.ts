@@ -1,10 +1,10 @@
-import { FONT_IDS, isRemoteNoteImageFont, catalogFontStack, catalogCodeFontStack } from "@edgeever/shared/font-catalog-data";
-import { LEGACY_BODY_FONTS } from "@edgeever/shared/font-defaults";
-import type { BodyFontId } from "@edgeever/shared/font-loader";
+import { FONT_IDS, isRemoteNoteImageFont, catalogFontStack, catalogCodeFontStack } from "@stillnote/shared/font-catalog-data";
+import { LEGACY_BODY_FONTS } from "@stillnote/shared/font-defaults";
+import type { BodyFontId } from "@stillnote/shared/font-loader";
 import { watchEditorCatalogFont } from "./editor-catalog-fonts";
 
-export const EDITOR_BODY_FONT_STORAGE_KEY = "edgeever.editorBodyFont";
-export const EDITOR_BODY_FONT_CUSTOM_STORAGE_KEY = "edgeever.editorBodyFontCustom";
+export const EDITOR_BODY_FONT_STORAGE_KEY = "stillnote.editorBodyFont";
+export const EDITOR_BODY_FONT_CUSTOM_STORAGE_KEY = "stillnote.editorBodyFontCustom";
 
 // Legacy choices remain readable, but new selections use the shared font directory.
 export const LEGACY_EDITOR_BODY_FONT_CHOICES = ["wenkai-screen", "neo-zhi-song", "source-serif"] as const;
@@ -18,15 +18,15 @@ export type EditorBodyFontPreference = {
 };
 
 const CJK_FALLBACK =
-  '"EdgeEver Offline Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif';
+  '"StillNote Offline Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif';
 
 export const BUNDLED_FONT_STACKS = {
-  wenkai: `"EdgeEver Kai", ${CJK_FALLBACK}`,
-  "wenkai-screen": `"EdgeEver Kai Screen", ${CJK_FALLBACK}`,
-  zhuque: `"EdgeEver Fangsong", ${CJK_FALLBACK}`,
-  "source-han-serif": `"Source Serif 4", "EdgeEver Song", ${CJK_FALLBACK}`,
-  "neo-zhi-song": `"EdgeEver Zhi Song", ${CJK_FALLBACK}`,
-  "source-han-sans": `"EdgeEver Hei", ${CJK_FALLBACK}`,
+  wenkai: `"StillNote Kai", ${CJK_FALLBACK}`,
+  "wenkai-screen": `"StillNote Kai Screen", ${CJK_FALLBACK}`,
+  zhuque: `"StillNote Fangsong", ${CJK_FALLBACK}`,
+  "source-han-serif": `"Source Serif 4", "StillNote Song", ${CJK_FALLBACK}`,
+  "neo-zhi-song": `"StillNote Zhi Song", ${CJK_FALLBACK}`,
+  "source-han-sans": `"StillNote Hei", ${CJK_FALLBACK}`,
   "source-serif": `"Source Serif 4", ${CJK_FALLBACK}`,
 } as const;
 

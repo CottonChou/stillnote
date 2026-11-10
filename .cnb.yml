@@ -6,7 +6,7 @@ main:
       services:
         - docker
       imports:
-        - https://cnb.cool/tianma-if/edgeever-secrets/-/blob/main/tcr.yml
+        - https://cnb.cool/CottonChou/stillnote-secrets/-/blob/main/tcr.yml
       stages:
         - name: Build and publish main image inside Tencent Cloud
           script: bash scripts/publish-tcr-image.sh
@@ -19,7 +19,7 @@ main:
       services:
         - docker
       imports:
-        - https://cnb.cool/tianma-if/edgeever-secrets/-/blob/main/tcr.yml
+        - https://cnb.cool/CottonChou/stillnote-secrets/-/blob/main/tcr.yml
       stages:
         - name: Build and publish release image inside Tencent Cloud
           script: bash scripts/publish-tcr-image.sh

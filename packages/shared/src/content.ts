@@ -1,7 +1,7 @@
 import { MarkdownManager } from "@tiptap/markdown";
 import {
-  createEdgeEverDocumentExtensions,
-  type CreateEdgeEverDocumentExtensionsOptions,
+  createStillNoteDocumentExtensions,
+  type CreateStillNoteDocumentExtensionsOptions,
 } from "./document-extensions";
 import { MERGE_DIVIDER_NODE_TYPE } from "./merge-divider";
 import { DEFAULT_MEMO_TITLE } from "./memo-title";
@@ -9,7 +9,7 @@ import { PDF_ATTACHMENT_NODE_TYPE, upgradeStandalonePdfLinks } from "./pdf-attac
 import { FILE_ATTACHMENT_NODE_TYPE, upgradeStandaloneFileLinks } from "./file-attachment";
 import {
   BLOCK_MATH_NODE_TYPE,
-  createEdgeEverMarkdownMathematics,
+  createStillNoteMarkdownMathematics,
   INLINE_MATH_NODE_TYPE,
 } from "./mathematics-markdown";
 import { projectNativeUnknownContentForMarkdown } from "./mobile-content-compatibility";
@@ -19,7 +19,7 @@ import { IMAGE_GALLERY_NODE_TYPE, groupConsecutiveImagesIntoGalleries, normalize
 import { EMPTY_EXTERNAL_LINK_NODE_TYPE } from "./empty-external-link";
 import { FRONT_MATTER_LANGUAGE, createFrontMatterNode, getFrontMatterSource, splitMarkdownFrontMatter } from "./front-matter";
 import { splitMarkdownParseChunks } from "./markdown-block-start";
-import { createEdgeEverMarked } from "./markdown-options";
+import { createStillNoteMarked } from "./markdown-options";
 
 export { PluginEmbed, PLUGIN_EMBED_NODE_TYPE, pluginEmbedToMarkdown, normalizePluginEmbedAttributes } from "./plugin-embed";
 export type { PluginEmbedAttributes } from "./plugin-embed";
@@ -102,18 +102,18 @@ export const emptyDoc = (): TiptapDoc => ({
   content: [{ type: "paragraph" }],
 });
 
-export const createEdgeEverMarkdownManager = (
-  options: CreateEdgeEverDocumentExtensionsOptions,
+export const createStillNoteMarkdownManager = (
+  options: CreateStillNoteDocumentExtensionsOptions,
 ) => new MarkdownManager({
-  marked: createEdgeEverMarked(),
-  extensions: createEdgeEverDocumentExtensions({
+  marked: createStillNoteMarked(),
+  extensions: createStillNoteDocumentExtensions({
     ...options,
     markdown: true,
   }),
 });
 
-const markdownManager = createEdgeEverMarkdownManager({
-  mathematics: createEdgeEverMarkdownMathematics(),
+const markdownManager = createStillNoteMarkdownManager({
+  mathematics: createStillNoteMarkdownMathematics(),
 });
 
 const PROTECTED_MARKDOWN_SEGMENT = /(```[\s\S]*?```|~~~[\s\S]*?~~~|\$\$[\s\S]*?\$\$)/g;
@@ -211,7 +211,7 @@ export const resolveMemoContentDoc = (
     !contentMarkdown?.trim() ||
     docContainsNodeType(currentDoc, "table") ||
     docContainsNodeType(currentDoc, "taskList") ||
-    docContainsNodeType(currentDoc, "edgeeverThemeBlock") ||
+    docContainsNodeType(currentDoc, "stillnoteThemeBlock") ||
     docContainsNodeType(currentDoc, IMAGE_GALLERY_NODE_TYPE) ||
     docContainsNodeType(currentDoc, MERGE_DIVIDER_NODE_TYPE) ||
     docContainsNodeType(currentDoc, PLUGIN_EMBED_NODE_TYPE) ||
@@ -273,7 +273,7 @@ const upgradeLegacyAttachmentLinks = (doc: TiptapDoc): TiptapDoc => {
         text: `${match[1]}${match[2]}`,
         marks: [
           ...existingMarks,
-          { type: "link", attrs: { href: match[3], target: "_blank", class: "edgeever-attachment-link" } },
+          { type: "link", attrs: { href: match[3], target: "_blank", class: "stillnote-attachment-link" } },
         ],
       };
     }
@@ -414,7 +414,7 @@ export const docToMarkdown = (doc: unknown): string => {
   return properties === null ? markdown : `---\n${properties}\n---\n\n${markdown}`;
 };
 
-const LITERAL_DOLLAR_PLACEHOLDER = "\uE000edgeever-dollar\uE001";
+const LITERAL_DOLLAR_PLACEHOLDER = "\uE000stillnote-dollar\uE001";
 
 /** Preserve dollar pairs that are text rather than inline-math nodes. */
 const protectLiteralDollarPairs = (value: unknown): unknown => {
@@ -458,7 +458,7 @@ const stripEditorOnlyNodes = (doc: unknown): unknown => {
   }
 
   const node = doc as { type?: unknown; attrs?: Record<string, unknown>; content?: unknown };
-  if (node.type === "edgeeverThemeBlock") {
+  if (node.type === "stillnoteThemeBlock") {
     const label = getStringAttr(node.attrs, "kind");
     const content = Array.isArray(node.content) ? node.content : [];
     return {

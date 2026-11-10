@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { enUS } from "@edgeever/shared/i18n/en-US";
-import { ja } from "@edgeever/shared/i18n/ja";
-import { pl } from "@edgeever/shared/i18n/pl";
-import { zhCN } from "@edgeever/shared/i18n/zh-CN";
+import { enUS } from "@stillnote/shared/i18n/en-US";
+import { ja } from "@stillnote/shared/i18n/ja";
+import { pl } from "@stillnote/shared/i18n/pl";
+import { zhCN } from "@stillnote/shared/i18n/zh-CN";
 import { findInlineFields, formatInlineFieldChip, rangesOverlap } from "./inline-fields.ts";
 
 const translatorFor = (catalog) => (key) => key.split(".").reduce((node, part) => node?.[part], catalog) ?? key;

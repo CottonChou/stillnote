@@ -26,7 +26,7 @@ const createDatabase = (options: { userId?: string; error?: Error } = {}) =>
 
 const fetchApi = (path: string, env: Record<string, unknown>) =>
   worker.fetch(
-    new Request(`https://edgeever.test${path}`),
+    new Request(`https://stillnote.test${path}`),
     env as never,
     executionContext,
   );
@@ -39,7 +39,7 @@ describe("production authentication guard", () => {
     expect(await response.json()).toEqual({
       error: {
         code: "auth_not_configured",
-        message: "Authentication is not configured. Set EDGE_EVER_AUTH_PASSWORD as a Worker Secret and redeploy.",
+        message: "Authentication is not configured. Set STILLNOTE_AUTH_PASSWORD as a Worker Secret and redeploy.",
       },
     });
   });
@@ -47,7 +47,7 @@ describe("production authentication guard", () => {
   test("reports unapplied D1 migrations as database_not_ready", async () => {
     const response = await fetchApi("/api/health", {
       DB: createDatabase({ error: new Error("D1_ERROR: no such table: users") }),
-      EDGE_EVER_AUTH_PASSWORD: "configured-secret",
+      STILLNOTE_AUTH_PASSWORD: "configured-secret",
     });
 
     expect(response.status).toBe(503);
@@ -59,7 +59,7 @@ describe("production authentication guard", () => {
   test("reports a missing R2 binding as object_storage_not_ready", async () => {
     const response = await fetchApi("/api/health", {
       DB: createDatabase({ userId: "owner" }),
-      EDGE_EVER_AUTH_PASSWORD: "configured-secret",
+      STILLNOTE_AUTH_PASSWORD: "configured-secret",
     });
 
     expect(response.status).toBe(503);
@@ -75,7 +75,7 @@ describe("production authentication guard", () => {
     const response = await fetchApi("/api/health", {
       DB: createDatabase({ userId: "owner" }),
       RESOURCES: {},
-      EDGE_EVER_AUTH_PASSWORD: "configured-secret",
+      STILLNOTE_AUTH_PASSWORD: "configured-secret",
     });
 
     expect(response.status).toBe(200);
@@ -93,9 +93,9 @@ describe("production authentication guard", () => {
     const response = await fetchApi("/api/health", {
       DB: createDatabase({ userId: "owner" }),
       RESOURCES: {},
-      EDGE_EVER_AUTH_PASSWORD: "configured-secret",
-      EDGE_EVER_DEPLOYMENT_TRIGGER: "github_release",
-      EDGE_EVER_DEPLOYMENT_METHOD: "github_actions",
+      STILLNOTE_AUTH_PASSWORD: "configured-secret",
+      STILLNOTE_DEPLOYMENT_TRIGGER: "github_release",
+      STILLNOTE_DEPLOYMENT_METHOD: "github_actions",
     });
 
     expect(response.status).toBe(200);
@@ -108,10 +108,10 @@ describe("production authentication guard", () => {
     const response = await fetchApi("/api/health", {
       DB: createDatabase({ userId: "owner" }),
       RESOURCES: {},
-      EDGE_EVER_AUTH_PASSWORD: "configured-secret",
-      EDGE_EVER_BUILD_CREATED_AT: "2026-01-02T03:04:05Z",
-      EDGE_EVER_BUILD_TRIGGER: "main_push",
-      EDGE_EVER_BUILD_METHOD: "github_actions",
+      STILLNOTE_AUTH_PASSWORD: "configured-secret",
+      STILLNOTE_BUILD_CREATED_AT: "2026-01-02T03:04:05Z",
+      STILLNOTE_BUILD_TRIGGER: "main_push",
+      STILLNOTE_BUILD_METHOD: "github_actions",
     });
 
     expect(response.status).toBe(200);
@@ -126,13 +126,13 @@ describe("production authentication guard", () => {
     const response = await fetchApi("/api/health", {
       DB: createDatabase({ userId: "owner" }),
       RESOURCES: {},
-      EDGE_EVER_AUTH_PASSWORD: "configured-secret",
-      EDGE_EVER_RUNTIME: "self-hosted-bun",
-      EDGE_EVER_BUILD_CREATED_AT: "2026-01-02T03:04:05Z",
-      EDGE_EVER_BUILD_TRIGGER: "github_release",
-      EDGE_EVER_BUILD_METHOD: "github_actions",
-      EDGE_EVER_DEPLOYMENT_TRIGGER: "manual",
-      EDGE_EVER_DEPLOYMENT_METHOD: "docker",
+      STILLNOTE_AUTH_PASSWORD: "configured-secret",
+      STILLNOTE_RUNTIME: "self-hosted-bun",
+      STILLNOTE_BUILD_CREATED_AT: "2026-01-02T03:04:05Z",
+      STILLNOTE_BUILD_TRIGGER: "github_release",
+      STILLNOTE_BUILD_METHOD: "github_actions",
+      STILLNOTE_DEPLOYMENT_TRIGGER: "manual",
+      STILLNOTE_DEPLOYMENT_METHOD: "docker",
     });
 
     expect(response.status).toBe(200);
@@ -151,7 +151,7 @@ describe("production authentication guard", () => {
       const response = await fetchApi(path, {
         DB: createDatabase({ userId: "owner" }),
         RESOURCES: {},
-        EDGE_EVER_AUTH_PASSWORD: "configured-secret",
+        STILLNOTE_AUTH_PASSWORD: "configured-secret",
       });
 
       expect(response.status).toBe(404);
@@ -167,7 +167,7 @@ describe("production authentication guard", () => {
         DB: createDatabase({ error: new Error("Query failed", {
           cause: new Error(`D1_ERROR: Your account has exceeded D1's free tier daily row ${operation} limit. private-query-details`),
         }) }),
-        EDGE_EVER_AUTH_PASSWORD: "configured-secret",
+        STILLNOTE_AUTH_PASSWORD: "configured-secret",
       });
       expect(response.status).toBe(503);
       const body = await response.json();
@@ -191,7 +191,7 @@ describe("production authentication guard", () => {
   test("keeps passwordless access behind the explicit local-only flag", async () => {
     const response = await fetchApi("/api/v1/auth/session", {
       DB: createDatabase(),
-      EDGE_EVER_ALLOW_UNAUTHENTICATED: "true",
+      STILLNOTE_ALLOW_UNAUTHENTICATED: "true",
     });
 
     expect(response.status).toBe(200);
@@ -204,7 +204,7 @@ describe("production authentication guard", () => {
   test("keeps first-login bootstrap protected when the users table is empty", async () => {
     const response = await fetchApi("/api/v1/auth/session", {
       DB: createDatabase(),
-      EDGE_EVER_AUTH_PASSWORD: "admin123",
+      STILLNOTE_AUTH_PASSWORD: "admin123",
     });
 
     expect(response.status).toBe(200);
@@ -244,7 +244,7 @@ describe("production authentication guard", () => {
     } as unknown as D1Database;
 
     const response = await worker.fetch(
-      new Request("https://edgeever.test/api/v1/auth/login", {
+      new Request("https://stillnote.test/api/v1/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: "admin", password: "admin123" }),

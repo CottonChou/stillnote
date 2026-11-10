@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   sync:
-    if: github.repository == 'tianma-if/edgeever'
+    if: github.repository == 'CottonChou/stillnote'
     name: Publish Tencent COS mirror
     runs-on: ubuntu-latest
     timeout-minutes: 5

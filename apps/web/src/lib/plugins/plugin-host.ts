@@ -2,7 +2,7 @@ import {
   PLUGIN_API_VERSION,
   parseExtensionManifest,
   type MarketplaceEntry,
-  type EdgeEverPlugin,
+  type StillNotePlugin,
   type ExtensionManifest,
   type PluginCommand,
   type PluginContext,
@@ -33,15 +33,15 @@ import {
   type ThemeManifest,
   type ThemeTokenName,
   type ThemeTokens,
-} from "@edgeever/plugin-api";
-import { markdownToDoc, type MemoDetail } from "@edgeever/shared";
+} from "@stillnote/plugin-api";
+import { markdownToDoc, type MemoDetail } from "@stillnote/shared";
 import {
   structuredEditToken, pluginNoteKind, assertPluginMarkdownNote, assertStructuredRevision, pluginDiagram, pluginTable,
   translateStructuredError, applyDiagramOperations, applyTableOperations, diagramSemanticGraph,
   serializeTableDocument, tableFallbackMarkdown, structuredApiError,
   posterCapabilities, pluginPoster, pluginInfographic, applyPosterEdits, applyInfographicOperations, serializePosterDocument, serializeInfographicDocument,
 } from "./structured-note-api";
-import type { EdgeEverRepository } from "@/lib/repository";
+import type { StillNoteRepository } from "@/lib/repository";
 import { WebPluginSecretStore, type PluginSecretStorage } from "@/lib/plugins/plugin-secret-store";
 import { WebPluginPackageStore, type CachedPluginPackage, type PluginPackageStorage } from "@/lib/plugins/plugin-package-store";
 import { isPluginIdRevoked } from "@/lib/plugins/community-registry-store";
@@ -56,12 +56,12 @@ import {
 import { loadResolvedPluginMarketplace } from "@/lib/plugins/plugin-marketplace";
 import { hasAcknowledgedPluginTrustWarning } from "@/lib/plugins/plugin-trust";
 import { subscribeRepositoryMutations, type RepositoryMutationEvent } from "@/lib/repository-events";
-import type { WorkspaceExtension } from "@edgeever/shared";
+import type { WorkspaceExtension } from "@stillnote/shared";
 
-const INSTALLED_EXTENSIONS_STORAGE_KEY = "edgeever.extensions.installed.v1";
-const ACTIVE_THEME_STORAGE_KEY = "edgeever.extensions.active-theme.v1";
-const STORAGE_PREFIX = "edgeever.plugin-data.v1";
-const SETTINGS_STORAGE_PREFIX = "edgeever.plugin-settings.v1";
+const INSTALLED_EXTENSIONS_STORAGE_KEY = "stillnote.extensions.installed.v1";
+const ACTIVE_THEME_STORAGE_KEY = "stillnote.extensions.active-theme.v1";
+const STORAGE_PREFIX = "stillnote.plugin-data.v1";
+const SETTINGS_STORAGE_PREFIX = "stillnote.plugin-settings.v1";
 
 const readStorageItem = (key: string) => {
   try {
@@ -101,23 +101,23 @@ const clearStoragePrefix = (prefix: string) => {
 };
 
 const THEME_TOKEN_CSS_VARIABLES: Record<ThemeTokenName, string> = {
-  "color.background": "--edgeever-theme-background",
-  "color.surface": "--edgeever-theme-surface",
-  "color.surfaceMuted": "--edgeever-theme-surface-muted",
-  "color.text": "--edgeever-theme-text",
-  "color.textMuted": "--edgeever-theme-text-muted",
-  "color.border": "--edgeever-theme-border",
-  "color.accent": "--edgeever-theme-accent",
-  "color.accentForeground": "--edgeever-theme-accent-foreground",
-  "color.success": "--edgeever-theme-success",
-  "color.warning": "--edgeever-theme-warning",
-  "color.danger": "--edgeever-theme-danger",
-  "font.body": "--edgeever-theme-font-body",
-  "font.mono": "--edgeever-theme-font-mono",
-  "font.size": "--edgeever-theme-font-size",
-  "lineHeight.body": "--edgeever-theme-line-height",
-  "radius.medium": "--edgeever-theme-radius",
-  "density.scale": "--edgeever-theme-density",
+  "color.background": "--stillnote-theme-background",
+  "color.surface": "--stillnote-theme-surface",
+  "color.surfaceMuted": "--stillnote-theme-surface-muted",
+  "color.text": "--stillnote-theme-text",
+  "color.textMuted": "--stillnote-theme-text-muted",
+  "color.border": "--stillnote-theme-border",
+  "color.accent": "--stillnote-theme-accent",
+  "color.accentForeground": "--stillnote-theme-accent-foreground",
+  "color.success": "--stillnote-theme-success",
+  "color.warning": "--stillnote-theme-warning",
+  "color.danger": "--stillnote-theme-danger",
+  "font.body": "--stillnote-theme-font-body",
+  "font.mono": "--stillnote-theme-font-mono",
+  "font.size": "--stillnote-theme-font-size",
+  "lineHeight.body": "--stillnote-theme-line-height",
+  "radius.medium": "--stillnote-theme-radius",
+  "density.scale": "--stillnote-theme-density",
   "editor.contentWidth": "--editor-content-max-width",
 };
 
@@ -136,7 +136,7 @@ export interface ExtensionInstallSource {
   repositoryUrl?: string;
   releaseTag?: string;
   verified: boolean;
-  publisher?: "edgeever";
+  publisher?: "stillnote";
 }
 
 export interface RegisteredPluginCommand {
@@ -203,7 +203,7 @@ export interface PluginHostSnapshot {
 }
 
 interface PluginHostOptions {
-  repository: EdgeEverRepository;
+  repository: StillNoteRepository;
   scope: string;
   aiAdapter?: Pick<PluginContext['ai'], 'status' | 'generate'>;
   publicNetworkAdapter?: {
@@ -218,11 +218,11 @@ interface PluginHostOptions {
 }
 
 interface ActivePlugin {
-  plugin: EdgeEverPlugin;
+  plugin: StillNotePlugin;
   disposers: Array<() => void>;
 }
 
-const toPluginNoteSummary = (note: Awaited<ReturnType<EdgeEverRepository["listMemos"]>>["memos"][number]): PluginNoteSummary => ({
+const toPluginNoteSummary = (note: Awaited<ReturnType<StillNoteRepository["listMemos"]>>["memos"][number]): PluginNoteSummary => ({
   kind: pluginNoteKind(note),
   id: note.id,
   notebookId: note.notebookId,
@@ -234,7 +234,7 @@ const toPluginNoteSummary = (note: Awaited<ReturnType<EdgeEverRepository["listMe
   updatedAt: note.updatedAt,
 });
 
-const toPluginNote = (note: Awaited<ReturnType<EdgeEverRepository["getMemo"]>>["memo"]): PluginNote => ({
+const toPluginNote = (note: Awaited<ReturnType<StillNoteRepository["getMemo"]>>["memo"]): PluginNote => ({
   ...toPluginNoteSummary(note),
   contentJson: structuredClone(note.contentJson),
   revision: note.revision,
@@ -243,14 +243,14 @@ const toPluginNote = (note: Awaited<ReturnType<EdgeEverRepository["getMemo"]>>["
   contentHash: note.contentHash,
 });
 
-const toPluginNotebook = (notebook: Awaited<ReturnType<EdgeEverRepository["listNotebooks"]>>["notebooks"][number]) => ({
+const toPluginNotebook = (notebook: Awaited<ReturnType<StillNoteRepository["listNotebooks"]>>["notebooks"][number]) => ({
   id: notebook.id,
   parentId: notebook.parentId,
   name: notebook.name,
   memoCount: notebook.memoCount,
 });
 
-const toPluginRevision = (revision: Awaited<ReturnType<EdgeEverRepository["listMemoRevisions"]>>["revisions"][number]): PluginNoteRevision => ({
+const toPluginRevision = (revision: Awaited<ReturnType<StillNoteRepository["listMemoRevisions"]>>["revisions"][number]): PluginNoteRevision => ({
   id: revision.id,
   noteId: revision.memoId,
   revision: revision.revision,
@@ -261,7 +261,7 @@ const toPluginRevision = (revision: Awaited<ReturnType<EdgeEverRepository["listM
   createdAt: revision.createdAt,
 });
 
-const toPluginResource = (resource: Awaited<ReturnType<EdgeEverRepository["uploadMemoResource"]>>["resource"]): PluginResource => ({
+const toPluginResource = (resource: Awaited<ReturnType<StillNoteRepository["uploadMemoResource"]>>["resource"]): PluginResource => ({
   id: resource.id,
   noteId: resource.memoId,
   kind: resource.kind,
@@ -276,7 +276,7 @@ const toPluginResource = (resource: Awaited<ReturnType<EdgeEverRepository["uploa
   url: resource.url,
 });
 
-const toPluginTemplate = (template: Awaited<ReturnType<EdgeEverRepository["listTemplates"]>>["templates"][number]): PluginTemplate => ({
+const toPluginTemplate = (template: Awaited<ReturnType<StillNoteRepository["listTemplates"]>>["templates"][number]): PluginTemplate => ({
   id: template.id,
   name: template.name,
   description: template.description,
@@ -335,7 +335,7 @@ const normalizeInstallSource = (value: unknown): ExtensionInstallSource => {
     verified: candidate.kind === "marketplace" && candidate.verified === true,
     ...(typeof candidate.repositoryUrl === "string" ? { repositoryUrl: candidate.repositoryUrl } : {}),
     ...(typeof candidate.releaseTag === "string" ? { releaseTag: candidate.releaseTag } : {}),
-    ...(candidate.publisher === "edgeever" ? { publisher: "edgeever" } : {}),
+    ...(candidate.publisher === "stillnote" ? { publisher: "stillnote" } : {}),
   };
 };
 
@@ -437,10 +437,10 @@ const normalizePanelState = (state: PluginPanelOpenOptions["state"] | undefined)
   return JSON.parse(serialized) as NonNullable<PluginPanelOpenOptions["state"]>;
 };
 
-export class EdgeEverPluginHost {
+export class StillNotePluginHost {
   private readonly aiAdapter?: PluginHostOptions['aiAdapter'];
   private readonly publicNetworkAdapter?: PluginHostOptions['publicNetworkAdapter'];
-  private readonly repository: EdgeEverRepository;
+  private readonly repository: StillNoteRepository;
   private readonly scope: string;
   private readonly onWorkspaceChanged?: () => void | Promise<void>;
   private readonly onNotice?: (message: string) => void;
@@ -548,7 +548,7 @@ export class EdgeEverPluginHost {
     try {
       const marketplace = await loadResolvedPluginMarketplace();
       officialIds = new Set(
-        marketplace.entries.filter((entry) => entry.publisher === "edgeever").map((entry) => entry.id),
+        marketplace.entries.filter((entry) => entry.publisher === "stillnote").map((entry) => entry.id),
       );
     } catch {
       officialIds = new Set();
@@ -635,7 +635,7 @@ export class EdgeEverPluginHost {
       verified: Boolean(marketplaceEntry),
       repositoryUrl: downloaded.repositoryUrl,
       ...(downloaded.releaseTag ? { releaseTag: downloaded.releaseTag } : {}),
-      ...(marketplaceEntry?.publisher === "edgeever" ? { publisher: "edgeever" } : {}),
+      ...(marketplaceEntry?.publisher === "stillnote" ? { publisher: "stillnote" } : {}),
     }, downloaded.pluginPackage);
   }
 
@@ -688,7 +688,7 @@ export class EdgeEverPluginHost {
       kind: marketplaceEntry ? "marketplace" : "manifest",
       verified: Boolean(marketplaceEntry),
       repositoryUrl: marketplaceEntry?.repositoryUrl,
-      ...(marketplaceEntry?.publisher === "edgeever" ? { publisher: "edgeever" } : {}),
+      ...(marketplaceEntry?.publisher === "stillnote" ? { publisher: "stillnote" } : {}),
     }, pluginPackage);
   }
 
@@ -929,7 +929,7 @@ export class EdgeEverPluginHost {
   dispose() {
     return this.enqueueLifecycle(async () => {
     this.started = false;
-    window.removeEventListener("edgeever:sync-queue-changed", this.handleSyncQueueChanged);
+    window.removeEventListener("stillnote:sync-queue-changed", this.handleSyncQueueChanged);
     this.themeObserver?.disconnect();
     this.themeObserver = null;
     this.repositoryEventDisposer?.();
@@ -943,7 +943,7 @@ export class EdgeEverPluginHost {
     this.started = true;
     this.themeObserver = new MutationObserver(() => this.applyActiveTheme());
     this.themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    window.addEventListener("edgeever:sync-queue-changed", this.handleSyncQueueChanged);
+    window.addEventListener("stillnote:sync-queue-changed", this.handleSyncQueueChanged);
     this.repositoryEventDisposer = subscribeRepositoryMutations(this.scope, this.handleRepositoryMutation);
     this.applyActiveTheme();
   }
@@ -991,29 +991,29 @@ export class EdgeEverPluginHost {
 
     const disposers: Array<() => void> = [];
     try {
-      const platform = window.edgeeverDesktop?.isAvailable ? "desktop" : "web";
+      const platform = window.stillnoteDesktop?.isAvailable ? "desktop" : "web";
       if (extension.manifest.platforms?.length && !extension.manifest.platforms.includes(platform)) {
         throw new Error(`${extension.manifest.name} does not support the ${platform} platform.`);
       }
       const cachedPackage = await this.packageStorage.get(extension.manifest.id, extension.manifest.version).catch(() => null);
-      let module: { default?: EdgeEverPlugin | { default?: EdgeEverPlugin } };
+      let module: { default?: StillNotePlugin | { default?: StillNotePlugin } };
       if (cachedPackage) {
         const entryUrl = URL.createObjectURL(new Blob([cachedPackage.mainJs], { type: "text/javascript" }));
         try {
-          module = await import(/* @vite-ignore */ entryUrl) as { default?: EdgeEverPlugin | { default?: EdgeEverPlugin } };
+          module = await import(/* @vite-ignore */ entryUrl) as { default?: StillNotePlugin | { default?: StillNotePlugin } };
         } finally {
           URL.revokeObjectURL(entryUrl);
         }
         if (cachedPackage.stylesCss) {
           const style = document.createElement("style");
-          style.dataset.edgeeverPluginStyle = extension.manifest.id;
+          style.dataset.stillnotePluginStyle = extension.manifest.id;
           style.textContent = cachedPackage.stylesCss;
           document.head.appendChild(style);
           disposers.push(() => style.remove());
         }
       } else {
         const entryUrl = resolveManifestEntry(extension.manifestUrl, extension.manifest.entry);
-        module = await import(/* @vite-ignore */ entryUrl) as { default?: EdgeEverPlugin | { default?: EdgeEverPlugin } };
+        module = await import(/* @vite-ignore */ entryUrl) as { default?: StillNotePlugin | { default?: StillNotePlugin } };
       }
       const candidate = module.default;
       // Some development loaders wrap ESM defaults once more. Accept that
@@ -1022,7 +1022,7 @@ export class EdgeEverPluginHost {
       if (typeof unwrapped !== "object" || unwrapped === null || typeof (unwrapped as { activate?: unknown }).activate !== "function") {
         throw new Error("Plugin entry must default-export an object with activate(context).");
       }
-      const plugin = unwrapped as EdgeEverPlugin;
+      const plugin = unwrapped as StillNotePlugin;
       const context = this.createContext(extension.manifest, disposers);
       const deactivate = await plugin.activate(context);
       if (typeof deactivate === "function" && !disposers.includes(deactivate)) disposers.push(deactivate);
@@ -1325,7 +1325,7 @@ export class EdgeEverPluginHost {
           if (input.allowDataChanges !== undefined && typeof input.allowDataChanges !== "boolean") throw structuredApiError("INVALID_STRUCTURED_EDIT", "allowDataChanges must be a boolean.");
           try {
             // Resolve attachments once per batch through the host repository.
-            let resourcesPromise: ReturnType<EdgeEverRepository["listResources"]> | undefined;
+            let resourcesPromise: ReturnType<StillNoteRepository["listResources"]> | undefined;
             const mutation = await applyTableOperations(pluginTable(current), input.operations, async resourceId => {
               const resources = (await (resourcesPromise ??= this.repository.listResources())).resources;
               const resource = resources.find(item => item.id === resourceId && item.memoId === noteId && item.kind === "attachment" && !item.memoDeleted);
@@ -1380,7 +1380,7 @@ export class EdgeEverPluginHost {
           const infographic = pluginInfographic(current);
           const { infographicSyntaxAdapter } = await import("./infographic-syntax-adapter");
           const parsed = infographicSyntaxAdapter.parse(infographic.syntax);
-          return { note: toPluginNote(current), infographic, data: (parsed.options.data ?? {}) as Record<string, import("@edgeever/plugin-api").PluginJsonValue>, template: parsed.options.template ?? "", theme: parsed.options.theme, editToken: await structuredEditToken(current) };
+          return { note: toPluginNote(current), infographic, data: (parsed.options.data ?? {}) as Record<string, import("@stillnote/plugin-api").PluginJsonValue>, template: parsed.options.template ?? "", theme: parsed.options.theme, editToken: await structuredEditToken(current) };
         },
         edit: async (noteId, input) => this.withNoteWrite(noteId, async () => {
           assertPermission(manifest, "notes:read");
@@ -1498,7 +1498,7 @@ export class EdgeEverPluginHost {
       schedules: {
         upsert: async (input) => {
           assertPermission(manifest, "schedules");
-          if (!this.scheduleAdapter) throw new Error("Plugin schedules are only available in the EdgeEver desktop app.");
+          if (!this.scheduleAdapter) throw new Error("Plugin schedules are only available in the StillNote desktop app.");
           if (!/^[a-z0-9][a-z0-9._-]*$/i.test(input.key) || input.key.length > 120) {
             throw new Error("Plugin schedule key is invalid.");
           }
@@ -1509,12 +1509,12 @@ export class EdgeEverPluginHost {
         },
         list: async () => {
           assertPermission(manifest, "schedules");
-          if (!this.scheduleAdapter) throw new Error("Plugin schedules are only available in the EdgeEver desktop app.");
+          if (!this.scheduleAdapter) throw new Error("Plugin schedules are only available in the StillNote desktop app.");
           return this.scheduleAdapter.list(manifest.id);
         },
         remove: async (key) => {
           assertPermission(manifest, "schedules");
-          if (!this.scheduleAdapter) throw new Error("Plugin schedules are only available in the EdgeEver desktop app.");
+          if (!this.scheduleAdapter) throw new Error("Plugin schedules are only available in the StillNote desktop app.");
           if (!/^[a-z0-9][a-z0-9._-]*$/i.test(key) || key.length > 120) {
             throw new Error("Plugin schedule key is invalid.");
           }
@@ -1786,7 +1786,7 @@ export class EdgeEverPluginHost {
     if (manifest.type === "plugin" && manifest.apiVersion !== PLUGIN_API_VERSION) {
       throw new Error(`Marketplace plugins must use plugin API v${PLUGIN_API_VERSION}.`);
     }
-    if (entry.publisher === "edgeever") {
+    if (entry.publisher === "stillnote") {
       if (!entry.verification.checksums?.manifestJson) throw new Error("Official extensions must pin the manifest checksum.");
       if (manifest.type === "plugin" && !entry.verification.checksums.mainJs) {
         throw new Error("Official plugins must pin the main.js checksum.");
@@ -1818,7 +1818,7 @@ export class EdgeEverPluginHost {
   private applyActiveTheme() {
     const root = document.documentElement;
     for (const cssVariable of Object.values(THEME_TOKEN_CSS_VARIABLES)) root.style.removeProperty(cssVariable);
-    root.removeAttribute("data-edgeever-extension-theme");
+    root.removeAttribute("data-stillnote-extension-theme");
     if (!this.activeThemeId) return;
     const extension = this.extensions.find((item) => item.enabled && item.manifest.id === this.activeThemeId);
     if (!extension || extension.manifest.type !== "theme") return;
@@ -1827,7 +1827,7 @@ export class EdgeEverPluginHost {
     for (const [token, value] of Object.entries(tokens)) {
       root.style.setProperty(THEME_TOKEN_CSS_VARIABLES[token as ThemeTokenName], value);
     }
-    root.dataset.edgeeverExtensionTheme = theme.id;
+    root.dataset.stillnoteExtensionTheme = theme.id;
   }
 
   private setExtensionError(extensionId: string, error: string | null) {

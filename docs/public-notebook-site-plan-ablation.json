@@ -207,7 +207,7 @@
       "subject": "light_dark_system",
       "decision": "keep_reuse",
       "evidenceType": "source_inspection",
-      "rationale": "Reuse ThemeProvider and edgeever.theme; no second preference system."
+      "rationale": "Reuse ThemeProvider and stillnote.theme; no second preference system."
     },
     {
       "id": "R03",
@@ -499,7 +499,7 @@
     "Concurrent writer contention"
   ],
   "externalReferences": [
-    "https://github.com/tianma-if/edgeever/issues/591",
+    "https://github.com/CottonChou/stillnote/issues/591",
     "https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics",
     "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview",
     "https://ogp.me/"

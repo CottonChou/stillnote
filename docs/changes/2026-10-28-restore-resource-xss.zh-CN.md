@@ -4,7 +4,7 @@
 
 ## 问题与目标
 
-[Issue #701](https://github.com/tianma-if/edgeever/issues/701) 指出恢复接口接受 `kind=image` 与 `mimeType=text/html` 的组合，而资源响应相信 `kind` 并允许内联渲染。修复写入时的不一致，同时阻断已有异常资源的读取风险。在独立工作区基于官方 `main` 的 `b8496806` 实施。
+[Issue #701](https://github.com/CottonChou/stillnote/issues/701) 指出恢复接口接受 `kind=image` 与 `mimeType=text/html` 的组合，而资源响应相信 `kind` 并允许内联渲染。修复写入时的不一致，同时阻断已有异常资源的读取风险。在独立工作区基于官方 `main` 的 `b8496806` 实施。
 
 影响范围是 Cloudflare 和 Docker 共用的 API 资源恢复及响应头。旧备份若明确把图片标为 HTML 等不相容类型，会被拒绝；合法旧备份必须仍可恢复。保留既有的可空 MIME 契约和未知/二进制回退，未知类型转为下载而非内联渲染。HTML 等普通附件仍可下载。不迁移或删除现有数据。回滚只需回退代码，无需改写资源；回退也会重新引入漏洞。原生平台运行及部署验收与下述本地检查分开。
 

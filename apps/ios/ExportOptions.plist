@@ -16,10 +16,10 @@
 	<false/>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>org.edgeever.mobile</key>
-		<string>*[expo] org.edgeever.mobile AppStore 2026-08-01T04:08:38.265Z</string>
-		<key>org.edgeever.mobile.expo-sharing-extension</key>
-		<string>*[expo] org.edgeever.mobile.expo-sharing-extension AppStore 2026-08-01T04:09:04.014Z</string>
+		<key>org.stillnote.mobile</key>
+		<string>*[expo] org.stillnote.mobile AppStore 2026-08-01T04:08:38.265Z</string>
+		<key>org.stillnote.mobile.expo-sharing-extension</key>
+		<string>*[expo] org.stillnote.mobile.expo-sharing-extension AppStore 2026-08-01T04:09:04.014Z</string>
 	</dict>
 </dict>
 </plist>

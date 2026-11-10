@@ -3,8 +3,8 @@ import { Fragment } from "@tiptap/pm/model";
 import {
   groupConsecutiveImagesIntoGalleries,
   type TiptapNode,
-} from "@edgeever/shared";
-import { mergeUploadedImagesIntoAdjacentGalleries } from "@edgeever/shared/image-gallery-editing";
+} from "@stillnote/shared";
+import { mergeUploadedImagesIntoAdjacentGalleries } from "@stillnote/shared/image-gallery-editing";
 import type { ResourceInsertionTarget } from "./resource-insertion-target";
 
 /** Insert a batch and fold it into the adjacent images or gallery. */

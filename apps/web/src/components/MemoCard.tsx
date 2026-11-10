@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, type DragEvent, type MouseEvent, type PointerEvent as ReactPointerEvent, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { FileText, Component, GitFork, PieChart, Table2, Workflow, Star, Check, MoreHorizontal, RotateCcw, Trash2 } from "lucide-react";
-import { getMemoListTimestamp, type MemoSummary } from "@edgeever/shared";
+import { getMemoListTimestamp, type MemoSummary } from "@stillnote/shared";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type { MemoListDensity, MemoSortMode } from "@/lib/app-helpers";
@@ -333,10 +333,10 @@ export const MemoCard = ({
       draggable={!isTrashView}
       onDragStart={handleDragStart}
       className={cn(
-        "edgeever-memo-divider group relative overflow-hidden border-0 border-b border-l-2 bg-transparent transition-colors duration-150 select-none rounded-none lg:my-0.5 lg:rounded-md",
+        "stillnote-memo-divider group relative overflow-hidden border-0 border-b border-l-2 bg-transparent transition-colors duration-150 select-none rounded-none lg:my-0.5 lg:rounded-md",
         isLast && "border-b-transparent lg:border-b-transparent",
         !selectionMode && selected
-          ? "edgeever-workspace-selection border-l-[var(--brand-green)] border-b-transparent bg-workspace-selection"
+          ? "stillnote-workspace-selection border-l-[var(--brand-green)] border-b-transparent bg-workspace-selection"
           : checked
             ? "border-l-slate-700 bg-workspace-selection/80 border-b-transparent"
             : "border-l-transparent border-b-[var(--workspace-memo-divider)] active:bg-workspace-hover lg:hover:bg-workspace-hover"

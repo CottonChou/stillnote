@@ -1,6 +1,6 @@
 'use dom';
 
-import { prepareNoteImageAssets } from "@edgeever/shared/note-image-fonts";
+import { prepareNoteImageAssets } from "@stillnote/shared/note-image-fonts";
 import { noteImageAssetUrls } from "./note-image-asset-urls";
 import "katex/dist/katex.min.css";
 import { attachMobileReaderScroll } from "../lib/mobile-reader-scroll";
@@ -9,7 +9,7 @@ import Image from "@tiptap/extension-image";
 import CodeBlock from "@tiptap/extension-code-block";
 import Placeholder from "@tiptap/extension-placeholder";
 import { EditorContent, Extension, useEditor, useEditorState, type Editor } from "@tiptap/react";
-import { EdgeEverLink } from "@edgeever/shared/editor-link";
+import { StillNoteLink } from "@stillnote/shared/editor-link";
 import * as Clipboard from "expo-clipboard";
 import {
   AI_SELECTED_TEXT_ACTIONS,
@@ -30,7 +30,7 @@ import {
   isAiSelectionSnapshotCurrent,
   markdownToDoc,
   MEMO_CONTENT_STYLE,
-  createEdgeEverDocumentExtensions,
+  createStillNoteDocumentExtensions,
   applyImageAlignment,
   DETAILS_EDITOR_CSS,
   wrapDetailsContentHtml,
@@ -56,15 +56,15 @@ import {
   type AiTone,
   type TiptapDoc,
   type DiagramDocument,
-} from "@edgeever/shared";
-import { createEdgeEverMathematics } from "@edgeever/shared/mathematics";
+} from "@stillnote/shared";
+import { createStillNoteMathematics } from "@stillnote/shared/mathematics";
 import {
   NEW_IMAGE_WIDTH_PERCENT,
   IMAGE_WIDTH_PRESETS,
   PHONE_IMAGE_FILL_CSS,
   clampImageWidth,
   parseImageWidth,
-} from "@edgeever/shared/image-display";
+} from "@stillnote/shared/image-display";
 import {
   MOBILE_EDITOR_ACTIVE_FLAGS,
   MOBILE_EDITOR_TOOLBAR_ACTIONS,
@@ -77,7 +77,7 @@ import {
   getMobileEditorToolbarActionLabel,
   getMobileEditorToolbarLabel,
   type MobileEditorToolbarActionId,
-} from "@edgeever/shared/mobile-editor";
+} from "@stillnote/shared/mobile-editor";
 import {
   type NoteImageTheme,
   type NoteImageFontStyle,
@@ -91,10 +91,10 @@ import {
   buildNoteImageCardMarkup,
   generateCardCss,
   prepareNoteImageContent,
-} from "@edgeever/shared/note-image-card";
+} from "@stillnote/shared/note-image-card";
 import { useDOMImperativeHandle, type DOMImperativeFactory, type DOMProps } from "expo/dom";
 import { toCanvas } from "html-to-image";
-import { createImageInsertTransaction, createNativeImageGalleryView, groupUploadedImages, NATIVE_IMAGE_GALLERY_CSS } from "@edgeever/shared/native-image-gallery";
+import { createImageInsertTransaction, createNativeImageGalleryView, groupUploadedImages, NATIVE_IMAGE_GALLERY_CSS } from "@stillnote/shared/native-image-gallery";
 import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type ReactNode, type Ref, type SetStateAction } from "react";
 import {
   createMobileImageUploadPlaceholderSource,
@@ -178,7 +178,7 @@ type MermaidRendererProps = {
 };
 
 const CHANGE_IDLE_MS = 500;
-const TRANSIENT_IMAGE_UPLOAD_META = "edgeeverImageUploadPlaceholder";
+const TRANSIENT_IMAGE_UPLOAD_META = "stillnoteImageUploadPlaceholder";
 const ignoreSearchResult = async () => undefined;
 const ignoreAiRequest = async () => undefined;
 const AI_PROMPT_OPTION_PREFIX = "prompt:";
@@ -276,7 +276,7 @@ const getMobileImageResourceId = (href: string): string | null => {
   const fromBlob = getResourceIdFromUrl(href);
   if (fromBlob) return fromBlob;
   try {
-    const parsed = new URL(href, "http://edgeever.local");
+    const parsed = new URL(href, "http://stillnote.local");
     const match = parsed.pathname.match(/^\/api\/v1\/resources\/([^/]+)\/?$/);
     return match?.[1] ? decodeURIComponent(match[1]) : null;
   } catch {
@@ -308,7 +308,7 @@ const buildMobileImagePreviewPayload = (figure: HTMLElement): string => {
   const source = figure.dataset.resourceHref ?? "";
   const alt = figure.dataset.resourceFilename || "";
   const allFigures = typeof document !== "undefined"
-    ? Array.from(document.querySelectorAll<HTMLElement>("figure.edgeever-image-node[data-resource-href]"))
+    ? Array.from(document.querySelectorAll<HTMLElement>("figure.stillnote-image-node[data-resource-href]"))
     : [];
   const images = allFigures
     .map((fig) => ({
@@ -336,7 +336,7 @@ const handleMobileResourceEvent = (
   options?: { allowImagePreview?: boolean; onImagePreview?: (payloadJson: string) => Promise<void> }
 ) => {
   const element = event.target instanceof Element ? event.target : null;
-  const link = element?.closest<HTMLAnchorElement>('a.edgeever-attachment-link, a[href*="/api/v1/resources/"]');
+  const link = element?.closest<HTMLAnchorElement>('a.stillnote-attachment-link, a[href*="/api/v1/resources/"]');
   const href = link?.getAttribute("href") ?? "";
   const resourceId = getResourceIdFromUrl(href) ?? getMobileImageResourceId(href);
   if (link && resourceId && onResourcePress) {
@@ -351,11 +351,11 @@ const handleMobileResourceEvent = (
     return true;
   }
 
-  const imageFigure = element?.closest<HTMLElement>("figure.edgeever-image-node");
+  const imageFigure = element?.closest<HTMLElement>("figure.stillnote-image-node");
   const imageHref = imageFigure?.dataset.resourceHref ?? "";
   if (!imageFigure || !imageHref) return false;
 
-  const imageActionRequested = event.type === "contextmenu" || Boolean(element?.closest(".edgeever-image-actions"));
+  const imageActionRequested = event.type === "contextmenu" || Boolean(element?.closest(".stillnote-image-actions"));
   if (imageActionRequested && onResourcePress) {
     const targetJson = buildImageResourceTargetJson(imageFigure);
     if (!targetJson) return false;
@@ -444,7 +444,7 @@ const MermaidRenderRuntime = (props: MermaidRendererProps) => {
             throw new Error("Invalid Mermaid diagram");
           }
           mermaidRenderSequence += 1;
-          const { svg } = await mermaid.render(`edgeever-mobile-mermaid-${mermaidRenderSequence}`, source);
+          const { svg } = await mermaid.render(`stillnote-mobile-mermaid-${mermaidRenderSequence}`, source);
           results.push({ source, svg: inlineMermaidSvgStyles(svg) });
         } catch {
           results.push({ source, svg: null });
@@ -531,8 +531,8 @@ const ReadOnlyX6Diagram = ({
       ? getMobileEditorCopy(locale).diagram.architecture
       : getMobileEditorCopy(locale).diagram.flowchart;
   return (
-    <section className="edgeever-x6-document">
-      <div aria-label={title} className="edgeever-x6-diagram" key={diagram.kind} ref={containerRef} role="img" />
+    <section className="stillnote-x6-document">
+      <div aria-label={title} className="stillnote-x6-diagram" key={diagram.kind} ref={containerRef} role="img" />
     </section>
   );
 };
@@ -604,7 +604,7 @@ const inlineMermaidSvgStyles = (svg: string) => {
 };
 
 const getEditorScrollContainer = (editor: Editor) =>
-  editor.view.dom.closest<HTMLElement>(".edgeever-editor-scroll");
+  editor.view.dom.closest<HTMLElement>(".stillnote-editor-scroll");
 
 const updateEditorKeyboardInset = (editor: Editor) => {
   const scrollContainer = getEditorScrollContainer(editor);
@@ -616,7 +616,7 @@ const updateEditorKeyboardInset = (editor: Editor) => {
     ? visualViewport.offsetTop + visualViewport.height
     : window.innerHeight;
   const keyboardInset = Math.max(0, window.innerHeight - visibleBottom);
-  scrollContainer.style.setProperty("--edgeever-keyboard-inset", `${Math.round(keyboardInset)}px`);
+  scrollContainer.style.setProperty("--stillnote-keyboard-inset", `${Math.round(keyboardInset)}px`);
 };
 
 const scrollEditorPositionIntoView = (
@@ -781,7 +781,7 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
   );
   const searchHighlightExtension = useMemo(
     () => Extension.create({
-      name: "edgeeverMobileNoteSearchHighlight",
+      name: "stillnoteMobileNoteSearchHighlight",
       addProseMirrorPlugins() {
         return [createMobileNoteSearchHighlightPlugin({
           getActiveIndex: () => searchStateRef.current.activeIndex,
@@ -798,8 +798,8 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
     // the Android bridge retry raced each other and could leave the WebView stuck.
     autofocus: false,
     extensions: [
-      ...createEdgeEverDocumentExtensions({
-        mathematics: createEdgeEverMathematics(),
+      ...createStillNoteDocumentExtensions({
+        mathematics: createStillNoteMathematics(),
         starterKit: { codeBlock: false, link: false },
         image: protectedImageExtension,
         gallery: ImageGallery.extend({
@@ -810,7 +810,7 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
         pluginEmbed: false,
         table: { table: { renderWrapper: true } },
       }),
-      EdgeEverLink.configure({ openOnClick: false }),
+      StillNoteLink.configure({ openOnClick: false }),
       NativeAttachmentMetadata,
       mermaidCodeBlockExtension,
       searchHighlightExtension,
@@ -825,7 +825,7 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
     ),
     editorProps: {
       attributes: getMobileEditorInputAttributes(
-        isViewer ? "edgeever-editor-content edgeever-viewer-content" : "edgeever-editor-content"
+        isViewer ? "stillnote-editor-content stillnote-viewer-content" : "stillnote-editor-content"
       ),
       transformPastedHTML: (html) => wrapDetailsContentHtml(html),
       handleDOMEvents: {
@@ -842,7 +842,7 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
         dblclick: (_view, event) => {
           if (!isViewerRef.current || !onDoublePressRef.current) return false;
           const target = event.target as HTMLElement | null;
-          if (!target || target.closest("a, button, img, input, textarea, select, .edgeever-image-node")) {
+          if (!target || target.closest("a, button, img, input, textarea, select, .stillnote-image-node")) {
             return false;
           }
           event.preventDefault();
@@ -1344,7 +1344,7 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
           new Promise<void>((resolve) => window.setTimeout(resolve, 8_000)),
         ]);
         const exportedImages = Array.from(
-          documentRoot.querySelectorAll<HTMLImageElement>(".edgeever-card-body img"),
+          documentRoot.querySelectorAll<HTMLImageElement>(".stillnote-card-body img"),
         );
         const failedImages = exportedImages.filter((image) => !image.complete || image.naturalWidth === 0).length;
         const totalHeight = Math.max(1, Math.ceil(documentRoot.getBoundingClientRect().height));
@@ -1473,7 +1473,7 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
       return;
     }
     editor.setEditable(!isViewer);
-    editor.view.dom.classList.toggle("edgeever-viewer-content", isViewer);
+    editor.view.dom.classList.toggle("stillnote-viewer-content", isViewer);
   }, [editor, isViewer]);
 
   useEffect(() => {
@@ -1562,7 +1562,7 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
         setAiSelectionTrigger(null);
         return;
       }
-      const shell = editor.view.dom.closest<HTMLElement>(".edgeever-editor-shell");
+      const shell = editor.view.dom.closest<HTMLElement>(".stillnote-editor-shell");
       if (!shell || !scrollContainer) {
         setAiSelectionTrigger(null);
         return;
@@ -1648,7 +1648,7 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
 
   useEffect(() => {
     if (!editor || !isViewer) return;
-    const scrollContainer = document.querySelector<HTMLElement>(".edgeever-editor-scroll");
+    const scrollContainer = document.querySelector<HTMLElement>(".stillnote-editor-scroll");
     if (!scrollContainer) return;
 
     return attachMobileReaderScroll(scrollContainer, (collapsed) => {
@@ -1741,10 +1741,10 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
   };
 
   return (
-    <div className={isViewer ? "edgeever-editor-shell edgeever-viewer-shell" : "edgeever-editor-shell"}>
+    <div className={isViewer ? "stillnote-editor-shell stillnote-viewer-shell" : "stillnote-editor-shell"}>
       <style>{getEditorStyles(props.theme, { viewer: isViewer })}</style>
       {!isViewer ? (
-        <div aria-label={getMobileEditorToolbarLabel(props.locale)} className="edgeever-editor-toolbar" role="toolbar">
+        <div aria-label={getMobileEditorToolbarLabel(props.locale)} className="stillnote-editor-toolbar" role="toolbar">
           {MOBILE_EDITOR_TOOLBAR_ACTIONS.map((action) => (
               <ToolbarButton
                 key={action.id}
@@ -1763,7 +1763,7 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
           {onAiRequestRef.current ? (
             <button
               aria-label={getMobileEditorCopy(props.locale).ai.openForNote}
-              className="edgeever-ai-toolbar-button"
+              className="stillnote-ai-toolbar-button"
               onClick={requestOpenAiForSelection}
               onMouseDown={(event) => event.preventDefault()}
               type="button"
@@ -1775,16 +1775,16 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
         </div>
       ) : null}
       {isViewer && visualDiagram ? (
-        <div className="edgeever-editor-scroll">
+        <div className="stillnote-editor-scroll">
           <ReadOnlyX6Diagram diagram={visualDiagram} locale={props.locale} theme={props.theme} />
         </div>
       ) : (
-        <EditorContent className="edgeever-editor-scroll" editor={editor} />
+        <EditorContent className="stillnote-editor-scroll" editor={editor} />
       )}
       {aiSelectionTrigger && !aiPanel ? (
         <button
           aria-label={getMobileEditorCopy(props.locale).ai.openForSelection}
-          className="edgeever-ai-selection-trigger"
+          className="stillnote-ai-selection-trigger"
           onClick={requestOpenAiForSelection}
           onMouseDown={(event) => event.preventDefault()}
           onPointerDown={(event) => event.preventDefault()}
@@ -1796,12 +1796,12 @@ function LocalTiptapEditorImpl(props: LocalTiptapEditorProps) {
         </button>
       ) : null}
       {aiSelectionHint ? (
-        <div aria-live="polite" className="edgeever-ai-selection-hint" role="status">
+        <div aria-live="polite" className="stillnote-ai-selection-hint" role="status">
           {getMobileEditorCopy(props.locale).ai.emptyNote}
         </div>
       ) : null}
       {aiUndoFingerprint && !aiPanel ? (
-        <div aria-live="polite" className="edgeever-ai-undo" role="status">
+        <div aria-live="polite" className="stillnote-ai-undo" role="status">
           <span>{getMobileEditorCopy(props.locale).ai.selectionUpdated}</span>
           <button onClick={undoAiSelectionDraft} onMouseDown={(event) => event.preventDefault()} type="button">
             {getMobileEditorCopy(props.locale).actions.undo}
@@ -1982,10 +1982,10 @@ const MobileSelectionAiPanel = ({
         ? getMobileEditorCopy(locale).ai.noteTitle
         : getMobileEditorCopy(locale).ai.selectionTitle}
       aria-modal="true"
-      className="edgeever-ai-panel"
+      className="stillnote-ai-panel"
       role="dialog"
     >
-      <header className="edgeever-ai-panel-header">
+      <header className="stillnote-ai-panel-header">
         <div>
           <strong>{panel.selection.wholeNote
             ? getMobileEditorCopy(locale).ai.noteTitle
@@ -1996,7 +1996,7 @@ const MobileSelectionAiPanel = ({
         </div>
         <button aria-label={getMobileEditorCopy(locale).close} onClick={onClose} type="button">×</button>
       </header>
-      <div className="edgeever-ai-panel-body">
+      <div className="stillnote-ai-panel-body">
         <MobileAiPickerField
           disabled={panel.generating}
           expanded={picker === "action"}
@@ -2035,17 +2035,17 @@ const MobileSelectionAiPanel = ({
             />
           </label>
         ) : null}
-        <div className="edgeever-ai-result-heading">
+        <div className="stillnote-ai-result-heading">
           <span>{getMobileEditorCopy(locale).ai.draft}</span>
           {panel.generating ? <small>{getMobileEditorCopy(locale).ai.generating}</small> : null}
         </div>
-        <div aria-live="polite" className="edgeever-ai-result">
+        <div aria-live="polite" className="stillnote-ai-result">
           {panel.output || <span>{getMobileEditorCopy(locale).ai.draftPlaceholder}</span>}
         </div>
         {panel.output && !panel.generating ? (
           <label>
             <span>{getMobileEditorCopy(locale).ai.refineResult}</span>
-            <div className="edgeever-ai-refine-row">
+            <div className="stillnote-ai-refine-row">
               <input
                 maxLength={2000}
                 onChange={(event) => update({ refineInstruction: event.target.value })}
@@ -2064,9 +2064,9 @@ const MobileSelectionAiPanel = ({
             </div>
           </label>
         ) : null}
-        {panel.error ? <p className="edgeever-ai-error" role="alert">{panel.error}</p> : null}
+        {panel.error ? <p className="stillnote-ai-error" role="alert">{panel.error}</p> : null}
       </div>
-      <footer className="edgeever-ai-panel-footer">
+      <footer className="stillnote-ai-panel-footer">
         <div>
           <button disabled={appendDisabled} onClick={() => onApply("append")} type="button">
             {getMobileEditorCopy(locale).ai.insertAfter}
@@ -2084,20 +2084,20 @@ const MobileSelectionAiPanel = ({
         )}
       </footer>
       {picker ? (
-        <div className="edgeever-ai-picker-backdrop" onClick={() => setPicker(null)} role="presentation">
+        <div className="stillnote-ai-picker-backdrop" onClick={() => setPicker(null)} role="presentation">
           <section
             aria-label={pickerTitle}
             aria-modal="true"
-            className="edgeever-ai-picker-sheet"
+            className="stillnote-ai-picker-sheet"
             onClick={(event) => event.stopPropagation()}
             role="dialog"
           >
-            <div aria-hidden="true" className="edgeever-ai-picker-handle" />
-            <header className="edgeever-ai-picker-header">
+            <div aria-hidden="true" className="stillnote-ai-picker-handle" />
+            <header className="stillnote-ai-picker-header">
               <strong>{pickerTitle}</strong>
               <button aria-label={getMobileEditorCopy(locale).close} onClick={() => setPicker(null)} type="button">×</button>
             </header>
-            <div aria-label={pickerTitle} className="edgeever-ai-picker-options" role="radiogroup">
+            <div aria-label={pickerTitle} className="stillnote-ai-picker-options" role="radiogroup">
               {pickerOptions.map((option) => (
                 <button
                   aria-checked={option.active}
@@ -2109,7 +2109,7 @@ const MobileSelectionAiPanel = ({
                   type="button"
                 >
                   <span>{option.label}</span>
-                  <span aria-hidden="true" className="edgeever-ai-picker-check">✓</span>
+                  <span aria-hidden="true" className="stillnote-ai-picker-check">✓</span>
                 </button>
               ))}
             </div>
@@ -2133,18 +2133,18 @@ const MobileAiPickerField = ({
   onOpen: () => void;
   value: string;
 }) => (
-  <div className="edgeever-ai-picker-field">
+  <div className="stillnote-ai-picker-field">
     <span>{label}</span>
     <button
       aria-expanded={expanded}
       aria-haspopup="dialog"
-      className="edgeever-ai-picker-trigger"
+      className="stillnote-ai-picker-trigger"
       disabled={disabled}
       onClick={onOpen}
       type="button"
     >
       <span>{value}</span>
-      <span aria-hidden="true" className="edgeever-ai-picker-chevron" />
+      <span aria-hidden="true" className="stillnote-ai-picker-chevron" />
     </button>
   </div>
 );
@@ -2347,7 +2347,7 @@ const createMobileCodeBlockExtension = (
       const copyButton = document.createElement("button");
       let copyResetTimer: number | null = null;
       preview.contentEditable = "false";
-      preview.className = "edgeever-mermaid-preview";
+      preview.className = "stillnote-mermaid-preview";
       preview.tabIndex = 0;
       preview.setAttribute("role", "button");
       preview.addEventListener("click", () => wrapper.classList.toggle("is-source-visible"));
@@ -2357,12 +2357,12 @@ const createMobileCodeBlockExtension = (
           wrapper.classList.toggle("is-source-visible");
         }
       });
-      message.className = "edgeever-mermaid-message";
-      svgContainer.className = "edgeever-mermaid-svg";
+      message.className = "stillnote-mermaid-message";
+      svgContainer.className = "stillnote-mermaid-svg";
       svgContainer.setAttribute("role", "img");
       svgContainer.setAttribute("aria-label", getMobileEditorCopy(locale).codeBlock.mermaidPreview);
       copyButton.type = "button";
-      copyButton.className = "edgeever-code-copy-button";
+      copyButton.className = "stillnote-code-copy-button";
       copyButton.contentEditable = "false";
       copyButton.setAttribute("aria-label", getMobileEditorCopy(locale).codeBlock.copy);
       copyButton.textContent = getMobileEditorCopy(locale).codeBlock.copy;
@@ -2414,7 +2414,7 @@ const createMobileCodeBlockExtension = (
           ? currentNode.attrs.language.toLowerCase()
           : "plaintext";
         const isMermaid = language === "mermaid";
-        wrapper.className = isMermaid ? "edgeever-mermaid-code-block" : "edgeever-code-block";
+        wrapper.className = isMermaid ? "stillnote-mermaid-code-block" : "stillnote-code-block";
         wrapper.dataset.language = language;
         preview.hidden = !isMermaid;
         code.setAttribute("aria-label", isMermaid
@@ -2427,7 +2427,7 @@ const createMobileCodeBlockExtension = (
 
         const source = currentNode.textContent.trim();
         if (!source) {
-          message.className = "edgeever-mermaid-message";
+          message.className = "stillnote-mermaid-message";
           message.textContent = getMobileEditorCopy(locale).codeBlock.mermaidEmpty;
           preview.replaceChildren(message);
           return;
@@ -2435,7 +2435,7 @@ const createMobileCodeBlockExtension = (
 
         const activeRequest = renderRequest;
         renderTimer = window.setTimeout(() => {
-          message.className = "edgeever-mermaid-message";
+          message.className = "stillnote-mermaid-message";
           message.textContent = getMobileEditorCopy(locale).codeBlock.rendering;
           preview.replaceChildren(message);
           void loadMermaid()
@@ -2457,7 +2457,7 @@ const createMobileCodeBlockExtension = (
                 throw new Error("Invalid Mermaid diagram");
               }
               mermaidRenderSequence += 1;
-              return mermaid.render(`edgeever-mobile-editor-mermaid-${mermaidRenderSequence}`, source);
+              return mermaid.render(`stillnote-mobile-editor-mermaid-${mermaidRenderSequence}`, source);
             })
             .then(({ svg }) => {
               if (activeRequest !== renderRequest) {
@@ -2477,7 +2477,7 @@ const createMobileCodeBlockExtension = (
               if (activeRequest !== renderRequest) {
                 return;
               }
-              message.className = "edgeever-mermaid-error";
+              message.className = "stillnote-mermaid-error";
               message.textContent = getMobileEditorCopy(locale).codeBlock.renderFailed;
               preview.replaceChildren(message);
             });
@@ -2510,7 +2510,7 @@ const createMobileImageSizeControls = (
   updateWidth: (width: number) => void
 ) => {
   const controls = document.createElement("div");
-  controls.className = "edgeever-image-size-controls";
+  controls.className = "stillnote-image-size-controls";
   controls.contentEditable = "false";
   controls.hidden = true;
   controls.setAttribute("role", "group");
@@ -2520,7 +2520,7 @@ const createMobileImageSizeControls = (
     const button = document.createElement("button");
     const label = getMobileEditorImageWidthPresetLabel(preset.id, locale);
     button.type = "button";
-    button.className = "edgeever-image-size-button";
+    button.className = "stillnote-image-size-button";
     button.setAttribute("aria-label", label);
     button.setAttribute("aria-pressed", "false");
 
@@ -2638,13 +2638,13 @@ const createProtectedImageExtension = (
 
       if (isMobileImageUploadPlaceholderSource(node.attrs.src)) {
         const placeholder = document.createElement("div");
-        placeholder.className = "edgeever-image-upload-placeholder";
+        placeholder.className = "stillnote-image-upload-placeholder";
         placeholder.contentEditable = "false";
         placeholder.setAttribute("role", "status");
         placeholder.setAttribute("aria-live", "polite");
 
         const preview = document.createElement("img");
-        preview.className = "edgeever-image-upload-preview";
+        preview.className = "stillnote-image-upload-preview";
         preview.alt = "";
         const previewSource = String(node.attrs.title ?? "");
         if (previewSource) {
@@ -2656,9 +2656,9 @@ const createProtectedImageExtension = (
         }
 
         const overlay = document.createElement("div");
-        overlay.className = "edgeever-image-upload-overlay";
+        overlay.className = "stillnote-image-upload-overlay";
         const spinner = document.createElement("span");
-        spinner.className = "edgeever-image-upload-spinner";
+        spinner.className = "stillnote-image-upload-spinner";
         spinner.setAttribute("aria-hidden", "true");
         overlay.append(spinner, getMobileEditorCopy(locale).image.uploading);
         if (previewSource) {
@@ -2700,7 +2700,7 @@ const createProtectedImageExtension = (
             preview.src = displaySource;
             preview.className = "";
             overlay.remove();
-            placeholder.className = "edgeever-image-upload-result";
+            placeholder.className = "stillnote-image-upload-result";
             completed = true;
             if (selected) {
               placeholder.classList.add("is-selected");
@@ -2786,16 +2786,16 @@ const createProtectedImageExtension = (
       }
 
       const wrapper = document.createElement("figure");
-      wrapper.className = "edgeever-image-node is-loading";
+      wrapper.className = "stillnote-image-node is-loading";
       wrapper.contentEditable = "false";
       wrapper.setAttribute("role", "img");
       wrapper.setAttribute("aria-busy", "true");
 
       const loading = document.createElement("div");
-      loading.className = "edgeever-image-loading";
+      loading.className = "stillnote-image-loading";
       loading.setAttribute("aria-hidden", "true");
       const spinner = document.createElement("span");
-      spinner.className = "edgeever-image-upload-spinner";
+      spinner.className = "stillnote-image-upload-spinner";
       loading.append(spinner);
 
       const image = document.createElement("img");
@@ -2805,7 +2805,7 @@ const createProtectedImageExtension = (
 
       const actionButton = document.createElement("button");
       actionButton.type = "button";
-      actionButton.className = "edgeever-image-actions";
+      actionButton.className = "stillnote-image-actions";
       actionButton.contentEditable = "false";
       actionButton.hidden = true;
       actionButton.setAttribute("aria-label", getMobileEditorCopy(locale).image.actions);
@@ -2816,7 +2816,7 @@ const createProtectedImageExtension = (
           return;
         }
         // Ignore taps that originated on the ⋯ control (event target would be button).
-        if (event.target instanceof Element && event.target.closest(".edgeever-image-actions")) {
+        if (event.target instanceof Element && event.target.closest(".stillnote-image-actions")) {
           return;
         }
         event.preventDefault();
@@ -2843,7 +2843,7 @@ const createProtectedImageExtension = (
         if (phase === "failed") {
           loading.replaceChildren();
           const label = document.createElement("span");
-          label.className = "edgeever-image-loading-label";
+          label.className = "stillnote-image-loading-label";
           label.textContent = getMobileEditorCopy(locale).image.loadFailed;
           loading.append(label);
           loading.hidden = false;
@@ -3101,7 +3101,7 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
   }
   html { font-size: var(--editor-body-font-size); }
   body { overflow: hidden; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-size: 1rem; }
-  .edgeever-editor-shell {
+  .stillnote-editor-shell {
     position: relative;
     display: flex;
     width: 100%;
@@ -3113,21 +3113,21 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     background: ${theme === "dark" ? "#22211e" : "#fdfcf9"};
     overflow: hidden;
   }
-  .edgeever-viewer-shell { -webkit-user-select: text; user-select: text; }
-  .edgeever-editor-toolbar { display: flex; flex: 0 0 auto; align-items: center; gap: 4px; min-height: 38px; overflow-x: auto; padding: 6px 12px; border-block: 1px solid ${theme === "dark" ? "#2e2c28" : "#eae5da"}; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; scrollbar-width: none; }
-  .edgeever-editor-toolbar::-webkit-scrollbar { display: none; }
-  .edgeever-editor-toolbar button { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 36px; min-height: 32px; padding: 0; border: 1px solid transparent; border-radius: 999px; background: transparent; color: ${theme === "dark" ? "#a8a298" : "#6b665e"}; }
-  .edgeever-editor-toolbar button:active, .edgeever-editor-toolbar button.is-active { border-color: ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#43b88c" : "#187958"}; }
-  .edgeever-editor-toolbar button:disabled { opacity: 0.38; }
-  .edgeever-editor-toolbar .edgeever-ai-toolbar-button { width: auto; gap: 4px; padding: 0 10px; border-color: ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; font-weight: 600; }
-  .edgeever-ai-selection-trigger { position: absolute; z-index: 18; display: inline-flex; min-width: 74px; min-height: 38px; align-items: center; justify-content: center; gap: 6px; padding: 0 13px; border: 1px solid ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; border-radius: 999px; background: ${theme === "dark" ? "#1b3128" : "#fdfcf9"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; box-shadow: 0 8px 24px rgb(21 21 19 / 18%); font-size: 14px; font-weight: 600; touch-action: manipulation; animation: edgeever-ai-selection-trigger-in 130ms ease-out; }
-  .edgeever-ai-selection-trigger:active { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; background: ${theme === "dark" ? "#223d32" : "#e9f3ee"}; transform: scale(.97); }
-  .edgeever-ai-selection-trigger svg { width: 16px; height: 16px; }
-  @keyframes edgeever-ai-selection-trigger-in { from { opacity: 0; transform: translateY(4px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  @media (prefers-reduced-motion: reduce) { .edgeever-ai-selection-trigger { animation: none; } }
+  .stillnote-viewer-shell { -webkit-user-select: text; user-select: text; }
+  .stillnote-editor-toolbar { display: flex; flex: 0 0 auto; align-items: center; gap: 4px; min-height: 38px; overflow-x: auto; padding: 6px 12px; border-block: 1px solid ${theme === "dark" ? "#2e2c28" : "#eae5da"}; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; scrollbar-width: none; }
+  .stillnote-editor-toolbar::-webkit-scrollbar { display: none; }
+  .stillnote-editor-toolbar button { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 36px; min-height: 32px; padding: 0; border: 1px solid transparent; border-radius: 999px; background: transparent; color: ${theme === "dark" ? "#a8a298" : "#6b665e"}; }
+  .stillnote-editor-toolbar button:active, .stillnote-editor-toolbar button.is-active { border-color: ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#43b88c" : "#187958"}; }
+  .stillnote-editor-toolbar button:disabled { opacity: 0.38; }
+  .stillnote-editor-toolbar .stillnote-ai-toolbar-button { width: auto; gap: 4px; padding: 0 10px; border-color: ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; font-weight: 600; }
+  .stillnote-ai-selection-trigger { position: absolute; z-index: 18; display: inline-flex; min-width: 74px; min-height: 38px; align-items: center; justify-content: center; gap: 6px; padding: 0 13px; border: 1px solid ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; border-radius: 999px; background: ${theme === "dark" ? "#1b3128" : "#fdfcf9"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; box-shadow: 0 8px 24px rgb(21 21 19 / 18%); font-size: 14px; font-weight: 600; touch-action: manipulation; animation: stillnote-ai-selection-trigger-in 130ms ease-out; }
+  .stillnote-ai-selection-trigger:active { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; background: ${theme === "dark" ? "#223d32" : "#e9f3ee"}; transform: scale(.97); }
+  .stillnote-ai-selection-trigger svg { width: 16px; height: 16px; }
+  @keyframes stillnote-ai-selection-trigger-in { from { opacity: 0; transform: translateY(4px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .stillnote-ai-selection-trigger { animation: none; } }
   .tiptap { min-height: 100%; max-width: 100%; min-width: 0; outline: none; }
-  .edgeever-editor-scroll {
-    --edgeever-keyboard-inset: 0px;
+  .stillnote-editor-scroll {
+    --stillnote-keyboard-inset: 0px;
     min-height: 0;
     min-width: 0;
     flex: 1;
@@ -3138,61 +3138,61 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
   }
-  .edgeever-ai-selection-hint { position: absolute; z-index: 15; top: 64px; left: 50%; max-width: calc(100% - 32px); transform: translateX(-50%); padding: 9px 13px; border-radius: 999px; background: ${theme === "dark" ? "#2c2a26" : "#1c1b18"}; color: #fff; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgb(21 21 19 / 22%); }
-  .edgeever-ai-undo { position: absolute; z-index: 15; top: 64px; right: 14px; left: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 10px 9px 13px; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#1c1b18"}; color: #fff; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgb(21 21 19 / 22%); }
-  .edgeever-ai-undo button { min-height: 32px; padding: 0 11px; border: 1px solid rgb(255 255 255 / 28%); border-radius: 8px; background: transparent; color: #7cd9b4; font: inherit; font-weight: 600; }
-  .edgeever-ai-panel { position: absolute; z-index: 20; inset: 0; display: flex; min-width: 0; flex-direction: column; background: ${theme === "dark" ? "#181816" : "#f4f1ea"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; }
-  .edgeever-ai-panel button, .edgeever-ai-panel input, .edgeever-ai-panel textarea { font: inherit; }
-  .edgeever-ai-panel-header { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 12px; min-height: 58px; padding: 10px 14px; border-bottom: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; }
-  .edgeever-ai-panel-header div { display: grid; min-width: 0; gap: 2px; }
-  .edgeever-ai-panel-header strong { font-size: 16px; }
-  .edgeever-ai-panel-header small { color: ${theme === "dark" ? "#948e84" : "#6b665e"}; font-size: 12px; }
-  .edgeever-ai-panel-header > button { width: 36px; height: 36px; border: 0; border-radius: 999px; background: transparent; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font-size: 25px; }
-  .edgeever-ai-panel-body { display: grid; min-height: 0; flex: 1 1 auto; align-content: start; gap: 14px; overflow-y: auto; padding: 14px; }
-  .edgeever-ai-panel label, .edgeever-ai-picker-field { display: grid; gap: 6px; color: ${theme === "dark" ? "#dfdbd2" : "#2c2925"}; font-size: 13px; font-weight: 600; }
-  .edgeever-ai-panel input, .edgeever-ai-panel textarea { width: 100%; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 9px; outline: none; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-size: 15px; font-weight: 500; }
-  .edgeever-ai-panel input { min-height: 44px; padding: 0 11px; }
-  .edgeever-ai-panel textarea { min-height: 78px; resize: vertical; padding: 10px 11px; }
-  .edgeever-ai-panel input:focus, .edgeever-ai-panel textarea:focus { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; box-shadow: 0 0 0 2px rgb(24 121 88 / 16%); }
-  .edgeever-ai-picker-trigger { display: flex; width: 100%; min-height: 46px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 13px; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 10px; outline: none; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; text-align: left; font-size: 15px; font-weight: 550; }
-  .edgeever-ai-picker-trigger:focus-visible, .edgeever-ai-picker-trigger[aria-expanded="true"] { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; box-shadow: 0 0 0 2px rgb(24 121 88 / 16%); }
-  .edgeever-ai-picker-trigger > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .edgeever-ai-picker-chevron { flex: 0 0 auto; width: 9px; height: 9px; margin: -4px 2px 0 0; border-right: 2px solid ${theme === "dark" ? "#948e84" : "#6b665e"}; border-bottom: 2px solid ${theme === "dark" ? "#948e84" : "#6b665e"}; transform: rotate(45deg); }
-  .edgeever-ai-picker-backdrop { position: absolute; z-index: 40; inset: 0; display: flex; align-items: flex-end; background: rgb(21 21 19 / 48%); animation: edgeever-ai-picker-fade 150ms ease-out; }
-  .edgeever-ai-picker-sheet { display: flex; width: 100%; max-height: min(74%, 560px); min-height: 0; flex-direction: column; padding: 8px 12px max(12px, env(safe-area-inset-bottom)); border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; border-bottom: 0; border-radius: 22px 22px 0 0; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; box-shadow: 0 -18px 48px rgb(21 21 19 / 24%); animation: edgeever-ai-picker-rise 180ms cubic-bezier(.2,.8,.2,1); }
-  .edgeever-ai-picker-handle { width: 38px; height: 4px; margin: 0 auto 5px; border-radius: 999px; background: ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; }
-  .edgeever-ai-picker-header { display: flex; flex: 0 0 auto; min-height: 48px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 4px 4px 8px; }
-  .edgeever-ai-picker-header strong { font-size: 17px; font-weight: 600; }
-  .edgeever-ai-picker-header button { width: 36px; height: 36px; padding: 0; border: 0; border-radius: 999px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font-size: 24px; line-height: 1; }
-  .edgeever-ai-picker-options { min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
-  .edgeever-ai-picker-options > button { display: flex; width: 100%; min-height: 50px; align-items: center; justify-content: space-between; gap: 14px; padding: 8px 12px; border: 0; border-bottom: 1px solid ${theme === "dark" ? "#2e2c28" : "#eae5da"}; border-radius: 9px; outline: none; background: transparent; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; text-align: left; font-size: 15px; font-weight: 550; }
-  .edgeever-ai-picker-options > button:last-child { border-bottom-color: transparent; }
-  .edgeever-ai-picker-options > button.is-selected { background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; font-weight: 600; }
-  .edgeever-ai-picker-options > button:focus-visible { box-shadow: inset 0 0 0 2px ${theme === "dark" ? "#43b88c" : "#187958"}; }
-  .edgeever-ai-picker-check { display: grid; width: 20px; height: 20px; flex: 0 0 auto; place-items: center; border-radius: 999px; background: #187958; color: #fff; font-size: 13px; font-weight: 600; opacity: 0; }
-  .edgeever-ai-picker-options > button.is-selected .edgeever-ai-picker-check { opacity: 1; }
-  @keyframes edgeever-ai-picker-fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes edgeever-ai-picker-rise { from { transform: translateY(20px); opacity: .7; } to { transform: translateY(0); opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { .edgeever-ai-picker-backdrop, .edgeever-ai-picker-sheet { animation: none; } }
-  .edgeever-ai-result-heading { display: flex; align-items: center; justify-content: space-between; color: ${theme === "dark" ? "#dfdbd2" : "#2c2925"}; font-size: 13px; font-weight: 600; }
-  .edgeever-ai-result-heading small { color: ${theme === "dark" ? "#43b88c" : "#187958"}; }
-  .edgeever-ai-result { min-height: 170px; max-height: min(42vh, 360px); overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 12px; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; border-radius: 10px; background: ${theme === "dark" ? "#1d1c1a" : "#fdfcf9"}; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 15px; line-height: 1.55; }
-  .edgeever-ai-result > span { color: ${theme === "dark" ? "#948e84" : "#6b665e"}; }
-  .edgeever-ai-refine-row { display: flex; gap: 8px; }
-  .edgeever-ai-refine-row input { min-width: 0; flex: 1; }
-  .edgeever-ai-refine-row button, .edgeever-ai-panel-footer button { min-height: 40px; padding: 0 12px; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 9px; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-weight: 600; }
-  .edgeever-ai-panel button:disabled { opacity: 0.42; }
-  .edgeever-ai-error { margin: 0; color: ${theme === "dark" ? "#fda4af" : "#be123c"}; font-size: 13px; line-height: 1.45; }
-  .edgeever-ai-panel-footer { display: grid; flex: 0 0 auto; gap: 9px; padding: 10px 12px max(10px, env(safe-area-inset-bottom)); border-top: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; }
-  .edgeever-ai-panel-footer > div { display: flex; gap: 8px; }
-  .edgeever-ai-panel-footer > div button { min-width: 0; flex: 1; }
-  .edgeever-ai-panel-footer .is-primary { border-color: #187958; background: #187958; color: #fff; }
-  .edgeever-editor-content {
+  .stillnote-ai-selection-hint { position: absolute; z-index: 15; top: 64px; left: 50%; max-width: calc(100% - 32px); transform: translateX(-50%); padding: 9px 13px; border-radius: 999px; background: ${theme === "dark" ? "#2c2a26" : "#1c1b18"}; color: #fff; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgb(21 21 19 / 22%); }
+  .stillnote-ai-undo { position: absolute; z-index: 15; top: 64px; right: 14px; left: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 10px 9px 13px; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#1c1b18"}; color: #fff; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgb(21 21 19 / 22%); }
+  .stillnote-ai-undo button { min-height: 32px; padding: 0 11px; border: 1px solid rgb(255 255 255 / 28%); border-radius: 8px; background: transparent; color: #7cd9b4; font: inherit; font-weight: 600; }
+  .stillnote-ai-panel { position: absolute; z-index: 20; inset: 0; display: flex; min-width: 0; flex-direction: column; background: ${theme === "dark" ? "#181816" : "#f4f1ea"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; }
+  .stillnote-ai-panel button, .stillnote-ai-panel input, .stillnote-ai-panel textarea { font: inherit; }
+  .stillnote-ai-panel-header { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 12px; min-height: 58px; padding: 10px 14px; border-bottom: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; }
+  .stillnote-ai-panel-header div { display: grid; min-width: 0; gap: 2px; }
+  .stillnote-ai-panel-header strong { font-size: 16px; }
+  .stillnote-ai-panel-header small { color: ${theme === "dark" ? "#948e84" : "#6b665e"}; font-size: 12px; }
+  .stillnote-ai-panel-header > button { width: 36px; height: 36px; border: 0; border-radius: 999px; background: transparent; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font-size: 25px; }
+  .stillnote-ai-panel-body { display: grid; min-height: 0; flex: 1 1 auto; align-content: start; gap: 14px; overflow-y: auto; padding: 14px; }
+  .stillnote-ai-panel label, .stillnote-ai-picker-field { display: grid; gap: 6px; color: ${theme === "dark" ? "#dfdbd2" : "#2c2925"}; font-size: 13px; font-weight: 600; }
+  .stillnote-ai-panel input, .stillnote-ai-panel textarea { width: 100%; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 9px; outline: none; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-size: 15px; font-weight: 500; }
+  .stillnote-ai-panel input { min-height: 44px; padding: 0 11px; }
+  .stillnote-ai-panel textarea { min-height: 78px; resize: vertical; padding: 10px 11px; }
+  .stillnote-ai-panel input:focus, .stillnote-ai-panel textarea:focus { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; box-shadow: 0 0 0 2px rgb(24 121 88 / 16%); }
+  .stillnote-ai-picker-trigger { display: flex; width: 100%; min-height: 46px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 13px; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 10px; outline: none; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; text-align: left; font-size: 15px; font-weight: 550; }
+  .stillnote-ai-picker-trigger:focus-visible, .stillnote-ai-picker-trigger[aria-expanded="true"] { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; box-shadow: 0 0 0 2px rgb(24 121 88 / 16%); }
+  .stillnote-ai-picker-trigger > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .stillnote-ai-picker-chevron { flex: 0 0 auto; width: 9px; height: 9px; margin: -4px 2px 0 0; border-right: 2px solid ${theme === "dark" ? "#948e84" : "#6b665e"}; border-bottom: 2px solid ${theme === "dark" ? "#948e84" : "#6b665e"}; transform: rotate(45deg); }
+  .stillnote-ai-picker-backdrop { position: absolute; z-index: 40; inset: 0; display: flex; align-items: flex-end; background: rgb(21 21 19 / 48%); animation: stillnote-ai-picker-fade 150ms ease-out; }
+  .stillnote-ai-picker-sheet { display: flex; width: 100%; max-height: min(74%, 560px); min-height: 0; flex-direction: column; padding: 8px 12px max(12px, env(safe-area-inset-bottom)); border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; border-bottom: 0; border-radius: 22px 22px 0 0; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; box-shadow: 0 -18px 48px rgb(21 21 19 / 24%); animation: stillnote-ai-picker-rise 180ms cubic-bezier(.2,.8,.2,1); }
+  .stillnote-ai-picker-handle { width: 38px; height: 4px; margin: 0 auto 5px; border-radius: 999px; background: ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; }
+  .stillnote-ai-picker-header { display: flex; flex: 0 0 auto; min-height: 48px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 4px 4px 8px; }
+  .stillnote-ai-picker-header strong { font-size: 17px; font-weight: 600; }
+  .stillnote-ai-picker-header button { width: 36px; height: 36px; padding: 0; border: 0; border-radius: 999px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font-size: 24px; line-height: 1; }
+  .stillnote-ai-picker-options { min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  .stillnote-ai-picker-options > button { display: flex; width: 100%; min-height: 50px; align-items: center; justify-content: space-between; gap: 14px; padding: 8px 12px; border: 0; border-bottom: 1px solid ${theme === "dark" ? "#2e2c28" : "#eae5da"}; border-radius: 9px; outline: none; background: transparent; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; text-align: left; font-size: 15px; font-weight: 550; }
+  .stillnote-ai-picker-options > button:last-child { border-bottom-color: transparent; }
+  .stillnote-ai-picker-options > button.is-selected { background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; font-weight: 600; }
+  .stillnote-ai-picker-options > button:focus-visible { box-shadow: inset 0 0 0 2px ${theme === "dark" ? "#43b88c" : "#187958"}; }
+  .stillnote-ai-picker-check { display: grid; width: 20px; height: 20px; flex: 0 0 auto; place-items: center; border-radius: 999px; background: #187958; color: #fff; font-size: 13px; font-weight: 600; opacity: 0; }
+  .stillnote-ai-picker-options > button.is-selected .stillnote-ai-picker-check { opacity: 1; }
+  @keyframes stillnote-ai-picker-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes stillnote-ai-picker-rise { from { transform: translateY(20px); opacity: .7; } to { transform: translateY(0); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .stillnote-ai-picker-backdrop, .stillnote-ai-picker-sheet { animation: none; } }
+  .stillnote-ai-result-heading { display: flex; align-items: center; justify-content: space-between; color: ${theme === "dark" ? "#dfdbd2" : "#2c2925"}; font-size: 13px; font-weight: 600; }
+  .stillnote-ai-result-heading small { color: ${theme === "dark" ? "#43b88c" : "#187958"}; }
+  .stillnote-ai-result { min-height: 170px; max-height: min(42vh, 360px); overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 12px; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; border-radius: 10px; background: ${theme === "dark" ? "#1d1c1a" : "#fdfcf9"}; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 15px; line-height: 1.55; }
+  .stillnote-ai-result > span { color: ${theme === "dark" ? "#948e84" : "#6b665e"}; }
+  .stillnote-ai-refine-row { display: flex; gap: 8px; }
+  .stillnote-ai-refine-row input { min-width: 0; flex: 1; }
+  .stillnote-ai-refine-row button, .stillnote-ai-panel-footer button { min-height: 40px; padding: 0 12px; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 9px; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-weight: 600; }
+  .stillnote-ai-panel button:disabled { opacity: 0.42; }
+  .stillnote-ai-error { margin: 0; color: ${theme === "dark" ? "#fda4af" : "#be123c"}; font-size: 13px; line-height: 1.45; }
+  .stillnote-ai-panel-footer { display: grid; flex: 0 0 auto; gap: 9px; padding: 10px 12px max(10px, env(safe-area-inset-bottom)); border-top: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; }
+  .stillnote-ai-panel-footer > div { display: flex; gap: 8px; }
+  .stillnote-ai-panel-footer > div button { min-width: 0; flex: 1; }
+  .stillnote-ai-panel-footer .is-primary { border-color: #187958; background: #187958; color: #fff; }
+  .stillnote-editor-content {
     min-height: 100%;
     max-width: 100%;
     min-width: 0;
-    padding: 18px 12px calc(32px + var(--edgeever-keyboard-inset));
-    scroll-padding-bottom: calc(32px + var(--edgeever-keyboard-inset));
+    padding: 18px 12px calc(32px + var(--stillnote-keyboard-inset));
+    scroll-padding-bottom: calc(32px + var(--stillnote-keyboard-inset));
     font-size: 1rem;
     line-height: var(--editor-body-line-height);
     overflow-wrap: anywhere;
@@ -3200,58 +3200,58 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     font-feature-settings: "chws" 1;
     caret-color: ${options?.viewer ? "transparent" : theme === "dark" ? "#43b88c" : "#187958"};
   }
-  .edgeever-viewer-content { -webkit-user-select: text; user-select: text; cursor: text; }
-  .edgeever-search-match {
+  .stillnote-viewer-content { -webkit-user-select: text; user-select: text; cursor: text; }
+  .stillnote-search-match {
     border-radius: 0.2rem;
     background-color: rgb(254 240 138 / 0.8);
     box-shadow: 0 0 0 1px rgb(234 179 8 / 0.25);
   }
-  .edgeever-search-match-active {
+  .stillnote-search-match-active {
     background-color: rgb(251 191 36 / 0.9);
     box-shadow: 0 0 0 2px rgb(217 119 6 / 0.45);
   }
-  .edgeever-editor-content > :first-child { margin-top: 0; }
-  .edgeever-editor-content p {
+  .stillnote-editor-content > :first-child { margin-top: 0; }
+  .stillnote-editor-content p {
     margin: 0 0 var(--editor-paragraph-spacing) 0;
     padding: 0;
     max-width: 100%;
     font-size: 1rem;
     line-height: var(--editor-body-line-height);
   }
-  .edgeever-editor-content p.is-editor-empty:first-child::before { float: left; height: 0; color: ${theme === "dark" ? "#7c766d" : "#9e978b"}; content: attr(data-placeholder); pointer-events: none; }
-  .edgeever-editor-content h1,
-  .edgeever-editor-content h2,
-  .edgeever-editor-content h3,
-  .edgeever-editor-content h4,
-  .edgeever-editor-content h5,
-  .edgeever-editor-content h6 {
+  .stillnote-editor-content p.is-editor-empty:first-child::before { float: left; height: 0; color: ${theme === "dark" ? "#7c766d" : "#9e978b"}; content: attr(data-placeholder); pointer-events: none; }
+  .stillnote-editor-content h1,
+  .stillnote-editor-content h2,
+  .stillnote-editor-content h3,
+  .stillnote-editor-content h4,
+  .stillnote-editor-content h5,
+  .stillnote-editor-content h6 {
     max-width: 100%;
     overflow-wrap: anywhere;
     line-height: 1.3;
     font-weight: 600;
   }
-  .edgeever-editor-content h1 { margin: 0.7em 0 0.4em; font-size: 1.6rem; }
-  .edgeever-editor-content h2 { margin: 0.85em 0 0.35em; font-size: 1.35rem; }
-  .edgeever-editor-content h3 { margin: 0.75em 0 0.3em; font-size: 1.15rem; }
-  .edgeever-editor-content h4 { margin: 0.7em 0 0.28em; font-size: 1.05rem; font-weight: 600; }
-  .edgeever-editor-content h5 { margin: 0.65em 0 0.25em; font-size: 1rem; font-weight: 600; }
-  .edgeever-editor-content h6 { margin: 0.6em 0 0.22em; font-size: 0.95rem; font-weight: 600; }
-  .edgeever-editor-content ul[data-type="taskList"] { margin: 0 0 var(--editor-paragraph-spacing); padding-left: 0; list-style: none; }
-  .edgeever-editor-content ul[data-type="taskList"] li[data-checked] { display: flex; align-items: flex-start; gap: 9px; margin: 4px 0; }
-  .edgeever-editor-content ul[data-type="taskList"] li[data-checked] > label { display: inline-flex; flex: 0 0 auto; align-items: center; margin-top: 3px; user-select: none; }
-  .edgeever-editor-content ul[data-type="taskList"] li[data-checked] > label input { width: 18px; height: 18px; margin: 0; border-radius: 3px; accent-color: #187958; }
-  .edgeever-editor-content ul[data-type="taskList"] li[data-checked] > div { min-width: 0; flex: 1 1 auto; }
-  .edgeever-editor-content ul[data-type="taskList"] li[data-checked] > div > p { margin-bottom: 0; }
-  .edgeever-editor-content ul[data-type="taskList"] li[data-checked="true"] > div > p { color: #9e978b; text-decoration: line-through; }
-  .edgeever-editor-content ul[data-type="taskList"] ul[data-type="taskList"] { margin: 4px 0 0; padding-left: 24px; }
-  .edgeever-editor-content blockquote { margin-left: 0; margin-right: 0; max-width: 100%; padding: 6px 12px; border-left: 3px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 1px 4px 4px 1px; background: ${theme === "dark" ? "#2c2a26" : "#f4f1ea"}; color: ${theme === "dark" ? "#dfdbd2" : "#2c2925"}; }
-  .edgeever-editor-content pre { max-width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; padding: 12px 90px 12px 14px; background: ${theme === "dark" ? "#1d1c1a" : "#f9f7f2"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-size: 0.88rem; box-shadow: none; }
-  .edgeever-editor-content code { border-radius: 4px; padding: 2px 5px; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; background: ${theme === "dark" ? "#2c2a26" : "#f4f1ea"}; color: ${theme === "dark" ? "#eae6df" : "#2c2925"}; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.88em; font-weight: 400; }
-  .edgeever-editor-content pre code { padding: 0; border: 0; background: transparent; font-size: inherit; font-weight: normal; color: inherit; }
-  .edgeever-editor-content .tiptap-mathematics-render[data-type="block-math"] { max-width: 100%; margin: 16px 0; overflow-x: auto; overflow-y: hidden; padding: 4px 0; text-align: center; -webkit-overflow-scrolling: touch; }
-  .edgeever-editor-content .inline-math-error, .edgeever-editor-content .block-math-error { color: ${theme === "dark" ? "#fda4af" : "#be123c"}; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .stillnote-editor-content h1 { margin: 0.7em 0 0.4em; font-size: 1.6rem; }
+  .stillnote-editor-content h2 { margin: 0.85em 0 0.35em; font-size: 1.35rem; }
+  .stillnote-editor-content h3 { margin: 0.75em 0 0.3em; font-size: 1.15rem; }
+  .stillnote-editor-content h4 { margin: 0.7em 0 0.28em; font-size: 1.05rem; font-weight: 600; }
+  .stillnote-editor-content h5 { margin: 0.65em 0 0.25em; font-size: 1rem; font-weight: 600; }
+  .stillnote-editor-content h6 { margin: 0.6em 0 0.22em; font-size: 0.95rem; font-weight: 600; }
+  .stillnote-editor-content ul[data-type="taskList"] { margin: 0 0 var(--editor-paragraph-spacing); padding-left: 0; list-style: none; }
+  .stillnote-editor-content ul[data-type="taskList"] li[data-checked] { display: flex; align-items: flex-start; gap: 9px; margin: 4px 0; }
+  .stillnote-editor-content ul[data-type="taskList"] li[data-checked] > label { display: inline-flex; flex: 0 0 auto; align-items: center; margin-top: 3px; user-select: none; }
+  .stillnote-editor-content ul[data-type="taskList"] li[data-checked] > label input { width: 18px; height: 18px; margin: 0; border-radius: 3px; accent-color: #187958; }
+  .stillnote-editor-content ul[data-type="taskList"] li[data-checked] > div { min-width: 0; flex: 1 1 auto; }
+  .stillnote-editor-content ul[data-type="taskList"] li[data-checked] > div > p { margin-bottom: 0; }
+  .stillnote-editor-content ul[data-type="taskList"] li[data-checked="true"] > div > p { color: #9e978b; text-decoration: line-through; }
+  .stillnote-editor-content ul[data-type="taskList"] ul[data-type="taskList"] { margin: 4px 0 0; padding-left: 24px; }
+  .stillnote-editor-content blockquote { margin-left: 0; margin-right: 0; max-width: 100%; padding: 6px 12px; border-left: 3px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 1px 4px 4px 1px; background: ${theme === "dark" ? "#2c2a26" : "#f4f1ea"}; color: ${theme === "dark" ? "#dfdbd2" : "#2c2925"}; }
+  .stillnote-editor-content pre { max-width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; padding: 12px 90px 12px 14px; background: ${theme === "dark" ? "#1d1c1a" : "#f9f7f2"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-size: 0.88rem; box-shadow: none; }
+  .stillnote-editor-content code { border-radius: 4px; padding: 2px 5px; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; background: ${theme === "dark" ? "#2c2a26" : "#f4f1ea"}; color: ${theme === "dark" ? "#eae6df" : "#2c2925"}; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.88em; font-weight: 400; }
+  .stillnote-editor-content pre code { padding: 0; border: 0; background: transparent; font-size: inherit; font-weight: normal; color: inherit; }
+  .stillnote-editor-content .tiptap-mathematics-render[data-type="block-math"] { max-width: 100%; margin: 16px 0; overflow-x: auto; overflow-y: hidden; padding: 4px 0; text-align: center; -webkit-overflow-scrolling: touch; }
+  .stillnote-editor-content .inline-math-error, .stillnote-editor-content .block-math-error { color: ${theme === "dark" ? "#fda4af" : "#be123c"}; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   /* External hyperlinks (match Web default ProseMirror). Attachment chips override below. */
-  .edgeever-editor-content a {
+  .stillnote-editor-content a {
     color: ${theme === "dark" ? "#43b88c" : "#187958"};
     font-weight: 500;
     text-decoration: underline;
@@ -3259,12 +3259,12 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     text-underline-offset: 2px;
     cursor: pointer;
   }
-  .edgeever-editor-content a:active {
+  .stillnote-editor-content a:active {
     color: ${theme === "dark" ? "#7cd9b4" : "#125e44"};
     text-decoration-color: ${theme === "dark" ? "#7cd9b4" : "#125e44"};
   }
   /* Compact attachment chips: still ≥48px touch height, less vertical bulk than 58px. */
-  .edgeever-editor-content a.edgeever-attachment-link, .edgeever-editor-content a[href*="/api/v1/resources/"] {
+  .stillnote-editor-content a.stillnote-attachment-link, .stillnote-editor-content a[href*="/api/v1/resources/"] {
     display: flex;
     min-width: 0;
     max-width: 100%;
@@ -3283,7 +3283,7 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     text-decoration: none;
     overflow: hidden;
   }
-  .edgeever-editor-content a.edgeever-attachment-link::before, .edgeever-editor-content a[href*="/api/v1/resources/"]::before {
+  .stillnote-editor-content a.stillnote-attachment-link::before, .stillnote-editor-content a[href*="/api/v1/resources/"]::before {
     display: inline-flex;
     width: 30px;
     height: 30px;
@@ -3298,32 +3298,32 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     font-weight: 700;
     letter-spacing: -0.2px;
   }
-  .edgeever-editor-content a.edgeever-attachment-kind-image::before { background: ${theme === "dark" ? "#064e3b" : "#ecfdf5"}; color: ${theme === "dark" ? "#6ee7b7" : "#10b981"}; content: "▧"; font-size: 20px; }
-  .edgeever-editor-content a.edgeever-attachment-kind-audio::before { background: ${theme === "dark" ? "#0c4a6e" : "#f0f9ff"}; color: ${theme === "dark" ? "#7dd3fc" : "#0ea5e9"}; content: "♪"; font-size: 21px; }
-  .edgeever-editor-content a.edgeever-attachment-kind-video::before { background: ${theme === "dark" ? "#881337" : "#fff1f2"}; color: ${theme === "dark" ? "#fda4af" : "#f43f5e"}; content: "▶"; font-size: 15px; }
-  .edgeever-editor-content a.edgeever-attachment-kind-pdf::before { background: ${theme === "dark" ? "#881337" : "#fff1f2"}; color: ${theme === "dark" ? "#fda4af" : "#e11d48"}; content: "PDF"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-spreadsheet::before { background: ${theme === "dark" ? "#14532d" : "#f0fdf4"}; color: ${theme === "dark" ? "#86efac" : "#16a34a"}; content: "XLS"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-document::before { background: ${theme === "dark" ? "#1e3a8a" : "#eff6ff"}; color: ${theme === "dark" ? "#93c5fd" : "#2563eb"}; content: "DOC"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-presentation::before { background: ${theme === "dark" ? "#7c2d12" : "#fff7ed"}; color: ${theme === "dark" ? "#fdba74" : "#f97316"}; content: "PPT"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-archive::before { background: ${theme === "dark" ? "#713f12" : "#fffbeb"}; color: ${theme === "dark" ? "#fde68a" : "#d97706"}; content: "ZIP"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-code::before { background: ${theme === "dark" ? "#581c87" : "#faf5ff"}; color: ${theme === "dark" ? "#d8b4fe" : "#8b5cf6"}; content: "</>"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-text::before { background: ${theme === "dark" ? "#334155" : "#f1f5f9"}; color: ${theme === "dark" ? "#cbd5e1" : "#64748b"}; content: "TXT"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-apk::before { background: ${theme === "dark" ? "#064e3b" : "#ecfdf5"}; color: ${theme === "dark" ? "#6ee7b7" : "#059669"}; content: "APK"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-exe::before { background: ${theme === "dark" ? "#0c4a6e" : "#f0f9ff"}; color: ${theme === "dark" ? "#7dd3fc" : "#0284c7"}; content: "EXE"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-dmg::before { background: ${theme === "dark" ? "#4c1d95" : "#f5f3ff"}; color: ${theme === "dark" ? "#c4b5fd" : "#7c3aed"}; content: "DMG"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-linux::before { background: ${theme === "dark" ? "#7c2d12" : "#fff7ed"}; color: ${theme === "dark" ? "#fdba74" : "#ea580c"}; content: "LINUX"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-executable::before { background: ${theme === "dark" ? "#134e4a" : "#ccfbf1"}; color: ${theme === "dark" ? "#5eead4" : "#0d9488"}; content: "BIN"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-book::before { background: ${theme === "dark" ? "#78350f" : "#fef3c7"}; color: ${theme === "dark" ? "#fcd34d" : "#b45309"}; content: "BOOK"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-font::before { background: ${theme === "dark" ? "#312e81" : "#e0e7ff"}; color: ${theme === "dark" ? "#a5b4fc" : "#4f46e5"}; content: "FONT"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-diskimage::before { background: ${theme === "dark" ? "#164e63" : "#cffafe"}; color: ${theme === "dark" ? "#67e8f9" : "#0891b2"}; content: "ISO"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-database::before { background: ${theme === "dark" ? "#701a75" : "#fae8ff"}; color: ${theme === "dark" ? "#f0abfc" : "#c026d3"}; content: "DB"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-design::before { background: ${theme === "dark" ? "#831843" : "#fdf2f8"}; color: ${theme === "dark" ? "#f472b6" : "#db2777"}; content: "DESIGN"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-model3d::before { background: ${theme === "dark" ? "#1e3a8a" : "#eff6ff"}; color: ${theme === "dark" ? "#93c5fd" : "#2563eb"}; content: "3D"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-script::before { background: ${theme === "dark" ? "#064e3b" : "#ecfdf5"}; color: ${theme === "dark" ? "#6ee7b7" : "#059669"}; content: "SHELL"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-log::before { background: ${theme === "dark" ? "#27272a" : "#f4f4f5"}; color: ${theme === "dark" ? "#a1a1aa" : "#71717a"}; content: "LOG"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-certificate::before { background: ${theme === "dark" ? "#713f12" : "#fefce8"}; color: ${theme === "dark" ? "#fde047" : "#ca8a04"}; content: "KEY"; }
-  .edgeever-editor-content a.edgeever-attachment-kind-diagram::before { background: ${theme === "dark" ? "#134e4a" : "#f0fdfa"}; color: ${theme === "dark" ? "#5eead4" : "#0d9488"}; content: "DIAG"; }
-  .edgeever-editor-content .edgeever-unsupported-content {
+  .stillnote-editor-content a.stillnote-attachment-kind-image::before { background: ${theme === "dark" ? "#064e3b" : "#ecfdf5"}; color: ${theme === "dark" ? "#6ee7b7" : "#10b981"}; content: "▧"; font-size: 20px; }
+  .stillnote-editor-content a.stillnote-attachment-kind-audio::before { background: ${theme === "dark" ? "#0c4a6e" : "#f0f9ff"}; color: ${theme === "dark" ? "#7dd3fc" : "#0ea5e9"}; content: "♪"; font-size: 21px; }
+  .stillnote-editor-content a.stillnote-attachment-kind-video::before { background: ${theme === "dark" ? "#881337" : "#fff1f2"}; color: ${theme === "dark" ? "#fda4af" : "#f43f5e"}; content: "▶"; font-size: 15px; }
+  .stillnote-editor-content a.stillnote-attachment-kind-pdf::before { background: ${theme === "dark" ? "#881337" : "#fff1f2"}; color: ${theme === "dark" ? "#fda4af" : "#e11d48"}; content: "PDF"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-spreadsheet::before { background: ${theme === "dark" ? "#14532d" : "#f0fdf4"}; color: ${theme === "dark" ? "#86efac" : "#16a34a"}; content: "XLS"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-document::before { background: ${theme === "dark" ? "#1e3a8a" : "#eff6ff"}; color: ${theme === "dark" ? "#93c5fd" : "#2563eb"}; content: "DOC"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-presentation::before { background: ${theme === "dark" ? "#7c2d12" : "#fff7ed"}; color: ${theme === "dark" ? "#fdba74" : "#f97316"}; content: "PPT"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-archive::before { background: ${theme === "dark" ? "#713f12" : "#fffbeb"}; color: ${theme === "dark" ? "#fde68a" : "#d97706"}; content: "ZIP"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-code::before { background: ${theme === "dark" ? "#581c87" : "#faf5ff"}; color: ${theme === "dark" ? "#d8b4fe" : "#8b5cf6"}; content: "</>"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-text::before { background: ${theme === "dark" ? "#334155" : "#f1f5f9"}; color: ${theme === "dark" ? "#cbd5e1" : "#64748b"}; content: "TXT"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-apk::before { background: ${theme === "dark" ? "#064e3b" : "#ecfdf5"}; color: ${theme === "dark" ? "#6ee7b7" : "#059669"}; content: "APK"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-exe::before { background: ${theme === "dark" ? "#0c4a6e" : "#f0f9ff"}; color: ${theme === "dark" ? "#7dd3fc" : "#0284c7"}; content: "EXE"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-dmg::before { background: ${theme === "dark" ? "#4c1d95" : "#f5f3ff"}; color: ${theme === "dark" ? "#c4b5fd" : "#7c3aed"}; content: "DMG"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-linux::before { background: ${theme === "dark" ? "#7c2d12" : "#fff7ed"}; color: ${theme === "dark" ? "#fdba74" : "#ea580c"}; content: "LINUX"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-executable::before { background: ${theme === "dark" ? "#134e4a" : "#ccfbf1"}; color: ${theme === "dark" ? "#5eead4" : "#0d9488"}; content: "BIN"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-book::before { background: ${theme === "dark" ? "#78350f" : "#fef3c7"}; color: ${theme === "dark" ? "#fcd34d" : "#b45309"}; content: "BOOK"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-font::before { background: ${theme === "dark" ? "#312e81" : "#e0e7ff"}; color: ${theme === "dark" ? "#a5b4fc" : "#4f46e5"}; content: "FONT"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-diskimage::before { background: ${theme === "dark" ? "#164e63" : "#cffafe"}; color: ${theme === "dark" ? "#67e8f9" : "#0891b2"}; content: "ISO"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-database::before { background: ${theme === "dark" ? "#701a75" : "#fae8ff"}; color: ${theme === "dark" ? "#f0abfc" : "#c026d3"}; content: "DB"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-design::before { background: ${theme === "dark" ? "#831843" : "#fdf2f8"}; color: ${theme === "dark" ? "#f472b6" : "#db2777"}; content: "DESIGN"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-model3d::before { background: ${theme === "dark" ? "#1e3a8a" : "#eff6ff"}; color: ${theme === "dark" ? "#93c5fd" : "#2563eb"}; content: "3D"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-script::before { background: ${theme === "dark" ? "#064e3b" : "#ecfdf5"}; color: ${theme === "dark" ? "#6ee7b7" : "#059669"}; content: "SHELL"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-log::before { background: ${theme === "dark" ? "#27272a" : "#f4f4f5"}; color: ${theme === "dark" ? "#a1a1aa" : "#71717a"}; content: "LOG"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-certificate::before { background: ${theme === "dark" ? "#713f12" : "#fefce8"}; color: ${theme === "dark" ? "#fde047" : "#ca8a04"}; content: "KEY"; }
+  .stillnote-editor-content a.stillnote-attachment-kind-diagram::before { background: ${theme === "dark" ? "#134e4a" : "#f0fdfa"}; color: ${theme === "dark" ? "#5eead4" : "#0d9488"}; content: "DIAG"; }
+  .stillnote-editor-content .stillnote-unsupported-content {
     border: 1px dashed ${theme === "dark" ? "#6b665e" : "#9e978b"};
     border-radius: 8px;
     background: ${theme === "dark" ? "#1d1c1a" : "#f9f7f2"};
@@ -3332,10 +3332,10 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     font-weight: 600;
   }
   ${DETAILS_EDITOR_CSS}
-  .edgeever-editor-content .edgeever-unsupported-content--block { display: block; margin: 8px 0; padding: 12px; }
-  .edgeever-editor-content .edgeever-unsupported-content--inline { display: inline-block; margin: 0 2px; padding: 2px 6px; }
-  .edgeever-editor-content .edgeever-unsupported-mark { border-bottom: 1px dashed ${theme === "dark" ? "#948e84" : "#6b665e"}; }
-  .edgeever-editor-content a.edgeever-attachment-link::after, .edgeever-editor-content a[href*="/api/v1/resources/"]::after {
+  .stillnote-editor-content .stillnote-unsupported-content--block { display: block; margin: 8px 0; padding: 12px; }
+  .stillnote-editor-content .stillnote-unsupported-content--inline { display: inline-block; margin: 0 2px; padding: 2px 6px; }
+  .stillnote-editor-content .stillnote-unsupported-mark { border-bottom: 1px dashed ${theme === "dark" ? "#948e84" : "#6b665e"}; }
+  .stillnote-editor-content a.stillnote-attachment-link::after, .stillnote-editor-content a[href*="/api/v1/resources/"]::after {
     margin-left: auto;
     flex: 0 0 auto;
     color: ${theme === "dark" ? "#948e84" : "#6b665e"};
@@ -3344,30 +3344,30 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     font-weight: 600;
     white-space: nowrap;
   }
-  .edgeever-code-block, .edgeever-mermaid-code-block { position: relative; margin: 18px 0; overflow: visible; background: transparent; }
-  .edgeever-code-copy-button { position: absolute; top: 8px; right: 8px; z-index: 1; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 6px; padding: 5px 8px; background: ${theme === "dark" ? "rgba(34, 33, 30, 0.94)" : "rgba(253, 252, 249, 0.94)"}; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font: inherit; font-size: 12px; line-height: 1.35; }
-  .edgeever-code-copy-button:active { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; }
-  .edgeever-editor-scroll:has(.edgeever-x6-document) { display: flex; flex-direction: column; overflow: hidden; }
-  .edgeever-x6-document, .edgeever-diagram-reader-host { display: flex; flex-direction: column; height: 100%; min-height: 100%; padding: 8px 12px 12px; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; }
-  .edgeever-diagram-reader-controls { flex: 0 0 auto; }
-  .edgeever-x6-diagram { flex: 1 1 auto; width: 100%; height: auto; min-height: 240px; overflow: hidden; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; border-radius: 14px; background: ${theme === "dark" ? DIAGRAM_CANVAS_DARK : DIAGRAM_CANVAS_LIGHT}; touch-action: none; }
-  .edgeever-x6-diagram .x6-graph-svg { overflow: hidden; }
-  .edgeever-x6-diagram .x6-node { cursor: pointer; }
-  .edgeever-mermaid-code-block > pre { display: none; margin: 8px 0 0; }
-  .edgeever-mermaid-code-block.is-source-visible > pre { display: block; }
-  .edgeever-mermaid-preview { display: flex; min-height: 72px; align-items: center; justify-content: flex-start; overflow-x: auto; padding: 8px 4px; background: transparent; }
-  .edgeever-mermaid-preview[hidden] { display: none; }
-  .edgeever-mermaid-svg { display: flex; width: max-content; min-width: 100%; flex: none; justify-content: center; }
-  .edgeever-mermaid-svg svg { display: block; max-width: none; max-height: none; flex: none; }
-  .edgeever-mermaid-message, .edgeever-mermaid-error { margin: 0; font-size: 14px; line-height: 1.5; text-align: center; }
-  .edgeever-mermaid-message { color: ${theme === "dark" ? "#948e84" : "#6b665e"}; }
-  .edgeever-mermaid-error { color: ${theme === "dark" ? "#fda4af" : "#be123c"}; }
-  .edgeever-editor-content img { display: block; max-width: 100%; height: auto; margin: 14px auto; border-radius: 10px; }
+  .stillnote-code-block, .stillnote-mermaid-code-block { position: relative; margin: 18px 0; overflow: visible; background: transparent; }
+  .stillnote-code-copy-button { position: absolute; top: 8px; right: 8px; z-index: 1; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 6px; padding: 5px 8px; background: ${theme === "dark" ? "rgba(34, 33, 30, 0.94)" : "rgba(253, 252, 249, 0.94)"}; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font: inherit; font-size: 12px; line-height: 1.35; }
+  .stillnote-code-copy-button:active { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; }
+  .stillnote-editor-scroll:has(.stillnote-x6-document) { display: flex; flex-direction: column; overflow: hidden; }
+  .stillnote-x6-document, .stillnote-diagram-reader-host { display: flex; flex-direction: column; height: 100%; min-height: 100%; padding: 8px 12px 12px; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; }
+  .stillnote-diagram-reader-controls { flex: 0 0 auto; }
+  .stillnote-x6-diagram { flex: 1 1 auto; width: 100%; height: auto; min-height: 240px; overflow: hidden; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; border-radius: 14px; background: ${theme === "dark" ? DIAGRAM_CANVAS_DARK : DIAGRAM_CANVAS_LIGHT}; touch-action: none; }
+  .stillnote-x6-diagram .x6-graph-svg { overflow: hidden; }
+  .stillnote-x6-diagram .x6-node { cursor: pointer; }
+  .stillnote-mermaid-code-block > pre { display: none; margin: 8px 0 0; }
+  .stillnote-mermaid-code-block.is-source-visible > pre { display: block; }
+  .stillnote-mermaid-preview { display: flex; min-height: 72px; align-items: center; justify-content: flex-start; overflow-x: auto; padding: 8px 4px; background: transparent; }
+  .stillnote-mermaid-preview[hidden] { display: none; }
+  .stillnote-mermaid-svg { display: flex; width: max-content; min-width: 100%; flex: none; justify-content: center; }
+  .stillnote-mermaid-svg svg { display: block; max-width: none; max-height: none; flex: none; }
+  .stillnote-mermaid-message, .stillnote-mermaid-error { margin: 0; font-size: 14px; line-height: 1.5; text-align: center; }
+  .stillnote-mermaid-message { color: ${theme === "dark" ? "#948e84" : "#6b665e"}; }
+  .stillnote-mermaid-error { color: ${theme === "dark" ? "#fda4af" : "#be123c"}; }
+  .stillnote-editor-content img { display: block; max-width: 100%; height: auto; margin: 14px auto; border-radius: 10px; }
   /* Shared by preview + edit (same LocalTiptapEditor styles).
      Prefer shrinking columns to the content box (≈4 equal cols on a phone) with
      text wrap; when n * col-width still exceeds the wrapper, scroll inside
      .tableWrapper only — never widen the page via 100vw / desktop col widths. */
-  .edgeever-editor-content .tableWrapper {
+  .stillnote-editor-content .tableWrapper {
     /* ~24% of wrapper → 4 cols fit; more cols overflow and scroll */
     --mobile-table-column-width: clamp(4.25rem, 24cqi, 10rem);
     container-type: inline-size;
@@ -3390,14 +3390,14 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     scrollbar-width: thin;
     scrollbar-color: rgba(148, 142, 132, 0.45) transparent;
   }
-  .edgeever-editor-content .tableWrapper::-webkit-scrollbar {
+  .stillnote-editor-content .tableWrapper::-webkit-scrollbar {
     height: 6px;
   }
-  .edgeever-editor-content .tableWrapper::-webkit-scrollbar-thumb {
+  .stillnote-editor-content .tableWrapper::-webkit-scrollbar-thumb {
     border-radius: 999px;
     background: rgba(148, 142, 132, 0.4);
   }
-  .edgeever-editor-content table {
+  .stillnote-editor-content table {
     width: 100%;
     max-width: none;
     min-width: 100%;
@@ -3408,33 +3408,33 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
   /* Let compact tables use the full content width. The fallback on
      .tableWrapper remains the minimum column budget for 5+ columns, so only
      wider tables scroll. TipTap always renders one <col> per logical column. */
-  .edgeever-editor-content table:has(> colgroup > col:first-child:last-child) {
+  .stillnote-editor-content table:has(> colgroup > col:first-child:last-child) {
     --mobile-table-column-width: 100cqi;
   }
-  .edgeever-editor-content table:has(> colgroup > col:first-child:nth-last-child(2)) {
+  .stillnote-editor-content table:has(> colgroup > col:first-child:nth-last-child(2)) {
     --mobile-table-column-width: 50cqi;
   }
-  .edgeever-editor-content table:has(> colgroup > col:first-child:nth-last-child(3)) {
+  .stillnote-editor-content table:has(> colgroup > col:first-child:nth-last-child(3)) {
     --mobile-table-column-width: calc(100cqi / 3);
   }
-  .edgeever-editor-content table:has(> colgroup > col:first-child:nth-last-child(4)) {
+  .stillnote-editor-content table:has(> colgroup > col:first-child:nth-last-child(4)) {
     --mobile-table-column-width: 25cqi;
   }
-  .edgeever-editor-content table:has(> colgroup > col:first-child:nth-last-child(n+5)) {
+  .stillnote-editor-content table:has(> colgroup > col:first-child:nth-last-child(n+5)) {
     width: max-content;
     --mobile-table-column-width: clamp(4.25rem, 24cqi, 10rem);
   }
-  .edgeever-editor-content table:not(:has(colgroup)) {
+  .stillnote-editor-content table:not(:has(colgroup)) {
     table-layout: auto;
     width: 100%;
     min-width: 100%;
   }
   /* Override TipTap/desktop col widths with the mobile equal-ish column budget. */
-  .edgeever-editor-content table col {
+  .stillnote-editor-content table col {
     width: var(--mobile-table-column-width) !important;
     min-width: var(--mobile-table-column-width) !important;
   }
-  .edgeever-editor-content th, .edgeever-editor-content td {
+  .stillnote-editor-content th, .stillnote-editor-content td {
     position: relative;
     width: var(--mobile-table-column-width, auto);
     min-width: var(--mobile-table-column-width, 3.5rem);
@@ -3451,39 +3451,39 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     line-height: 1.4;
     transition: background-color 120ms ease;
   }
-  .edgeever-editor-content th { background: ${theme === "dark" ? "#1d1c1a" : "#f9f7f2"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-size: 0.93rem; font-weight: 600; }
-  .edgeever-editor-content th:last-child, .edgeever-editor-content td:last-child { border-right: 0; }
-  .edgeever-editor-content tr:last-child td { border-bottom: 0; }
-  .edgeever-editor-content tbody tr:nth-child(even) td { background: ${theme === "dark" ? "rgba(255, 255, 255, 0.025)" : "#f9f7f2"}; }
-  .edgeever-editor-content tbody tr:hover td { background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
-  .edgeever-editor-content th p, .edgeever-editor-content td p { margin: 0; }
-  .edgeever-editor-content .selectedCell::after { position: absolute; inset: 0; content: ""; pointer-events: none; background: rgba(24, 121, 88, 0.14); }
-  .edgeever-image-upload-placeholder { position: relative; max-width: 100%; min-height: 112px; margin: 14px auto; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
-  .edgeever-image-upload-preview { display: block; width: 100%; max-height: 360px; margin: 0 !important; object-fit: contain; border-radius: 10px; }
-  .edgeever-image-upload-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 10px; background: rgba(21, 21, 19, 0.42); color: #fff; font-size: 14px; font-weight: 600; text-shadow: 0 1px 2px rgba(21, 21, 19, 0.45); }
-  .edgeever-image-node, .edgeever-image-upload-result { position: relative; display: block; max-width: 100%; margin: 14px auto; line-height: 0; }
-  .edgeever-image-node.is-loading, .edgeever-image-node.is-failed { min-height: 120px; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
-  .edgeever-image-loading { display: flex; min-height: 120px; align-items: center; justify-content: center; gap: 10px; padding: 16px; color: ${theme === "dark" ? "#948e84" : "#6b665e"}; font-size: 13px; font-weight: 600; line-height: 1.3; }
-  .edgeever-image-loading[hidden] { display: none; }
-  .edgeever-image-loading-label { text-align: center; }
-  .edgeever-image-node > img, .edgeever-image-upload-result > img { display: block; width: 100%; margin: 0; border-radius: 10px; }
-  .edgeever-image-node > img[hidden] { display: none; }
-  [data-edgeever-image-gallery] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 8px; margin: 14px 0; }
-  [data-edgeever-image-gallery][data-image-gallery-layout="3"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  [data-edgeever-image-gallery][data-image-gallery-layout="1"] { grid-template-columns: minmax(0, 1fr); }
-  [data-edgeever-image-gallery] > .edgeever-image-node, [data-edgeever-image-gallery] > img { width: 100% !important; min-width: 0; height: 100%; min-height: 112px; max-height: 220px; margin: 0 !important; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
-  [data-edgeever-image-gallery] > .edgeever-image-node > img, [data-edgeever-image-gallery] > img { width: 100%; height: 100%; min-height: 112px; max-height: 220px; object-fit: cover; }
+  .stillnote-editor-content th { background: ${theme === "dark" ? "#1d1c1a" : "#f9f7f2"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-size: 0.93rem; font-weight: 600; }
+  .stillnote-editor-content th:last-child, .stillnote-editor-content td:last-child { border-right: 0; }
+  .stillnote-editor-content tr:last-child td { border-bottom: 0; }
+  .stillnote-editor-content tbody tr:nth-child(even) td { background: ${theme === "dark" ? "rgba(255, 255, 255, 0.025)" : "#f9f7f2"}; }
+  .stillnote-editor-content tbody tr:hover td { background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
+  .stillnote-editor-content th p, .stillnote-editor-content td p { margin: 0; }
+  .stillnote-editor-content .selectedCell::after { position: absolute; inset: 0; content: ""; pointer-events: none; background: rgba(24, 121, 88, 0.14); }
+  .stillnote-image-upload-placeholder { position: relative; max-width: 100%; min-height: 112px; margin: 14px auto; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
+  .stillnote-image-upload-preview { display: block; width: 100%; max-height: 360px; margin: 0 !important; object-fit: contain; border-radius: 10px; }
+  .stillnote-image-upload-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 10px; background: rgba(21, 21, 19, 0.42); color: #fff; font-size: 14px; font-weight: 600; text-shadow: 0 1px 2px rgba(21, 21, 19, 0.45); }
+  .stillnote-image-node, .stillnote-image-upload-result { position: relative; display: block; max-width: 100%; margin: 14px auto; line-height: 0; }
+  .stillnote-image-node.is-loading, .stillnote-image-node.is-failed { min-height: 120px; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
+  .stillnote-image-loading { display: flex; min-height: 120px; align-items: center; justify-content: center; gap: 10px; padding: 16px; color: ${theme === "dark" ? "#948e84" : "#6b665e"}; font-size: 13px; font-weight: 600; line-height: 1.3; }
+  .stillnote-image-loading[hidden] { display: none; }
+  .stillnote-image-loading-label { text-align: center; }
+  .stillnote-image-node > img, .stillnote-image-upload-result > img { display: block; width: 100%; margin: 0; border-radius: 10px; }
+  .stillnote-image-node > img[hidden] { display: none; }
+  [data-stillnote-image-gallery] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 8px; margin: 14px 0; }
+  [data-stillnote-image-gallery][data-image-gallery-layout="3"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  [data-stillnote-image-gallery][data-image-gallery-layout="1"] { grid-template-columns: minmax(0, 1fr); }
+  [data-stillnote-image-gallery] > .stillnote-image-node, [data-stillnote-image-gallery] > img { width: 100% !important; min-width: 0; height: 100%; min-height: 112px; max-height: 220px; margin: 0 !important; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
+  [data-stillnote-image-gallery] > .stillnote-image-node > img, [data-stillnote-image-gallery] > img { width: 100%; height: 100%; min-height: 112px; max-height: 220px; object-fit: cover; }
   ${NATIVE_IMAGE_GALLERY_CSS}
-  .edgeever-image-node.is-selected > img, .edgeever-image-upload-result.is-selected > img { outline: 2px solid ${theme === "dark" ? "#43b88c" : "#187958"}; outline-offset: 3px; }
-  .edgeever-image-actions { position: absolute; right: 8px; bottom: 8px; z-index: 3; display: inline-flex; width: 42px; height: 42px; appearance: none; align-items: center; justify-content: center; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 999px; background: ${theme === "dark" ? "rgba(34, 33, 30, 0.92)" : "rgba(253, 252, 249, 0.94)"}; color: ${theme === "dark" ? "#eae6df" : "#2c2925"}; font-size: 24px; font-weight: 700; line-height: 1; box-shadow: 0 3px 12px rgba(21, 21, 19, 0.2); }
-  .edgeever-image-actions[hidden] { display: none; }
-  .edgeever-image-size-controls { position: absolute; top: 8px; left: 50%; z-index: 2; display: flex; width: max-content; max-width: calc(100vw - 40px); align-items: center; gap: 3px; transform: translateX(-50%); border: 1px solid ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; border-radius: 9px; padding: 4px; background: ${theme === "dark" ? "rgba(34, 33, 30, 0.96)" : "rgba(253, 252, 249, 0.96)"}; box-shadow: 0 8px 24px rgba(21, 21, 19, 0.18); line-height: 1.15; }
-  .edgeever-image-size-controls[hidden] { display: none; }
-  .edgeever-image-size-button { display: inline-flex; min-width: 52px; min-height: 38px; appearance: none; align-items: center; justify-content: center; border: 0; border-radius: 7px; padding: 4px 7px; background: transparent; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font: inherit; font-size: 12px; font-weight: 700; }
-  .edgeever-image-size-button.is-active { background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; }
-  .edgeever-image-upload-spinner { width: 18px; height: 18px; border: 2px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-top-color: ${theme === "dark" ? "#43b88c" : "#187958"}; border-radius: 999px; animation: edgeever-image-upload-spin 0.8s linear infinite; }
-  @keyframes edgeever-image-upload-spin { to { transform: rotate(360deg); } }
-  .edgeever-editor-content hr { margin: 24px 0; border: 0; border-top: 1px solid ${theme === "dark" ? "#2e2c28" : "#d4cdbf"}; }
+  .stillnote-image-node.is-selected > img, .stillnote-image-upload-result.is-selected > img { outline: 2px solid ${theme === "dark" ? "#43b88c" : "#187958"}; outline-offset: 3px; }
+  .stillnote-image-actions { position: absolute; right: 8px; bottom: 8px; z-index: 3; display: inline-flex; width: 42px; height: 42px; appearance: none; align-items: center; justify-content: center; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 999px; background: ${theme === "dark" ? "rgba(34, 33, 30, 0.92)" : "rgba(253, 252, 249, 0.94)"}; color: ${theme === "dark" ? "#eae6df" : "#2c2925"}; font-size: 24px; font-weight: 700; line-height: 1; box-shadow: 0 3px 12px rgba(21, 21, 19, 0.2); }
+  .stillnote-image-actions[hidden] { display: none; }
+  .stillnote-image-size-controls { position: absolute; top: 8px; left: 50%; z-index: 2; display: flex; width: max-content; max-width: calc(100vw - 40px); align-items: center; gap: 3px; transform: translateX(-50%); border: 1px solid ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; border-radius: 9px; padding: 4px; background: ${theme === "dark" ? "rgba(34, 33, 30, 0.96)" : "rgba(253, 252, 249, 0.96)"}; box-shadow: 0 8px 24px rgba(21, 21, 19, 0.18); line-height: 1.15; }
+  .stillnote-image-size-controls[hidden] { display: none; }
+  .stillnote-image-size-button { display: inline-flex; min-width: 52px; min-height: 38px; appearance: none; align-items: center; justify-content: center; border: 0; border-radius: 7px; padding: 4px 7px; background: transparent; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font: inherit; font-size: 12px; font-weight: 700; }
+  .stillnote-image-size-button.is-active { background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; }
+  .stillnote-image-upload-spinner { width: 18px; height: 18px; border: 2px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-top-color: ${theme === "dark" ? "#43b88c" : "#187958"}; border-radius: 999px; animation: stillnote-image-upload-spin 0.8s linear infinite; }
+  @keyframes stillnote-image-upload-spin { to { transform: rotate(360deg); } }
+  .stillnote-editor-content hr { margin: 24px 0; border: 0; border-top: 1px solid ${theme === "dark" ? "#2e2c28" : "#d4cdbf"}; }
   ${PHONE_IMAGE_FILL_CSS}
 `;
 };

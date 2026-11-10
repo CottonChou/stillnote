@@ -82,7 +82,7 @@ describe("web clipper store command", () => {
   });
 
   test("preserves Chrome publish failure when the subsequent status check fails", async () => {
-    const directory = mkdtempSync(join(tmpdir(), "edgeever-submit-diagnostics-"));
+    const directory = mkdtempSync(join(tmpdir(), "stillnote-submit-diagnostics-"));
     const zip = join(directory, "addon.zip");
     writeFileSync(zip, "zip");
     let statusCalls = 0;
@@ -116,7 +116,7 @@ describe("web clipper store command", () => {
   });
 
   test("writes preparation failure details to Actions Summary and exits nonzero", () => {
-    const directory = mkdtempSync(join(tmpdir(), "edgeever-report-test-"));
+    const directory = mkdtempSync(join(tmpdir(), "stillnote-report-test-"));
     const summary = join(directory, "summary.md");
     try {
       const result = spawnSync(process.execPath, [new URL("./publish-web-clipper.mjs", import.meta.url).pathname, "--invalid-option"], {
@@ -322,12 +322,12 @@ describe("web clipper store command", () => {
   });
 
   test("refuses to submit from a fork", () => {
-    expect(() => assertOfficialRepository("someone/edgeever")).toThrow(OFFICIAL_REPOSITORY);
+    expect(() => assertOfficialRepository("someone/stillnote")).toThrow(OFFICIAL_REPOSITORY);
     expect(() => assertOfficialRepository("")).not.toThrow();
   });
 
   test("uses a one-line Firefox note when none was provided", () => {
-    expect(resolveReleaseNotes({ version: "0.1.9" })).toBe("EdgeEver Web Clipper 0.1.9.");
+    expect(resolveReleaseNotes({ version: "0.1.9" })).toBe("StillNote Web Clipper 0.1.9.");
   });
 
   test("includes the review login only in the private approval note", () => {
@@ -347,7 +347,7 @@ describe("web clipper store command", () => {
     expect(shouldCopyExtensionSource("src/background.ts")).toBe(true);
     expect(shouldCopyExtensionSource("dist/manifest.json")).toBe(false);
     expect(shouldCopyExtensionSource("node_modules/web-ext/package.json")).toBe(false);
-    expect(shouldCopyExtensionSource("store-assets/edgeever-web-clipper-v0.1.8.zip")).toBe(false);
+    expect(shouldCopyExtensionSource("store-assets/stillnote-web-clipper-v0.1.8.zip")).toBe(false);
     expect(shouldCopyExtensionSource("store-assets/store-icon-128.png")).toBe(true);
 
     const manifests = workspacePackageManifests(new URL("..", import.meta.url).pathname);
@@ -357,7 +357,7 @@ describe("web clipper store command", () => {
   });
 
   test("review source contains shared UI imports without copying the whole Web app", () => {
-    const staging = mkdtempSync(join(tmpdir(), "edgeever-source-test-"));
+    const staging = mkdtempSync(join(tmpdir(), "stillnote-source-test-"));
     try {
       copySourceArchive(new URL("..", import.meta.url).pathname, staging);
       for (const file of SHARED_EXTENSION_SOURCE_FILES) {
@@ -371,7 +371,7 @@ describe("web clipper store command", () => {
   });
 
   test("source rebuild audit rejects missing, extra and changed artifacts", () => {
-    const staging = mkdtempSync(join(tmpdir(), "edgeever-rebuild-test-"));
+    const staging = mkdtempSync(join(tmpdir(), "stillnote-rebuild-test-"));
     const expected = join(staging, "expected"), rebuilt = join(staging, "rebuilt");
     mkdirSync(expected); mkdirSync(rebuilt);
     try {
@@ -390,13 +390,13 @@ describe("web clipper store command", () => {
     const build = readFileSync(new URL("../.github/workflows/extension-build.yml", import.meta.url), "utf8");
     expect(build.match(/"apps\/web\/src\/components\/ui\/\*\*"/g)).toHaveLength(2);
     expect(build.match(/"apps\/web\/src\/lib\/utils.ts"/g)).toHaveLength(2);
-    expect(build).toContain("if: github.repository == 'tianma-if/edgeever'");
+    expect(build).toContain("if: github.repository == 'CottonChou/stillnote'");
     expect(build).toContain("run: bun scripts/verify-extension-source.mjs");
     expect(build).toContain("bun-version-file: package.json");
   });
 
   test("independent builds do not inherit store credentials or external module paths", () => {
-    const environment = sourceRebuildEnvironment({ PATH: "/usr/bin", HOME: "/tmp/example", CHROME_WEB_STORE_CLIENT_SECRET: "secret", AMO_JWT_SECRET: "secret", EDGE_EVER_REVIEW_API_TOKEN: "secret", GITHUB_TOKEN: "secret", GH_TOKEN: "secret", NODE_PATH: "/original/node_modules", NODE_OPTIONS: "--require external.js" });
+    const environment = sourceRebuildEnvironment({ PATH: "/usr/bin", HOME: "/tmp/example", CHROME_WEB_STORE_CLIENT_SECRET: "secret", AMO_JWT_SECRET: "secret", STILLNOTE_REVIEW_API_TOKEN: "secret", GITHUB_TOKEN: "secret", GH_TOKEN: "secret", NODE_PATH: "/original/node_modules", NODE_OPTIONS: "--require external.js" });
     expect(environment).toEqual({ PATH: "/usr/bin", HOME: "/tmp/example", NODE_PATH: "", NODE_OPTIONS: "" });
   });
 
@@ -448,7 +448,7 @@ describe("web clipper store command", () => {
     const chrome = createChromeClient({ fetchImpl, accessToken: "token" });
     await chrome.publish();
 
-    const directory = mkdtempSync(join(tmpdir(), "edgeever-clipper-api-"));
+    const directory = mkdtempSync(join(tmpdir(), "stillnote-clipper-api-"));
     const packagePath = join(directory, "addon.zip");
     writeFileSync(packagePath, "zip");
     const firefox = createFirefoxClient({
@@ -487,7 +487,7 @@ describe("web clipper store command", () => {
   });
 
   test("keeps store submission on the official repository workflow", () => {
-    expect(workflow).toContain("github.repository == 'tianma-if/edgeever'");
+    expect(workflow).toContain("github.repository == 'CottonChou/stillnote'");
     expect(workflow).toContain("workflow_dispatch:");
     expect(workflow).toContain("- published");
     expect(workflow).toContain("!github.event.release.prerelease");
@@ -497,7 +497,7 @@ describe("web clipper store command", () => {
     expect(workflow).toContain("CHROME_WEB_STORE_SERVICE_ACCOUNT_JSON");
     expect(workflow).toContain("AMO_JWT_ISSUER");
     expect(workflow).toContain("AMO_JWT_SECRET");
-    expect(workflow).toContain("edgeever-web-clipper-store");
+    expect(workflow).toContain("stillnote-web-clipper-store");
     expect(workflow).not.toContain("bun run release");
     expect(workflow).not.toContain("publish:stores");
     expect(workflow).not.toContain("echo ${{ secrets");

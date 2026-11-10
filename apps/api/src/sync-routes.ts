@@ -1,4 +1,4 @@
-import type { MemoDetail } from "@edgeever/shared";
+import type { MemoDetail } from "@stillnote/shared";
 import type { Hono } from "hono";
 import type { AppEnv } from "./api-context";
 import { inboxNotebookIdentitySql, mapNotebook, type NotebookRow } from "./notebook-service";

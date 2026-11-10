@@ -7,14 +7,14 @@ const openMemo = async (page: Page, memoId: string, title: string) => {
 };
 
 const deleteLocalDatabase = (page: Page) => page.evaluate(() => new Promise<void>((resolve, reject) => {
-  const request = indexedDB.deleteDatabase("edgeever-local");
+  const request = indexedDB.deleteDatabase("stillnote-local");
   request.onerror = () => reject(request.error);
-  request.onblocked = () => reject(new Error("Deleting edgeever-local was blocked"));
+  request.onblocked = () => reject(new Error("Deleting stillnote-local was blocked"));
   request.onsuccess = () => resolve();
 }));
 
 const readEmergencyDraft = (page: Page, memoId: string) => page.evaluate(
-  (id) => window.localStorage.getItem(`edgeever.emergency-draft.${id}`),
+  (id) => window.localStorage.getItem(`stillnote.emergency-draft.${id}`),
   memoId,
 );
 

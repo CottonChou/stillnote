@@ -1,7 +1,7 @@
 ---
 import { SEO } from "astro-seo";
 import { getImage } from "astro:assets";
-import heroProductImage from "@/assets/edgeever-hero-product.png";
+import heroProductImage from "@/assets/stillnote-hero-product.png";
 import Footer from "@/components/footer.astro";
 import Navbar from "@/components/navbar/navbar.astro";
 import {
@@ -79,10 +79,10 @@ const resolvedImageWithDomain = new URL(
 ).toString();
 
 const makeTitle = title
-  ? title + " | " + "EdgeEver"
+  ? title + " | " + "StillNote"
   : copy.defaultTitle;
 
-const faviconVersion = "edgeever-pine-bookmark-20261110";
+const faviconVersion = "stillnote-pine-bookmark-20261110";
 const localeRedirectScript = `(() => {
   const storageKey = ${JSON.stringify(siteLocaleStorageKey)};
   const localeAttribute = ${JSON.stringify(siteLocaleDataAttribute)};
@@ -216,7 +216,7 @@ const localeRedirectScript = `(() => {
         optional: {
           description,
           locale: copy.ogLocale,
-          siteName: "EdgeEver",
+          siteName: "StillNote",
         },
         image: {
           alt: imageAlt,

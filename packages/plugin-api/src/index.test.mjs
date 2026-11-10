@@ -11,7 +11,7 @@ describe("extension manifests", () => {
   test("normalizes a plugin manifest", () => {
     expect(parseExtensionManifest({
       type: "plugin",
-      id: "org.edgeever.example",
+      id: "org.stillnote.example",
       name: "Example",
       version: "1.0.0",
       apiVersion: "2",
@@ -24,7 +24,7 @@ describe("extension manifests", () => {
   test("normalizes localized plugin metadata", () => {
     const manifest = parseExtensionManifest({
       type: "plugin",
-      id: "org.edgeever.localized",
+      id: "org.stillnote.localized",
       name: "Localized",
       version: "1.0.0",
       apiVersion: "2",
@@ -47,7 +47,7 @@ describe("extension manifests", () => {
   test("rejects invalid localized plugin metadata", () => {
     const base = {
       type: "plugin",
-      id: "org.edgeever.localized",
+      id: "org.stillnote.localized",
       name: "Localized",
       version: "1.0.0",
       apiVersion: "2",
@@ -62,7 +62,7 @@ describe("extension manifests", () => {
   test("rejects unsupported capability metadata", () => {
     expect(() => parseExtensionManifest({
       type: "plugin",
-      id: "org.edgeever.bad",
+      id: "org.stillnote.bad",
       name: "Bad",
       version: "1.0.0",
       apiVersion: "2",
@@ -75,7 +75,7 @@ describe("extension manifests", () => {
   test("requires API v2 plugins to use host-rendered settings", () => {
     const base = {
       type: "plugin",
-      id: "org.edgeever.policy",
+      id: "org.stillnote.policy",
       name: "Policy",
       version: "1.0.0",
       entry: "./main.js",
@@ -89,7 +89,7 @@ describe("extension manifests", () => {
   test("rejects unknown theme tokens", () => {
     expect(() => parseExtensionManifest({
       type: "theme",
-      id: "org.edgeever.theme",
+      id: "org.stillnote.theme",
       name: "Theme",
       version: "1.0.0",
       themeApiVersion: "1",
@@ -101,7 +101,7 @@ describe("extension manifests", () => {
   test("rejects CSS injection through theme values", () => {
     expect(() => parseExtensionManifest({
       type: "theme",
-      id: "org.edgeever.remote-theme",
+      id: "org.stillnote.remote-theme",
       name: "Remote Theme",
       version: "1.0.0",
       themeApiVersion: "1",
@@ -113,7 +113,7 @@ describe("extension manifests", () => {
   test("allows direct network plugins without a static host list", () => {
     expect(parseExtensionManifest({
       type: "plugin",
-      id: "org.edgeever.network",
+      id: "org.stillnote.network",
       name: "Network",
       version: "1.0.0",
       apiVersion: "2",
@@ -126,7 +126,7 @@ describe("extension manifests", () => {
   test("normalizes an Obsidian-style trusted plugin without capability declarations", () => {
     expect(parseExtensionManifest({
       type: "plugin",
-      id: "org.edgeever.trusted",
+      id: "org.stillnote.trusted",
       name: "Trusted",
       version: "1.0.0",
       apiVersion: "2",
@@ -138,7 +138,7 @@ describe("extension manifests", () => {
   test("allows public read-only network plugins without a static host list", () => {
     expect(parseExtensionManifest({
       type: "plugin",
-      id: "org.edgeever.public-network",
+      id: "org.stillnote.public-network",
       name: "Public network",
       version: "1.0.0",
       apiVersion: "2",
@@ -151,7 +151,7 @@ describe("extension manifests", () => {
   test("normalizes a host-rendered plugin settings schema", () => {
     const manifest = parseExtensionManifest({
       type: "plugin",
-      id: "org.edgeever.settings",
+      id: "org.stillnote.settings",
       name: "Settings",
       version: "1.0.0",
       apiVersion: "2",
@@ -217,7 +217,7 @@ describe("extension manifests", () => {
   test("rejects unsafe or ambiguous plugin settings", () => {
     const base = {
       type: "plugin",
-      id: "org.edgeever.settings-invalid",
+      id: "org.stillnote.settings-invalid",
       name: "Settings",
       version: "1.0.0",
       apiVersion: "2",
@@ -250,20 +250,20 @@ describe("marketplace registry", () => {
       registryVersion: "1",
       updatedAt: "2026-08-16T00:00:00.000Z",
       entries: [{
-        id: "org.edgeever.example",
+        id: "org.stillnote.example",
         name: "Example",
         description: "Example plugin",
         locales: { "zh-CN": { description: "示例插件" } },
-        author: "EdgeEver",
-        publisher: "edgeever",
+        author: "StillNote",
+        publisher: "stillnote",
         category: "Productivity",
-        repositoryUrl: "https://github.com/edgeever/example",
-        distribution: { type: "github", repositoryUrl: "https://github.com/edgeever/example" },
+        repositoryUrl: "https://github.com/stillnote/example",
+        distribution: { type: "github", repositoryUrl: "https://github.com/stillnote/example" },
         verification: { version: "1.0.0", checksums: { manifestJson: "a".repeat(64), mainJs: "b".repeat(64) } },
       }],
     }).entries[0]).toMatchObject({
-      id: "org.edgeever.example",
-      publisher: "edgeever",
+      id: "org.stillnote.example",
+      publisher: "stillnote",
       locales: { "zh-CN": { description: "示例插件" } },
       verification: { version: "1.0.0" },
     });
@@ -274,7 +274,7 @@ describe("marketplace registry", () => {
       registryVersion: "1",
       updatedAt: "2026-08-16T00:00:00.000Z",
       entries: [{
-        id: "org.edgeever.example",
+        id: "org.stillnote.example",
         name: "Example",
         description: "Example plugin",
         author: "Example",
@@ -289,13 +289,13 @@ describe("marketplace registry", () => {
 
   test("rejects duplicate plugin ids", () => {
     const entry = {
-      id: "org.edgeever.example",
+      id: "org.stillnote.example",
       name: "Example",
       description: "Example plugin",
-      author: "EdgeEver",
+      author: "StillNote",
       category: "Productivity",
-      repositoryUrl: "https://github.com/edgeever/example",
-      distribution: { type: "github", repositoryUrl: "https://github.com/edgeever/example" },
+      repositoryUrl: "https://github.com/stillnote/example",
+      distribution: { type: "github", repositoryUrl: "https://github.com/stillnote/example" },
       verification: { version: "1.0.0", checksums: { manifestJson: "a".repeat(64) } },
     };
     expect(() => parseMarketplaceRegistry({ registryVersion: "1", updatedAt: "2026-08-16T00:00:00Z", entries: [entry, entry] })).toThrow("Duplicate");
@@ -340,14 +340,14 @@ describe("marketplace registry", () => {
 
 describe("community marketplace merge", () => {
   const bundledEntry = {
-    id: "org.edgeever.tasks",
+    id: "org.stillnote.tasks",
     name: "Tasks",
     description: "Official tasks",
-    author: "EdgeEver",
-    publisher: "edgeever",
+    author: "StillNote",
+    publisher: "stillnote",
     category: "Productivity",
-    repositoryUrl: "https://github.com/tianma-if/edgeever-tasks",
-    distribution: { type: "github", repositoryUrl: "https://github.com/tianma-if/edgeever-tasks" },
+    repositoryUrl: "https://github.com/CottonChou/stillnote-tasks",
+    distribution: { type: "github", repositoryUrl: "https://github.com/CottonChou/stillnote-tasks" },
     verification: { version: "0.6.4", checksums: { manifestJson: "a".repeat(64), mainJs: "b".repeat(64) } },
   };
   const communityEntry = {
@@ -374,9 +374,9 @@ describe("community marketplace merge", () => {
       updatedAt: "2026-10-05T00:00:00.000Z",
       entries: [
         communityEntry,
-        { ...communityEntry, id: "org.edgeever.tasks", apiVersion: "2" },
-        { ...communityEntry, id: "com.example.official", publisher: "edgeever", apiVersion: "2" },
-        { ...communityEntry, id: "org.edgeever.plugins.extra", apiVersion: "2" },
+        { ...communityEntry, id: "org.stillnote.tasks", apiVersion: "2" },
+        { ...communityEntry, id: "com.example.official", publisher: "stillnote", apiVersion: "2" },
+        { ...communityEntry, id: "org.stillnote.plugins.extra", apiVersion: "2" },
         { ...communityEntry, id: "com.example.future", apiVersion: "9" },
         {
           ...communityEntry,
@@ -388,8 +388,8 @@ describe("community marketplace merge", () => {
 
     const merged = mergeCommunityMarketplace(bundled, community, new Set());
 
-    expect(merged.entries.map((entry) => entry.id)).toEqual(["org.edgeever.tasks", "com.example.readwise"]);
-    expect(merged.entries[0]).toMatchObject({ publisher: "edgeever", repositoryUrl: bundledEntry.repositoryUrl });
+    expect(merged.entries.map((entry) => entry.id)).toEqual(["org.stillnote.tasks", "com.example.readwise"]);
+    expect(merged.entries[0]).toMatchObject({ publisher: "stillnote", repositoryUrl: bundledEntry.repositoryUrl });
     expect(merged.entries[1]).toMatchObject({ listing: "community", licenseSpdx: "MIT" });
     expect(merged.entries[1]).not.toHaveProperty("publisher");
   });
@@ -405,7 +405,7 @@ describe("community marketplace merge", () => {
     const merged = mergeCommunityMarketplace(bundled, community, new Set(remembered.map((item) => item.id)));
     const later = rememberMarketplaceRevocations(remembered, []);
 
-    expect(merged.entries.map((entry) => entry.id)).toEqual(["org.edgeever.tasks"]);
+    expect(merged.entries.map((entry) => entry.id)).toEqual(["org.stillnote.tasks"]);
     expect(later.map((item) => item.id)).toEqual(["com.example.readwise"]);
   });
 });

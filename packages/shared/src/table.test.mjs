@@ -32,11 +32,11 @@ describe("structured table documents", () => {
     expect(stripTableDocumentMarker(markdown)).toBe(tableFallbackMarkdown(withView));
     expect(parseTableDocument(markdown)).toEqual(withView);
     expect(markdownToDoc(tableFallbackMarkdown(withView)).content?.some((node) => node.type === "table")).toBe(true);
-    expect(JSON.stringify(markdownToDoc(stripTableDocumentMarker(markdown)))).not.toContain("edgeever-table-v1");
+    expect(JSON.stringify(markdownToDoc(stripTableDocumentMarker(markdown)))).not.toContain("stillnote-table-v1");
   });
 
   test("rejects a broken envelope without dropping the readable table", () => {
-    const markdown = `${tableFallbackMarkdown(createDefaultTableDocument())}\n\n<!-- edgeever-table-v1:not-json -->`;
+    const markdown = `${tableFallbackMarkdown(createDefaultTableDocument())}\n\n<!-- stillnote-table-v1:not-json -->`;
     expect(parseTableDocument(markdown)).toBeNull();
     expect(hasTableDocumentMarker(markdown)).toBe(true);
     expect(stripTableDocumentMarker(markdown)).toContain("| 名称 |");

@@ -2,7 +2,7 @@
 
 [简体中文](desktop-scheduled-backup-design.zh-CN.md)
 
-Related: [Issue #650](https://github.com/tianma-if/edgeever/issues/650) and [original request #61](https://github.com/tianma-if/edgeever/issues/61). Updated: 2026-10-27. Status: implemented; see the [implementation audit](changes/2026-10-23-desktop-scheduled-backup.md#completion-audit) for evidence and outstanding acceptance.
+Related: [Issue #650](https://github.com/CottonChou/stillnote/issues/650) and [original request #61](https://github.com/CottonChou/stillnote/issues/61). Updated: 2026-10-27. Status: implemented; see the [implementation audit](changes/2026-10-23-desktop-scheduled-backup.md#completion-audit) for evidence and outstanding acceptance.
 
 The desktop app periodically saves the current account's knowledge base as an independent archive, with optional password encryption. Users can choose a folder managed by their existing cloud-drive client to transfer the archive off-site. If the original instance becomes unavailable, they can connect the desktop app to a new instance and restore it.
 
@@ -16,7 +16,7 @@ This delivery excludes:
 
 - Changes not yet synchronized to the server, pending offline uploads, and Trash.
 - User accounts, sign-in credentials, API keys, deployment settings, object-storage configuration, and publication settings for public shares and forms.
-- Files referenced only by external URLs and not registered as EdgeEver resources. Their links remain in the content, but those files still depend on the external service.
+- Files referenced only by external URLs and not registered as StillNote resources. Their links remain in the content, but those files still depend on the external service.
 
 The coverage description in Settings should say “Backs up synchronized notes and attachments.” A backup does not push pending local changes or substitute local caches when the network is unavailable. A network failure preserves the last successful result until a retry can run.
 
@@ -30,7 +30,7 @@ Desktop Settings → Data and backup uses one “Backup and restore” card inst
 | --- | --- |
 | Automatic backups | Initially off; enabling a valid configuration schedules the first run |
 | Frequency | Weekly or monthly; weekly by default. Existing daily and biweekly settings remain valid and are displayed as a disabled option until changed |
-| Destination | `EdgeEver Backups` under the OS Documents directory; change through the native directory picker |
+| Destination | `StillNote Backups` under the OS Documents directory; change through the native directory picker |
 | Keep recent | 1, 3, or 5 archives; 1 by default. Existing 10- and 20-archive settings remain valid and are displayed as a disabled option until changed |
 | Backup encryption | Optional and initially off; enabling it requires entering and confirming a separate backup password |
 
@@ -101,7 +101,7 @@ This choice adds revision-update overhead to data writes. A continuously changin
 
 ## 5. Preserve the logical format and support ZIP64
 
-Ordinary archives retain the existing `edgeever-zip` `formatVersion: 2` layout:
+Ordinary archives retain the existing `stillnote-zip` `formatVersion: 2` layout:
 
 - `manifest.json` records the format, app version, export time, and entity counts, retaining `includesTrash: false`.
 - `notebooks.json` and `prompts.json` hold the hierarchy and prompts.
@@ -122,7 +122,7 @@ New desktop backups, large-archive parsing, and attachment restore process chunk
 
 Use Node's native cryptography for `AES-256-GCM` with `PBKDF2-HMAC-SHA256`, deriving a 32-byte key with 600,000 iterations. PBKDF2 reuses platform implementations and supports future cross-platform interoperability. The work factor follows OWASP's PBKDF2 guidance; measure it on target devices during implementation without silently reducing it for speed. [Parameter reference](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2)
 
-Generate an independent random 16-byte salt and 12-byte IV for each file and use a 16-byte authentication tag. Encode the password as UTF-8 without normalization or trimming. Files use the `.edgeever.enc` extension and the following order, with multibyte integers in big-endian encoding:
+Generate an independent random 16-byte salt and 12-byte IV for each file and use a 16-byte authentication tag. Encode the password as UTF-8 without normalization or trimming. Files use the `.stillnote.enc` extension and the following order, with multibyte integers in big-endian encoding:
 
 | Field | Size and value |
 | --- | --- |
@@ -142,7 +142,7 @@ The ZIP input to one whole-file GCM operation cannot exceed `2^36 - 32` bytes, o
 
 ### 6.2 Unattended credentials
 
-Never send the backup password to the EdgeEver server or cloud drive. To run unattended, protect it locally through Electron `safeStorage` and OS credential mechanisms. Bind the saved credential to its instance and account, outside ordinary configuration, `localStorage`, logs, and backup directories.
+Never send the backup password to the StillNote server or cloud drive. To run unattended, protect it locally through Electron `safeStorage` and OS credential mechanisms. Bind the saved credential to its instance and account, outside ordinary configuration, `localStorage`, logs, and backup directories.
 
 On Linux, inspect the actual secure-storage backend; `basic_text` cannot store automatic-backup passwords. If secure storage is unavailable or locked, pause encrypted automatic tasks. Users may unlock it or enter a password for one run without saving it. Never fall back to plaintext output or plaintext password persistence. [Electron secure-storage documentation](https://www.electronjs.org/docs/latest/api/safe-storage)
 
@@ -150,7 +150,7 @@ Changing the password affects future archives only; do not re-encrypt old files 
 
 ## 7. File publication and retention
 
-Users select a destination root, and the app creates a `<backupSetId>` subdirectory for the current local backup set. Settings shows the effective destination, and “Open folder” opens it. Automatic filenames use UTC time and a random backup ID, such as `edgeever-backup-20261023T020000Z-<id>.zip`, with `.edgeever.enc` for encrypted files. Manual names use an automatically generated local timestamp without a random ID; append the saved format’s extension. Name conflicts fail without overwriting existing files.
+Users select a destination root, and the app creates a `<backupSetId>` subdirectory for the current local backup set. Settings shows the effective destination, and “Open folder” opens it. Automatic filenames use UTC time and a random backup ID, such as `stillnote-backup-20261023T020000Z-<id>.zip`, with `.stillnote.enc` for encrypted files. Manual names use an automatically generated local timestamp without a random ID; append the saved format’s extension. Name conflicts fail without overwriting existing files.
 
 A task performs these steps in order:
 
@@ -170,7 +170,7 @@ Report only “Local backup complete.” Upload completion, conflict copies, and
 
 ## 8. Decryption and restore
 
-“Restore from file” starts in the current backup-set directory and allows other locations; row-level Restore selects that archive directly. Both use one unlock/check/confirmation flow, identifying ordinary ZIPs and `.edgeever.enc` files by header rather than extension alone.
+“Restore from file” starts in the current backup-set directory and allows other locations; row-level Restore selects that archive directly. Both use one unlock/check/confirmation flow, identifying ordinary ZIPs and `.stillnote.enc` files by header rather than extension alone.
 
 1. Identify the container version and request a password for encrypted files. Cancellation causes no restore writes.
 2. Decrypt as a stream to an app-private temporary directory. Only after final GCM authentication may parsing and restore begin. Use `0700` directories and `0600` files on Unix, and the current user's private application-data directory with appropriate ACLs on Windows. Plaintext staging stays outside synchronized folders.
@@ -231,4 +231,4 @@ Record platform, cross-version, and large-archive evidence separately. A small-f
 - [Backup routes](../apps/api/src/backup-routes.ts), [restore service](../apps/api/src/backup-service.ts), and [sync-change migration](../migrations/0013_mobile_sync_changes.sql): add complete revision coverage without redefining the synchronization cursor.
 - [Import/export card](../apps/web/src/components/settings/DataExportCard.tsx), [renderer hibernation](../apps/desktop/src/main/renderer-hibernate.mjs), and [account isolation](../apps/desktop/src/main/account-scope.mjs): retain existing entry points while keeping background work independent of the renderer.
 - [Cross-runtime storage contracts](../apps/api/src/storage-contract.ts) and [self-hosting architecture](self-hosting-architecture.md): do not implement consistency logic only in the Cloudflare entry point.
-- [Original backup and disaster-recovery proposal](https://github.com/tianma-if/edgeever/blob/main/docs/backup-and-disaster-recovery-plan.zh-CN.md): retain the local-directory approach while specifying Issue #650's delivery boundaries and recovery requirements.
+- [Original backup and disaster-recovery proposal](https://github.com/CottonChou/stillnote/blob/main/docs/backup-and-disaster-recovery-plan.zh-CN.md): retain the local-directory approach while specifying Issue #650's delivery boundaries and recovery requirements.

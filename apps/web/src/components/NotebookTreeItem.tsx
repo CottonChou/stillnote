@@ -14,7 +14,7 @@ import {
 } from "@/lib/app-helpers";
 import { NotebookAppearanceContent, notebookRowStyle } from "./NotebookAppearanceContent";
 import { cn } from "@/lib/utils";
-import { formatNotebookMemoCount, type Notebook } from "@edgeever/shared";
+import { formatNotebookMemoCount, type Notebook } from "@stillnote/shared";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -192,7 +192,7 @@ export const NotebookTreeItem = ({
               node.rowInverted
                 ? cn("notebook-inverted-row text-white", selected && "notebook-inverted-row-selected")
                 : selected
-                ? "edgeever-workspace-selection font-medium text-slate-950"
+                ? "stillnote-workspace-selection font-medium text-slate-950"
                 : "text-slate-700 hover:bg-workspace-hover",
               dropPosition === "inside" && "ring-2 ring-slate-300",
               dropPosition === "inside" && hasChildren && !open && "bg-slate-100"
@@ -306,7 +306,7 @@ export const NotebookTreeItem = ({
                 <TooltipProvider><Tooltip><TooltipTrigger asChild>
                   <button
                     className={cn(
-                      "edgeever-reveal-on-touch h-6 w-6 items-center justify-center rounded-md transition-colors duration-150",
+                      "stillnote-reveal-on-touch h-6 w-6 items-center justify-center rounded-md transition-colors duration-150",
                       directlyShared ? "flex" : "hidden group-focus-within:flex group-hover:flex",
                       selected ? "hover:bg-slate-200" : "hover:bg-slate-100"
                     )}

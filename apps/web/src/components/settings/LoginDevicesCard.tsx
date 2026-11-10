@@ -41,8 +41,8 @@ const describeUserAgent = (userAgent: string | null) => {
             : /Linux/i.test(userAgent)
               ? "Linux"
               : "";
-  const browser = /EdgeEver|okhttp/i.test(userAgent)
-    ? "EdgeEver"
+  const browser = /StillNote|okhttp/i.test(userAgent)
+    ? "StillNote"
     : /EdgA?\//i.test(userAgent)
     ? "Edge"
     : /OPR\//i.test(userAgent)

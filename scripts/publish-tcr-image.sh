@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 readonly TCR_REGISTRY="ccr.ccs.tencentyun.com"
-readonly TCR_IMAGE="${TCR_REGISTRY}/edgeever/edgeever"
+readonly TCR_IMAGE="${TCR_REGISTRY}/stillnote/stillnote"
 
 require_value() {
   local name="$1"
@@ -52,7 +52,7 @@ for ((attempt = 1; attempt <= build_attempts; attempt += 1)); do
   if timeout --signal=TERM --kill-after=1m 15m docker buildx build \
     --platform linux/amd64,linux/arm64 \
     --tag "${TCR_IMAGE}:${primary_tag}" \
-    --label "org.opencontainers.image.source=https://github.com/tianma-if/edgeever" \
+    --label "org.opencontainers.image.source=https://github.com/CottonChou/stillnote" \
     --label "org.opencontainers.image.revision=${CNB_COMMIT}" \
     --label "org.opencontainers.image.version=${version}" \
     --cache-from "type=registry,ref=${TCR_IMAGE}:buildcache" \
@@ -103,7 +103,7 @@ if [[ "${CNB_EVENT}" == "push" ]] && [[ -n "${TENCENTCLOUD_SECRET_ID:-}" ]] && [
     --env TENCENTCLOUD_SECRET_ID \
     --env TENCENTCLOUD_SECRET_KEY \
     --env TENCENTCLOUD_REGION="${TENCENTCLOUD_REGION:-ap-guangzhou}" \
-    --env TCR_REPOSITORY=edgeever/edgeever \
+    --env TCR_REPOSITORY=stillnote/stillnote \
     --env TCR_SHA_TAGS_TO_KEEP=20 \
     --volume "${PWD}:/workspace" \
     --workdir /workspace \

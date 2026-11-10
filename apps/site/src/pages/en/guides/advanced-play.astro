@@ -2,27 +2,27 @@
 import Container from "@/components/container.astro";
 import Layout from "@/layouts/Layout.astro";
 
-const title = "EdgeEver AI Agent advanced plays";
-const description = "Use EdgeEver MCP to let AI agents organize real notes into persona profiles, knowledge maps, and cleaner tag systems.";
+const title = "StillNote AI Agent advanced plays";
+const description = "Use StillNote MCP to let AI agents organize real notes into persona profiles, knowledge maps, and cleaner tag systems.";
 
 const prompts = [
   {
     title: "Persona profile",
     summary: "Extract long-term themes, work preferences, capability signals, recurring problems, and recent direction from your notes.",
     prompt:
-      "Use EdgeEver MCP to read my notes and create a persona profile based on the real note content. Judge only from evidence in the notes, do not make psychological diagnoses, and do not exaggerate traits. Include long-term themes, work preferences, capability signals, recurring problems, recent direction, and list related note titles or memo ids after each conclusion.",
+      "Use StillNote MCP to read my notes and create a persona profile based on the real note content. Judge only from evidence in the notes, do not make psychological diagnoses, and do not exaggerate traits. Include long-term themes, work preferences, capability signals, recurring problems, recent direction, and list related note titles or memo ids after each conclusion.",
   },
   {
     title: "Knowledge map",
     summary: "Organize notes into knowledge areas, key concepts, related material, what you already understand, and gaps to fill.",
     prompt:
-      "Use EdgeEver MCP to read my notes and organize a knowledge map. Identify the main knowledge areas, key concepts in each area, related notes, what I already understand, and the gaps I still need to fill. Structure the output so it is useful for continued learning and writing.",
+      "Use StillNote MCP to read my notes and organize a knowledge map. Identify the main knowledge areas, key concepts in each area, related notes, what I already understand, and the gaps I still need to fill. Structure the output so it is useful for continued learning and writing.",
   },
   {
     title: "Tag suggestions",
     summary: "Review existing notes and tags to find duplicate, narrow, broad, or inconsistent labels before applying changes.",
     prompt:
-      "Use EdgeEver MCP to read my notes and existing tags, then design a clearer tag system. Point out duplicate, overly narrow, overly broad, or inconsistently named tags, and suggest merges, renames, and new tags. Do not modify notes yet. Wait for my confirmation before applying changes.",
+      "Use StillNote MCP to read my notes and existing tags, then design a clearer tag system. Point out duplicate, overly narrow, overly broad, or inconsistently named tags, and suggest merges, renames, and new tags. Do not modify notes yet. Wait for my confirmation before applying changes.",
   },
 ];
 
@@ -36,7 +36,7 @@ const jsonLd = {
   inLanguage: "en-US",
   publisher: {
     "@type": "Organization",
-    name: "EdgeEver",
+    name: "StillNote",
   },
 };
 ---

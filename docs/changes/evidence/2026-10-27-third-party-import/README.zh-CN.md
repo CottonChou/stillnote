@@ -97,7 +97,7 @@ macOS arm64、Ego Browser Chromium 156、开发 Web 的实际 Worker/IndexedDB �
 三项完成后临时资源块均为零。大样本按需生成，不存入仓库：
 
 ```sh
-bun tests/fixtures/note-import/generate-large.mjs /tmp/edgeever-note-import-large
+bun tests/fixtures/note-import/generate-large.mjs /tmp/stillnote-note-import-large
 ```
 
 ## 复现受影响检查

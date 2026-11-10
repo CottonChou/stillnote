@@ -5,6 +5,7 @@ export const useMemoSelectionReconciliation = ({
   selectedMemoId,
   setSelectedMemoId,
   rendererRecoveryMode,
+  suppressAutoSelect = false,
   creatingMemoSelectionRef,
   pendingCreatedMemoIdRef,
   pendingOpenedMemoIdRef,
@@ -14,6 +15,7 @@ export const useMemoSelectionReconciliation = ({
   selectedMemoId: string | null;
   setSelectedMemoId: (id: string | null) => void;
   rendererRecoveryMode: boolean;
+  suppressAutoSelect?: boolean;
   creatingMemoSelectionRef: RefObject<boolean>;
   pendingCreatedMemoIdRef: RefObject<string | null>;
   pendingOpenedMemoIdRef: RefObject<string | null>;
@@ -30,7 +32,7 @@ export const useMemoSelectionReconciliation = ({
 
   useEffect(() => {
     const selectedMemoInList = selectedMemoId ? memos.some((memo) => memo.id === selectedMemoId) : false;
-    if (rendererRecoveryMode) return;
+    if (rendererRecoveryMode || suppressAutoSelect) return;
     if (creatingMemoSelectionRef.current || pendingCreatedMemoIdRef.current) return;
 
     if (pendingOpenedMemoIdRef.current) {
@@ -47,7 +49,7 @@ export const useMemoSelectionReconciliation = ({
       return;
     }
     if (!selectedMemoId || !selectedMemoInList) setSelectedMemoId(memos[0].id);
-  }, [createdMemoEditId, creatingMemoSelectionRef, memos, pendingCreatedMemoIdRef, pendingOpenedMemoIdRef, rendererRecoveryMode, selectedMemoId, setSelectedMemoId]);
+  }, [createdMemoEditId, creatingMemoSelectionRef, memos, pendingCreatedMemoIdRef, pendingOpenedMemoIdRef, rendererRecoveryMode, selectedMemoId, setSelectedMemoId, suppressAutoSelect]);
 
   return clearPendingMemoSelection;
 };

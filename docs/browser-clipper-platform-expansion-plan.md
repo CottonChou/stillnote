@@ -2,7 +2,7 @@
 
 [简体中文](browser-clipper-platform-expansion-plan.zh-CN.md)
 
-Related: [Issue #493](https://github.com/tianma-if/edgeever/issues/493). Updated: 2026-10-15. The user confirmed that Phase 1 contains **Facebook, Instagram, LinkedIn, Threads and Bluesky**. See [usage and verification](browser-clipper-platforms.md).
+Related: [Issue #493](https://github.com/CottonChou/stillnote/issues/493). Updated: 2026-10-15. The user confirmed that Phase 1 contains **Facebook, Instagram, LinkedIn, Threads and Bluesky**. See [usage and verification](browser-clipper-platforms.md).
 
 ## Delivery phases
 

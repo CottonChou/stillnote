@@ -49,7 +49,7 @@ describe("README contributors wall sync", () => {
   test("fetches explicit --contributor users that have not entered GitHub contributor caches yet", () => {
     const calls = [];
     const contributors = fetchRepositoryContributors({
-      repository: "tianma-if/edgeever",
+      repository: "CottonChou/stillnote",
       extraLogins: ["@fresh-user", "tianma-if"],
       ghJson: (args) => {
         calls.push(args.join(" "));
@@ -89,10 +89,10 @@ describe("README contributors wall sync", () => {
   });
 
   test("appends and idempotently updates the contributors section across all five READMEs", () => {
-    const tempRoot = mkdtempSync(join(tmpdir(), "edgeever-readme-contributors-"));
+    const tempRoot = mkdtempSync(join(tmpdir(), "stillnote-readme-contributors-"));
     try {
       for (const { file } of README_CONTRIBUTOR_SECTIONS) {
-        writeFileSync(join(tempRoot, file), `# EdgeEver\n\nBody for ${file}\n`);
+        writeFileSync(join(tempRoot, file), `# StillNote\n\nBody for ${file}\n`);
       }
 
       const initialContributors = [

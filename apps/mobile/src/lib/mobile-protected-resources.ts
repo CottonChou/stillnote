@@ -55,7 +55,7 @@ export const normalizeProtectedResourcePath = (source: string, baseUrl = "") => 
 
 /**
  * Relative protected load path (`/api/v1/resources/:id/blob`) or null when the
- * source is not a protected EdgeEver resource.
+ * source is not a protected StillNote resource.
  */
 export const toProtectedResourceLoadPath = (source: string, baseUrl = ""): string | null => {
   const path = normalizeProtectedResourcePath(source, baseUrl);
@@ -100,7 +100,7 @@ export const toProtectedResourceLoadFailure = (
 export const reportProtectedResourceLoadFailure = (failure: ProtectedResourceLoadFailure) => {
   const statusPart = failure.status != null ? ` status=${failure.status}` : "";
   console.warn(
-    `[EdgeEver] protected image load failed path=${failure.path}${statusPart} message=${failure.message}`
+    `[StillNote] protected image load failed path=${failure.path}${statusPart} message=${failure.message}`
   );
 };
 

@@ -1,5 +1,5 @@
 import { posterPatchInputSchema, posterOperationsInputSchema } from "./mcp-poster-schema";
-import { ARCHITECTURE_RESOURCE_ICONS, INFOGRAPHIC_NOTE_TEMPLATES, POSTER_FORMATS, POSTER_TEMPLATES, POSTER_TEMPLATE_SELECTION_INSTRUCTION, TABLE_FIELD_TYPES } from "@edgeever/shared";
+import { ARCHITECTURE_RESOURCE_ICONS, INFOGRAPHIC_NOTE_TEMPLATES, POSTER_FORMATS, POSTER_TEMPLATES, POSTER_TEMPLATE_SELECTION_INSTRUCTION, TABLE_FIELD_TYPES } from "@stillnote/shared";
 
 const DIAGRAM_IR_NODE_TYPES = [
   "topic",
@@ -148,7 +148,7 @@ const MCP_TOOL_DEFINITIONS = [
   {
     name: "get_current_user",
     description:
-      "Identify the EdgeEver user and personal workspace authorized by the current session or API token. Use this before imports when the destination account must be confirmed.",
+      "Identify the StillNote user and personal workspace authorized by the current session or API token. Use this before imports when the destination account must be confirmed.",
     inputSchema: {
       type: "object",
       additionalProperties: false,
@@ -157,7 +157,7 @@ const MCP_TOOL_DEFINITIONS = [
   },
   {
     name: "search_memos",
-    description: "Search active EdgeEver memos by text, tag, notebook, time range, pin state, resource presence, or poster type. Use poster=true to find editable poster notes (海报笔记); do not search for the word 海报 to identify the type. query is optional. For recently created or added notes, pass createdAfter and omit query; do not put this week/最近/新增 in query. Time bounds accept YYYY-MM-DD or ISO date-time.",
+    description: "Search active StillNote memos by text, tag, notebook, time range, pin state, resource presence, or poster type. Use poster=true to find editable poster notes (海报笔记); do not search for the word 海报 to identify the type. query is optional. For recently created or added notes, pass createdAfter and omit query; do not put this week/最近/新增 in query. Time bounds accept YYYY-MM-DD or ISO date-time.",
     inputSchema: {
       type: "object",
       additionalProperties: false,
@@ -178,7 +178,7 @@ const MCP_TOOL_DEFINITIONS = [
   },
   {
     name: "list_memos",
-    description: "List EdgeEver memos with pagination. Use poster=true to list only editable poster notes (海报笔记), false to exclude them. Use includeContent when full Markdown is needed.",
+    description: "List StillNote memos with pagination. Use poster=true to list only editable poster notes (海报笔记), false to exclude them. Use includeContent when full Markdown is needed.",
     inputSchema: {
       type: "object",
       additionalProperties: false,
@@ -333,7 +333,7 @@ const MCP_TOOL_DEFINITIONS = [
   {
     name: "create_diagram_memo",
     description:
-      "Create an editable visual diagram memo from a semantic graph; EdgeEver generates node sizes, coordinates, edge IDs, and a deterministic layout. Mind maps and flowcharts always start with the default plain theme; any supplied theme is ignored for those kinds. For mind maps, omit node type and use parentId for hierarchy. Flowchart node types are process, decision, start, or end. Architecture node types are client, frontend, service, database, storage, queue, security, external, or boundary; boundary nodes contain components through those components' parentId and cannot be edge endpoints. Give every architecture boundary at least one contained component, or omit the boundary rather than creating an empty section.",
+      "Create an editable visual diagram memo from a semantic graph; StillNote generates node sizes, coordinates, edge IDs, and a deterministic layout. Mind maps and flowcharts always start with the default plain theme; any supplied theme is ignored for those kinds. For mind maps, omit node type and use parentId for hierarchy. Flowchart node types are process, decision, start, or end. Architecture node types are client, frontend, service, database, storage, queue, security, external, or boundary; boundary nodes contain components through those components' parentId and cannot be edge endpoints. Give every architecture boundary at least one contained component, or omit the boundary rather than creating an empty section.",
     inputSchema: {
       type: "object",
       required: ["notebookId", "kind", "nodes"],
@@ -368,7 +368,7 @@ const MCP_TOOL_DEFINITIONS = [
   },
   {
     name: "create_poster_memo",
-    description: POSTER_TEMPLATE_SELECTION_INSTRUCTION + " Create an editable poster note (海报笔记). Use this when asked to generate a poster, not create_memo or update_memo with poster-style prose. First plan the takeaway and content hierarchy. For explanatory topics (industry layouts, knowledge summaries, comparisons or guides), supply 3–6 concise sections with heading/body and choose layout=grid for categories or layout=list for steps. Do not reduce an informative topic to a title and generic subtitle. Use supplied note content when referenced; do not invent statistics, sources or brand relationships. For quotes, slogans or an explicitly minimal cover, omit sections. Optional badge/footer require sections. EdgeEver compiles editable elements and fits text to the selected format. Do not inspect other notes or local files to reverse-engineer the poster format. If this tool fails, report the error; never silently substitute an ordinary Markdown note. Use get_poster then update_poster only for subsequent edits.",
+    description: POSTER_TEMPLATE_SELECTION_INSTRUCTION + " Create an editable poster note (海报笔记). Use this when asked to generate a poster, not create_memo or update_memo with poster-style prose. First plan the takeaway and content hierarchy. For explanatory topics (industry layouts, knowledge summaries, comparisons or guides), supply 3–6 concise sections with heading/body and choose layout=grid for categories or layout=list for steps. Do not reduce an informative topic to a title and generic subtitle. Use supplied note content when referenced; do not invent statistics, sources or brand relationships. For quotes, slogans or an explicitly minimal cover, omit sections. Optional badge/footer require sections. StillNote compiles editable elements and fits text to the selected format. Do not inspect other notes or local files to reverse-engineer the poster format. If this tool fails, report the error; never silently substitute an ordinary Markdown note. Use get_poster then update_poster only for subsequent edits.",
     inputSchema: {
       type: "object", required: ["notebookId", "title", "heading"], additionalProperties: false,
       properties: {
@@ -780,7 +780,7 @@ const MCP_TOOL_DEFINITIONS = [
       required: ["notebookId"],
       additionalProperties: false,
       properties: {
-        notebookId: { type: "string", minLength: 1, description: "Exact EdgeEver notebook ID obtained from a unique path resolution or lookup." },
+        notebookId: { type: "string", minLength: 1, description: "Exact StillNote notebook ID obtained from a unique path resolution or lookup." },
         dryRun: { type: "boolean", description: "Preview the empty subtree without deleting it." },
       },
     },
@@ -807,7 +807,7 @@ const MCP_TOOL_DEFINITIONS = [
       required: ["notebookId", "name"],
       additionalProperties: false,
       properties: {
-        notebookId: { type: "string", description: "The exact EdgeEver notebook ID." },
+        notebookId: { type: "string", description: "The exact StillNote notebook ID." },
         name: { type: "string", minLength: 1, maxLength: 80 },
       },
     },
@@ -820,7 +820,7 @@ const MCP_TOOL_DEFINITIONS = [
       required: ["notebookId"],
       additionalProperties: false,
       properties: {
-        notebookId: { type: "string", description: "The exact EdgeEver notebook ID." },
+        notebookId: { type: "string", description: "The exact StillNote notebook ID." },
       },
     },
   },
@@ -894,7 +894,7 @@ const MCP_TOOL_DEFINITIONS = [
   },
   {
     name: "get_note_template",
-    description: "Get one reusable note template by its exact EdgeEver template ID.",
+    description: "Get one reusable note template by its exact StillNote template ID.",
     inputSchema: {
       type: "object",
       required: ["templateId"],
@@ -976,7 +976,7 @@ const MCP_TOOL_DEFINITIONS = [
   },
   {
     name: "get_ai_instruction",
-    description: "Get one reusable AI instruction by its exact EdgeEver instruction ID.",
+    description: "Get one reusable AI instruction by its exact StillNote instruction ID.",
     inputSchema: {
       type: "object",
       required: ["instructionId"],

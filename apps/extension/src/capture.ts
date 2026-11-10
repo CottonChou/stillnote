@@ -12,10 +12,10 @@ import { substackContent } from "./substack-content";
 const t = (key: string) => chrome.i18n.getMessage(key) || key;
 
 const root = globalThis as typeof globalThis & {
-  __edgeeverPageClipPayload?: { mode?: string; requestId?: string; selectionText?: string };
+  __stillnotePageClipPayload?: { mode?: string; requestId?: string; selectionText?: string };
 };
-const clipPayload = root.__edgeeverPageClipPayload;
-delete root.__edgeeverPageClipPayload;
+const clipPayload = root.__stillnotePageClipPayload;
+delete root.__stillnotePageClipPayload;
 const frozenSelection = clipPayload?.selectionText;
 const selectionOnly = clipPayload?.mode === "selection" || !!frozenSelection;
 

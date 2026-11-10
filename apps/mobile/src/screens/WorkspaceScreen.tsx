@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient, type InfiniteData, type QueryKey } from "@tanstack/react-query";
 import * as Clipboard from "expo-clipboard";
-import type { ListMemosResponse, MemoFilterMode, MemoSortMode } from "@edgeever/client";
+import type { ListMemosResponse, MemoFilterMode, MemoSortMode } from "@stillnote/client";
 import {
   ActivityIndicator,
   Home,
@@ -12,17 +12,18 @@ import {
   BackHandler,
   InteractionManager,
   Modal,
+  Platform,
   Share as NativeShare,
+  ToastAndroid,
   useWindowDimensions,
   Vibration,
   View,
 } from "react-native";
-import { GestureDetector } from "react-native-gesture-handler";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Alert, Pressable, Text } from "../components/LocalizedText";
-import { ApiRequestError } from "@edgeever/client";
-import { DEFAULT_MEMO_TITLE, getNotebookScopeIds, hasDiagramDocumentMarker, markdownToDoc, type MemoDetail, type MemoSummary, type Notebook } from "@edgeever/shared";
-import { MOBILE_UI_METRICS } from "@edgeever/shared/mobile-ui";
+import { ApiRequestError } from "@stillnote/client";
+import { DEFAULT_MEMO_TITLE, getNotebookScopeIds, hasDiagramDocumentMarker, markdownToDoc, type MemoDetail, type MemoSummary, type Notebook } from "@stillnote/shared";
+import { MOBILE_UI_METRICS } from "@stillnote/shared/mobile-ui";
 import { clearMobileMemoDraft, readMobileMemoDraft, type MobileMemoDraft } from "../lib/mobile-drafts";
 import {
   readMobileImageCompressionEnabled,
@@ -58,6 +59,7 @@ import {
   upsertLocalNotebook,
   resolveLocalMemo,
   syncMobileLocalMirror,
+  syncMobileNotebook,
   upsertLocalMemo,
 } from "../lib/local-mirror";
 import { beginEditorStartup, markStartup } from "../lib/startup-performance";
@@ -85,6 +87,7 @@ import { useMobileWorkspaceSelection } from "../hooks/useMobileWorkspaceSelectio
 import {
   flattenNotebooks,
   isEnglishMobileLocale,
+  resolveAndroidRootBackAction,
 } from "./workspace-utils";
 import {
   applyOptimisticMemoToCache,
@@ -95,7 +98,7 @@ import {
 } from "./workspace-memo-cache";
 import { refreshWorkspaceThemeStyles, styles } from "./workspace-styles";
 import { NotesView } from "./WorkspaceNotesView";
-import { NotebookDrawer, useNotebookDrawer } from "./WorkspaceDrawer";
+import { NotebookDrawerLayout } from "./WorkspaceDrawer";
 import { SettingsView, type MobileLocaleMode } from "./WorkspaceSettingsView";
 import { MemoDetailModal } from "./WorkspaceMemoDetail";
 import {
@@ -192,18 +195,22 @@ export const WorkspaceScreen = ({
   } = useMobileWorkspaceSelection();
   const { width: windowWidth } = useWindowDimensions();
   const drawerWidth = Math.min(340, Math.round(windowWidth * 0.82));
-  const {
-    isOpen: notebookDrawerOpen,
-    openDrawer,
-    closeDrawer,
-    notesSwipeGesture,
-    drawerPanGesture,
-    drawerAnimatedStyle,
-    backdropAnimatedStyle,
-  } = useNotebookDrawer({
-    drawerWidth,
-    enabled: activeView === "notes" && !selectionMode && !selectedMemoId,
-  });
+  const [notebookDrawerOpen, setNotebookDrawerOpen] = useState(false);
+  const notebookDrawerOpenRef = useRef(false);
+  notebookDrawerOpenRef.current = notebookDrawerOpen;
+  const lastDrawerCloseAtRef = useRef(0);
+  const lastExitPromptAtRef = useRef(0);
+  const openDrawer = useCallback(() => {
+    setNotebookDrawerOpen(true);
+  }, []);
+  const closeDrawer = useCallback(() => {
+    if (notebookDrawerOpenRef.current) {
+      lastDrawerCloseAtRef.current = Date.now();
+    }
+    setNotebookDrawerOpen(false);
+  }, []);
+  const [syncingNotebookId, setSyncingNotebookId] = useState<string | null>(null);
+  const syncingNotebookIdRef = useRef<string | null>(null);
   const memoDraftPrefetchRef = useRef(new Map<string, Promise<MobileMemoDraft | null>>());
   const memoDraftValueRef = useRef(new Map<string, MobileMemoDraft | null>());
   const processedShareUrlRef = useRef<string | null>(null);
@@ -236,6 +243,41 @@ export const WorkspaceScreen = ({
     isInitialStatusPending: isInitialMirrorStatusPending,
     retryInitialSync,
   } = useMobileLocalMirrorSync({ client, dataScope });
+
+  const syncNotebook = useCallback(async (targetNotebookId?: string) => {
+    if (!client || syncingNotebookIdRef.current) {
+      return;
+    }
+    const effectiveNotebookId = targetNotebookId === ALL_NOTES_ID ? undefined : targetNotebookId;
+    const trackingId = effectiveNotebookId ?? ALL_NOTES_ID;
+    syncingNotebookIdRef.current = trackingId;
+    setSyncingNotebookId(trackingId);
+    try {
+      await runForcedSync();
+      await syncMobileNotebook(client, dataScope, {
+        notebookId: effectiveNotebookId,
+        includeDescendants: showDescendantNotes ?? true,
+      });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["mobile", "notebooks"] }),
+        queryClient.invalidateQueries({ queryKey: ["mobile", "memos"] }),
+        queryClient.invalidateQueries({ queryKey: ["mobile", "search"] }),
+        queryClient.invalidateQueries({ queryKey: ["mobile", "memo"] }),
+        refreshSyncQueueItems(),
+      ]);
+      if (Platform.OS === "android") {
+        ToastAndroid.show(translate("笔记本同步完成"), ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      const message = error instanceof Error && error.message.trim()
+        ? error.message
+        : "操作失败，请稍后再试";
+      Alert.alert("笔记本同步失败", message, [{ text: "好的" }]);
+    } finally {
+      syncingNotebookIdRef.current = null;
+      setSyncingNotebookId(null);
+    }
+  }, [client, dataScope, queryClient, refreshSyncQueueItems, runForcedSync, showDescendantNotes, translate]);
 
   const notebooksQuery = useQuery({
     queryKey: ["mobile", "notebooks"],
@@ -335,6 +377,19 @@ export const WorkspaceScreen = ({
       previousQuery && memoQueriesShareScope("search", previousQuery.queryKey, searchQueryKey) ? previousData : undefined,
   });
 
+  const selectedMemoSummary = useMemo(() => {
+    if (!selectedMemoId) return null;
+    for (const page of searchQuery.data?.pages ?? []) {
+      const hit = page.memos.find((item) => item.id === selectedMemoId);
+      if (hit) return hit;
+    }
+    for (const page of memosQuery.data?.pages ?? []) {
+      const hit = page.memos.find((item) => item.id === selectedMemoId);
+      if (hit) return hit;
+    }
+    return null;
+  }, [memosQuery.data?.pages, searchQuery.data?.pages, selectedMemoId]);
+
   const memoDetailQuery = useQuery({
     queryKey: ["mobile", "memo", memoView, selectedMemoId],
     queryFn: async () => {
@@ -342,7 +397,9 @@ export const WorkspaceScreen = ({
         throw new Error("Memo is not selected");
       }
 
-      const local = await getLocalMemo(dataScope, selectedMemoId);
+      const local = await getLocalMemo(dataScope, selectedMemoId, {
+        minRevision: selectedMemoSummary?.revision,
+      });
       if (local) {
         return { memo: local };
       }
@@ -394,10 +451,27 @@ export const WorkspaceScreen = ({
         setMemoView("notebook");
         return true;
       }
+      if (Platform.OS === "android") {
+        const now = Date.now();
+        const decision = resolveAndroidRootBackAction({
+          now,
+          lastDrawerCloseAt: lastDrawerCloseAtRef.current,
+          lastExitPromptAt: lastExitPromptAtRef.current,
+        });
+        if (decision === "swallow-recent-drawer-close") {
+          return true;
+        }
+        if (decision === "allow-exit") {
+          return false;
+        }
+        lastExitPromptAtRef.current = now;
+        ToastAndroid.show(translate("再按一次退出 StillNote"), ToastAndroid.SHORT);
+        return true;
+      }
       return false;
     });
     return () => subscription.remove();
-  }, [activeView, clearSelection, closeDrawer, memoView, notebookDrawerOpen, searchText, selectedMemoId, selectedTag, selectionMode]);
+  }, [activeView, clearSelection, closeDrawer, memoView, notebookDrawerOpen, searchText, selectedMemoId, selectedTag, selectionMode, translate]);
 
   useEffect(() => {
     if (notebooksQuery.data && memosQuery.data) {
@@ -410,7 +484,14 @@ export const WorkspaceScreen = ({
     // the server mirror, so pending local edits stayed stuck on "待同步".
     if (client) {
       await runForcedSync();
-      await syncMobileLocalMirror(client, dataScope);
+      if (memoView === "notebook" && !selectedTag && activeNotebookId !== ALL_NOTES_ID) {
+        await syncMobileNotebook(client, dataScope, {
+          notebookId: activeNotebookId,
+          includeDescendants: showDescendantNotes ?? true,
+        });
+      } else {
+        await syncMobileLocalMirror(client, dataScope);
+      }
     }
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["mobile", "notebooks"] }),
@@ -649,7 +730,7 @@ export const WorkspaceScreen = ({
       if (notebooks.length === 0) {
         if (notebooksQuery.isSuccess) {
           processedShareUrlRef.current = shareKey;
-          Alert.alert("无法保存图片", "请先在 EdgeEver 中创建一个笔记本。");
+          Alert.alert("无法保存图片", "请先在 StillNote 中创建一个笔记本。");
           onIncomingShareHandledRef.current?.();
         }
         return;
@@ -692,7 +773,7 @@ export const WorkspaceScreen = ({
     if (notebooks.length === 0) {
       if (notebooksQuery.isSuccess) {
         processedShareUrlRef.current = sourceUrl;
-        Alert.alert("无法保存剪藏", "请先在 EdgeEver 中创建一个笔记本。");
+        Alert.alert("无法保存剪藏", "请先在 StillNote 中创建一个笔记本。");
         onIncomingShareHandledRef.current?.();
       }
       return;
@@ -1309,11 +1390,64 @@ export const WorkspaceScreen = ({
     );
   }
 
-  return (
-    <SafeAreaView edges={["top", "left", "right"]} style={styles.safeArea}>
+  const allNotesBadgeCount = activeNotebookId === ALL_NOTES_ID && memoView === "notebook" && !selectedTag && memoFilterMode === "all"
+    ? memosQuery.data?.pages[0]?.totalCount ?? memos.length
+    : notebooks.reduce((sum, notebook) => sum + (notebook.memoCount ?? 0), 0);
 
-      {activeView === "notes" ? (
-        <GestureDetector gesture={notesSwipeGesture}>
+  return (
+    <NotebookDrawerLayout
+      activeNotebookId={activeNotebookId}
+      drawerWidth={drawerWidth}
+      isOpen={notebookDrawerOpen}
+      memoView={memoView}
+      notebooks={notebooks}
+      onClose={closeDrawer}
+      onCreateNotebook={async (name, parentId) => {
+        if (!client) {
+          throw new Error("连接尚未就绪");
+        }
+        const { notebook } = await client.createNotebook({ name, parentId });
+        queryClient.setQueryData<{ notebooks: Notebook[] }>(["mobile", "notebooks"], (current) => ({
+          notebooks: [...(current?.notebooks ?? []).filter((item) => item.id !== notebook.id), notebook],
+        }));
+        try {
+          await upsertLocalNotebook(dataScope, notebook);
+          void queryClient.invalidateQueries({ queryKey: ["mobile", "notebooks"] });
+        } catch {
+          Alert.alert("笔记本已创建", "本机缓存更新失败，正在重新同步。", [{ text: "好的" }]);
+          void syncMobileLocalMirror(client, dataScope)
+            .then(() => queryClient.invalidateQueries({ queryKey: ["mobile", "notebooks"] }))
+            .catch(() => undefined);
+        }
+        return notebook.id;
+      }}
+      onOpen={openDrawer}
+      onSelectAllNotes={() => {
+        setSelectedTag(null);
+        setMemoView("notebook");
+        setActiveNotebookId(ALL_NOTES_ID);
+        closeDrawer();
+      }}
+      onSelectNotebook={(notebookId) => {
+        setSelectedTag(null);
+        setMemoView("notebook");
+        setActiveNotebookId(notebookId);
+        closeDrawer();
+      }}
+      onSelectTrash={() => {
+        showTrash();
+        closeDrawer();
+      }}
+      onSyncNotebook={(notebookId) => {
+        void syncNotebook(notebookId);
+      }}
+      swipeEnabled={activeView === "notes" && !selectionMode && !selectedMemoId}
+      syncingNotebookId={syncingNotebookId}
+      totalNotesCount={allNotesBadgeCount}
+    >
+      <SafeAreaView edges={["top", "left", "right"]} style={styles.safeArea}>
+
+        {activeView === "notes" ? (
           <View style={{ flex: 1 }}>
             <NotesView
               activeNotebook={activeNotebook}
@@ -1367,7 +1501,6 @@ export const WorkspaceScreen = ({
               onRetry={retryInitialSync}
             />
           </View>
-        </GestureDetector>
       ) : null}
 
       {activeView === "settings" ? (
@@ -1420,54 +1553,6 @@ export const WorkspaceScreen = ({
         syncStatus={selectedMemoSyncStatus}
         updateMutation={localUpdateMemoMutation}
         visible={Boolean(selectedMemoId)}
-      />
-
-      <NotebookDrawer
-        activeNotebookId={activeNotebookId}
-        backdropAnimatedStyle={backdropAnimatedStyle}
-        drawerAnimatedStyle={drawerAnimatedStyle}
-        drawerPanGesture={drawerPanGesture}
-        drawerWidth={drawerWidth}
-        isOpen={notebookDrawerOpen}
-        memoView={memoView}
-        notebooks={notebooks}
-        onClose={closeDrawer}
-        onCreateNotebook={async (name, parentId) => {
-          if (!client) {
-            throw new Error("连接尚未就绪");
-          }
-          const { notebook } = await client.createNotebook({ name, parentId });
-          queryClient.setQueryData<{ notebooks: Notebook[] }>(["mobile", "notebooks"], (current) => ({
-            notebooks: [...(current?.notebooks ?? []).filter((item) => item.id !== notebook.id), notebook],
-          }));
-          try {
-            await upsertLocalNotebook(dataScope, notebook);
-            void queryClient.invalidateQueries({ queryKey: ["mobile", "notebooks"] });
-          } catch {
-            Alert.alert("笔记本已创建", "本机缓存更新失败，正在重新同步。", [{ text: "好的" }]);
-            void syncMobileLocalMirror(client, dataScope)
-              .then(() => queryClient.invalidateQueries({ queryKey: ["mobile", "notebooks"] }))
-              .catch(() => undefined);
-          }
-          return notebook.id;
-        }}
-        onSelectAllNotes={() => {
-          setSelectedTag(null);
-          setMemoView("notebook");
-          setActiveNotebookId(ALL_NOTES_ID);
-          closeDrawer();
-        }}
-        onSelectNotebook={(notebookId) => {
-          setSelectedTag(null);
-          setMemoView("notebook");
-          setActiveNotebookId(notebookId);
-          closeDrawer();
-        }}
-        onSelectTrash={() => {
-          showTrash();
-          closeDrawer();
-        }}
-        totalNotesCount={memosQuery.data?.pages[0]?.totalCount ?? memos.length}
       />
 
       {tagFilterPickerOpen ? <TagPickerModal
@@ -1557,6 +1642,7 @@ export const WorkspaceScreen = ({
       {notesActionsOpen ? <NotesActionsModal
         bottomOffset={52 + safeAreaInsets.bottom}
         canEnterSelection={visibleMemos.length > 0}
+        isSyncingNotebook={Boolean(syncingNotebookId)}
         memoListDensity={memoListDensity}
         memoSortMode={memoSortMode}
         listDescription={`${searchActive ? searchQuery.data?.pages[0]?.totalCount ?? searchResults.length : memosQuery.data?.pages[0]?.totalCount ?? memos.length} 条笔记`}
@@ -1572,6 +1658,10 @@ export const WorkspaceScreen = ({
           setTagFilterPickerOpen(true);
         }}
         onSortModeChange={setMemoSortMode}
+        onSyncNotebook={memoView === "notebook" && client ? () => {
+          setNotesActionsOpen(false);
+          void syncNotebook(selectedTag ? ALL_NOTES_ID : activeNotebookId);
+        } : undefined}
         selectionMode={selectionMode}
         visible
       /> : null}
@@ -1659,7 +1749,8 @@ export const WorkspaceScreen = ({
         />
         </View>
       ) : null}
-    </SafeAreaView>
+      </SafeAreaView>
+    </NotebookDrawerLayout>
   );
 };
 

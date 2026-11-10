@@ -8,7 +8,7 @@ import { createSelfHostedStorageAdapter } from "./self-hosted-storage-adapter.ts
 import { registerCompanionRoutes } from "./companion-routes.ts";
 import { beginCompanionTurn, checkpointCompanionTurn, clearCompanionHistory, companionRevision, forgetCompanionMemory,
   getCompanionTurn, importCompanionMemories, listCompanionMemories, listCompanionTurns, saveCompanionMemory } from "./companion-service.ts";
-import { parseCompanionMentionQuery } from "@edgeever/shared";
+import { parseCompanionMentionQuery } from "@stillnote/shared";
 import { COMPANION_INSTRUCTIONS, companionAgentInstructions, companionMessages, companionTurnInstructions, companionUserContent, selectCompanionMemories, streamCompanion } from "./test-support/companion-model.ts";
 import { applyCompanionAction, proposeCompanionAction, listCompanionActions, dismissCompanionAction } from "./companion-actions.ts";
 import { createMemoRecord, getMemoDetail, updateMemoRecord } from "./memo-service.ts";
@@ -25,7 +25,7 @@ function fixture(options = {}) {
   const sqlite = new Database(":memory:"); databases.push(sqlite);
   for (const path of globSync("migrations/*.sql").sort()) sqlite.exec(readFileSync(path, "utf8"));
   for (const id of [scope.workspaceId, other.workspaceId]) sqlite.query("INSERT INTO workspaces(id, name, is_personal) VALUES (?, ?, 1)").run(id, id);
-  const storage = createSelfHostedStorageAdapter(sqlite, "/tmp/edgeever-companion-unused-resources");
+  const storage = createSelfHostedStorageAdapter(sqlite, "/tmp/stillnote-companion-unused-resources");
   const app = new Hono();
   app.use("*", async (c, next) => {
     const identity = c.req.header("x-test-other") ? other : scope;

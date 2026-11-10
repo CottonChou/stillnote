@@ -1,5 +1,5 @@
 import { UserRound } from "lucide-react";
-import type { AuthUser } from "@edgeever/shared";
+import type { AuthUser } from "@stillnote/shared";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {

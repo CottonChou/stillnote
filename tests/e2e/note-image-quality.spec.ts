@@ -198,7 +198,7 @@ for (const blockedStorage of [false, true]) {
       const api = (window as QualityWindow).imageQuality;
       api.setSource(api.sources.short);
     });
-    const checkboxLabels = ['笔记标题', '笔记本', '标签', '更新时间', '阅读时长与字数', '创作者署名', 'EdgeEver 品牌标识'];
+    const checkboxLabels = ['笔记标题', '笔记本', '标签', '更新时间', '阅读时长与字数', '创作者署名', 'StillNote 品牌标识'];
     const chosen = [false, true, true, false, true, true, false];
     const preview = page.getByAltText('笔记分享图片预览');
     const hash = async () => {

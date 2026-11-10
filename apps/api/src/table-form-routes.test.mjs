@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { Database } from "bun:sqlite";
 import { globSync, readFileSync } from "node:fs";
 import { Hono } from "hono";
-import { createDefaultTableDocument, serializeTableDocument } from "@edgeever/shared";
+import { createDefaultTableDocument, serializeTableDocument } from "@stillnote/shared";
 import { hashPassword } from "./auth-crypto.ts";
 import { updateMemoRecord } from "./memo-service.ts";
 import { registerPublicTableFormRoutes } from "./table-form-routes.ts";

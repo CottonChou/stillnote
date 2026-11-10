@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { resolveNoteProse } from "@edgeever/shared";
+import { resolveNoteProse } from "@stillnote/shared";
 import { notePrintAppearanceCss, notePrintAppearanceFromProse } from "./note-print-appearance.ts";
 
 describe("note print appearance", () => {
@@ -10,7 +10,7 @@ describe("note print appearance", () => {
       ));
       if (choice === "maple-mono-cn" || choice === "jetbrains") {
         expect(css).toContain("--editor-code-font-family:");
-        expect(css).toContain(choice === "jetbrains" ? "EdgeEver Share JetBrains Mono" : "EdgeEver Share Maple Mono CN");
+        expect(css).toContain(choice === "jetbrains" ? "StillNote Share JetBrains Mono" : "StillNote Share Maple Mono CN");
       } else expect(css).not.toContain("--editor-code-font-family:");
     }
   });
@@ -41,7 +41,7 @@ describe("note print appearance", () => {
     expect(css).toContain("accent-color: #20AD9D");
     expect(css).toContain("background: #F2FBFA;");
     expect(css).not.toContain("border-color: #CDEFEA;");
-    expect(css).toContain(".edgeever-editor .ProseMirror strong { color: #112233; }");
+    expect(css).toContain(".stillnote-editor .ProseMirror strong { color: #112233; }");
     expect(css).not.toContain("not-a-theme");
   });
 });

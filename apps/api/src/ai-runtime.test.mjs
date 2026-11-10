@@ -1,12 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import { openaiCompatibleHeaders } from "../../../packages/client/src/ai-model.ts";
-import { parseAiTagSuggestionNames } from "@edgeever/shared";
+import { parseAiTagSuggestionNames } from "@stillnote/shared";
 
 describe("OpenAI-compatible provider headers", () => {
   test("identifies OpenRouter so rankings and tool routes stay attributed", () => {
     expect(openaiCompatibleHeaders("https://openrouter.ai/api/v1")).toEqual({
-      "HTTP-Referer": "https://edgeever.org",
-      "X-Title": "EdgeEver",
+      "HTTP-Referer": "https://stillnote.org",
+      "X-Title": "StillNote",
     });
     expect(openaiCompatibleHeaders("https://api.openai.com/v1")).toBeUndefined();
   });
@@ -26,7 +26,7 @@ describe("AI tag response parsing", () => {
   });
 
   test("accepts the reasoning-model-safe tag block", () => {
-    expect(parseAiTagSuggestionNames(`Analysis omitted.\n<edgeever-tags>\n历史人物\n轻小说\n跨界创作\n</edgeever-tags>`))
+    expect(parseAiTagSuggestionNames(`Analysis omitted.\n<stillnote-tags>\n历史人物\n轻小说\n跨界创作\n</stillnote-tags>`))
       .toEqual(["历史人物", "轻小说", "跨界创作"]);
   });
 

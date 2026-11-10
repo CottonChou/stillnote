@@ -1,4 +1,4 @@
-import { CompanionToolPlanSchema, normalizeTags, type CompanionAction, type CompanionActionNote } from "@edgeever/shared";
+import { CompanionToolPlanSchema, normalizeTags, type CompanionAction, type CompanionActionNote } from "@stillnote/shared";
 import { AppError } from "./app-error";
 import type { AppContext } from "./api-context";
 import type { CompanionScope } from "./companion-service";

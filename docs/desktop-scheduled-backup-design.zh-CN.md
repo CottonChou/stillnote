@@ -2,7 +2,7 @@
 
 [English](desktop-scheduled-backup-design.md)
 
-关联：[Issue #650](https://github.com/tianma-if/edgeever/issues/650)、[原始需求 #61](https://github.com/tianma-if/edgeever/issues/61)。更新日期：2026-10-27。状态：已实现；验收范围和未完成项见[实施清单](changes/2026-10-23-desktop-scheduled-backup.zh-CN.md#完成核对)。
+关联：[Issue #650](https://github.com/CottonChou/stillnote/issues/650)、[原始需求 #61](https://github.com/CottonChou/stillnote/issues/61)。更新日期：2026-10-27。状态：已实现；验收范围和未完成项见[实施清单](changes/2026-10-23-desktop-scheduled-backup.zh-CN.md#完成核对)。
 
 桌面端定期把当前账号的知识库保存为独立归档，支持密码加密。用户把保存目录选在网盘同步文件夹内，即可由现有网盘客户端负责异地传输。原实例不可访问时，用户仍可通过桌面端连接新实例并恢复归档。
 
@@ -16,7 +16,7 @@
 
 - 尚未同步到服务端的修改、离线待上传附件和回收站内容。
 - 用户账号、登录凭据、API Key、实例部署配置、对象存储配置、公开分享和表单的发布配置。
-- 仅以外部 URL 引用、没有登记为 EdgeEver 资源的文件。正文中的链接保留，但外部服务失效会影响这些内容。
+- 仅以外部 URL 引用、没有登记为 StillNote 资源的文件。正文中的链接保留，但外部服务失效会影响这些内容。
 
 设置页应在备份范围处说明“备份已同步的笔记和附件”。备份任务不主动提交本地待同步修改，也不在网络不可用时改用本地缓存凑出一份归档。网络不可用时保留上次成功记录，等待重试。
 
@@ -30,7 +30,7 @@
 | --- | --- |
 | 自动备份 | 首次关闭；用户开启且配置有效后安排首次备份 |
 | 频率 | 每周、每月；默认每周。已有每天、每两周配置继续有效，修改前以禁用选项显示 |
-| 保存目录 | 系统 Documents 目录下的 `EdgeEver Backups`，允许通过原生目录选择器更改 |
+| 保存目录 | 系统 Documents 目录下的 `StillNote Backups`，允许通过原生目录选择器更改 |
 | 保留最近 | 1、3、5；默认 1 份。已有的 10、20 份配置继续有效，修改前以不可选选项显示 |
 | 备份加密 | 可选，首次关闭；开启时输入并确认独立的备份密码 |
 
@@ -101,7 +101,7 @@
 
 ## 5. 沿用业务格式并支持 ZIP64
 
-普通归档保持 `edgeever-zip` 的现有 `formatVersion: 2`：
+普通归档保持 `stillnote-zip` 的现有 `formatVersion: 2`：
 
 - `manifest.json` 记录格式、应用版本、导出时间和实体计数，保持 `includesTrash: false`。
 - `notebooks.json` 与 `prompts.json` 保存目录和提示词。
@@ -122,7 +122,7 @@
 
 首版采用 Node 原生加密实现：`AES-256-GCM` 加 `PBKDF2-HMAC-SHA256`，派生 32 字节密钥，迭代 600,000 次。选择 PBKDF2 是为了复用平台实现、便于后续跨端互通；成本参数参考 OWASP 的 PBKDF2 建议，实施时仍需测量目标设备耗时，不因耗时而静默降级。[参数参考](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2)
 
-每份文件独立生成 16 字节随机 salt 和 12 字节随机 IV，认证标签为 16 字节。密码以 UTF-8 编码，不规范化或裁剪。文件扩展名为 `.edgeever.enc`，内容按以下顺序排列，多字节整数使用大端序：
+每份文件独立生成 16 字节随机 salt 和 12 字节随机 IV，认证标签为 16 字节。密码以 UTF-8 编码，不规范化或裁剪。文件扩展名为 `.stillnote.enc`，内容按以下顺序排列，多字节整数使用大端序：
 
 | 字段 | 大小与值 |
 | --- | --- |
@@ -142,7 +142,7 @@
 
 ### 6.2 无人值守凭据
 
-备份密码不发送到 EdgeEver 服务端或网盘。为支持自动执行，本机通过 Electron `safeStorage` 和操作系统凭据机制保存密码，文件与实例、账号绑定，不写入普通配置、`localStorage`、日志或备份目录。
+备份密码不发送到 StillNote 服务端或网盘。为支持自动执行，本机通过 Electron `safeStorage` 和操作系统凭据机制保存密码，文件与实例、账号绑定，不写入普通配置、`localStorage`、日志或备份目录。
 
 Linux 必须检查实际安全存储后端；`basic_text` 不能用于保存自动备份密码。安全存储不可用或被锁定时暂停加密自动任务，用户可以解锁后继续，也可以输入密码执行一次、不保存密码。不能改为明文输出或明文保存密码。[Electron 安全存储说明](https://www.electronjs.org/docs/latest/api/safe-storage)
 
@@ -150,7 +150,7 @@ Linux 必须检查实际安全存储后端；`basic_text` 不能用于保存自�
 
 ## 7. 文件发布和保留规则
 
-用户选择的是保存根目录，应用为当前本机备份集创建 `<backupSetId>` 子目录，设置页显示实际写入目录。“打开文件夹”打开该子目录。自动任务文件名采用 UTC 时间与随机备份 ID，例如 `edgeever-backup-20261023T020000Z-<id>.zip`；加密时后缀为 `.edgeever.enc`。手动文件名自动采用本地时间戳，不带随机 ID；按已保存的格式追加扩展名。同名拒绝，不覆盖已有文件。
+用户选择的是保存根目录，应用为当前本机备份集创建 `<backupSetId>` 子目录，设置页显示实际写入目录。“打开文件夹”打开该子目录。自动任务文件名采用 UTC 时间与随机备份 ID，例如 `stillnote-backup-20261023T020000Z-<id>.zip`；加密时后缀为 `.stillnote.enc`。手动文件名自动采用本地时间戳，不带随机 ID；按已保存的格式追加扩展名。同名拒绝，不覆盖已有文件。
 
 一次任务依次完成以下操作：
 
@@ -170,7 +170,7 @@ Linux 必须检查实际安全存储后端；`basic_text` 不能用于保存自�
 
 ## 8. 解密和恢复
 
-“从文件恢复”默认打开当前备份集目录，也允许选择其他位置；列表中的“恢复”直接选择对应文件。两者共用解锁、检查和确认流程，按文件头识别普通 ZIP 与 `.edgeever.enc`，不只依赖扩展名。
+“从文件恢复”默认打开当前备份集目录，也允许选择其他位置；列表中的“恢复”直接选择对应文件。两者共用解锁、检查和确认流程，按文件头识别普通 ZIP 与 `.stillnote.enc`，不只依赖扩展名。
 
 1. 识别容器版本。加密包提示输入密码；用户取消时不产生恢复写入。
 2. 流式解密到应用私有临时目录，完成 GCM 最终认证后才允许解析和导入。Unix 目录权限为 `0700`、文件为 `0600`，Windows 使用当前用户私有数据目录及相应 ACL。明文暂存不进入网盘目录。
@@ -231,4 +231,4 @@ GCM 的流式输出在最终认证前不能视为可信，因此禁止把解密�
 - [备份路由](../apps/api/src/backup-routes.ts)、[恢复服务](../apps/api/src/backup-service.ts)与[同步变更 migration](../migrations/0013_mobile_sync_changes.sql)：新增完整版本校验，不扩大旧同步游标的含义。
 - [导入导出卡片](../apps/web/src/components/settings/DataExportCard.tsx)、[渲染器休眠](../apps/desktop/src/main/renderer-hibernate.mjs)与[账号隔离](../apps/desktop/src/main/account-scope.mjs)：沿用现有入口，后台任务独立于渲染器。
 - [跨运行时存储契约](../apps/api/src/storage-contract.ts)与[自托管架构](self-hosting-architecture.zh-CN.md)：一致性逻辑不能只在 Cloudflare 入口实现。
-- [原备份与容灾方案](https://github.com/tianma-if/edgeever/blob/main/docs/backup-and-disaster-recovery-plan.zh-CN.md)：保留本地目录协同路线，本设计细化 Issue #650 的交付边界与恢复条件。
+- [原备份与容灾方案](https://github.com/CottonChou/stillnote/blob/main/docs/backup-and-disaster-recovery-plan.zh-CN.md)：保留本地目录协同路线，本设计细化 Issue #650 的交付边界与恢复条件。

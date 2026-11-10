@@ -1,5 +1,5 @@
-import type { ImportMemosInput, ImportMemosResponse } from "@edgeever/shared/note-import/types";
-import type { NotebookUpdateInput } from "@edgeever/shared";
+import type { ImportMemosInput, ImportMemosResponse } from "@stillnote/shared/note-import/types";
+import type { NotebookUpdateInput } from "@stillnote/shared";
 import {
   parsePreparedAiGeneration,
   streamDirectAiGeneration,
@@ -79,16 +79,16 @@ import type {
   PluginAiGenerateRequest,
   PluginPublicFetchRequest,
   PluginPublicFetchResponse,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 
 export const MAX_SINGLE_REQUEST_UPLOAD_BYTES = 5 * 1024 * 1024;
 
-export type EdgeEverClientRequestContext = {
+export type StillNoteClientRequestContext = {
   path: string;
   token?: string;
 };
 
-export type EdgeEverClientOptions = {
+export type StillNoteClientOptions = {
   baseUrl?: string | (() => string);
   token?: string | null | (() => string | null | undefined);
   fetch?: typeof fetch;
@@ -100,9 +100,9 @@ export type EdgeEverClientOptions = {
   allowAiServerFallback?: boolean;
   /** Used only for the model provider request; defaults to `fetch`. */
   providerFetch?: typeof fetch;
-  beforeRequest?: (context: EdgeEverClientRequestContext) => void | Promise<void>;
+  beforeRequest?: (context: StillNoteClientRequestContext) => void | Promise<void>;
   shouldAttachToken?: (path: string) => boolean;
-  onUnauthorized?: (context: EdgeEverClientRequestContext) => void | Promise<void>;
+  onUnauthorized?: (context: StillNoteClientRequestContext) => void | Promise<void>;
 };
 
 export type MultipartResourceUploadSource = {
@@ -356,13 +356,13 @@ export class ApiRequestError extends Error {
 
 export type ApiResponseDiagnostics = {
   cloudflareMitigated: boolean;
-  isEdgeEverApiError: boolean;
+  isStillNoteApiError: boolean;
   rayId?: string;
 };
 
 export type { SyncBootstrapResponse, SyncChangesResponse };
 
-export const createEdgeEverClient = (options: EdgeEverClientOptions = {}) => {
+export const createStillNoteClient = (options: StillNoteClientOptions = {}) => {
   const getFetch = () => options.fetch ?? globalThis.fetch;
   const providerFetch = (): typeof fetch => async (url, init) => {
     const directFetch = options.providerFetch ?? getFetch();
@@ -373,9 +373,9 @@ export const createEdgeEverClient = (options: EdgeEverClientOptions = {}) => {
         method: "POST",
         headers: {
           "Content-Type": "application/octet-stream",
-          "x-edgeever-ai-target": target.url,
-          "x-edgeever-ai-method": target.method,
-          "x-edgeever-ai-headers": JSON.stringify(Object.fromEntries(target.headers)),
+          "x-stillnote-ai-target": target.url,
+          "x-stillnote-ai-method": target.method,
+          "x-stillnote-ai-headers": JSON.stringify(Object.fromEntries(target.headers)),
         },
         body: target.method === "GET" ? undefined : await target.arrayBuffer(),
         signal: target.signal,
@@ -397,7 +397,7 @@ export const createEdgeEverClient = (options: EdgeEverClientOptions = {}) => {
     requestOptions?: { attachToken?: boolean; setJsonContentType?: boolean },
   ) => {
     const token = getToken();
-    const context: EdgeEverClientRequestContext = { path, ...(token ? { token } : {}) };
+    const context: StillNoteClientRequestContext = { path, ...(token ? { token } : {}) };
     await options.beforeRequest?.(context);
 
     const headers = new Headers(init?.headers);
@@ -428,7 +428,7 @@ export const createEdgeEverClient = (options: EdgeEverClientOptions = {}) => {
   };
 
   const throwRequestError = async (
-    context: EdgeEverClientRequestContext,
+    context: StillNoteClientRequestContext,
     response: Response,
     fallbackMessage = "Request failed",
   ): Promise<never> => {
@@ -440,7 +440,7 @@ export const createEdgeEverClient = (options: EdgeEverClientOptions = {}) => {
         : undefined;
     const responseDiagnostics: ApiResponseDiagnostics = {
       cloudflareMitigated: response.headers.get("cf-mitigated") === "challenge",
-      isEdgeEverApiError: Boolean(error && typeof error === "object"),
+      isStillNoteApiError: Boolean(error && typeof error === "object"),
       ...(rayId ? { rayId } : {}),
     };
 
@@ -473,19 +473,19 @@ export const createEdgeEverClient = (options: EdgeEverClientOptions = {}) => {
       body: JSON.stringify(input),
       signal,
     });
-    const upstreamStatus = response.headers.get("x-edgeever-upstream-status");
+    const upstreamStatus = response.headers.get("x-stillnote-upstream-status");
     if (!response.ok || !upstreamStatus) await throwRequestError(context, response, "Public network request failed");
     const status = Number(upstreamStatus);
     if (!Number.isInteger(status) || status < 100 || status > 599) throw new Error("Invalid public network response status");
     const headers: Record<string, string> = {};
     for (const [key, value] of response.headers) {
-      const prefix = "x-edgeever-upstream-header-";
+      const prefix = "x-stillnote-upstream-header-";
       if (key.startsWith(prefix)) headers[key.slice(prefix.length)] = value;
     }
     return {
       url: input.url,
       status,
-      statusText: decodeURIComponent(response.headers.get("x-edgeever-upstream-status-text") ?? ""),
+      statusText: decodeURIComponent(response.headers.get("x-stillnote-upstream-status-text") ?? ""),
       headers,
       body: await response.arrayBuffer(),
     };
@@ -670,7 +670,7 @@ export const createEdgeEverClient = (options: EdgeEverClientOptions = {}) => {
   };
 
   const runPreparedCompanion = async (
-    prepared: import("@edgeever/shared").CompanionPreparedTurn,
+    prepared: import("@stillnote/shared").CompanionPreparedTurn,
     streamOptions: { signal?: AbortSignal; onEvent: (event: CompanionEvent) => void },
   ) => {
     const { streamDirectCompanion } = await import("./companion-direct-stream");
@@ -956,7 +956,7 @@ export const createEdgeEverClient = (options: EdgeEverClientOptions = {}) => {
       }),
 
     testAiProvider: async (providerConfigId: string, payload: { modelId: string; provider?: AiProvider; baseUrl?: string; apiKey?: string }) => {
-      const prepared = await request<import("@edgeever/shared").AiPreparedTextGeneration>(`/api/v1/ai/providers/${encodeURIComponent(providerConfigId)}/direct-credential`, { method: "POST", body: JSON.stringify(payload) });
+      const prepared = await request<import("@stillnote/shared").AiPreparedTextGeneration>(`/api/v1/ai/providers/${encodeURIComponent(providerConfigId)}/direct-credential`, { method: "POST", body: JSON.stringify(payload) });
       const { generateDirectAiText } = await import("./ai-direct-generate");
       const text = await generateDirectAiText({ ...prepared, system: "Follow the user instruction exactly.", prompt: "Reply with only: OK", maxOutputTokens: 16 }, { fetch: providerFetch(), signal: AbortSignal.timeout(20_000) });
       return { ok: true, response: text.trim() };
@@ -1103,7 +1103,7 @@ export const createEdgeEverClient = (options: EdgeEverClientOptions = {}) => {
     },
 
     streamInfographicAgent: async (payload: InfographicAgentRequest, streamOptions: { signal?: AbortSignal; onEvent: (event: InfographicAgentEvent) => void }) => {
-      const prepared = await request<import("@edgeever/shared").AiPreparedTextGeneration>("/api/v1/ai/infographic-agent/prepare", {
+      const prepared = await request<import("@stillnote/shared").AiPreparedTextGeneration>("/api/v1/ai/infographic-agent/prepare", {
         method: "POST", body: JSON.stringify(payload), signal: streamOptions.signal,
       });
       const { runInfographicAgent } = await import("./infographic-direct");
@@ -1660,7 +1660,7 @@ export const createEdgeEverClient = (options: EdgeEverClientOptions = {}) => {
       if (!response.ok) await throwRequestError(context, response, "Community registry request failed");
       return {
         bytes: await response.arrayBuffer(),
-        signatureBase64: response.headers.get("x-edgeever-community-registry-signature") ?? "",
+        signatureBase64: response.headers.get("x-stillnote-community-registry-signature") ?? "",
       };
     },
 
@@ -1703,7 +1703,7 @@ export const createEdgeEverClient = (options: EdgeEverClientOptions = {}) => {
     },
 
     claimPosterRender: () => request<{ job: null | { id: string; memoId: string; expectedRevision: number; templateId: string | null; claimToken: string; expiresAt: string } }>("/api/v1/poster-render/claim", { method: "POST", body: "{}" }),
-    completePosterRender: (id: string, input: { claimToken: string; document?: import("@edgeever/shared").PosterDocument; errorCode?: "render_failed" | "revision_conflict" | "client_timeout" }) => request<{ job: { status: string } }>(`/api/v1/poster-render/${encodeURIComponent(id)}/complete`, { method: "POST", body: JSON.stringify(input) }),
+    completePosterRender: (id: string, input: { claimToken: string; document?: import("@stillnote/shared").PosterDocument; errorCode?: "render_failed" | "revision_conflict" | "client_timeout" }) => request<{ job: { status: string } }>(`/api/v1/poster-render/${encodeURIComponent(id)}/complete`, { method: "POST", body: JSON.stringify(input) }),
     uploadMemoResourceParts,
 
     updateMemo: (

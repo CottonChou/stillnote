@@ -16,7 +16,7 @@ import {
   DEFAULT_NOTE_PROSE_CSS,
   noteProseCssDropsDeclarations,
   sanitizeNoteProseCss,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 
 const emptyAccount = () => ({
   fontSize: null,

@@ -84,7 +84,7 @@ const getStatusTone = ({
 };
 
 const desktopBridgeAvailable = () => (
-  typeof window !== "undefined" && typeof window.edgeeverDesktop?.listAcpAdapters === "function"
+  typeof window !== "undefined" && typeof window.stillnoteDesktop?.listAcpAdapters === "function"
 );
 
 const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
@@ -267,7 +267,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
                   <input
                     className="mt-0.5"
                     type="radio"
-                    name={`edgeever-acp-source-${instanceId}`}
+                    name={`stillnote-acp-source-${instanceId}`}
                     value={option}
                     checked={checked}
                     disabled={disabled}
@@ -311,7 +311,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
                     <input
                       className="sr-only"
                       type="radio"
-                      name={`edgeever-acp-adapter-${instanceId}`}
+                      name={`stillnote-acp-adapter-${instanceId}`}
                       value={id}
                       checked={checked}
                       onChange={() => selectAdapter(id)}
@@ -349,7 +349,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
                   readOnly
                 />
                 <Button type="button" variant="outline" size="sm" onClick={() => {
-                  void window.edgeeverDesktop?.chooseAcpAdapterPath?.().then((selected) => {
+                  void window.stillnoteDesktop?.chooseAcpAdapterPath?.().then((selected) => {
                     if (selected) { setAdapterPath(selected); setProbed(null); }
                   }).catch(() => setInstallError(true));
                 }}>

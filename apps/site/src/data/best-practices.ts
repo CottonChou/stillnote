@@ -200,7 +200,7 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "three-pane",
         number: "01",
         title: "经典三栏工作区与沉浸排版写作",
-        lead: "EdgeEver 采用「目录树 · 笔记列表 · 编辑区」三栏布局，兼顾高效检索与沉浸创作。",
+        lead: "StillNote 采用「目录树 · 笔记列表 · 编辑区」三栏布局，兼顾高效检索与沉浸创作。",
         bullets: [
           "专注模式：侧边栏支持拖拽调宽与折叠，随时切换全屏专注写作。",
           "混合编辑：主编辑区支持所见即所得（WYSIWYG）与 Markdown 语法混写。",
@@ -208,7 +208,7 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "三栏工作区布局",
-            alt: "EdgeEver 经典三栏工作区与沉浸排版编辑效果",
+            alt: "StillNote 经典三栏工作区与沉浸排版编辑效果",
           },
         ],
       },
@@ -224,19 +224,19 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "wechat-chat",
         number: "02",
         title: "微信聊天记录归档与整理",
-        lead: "在微信中多选对话点击「合并转发」，在「转发到其他应用」中选择 EdgeEver，自动转换为结构化笔记。",
+        lead: "在微信中多选对话点击「合并转发」，在「转发到其他应用」中选择 StillNote，自动转换为结构化笔记。",
         bullets: [
           "格式解析：解析发言人、时间轴、微信表情与超链接。",
           "资源转存：图片内嵌展示，文档与音视频（如 .xlsx、.pdf、.mp4）转为附件并支持全文检索。",
         ],
         media: [
           {
-            caption: "1. 微信合并转发至 EdgeEver",
-            alt: "微信转发到其他应用选择 EdgeEver",
+            caption: "1. 微信合并转发至 StillNote",
+            alt: "微信转发到其他应用选择 StillNote",
           },
           {
             caption: "2. 结构化笔记预览",
-            alt: "EdgeEver 导入后的微信聊天记录笔记效果",
+            alt: "StillNote 导入后的微信聊天记录笔记效果",
           },
         ],
       },
@@ -244,18 +244,18 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "wechat-article",
         number: "03",
         title: "手机端剪藏微信公众号文章",
-        lead: "在微信中阅读文章时，点击右上角菜单选择「用 EdgeEver 打开」即可完成剪藏。",
+        lead: "在微信中阅读文章时，点击右上角菜单选择「用 StillNote 打开」即可完成剪藏。",
         bullets: [
           "提取标题、正文结构与配图，自动转换为清晰的 Markdown 笔记。",
         ],
         media: [
           {
-            caption: "1. 选择「用 EdgeEver 打开」",
-            alt: "微信文章分享菜单选择用 EdgeEver 打开",
+            caption: "1. 选择「用 StillNote 打开」",
+            alt: "微信文章分享菜单选择用 StillNote 打开",
           },
           {
             caption: "2. 内容提取中",
-            alt: "EdgeEver 正在剪藏文章提取中",
+            alt: "StillNote 正在剪藏文章提取中",
           },
           {
             caption: "3. 剪藏生成的 Markdown 笔记",
@@ -267,7 +267,7 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "mobile-image",
         number: "04",
         title: "移动端图片分享转存笔记",
-        lead: "在任意手机应用中通过系统分享面板选择 EdgeEver，后台自动上传原图并创建以「分享的图片」为标题的笔记。",
+        lead: "在任意手机应用中通过系统分享面板选择 StillNote，后台自动上传原图并创建以「分享的图片」为标题的笔记。",
         bullets: [
           "无需切换打断当前浏览流，系统级分享面板一键静默入库。",
         ],
@@ -277,8 +277,8 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
             alt: "社媒 App 点击图片分享",
           },
           {
-            caption: "2. 选择 EdgeEver",
-            alt: "系统分享面板选择 EdgeEver",
+            caption: "2. 选择 StillNote",
+            alt: "系统分享面板选择 StillNote",
           },
           {
             caption: "3. 生成图片笔记",
@@ -290,7 +290,7 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "xiaohongshu",
         number: "05",
         title: "小红书图文笔记剪藏",
-        lead: "使用 EdgeEver Web Clipper 插件在小红书笔记页面右键点击「保存笔记到 EdgeEver」。",
+        lead: "使用 StillNote Web Clipper 插件在小红书笔记页面右键点击「保存笔记到 StillNote」。",
         bullets: [
           "提取标题、话题标签、正文、发布时间与原文链接。",
           "多图内容自动排版为多栏画廊。",
@@ -298,11 +298,11 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "1. 右键菜单剪藏",
-            alt: "右键保存小红书笔记到 EdgeEver",
+            alt: "右键保存小红书笔记到 StillNote",
           },
           {
             caption: "2. 多栏画廊笔记效果",
-            alt: "EdgeEver 剪藏后的小红书笔记多栏画廊效果",
+            alt: "StillNote 剪藏后的小红书笔记多栏画廊效果",
           },
         ],
       },
@@ -310,7 +310,7 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "twitter",
         number: "06",
         title: "X (Twitter) 推文与引用剪藏",
-        lead: "使用 EdgeEver Web Clipper 插件在推文上右键点击「保存推文到 EdgeEver」。",
+        lead: "使用 StillNote Web Clipper 插件在推文上右键点击「保存推文到 StillNote」。",
         bullets: [
           "提取作者、推文正文、外链、引用推文（Quote Tweet）及附带图集。",
           "自动渲染为多栏画廊排版。",
@@ -318,11 +318,11 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "1. 右键保存推文",
-            alt: "右键保存推文到 EdgeEver",
+            alt: "右键保存推文到 StillNote",
           },
           {
             caption: "2. 包含引用与图集的笔记效果",
-            alt: "EdgeEver 剪藏后的 X 推文笔记效果",
+            alt: "StillNote 剪藏后的 X 推文笔记效果",
           },
         ],
       },
@@ -330,18 +330,18 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "zhihu",
         number: "07",
         title: "知乎回答与文章剪藏",
-        lead: "在知乎目标回答或文章处右键点击「保存回答/文章到 EdgeEver」。",
+        lead: "在知乎目标回答或文章处右键点击「保存回答/文章到 StillNote」。",
         bullets: [
           "解析问题标题、作者、正文、发布时间与原始链接，生成问答结构笔记。",
         ],
         media: [
           {
             caption: "1. 右键保存回答/文章",
-            alt: "右键保存知乎回答到 EdgeEver",
+            alt: "右键保存知乎回答到 StillNote",
           },
           {
             caption: "2. 问答结构笔记预览",
-            alt: "EdgeEver 剪藏后的知乎回答笔记效果",
+            alt: "StillNote 剪藏后的知乎回答笔记效果",
           },
         ],
       },
@@ -349,18 +349,18 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "reddit",
         number: "08",
         title: "Reddit 讨论帖剪藏",
-        lead: "在 Reddit 帖子处右键点击「保存所选内容到 EdgeEver」。",
+        lead: "在 Reddit 帖子处右键点击「保存所选内容到 StillNote」。",
         bullets: [
           "捕获帖子标题、所属版块（Subreddit，如 r/AskReddit）、作者、时间戳及链接，保留社区元数据。",
         ],
         media: [
           {
             caption: "1. 右键保存帖子",
-            alt: "右键保存 Reddit 帖子到 EdgeEver",
+            alt: "右键保存 Reddit 帖子到 StillNote",
           },
           {
             caption: "2. 包含社区元数据的笔记预览",
-            alt: "EdgeEver 剪藏后的 Reddit 帖子笔记效果",
+            alt: "StillNote 剪藏后的 Reddit 帖子笔记效果",
           },
         ],
       },
@@ -368,7 +368,7 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "instagram",
         number: "09",
         title: "Instagram 帖子与轮播多图剪藏",
-        lead: "使用 EdgeEver Web Clipper 插件在 Instagram 帖子或轮播页面右键点击「保存帖子到 EdgeEver」。",
+        lead: "使用 StillNote Web Clipper 插件在 Instagram 帖子或轮播页面右键点击「保存帖子到 StillNote」。",
         bullets: [
           "提取作者账号、正文描述、发布时间与原文链接，保留话题标签与提及元数据。",
           "多图轮播（Carousel）内容完整提取并自动排版为多栏画廊。",
@@ -376,11 +376,11 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "1. 右键保存 Instagram 帖子",
-            alt: "右键保存 Instagram 帖子到 EdgeEver",
+            alt: "右键保存 Instagram 帖子到 StillNote",
           },
           {
             caption: "2. 包含完整图集与元数据的笔记效果",
-            alt: "EdgeEver 剪藏后的 Instagram 帖子笔记效果",
+            alt: "StillNote 剪藏后的 Instagram 帖子笔记效果",
           },
         ],
       },
@@ -388,18 +388,18 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "github",
         number: "10",
         title: "GitHub 仓库元数据剪藏",
-        lead: "在 GitHub 仓库页面右键点击「保存仓库信息到 EdgeEver」。",
+        lead: "在 GitHub 仓库页面右键点击「保存仓库信息到 StillNote」。",
         bullets: [
           "提取仓库名称（Owner/Repo）、简介、官方主页、编程语言、许可证与话题标签，生成结构化技术卡片。",
         ],
         media: [
           {
             caption: "1. 右键保存仓库信息",
-            alt: "右键保存 GitHub 仓库信息到 EdgeEver",
+            alt: "右键保存 GitHub 仓库信息到 StillNote",
           },
           {
             caption: "2. 结构化仓库卡片预览",
-            alt: "EdgeEver 剪藏后的 GitHub 仓库卡片笔记",
+            alt: "StillNote 剪藏后的 GitHub 仓库卡片笔记",
           },
         ],
       },
@@ -498,7 +498,7 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "acp-agent",
         number: "15",
         title: "连接本机 Agent (ACP) 实现笔记协同",
-        lead: "EdgeEver 支持 ACP (Agent Client Protocol) 协议，允许桌面端连接本机运行的各类 AI Agent（如 Codex、Claude Code、DeepSeek Harness、Antigravity 等）。",
+        lead: "StillNote 支持 ACP (Agent Client Protocol) 协议，允许桌面端连接本机运行的各类 AI Agent（如 Codex、Claude Code、DeepSeek Harness、Antigravity 等）。",
         bullets: [
           "本地授权：授予本地 Agent 当前账号笔记的安全读写权限。",
           "伴随对话：在笔记右侧栏直接协同，执行代码推理、长文总结与知识库检索。",
@@ -534,11 +534,11 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "1. 「透明」等多款卡片主题预览",
-            alt: "EdgeEver 分享为图片透明主题卡片预览",
+            alt: "StillNote 分享为图片透明主题卡片预览",
           },
           {
             caption: "2. 字体风格与排版微调",
-            alt: "EdgeEver 分享为图片字体与主题排版调整",
+            alt: "StillNote 分享为图片字体与主题排版调整",
           },
         ],
       },
@@ -554,7 +554,7 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "海报设计工作台与模板库",
-            alt: "EdgeEver 海报设计工作台与丰富设计模板",
+            alt: "StillNote 海报设计工作台与丰富设计模板",
           },
         ],
       },
@@ -569,7 +569,7 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "1. 复制到公众号 / 博客",
-            alt: "EdgeEver 笔记菜单点击复制到公众号",
+            alt: "StillNote 笔记菜单点击复制到公众号",
           },
           {
             caption: "2. 公众号后台编辑器粘贴效果",
@@ -589,33 +589,33 @@ const zhCnCategories: ShowcaseCategoryCopy[] = [
         id: "plugin-ecosystem",
         number: "19",
         title: "开放插件 API 与自定义插件开发",
-        lead: "EdgeEver 内置插件扩展管理，支持通过 GitHub 仓库或 Manifest 地址一键安装，配置在 Web 与桌面端跨设备隔离同步。",
+        lead: "StillNote 内置插件扩展管理，支持通过 GitHub 仓库或 Manifest 地址一键安装，配置在 Web 与桌面端跨设备隔离同步。",
         bullets: [
           "核心 API 能力：提供文档双向读写、自定义 DOM 面板/嵌入块、统一设置、隔离存储以及调用工作区已配置的 AI 模型。",
-          "官方开源插件范式：待办任务汇总（EdgeEver Tasks）与 AI RSS 每日简报助手（EdgeEver AI RSS）。",
+          "官方开源插件范式：待办任务汇总（StillNote Tasks）与 AI RSS 每日简报助手（StillNote AI RSS）。",
         ],
         links: [
           {
-            label: "EdgeEver Tasks 仓库",
-            href: "https://github.com/tianma-if/edgeever-tasks",
+            label: "StillNote Tasks 仓库",
+            href: "https://github.com/CottonChou/stillnote-tasks",
           },
           {
-            label: "EdgeEver AI RSS 仓库",
-            href: "https://github.com/tianma-if/edgeever-ai-rss",
+            label: "StillNote AI RSS 仓库",
+            href: "https://github.com/CottonChou/stillnote-ai-rss",
           },
           {
             label: "插件开发指南",
-            href: "https://github.com/tianma-if/edgeever/blob/main/docs/plugin-development.zh-CN.md",
+            href: "https://github.com/CottonChou/stillnote/blob/main/docs/plugin-development.zh-CN.md",
           },
         ],
         media: [
           {
             caption: "1. 插件与主题管理中心",
-            alt: "EdgeEver 插件市场与官方插件管理",
+            alt: "StillNote 插件市场与官方插件管理",
           },
           {
             caption: "2. 插件 API 体系与开发文档",
-            alt: "EdgeEver 插件开发 API 命名空间与规范文档",
+            alt: "StillNote 插件开发 API 命名空间与规范文档",
           },
         ],
       },
@@ -634,7 +634,7 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "three-pane",
         number: "01",
         title: "Classic Three-Pane Workspace & Distraction-Free Editing",
-        lead: "EdgeEver features a classic three-pane structure (Notebook Tree · Note Stream · Editor Canvas):",
+        lead: "StillNote features a classic three-pane structure (Notebook Tree · Note Stream · Editor Canvas):",
         bullets: [
           "Focus Mode: Resizable and collapsible sidebars allow instant toggling into full-screen writing mode.",
           "Hybrid Editing: The main editor supports both WYSIWYG rich text and Markdown syntax.",
@@ -642,7 +642,7 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "Three-Pane Workspace Layout",
-            alt: "EdgeEver classic three-pane workspace with rich editor",
+            alt: "StillNote classic three-pane workspace with rich editor",
           },
         ],
       },
@@ -658,19 +658,19 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "wechat-chat",
         number: "02",
         title: "WeChat Chat History Archiving",
-        lead: "Select messages in WeChat, tap \"Combine and Forward\", and choose EdgeEver under \"Forward to Other Apps\" to convert conversations into structured notes.",
+        lead: "Select messages in WeChat, tap \"Combine and Forward\", and choose StillNote under \"Forward to Other Apps\" to convert conversations into structured notes.",
         bullets: [
           "Format Parsing: Parses senders, timestamps, emojis, and links into clean layouts.",
           "Media Preservation: Images are embedded inline; documents and media files (.xlsx, .pdf, .mp4) are saved as attachments with full-text search support.",
         ],
         media: [
           {
-            caption: "1. Forward to EdgeEver",
-            alt: "WeChat share to EdgeEver",
+            caption: "1. Forward to StillNote",
+            alt: "WeChat share to StillNote",
           },
           {
             caption: "2. Structured Note Preview",
-            alt: "WeChat chat history imported into EdgeEver note",
+            alt: "WeChat chat history imported into StillNote note",
           },
         ],
       },
@@ -678,18 +678,18 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "wechat-article",
         number: "03",
         title: "WeChat Article Clipping on Mobile",
-        lead: "When reading WeChat Official Account articles on mobile, select \"Open in EdgeEver\" from the top-right menu.",
+        lead: "When reading WeChat Official Account articles on mobile, select \"Open in StillNote\" from the top-right menu.",
         bullets: [
           "Automatically extracts the title, body structure, and embedded images into clean Markdown.",
         ],
         media: [
           {
-            caption: "1. Select \"Open in EdgeEver\"",
-            alt: "WeChat article share menu select open in EdgeEver",
+            caption: "1. Select \"Open in StillNote\"",
+            alt: "WeChat article share menu select open in StillNote",
           },
           {
             caption: "2. Extracting Content",
-            alt: "EdgeEver clipping modal extracting article",
+            alt: "StillNote clipping modal extracting article",
           },
           {
             caption: "3. Generated Markdown Note",
@@ -701,7 +701,7 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "mobile-image",
         number: "04",
         title: "Mobile Image Sharing to Notes",
-        lead: "Select EdgeEver in the mobile system share sheet from any app to upload images and create notes titled \"Shared Image\" in the background.",
+        lead: "Select StillNote in the mobile system share sheet from any app to upload images and create notes titled \"Shared Image\" in the background.",
         bullets: [
           "Capture visual inspiration from any mobile app without interrupting your reading flow.",
         ],
@@ -711,8 +711,8 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
             alt: "Mobile app tap image share",
           },
           {
-            caption: "2. Choose EdgeEver",
-            alt: "System share sheet choose EdgeEver",
+            caption: "2. Choose StillNote",
+            alt: "System share sheet choose StillNote",
           },
           {
             caption: "3. Generated Image Note",
@@ -724,7 +724,7 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "xiaohongshu",
         number: "05",
         title: "Xiaohongshu (RED) Note Clipping",
-        lead: "Right-click any note page and select \"Save Note to EdgeEver\" using the EdgeEver Web Clipper extension.",
+        lead: "Right-click any note page and select \"Save Note to StillNote\" using the StillNote Web Clipper extension.",
         bullets: [
           "Captures title, topic tags, body text, publish timestamp, and source URL.",
           "Automatically formats multi-image sets into multi-column gallery layouts.",
@@ -732,7 +732,7 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "1. Right-Click Clipper Menu",
-            alt: "Right-click save Xiaohongshu note to EdgeEver",
+            alt: "Right-click save Xiaohongshu note to StillNote",
           },
           {
             caption: "2. Multi-Column Gallery Note",
@@ -744,7 +744,7 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "twitter",
         number: "06",
         title: "X (Twitter) Post & Quote Clipping",
-        lead: "Right-click any post and select \"Save Tweet to EdgeEver\" with the EdgeEver Web Clipper extension.",
+        lead: "Right-click any post and select \"Save Tweet to StillNote\" with the StillNote Web Clipper extension.",
         bullets: [
           "Extracts author info, tweet content, external links, quote tweets, and multi-image attachments.",
           "Formats content into a multi-column gallery layout.",
@@ -752,11 +752,11 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "1. Right-Click Save Tweet",
-            alt: "Right-click save tweet to EdgeEver",
+            alt: "Right-click save tweet to StillNote",
           },
           {
             caption: "2. Note with Quotes & Gallery",
-            alt: "X tweet clipped into EdgeEver note with quote",
+            alt: "X tweet clipped into StillNote note with quote",
           },
         ],
       },
@@ -764,18 +764,18 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "zhihu",
         number: "07",
         title: "Zhihu Answer & Column Article Clipping",
-        lead: "Right-click any specific answer or article and select \"Save Answer/Article to EdgeEver\".",
+        lead: "Right-click any specific answer or article and select \"Save Answer/Article to StillNote\".",
         bullets: [
           "Parses question title, author, body, timestamp, and permalink into a structured Q&A note.",
         ],
         media: [
           {
             caption: "1. Right-Click Save Answer/Article",
-            alt: "Right-click save Zhihu answer to EdgeEver",
+            alt: "Right-click save Zhihu answer to StillNote",
           },
           {
             caption: "2. Structured Q&A Note Preview",
-            alt: "Zhihu answer clipped into EdgeEver note",
+            alt: "Zhihu answer clipped into StillNote note",
           },
         ],
       },
@@ -783,18 +783,18 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "reddit",
         number: "08",
         title: "Reddit Discussion Post Clipping",
-        lead: "Right-click on the post title or body and select \"Save Selection to EdgeEver\".",
+        lead: "Right-click on the post title or body and select \"Save Selection to StillNote\".",
         bullets: [
           "Captures thread title, subreddit (e.g. r/AskReddit), author handle, timestamp, and permalink to preserve community metadata.",
         ],
         media: [
           {
             caption: "1. Right-Click Save Post",
-            alt: "Right-click save Reddit post to EdgeEver",
+            alt: "Right-click save Reddit post to StillNote",
           },
           {
             caption: "2. Note with Community Metadata",
-            alt: "Reddit post clipped into EdgeEver note",
+            alt: "Reddit post clipped into StillNote note",
           },
         ],
       },
@@ -802,7 +802,7 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "instagram",
         number: "09",
         title: "Instagram Post & Carousel Clipping",
-        lead: "Right-click any Instagram post or carousel and select \"Save Post to EdgeEver\" with EdgeEver Web Clipper.",
+        lead: "Right-click any Instagram post or carousel and select \"Save Post to StillNote\" with StillNote Web Clipper.",
         bullets: [
           "Extracts author handle, caption text, timestamp, and source URL while preserving hashtags and mention metadata.",
           "Captures full multi-image carousel sets, formatted automatically into a clean multi-column gallery layout.",
@@ -810,11 +810,11 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "1. Right-Click Save Instagram Post",
-            alt: "Right-click save Instagram post to EdgeEver",
+            alt: "Right-click save Instagram post to StillNote",
           },
           {
             caption: "2. Note with Metadata & Multi-Image Gallery",
-            alt: "Instagram post clipped into EdgeEver note",
+            alt: "Instagram post clipped into StillNote note",
           },
         ],
       },
@@ -822,18 +822,18 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "github",
         number: "10",
         title: "GitHub Repository Metadata Clipping",
-        lead: "Right-click anywhere on the GitHub repository page and select \"Save Repository Info to EdgeEver\".",
+        lead: "Right-click anywhere on the GitHub repository page and select \"Save Repository Info to StillNote\".",
         bullets: [
           "Extracts repository name (Owner/Repo), description, homepage, language, license, and topic tags into a technical card note.",
         ],
         media: [
           {
             caption: "1. Right-Click Save Repository Info",
-            alt: "Right-click save GitHub repo info to EdgeEver",
+            alt: "Right-click save GitHub repo info to StillNote",
           },
           {
             caption: "2. Structured Repository Card Note",
-            alt: "EdgeEver clipped GitHub repository card note effect",
+            alt: "StillNote clipped GitHub repository card note effect",
           },
         ],
       },
@@ -932,7 +932,7 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "acp-agent",
         number: "15",
         title: "Connecting Local Agents via ACP for Note Interaction",
-        lead: "EdgeEver natively supports ACP (Agent Client Protocol), allowing desktop clients to connect with local AI agent environments (such as Codex, Claude Code, DeepSeek Harness, Antigravity, etc.).",
+        lead: "StillNote natively supports ACP (Agent Client Protocol), allowing desktop clients to connect with local AI agent environments (such as Codex, Claude Code, DeepSeek Harness, Antigravity, etc.).",
         bullets: [
           "Local Authorization: Grants local agents secure read/write access to user notes.",
           "In-Editor Chat: Converse directly with local agents from the note sidebar for code reasoning, document synthesis, and knowledge retrieval.",
@@ -968,11 +968,11 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "1. Card Theme Previews (e.g. Transparent)",
-            alt: "EdgeEver share as image transparent theme preview",
+            alt: "StillNote share as image transparent theme preview",
           },
           {
             caption: "2. Font & Layout Customization",
-            alt: "EdgeEver share as image font and typography settings",
+            alt: "StillNote share as image font and typography settings",
           },
         ],
       },
@@ -988,7 +988,7 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "Poster Design Studio & Templates",
-            alt: "EdgeEver poster studio with rich design templates",
+            alt: "StillNote poster studio with rich design templates",
           },
         ],
       },
@@ -1003,7 +1003,7 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         media: [
           {
             caption: "1. Copy to Official Account / Blog",
-            alt: "EdgeEver note menu copy to WeChat MP",
+            alt: "StillNote note menu copy to WeChat MP",
           },
           {
             caption: "2. Rich Text Editor Paste Result",
@@ -1023,33 +1023,33 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
         id: "plugin-ecosystem",
         number: "19",
         title: "Open Plugin API & Custom Plugin Development",
-        lead: "EdgeEver features an extension manager supporting one-click installation via GitHub repository URLs or Manifest links, with cross-device workspace synchronization between Web and Desktop.",
+        lead: "StillNote features an extension manager supporting one-click installation via GitHub repository URLs or Manifest links, with cross-device workspace synchronization between Web and Desktop.",
         bullets: [
           "Core API Capabilities: Bidirectional note read/write, custom DOM panels/embed blocks, unified settings, isolated storage, and direct invocation of workspace-configured AI models.",
-          "Official Reference Plugins: Task Aggregation (EdgeEver Tasks) and AI RSS Feed Assistant (EdgeEver AI RSS).",
+          "Official Reference Plugins: Task Aggregation (StillNote Tasks) and AI RSS Feed Assistant (StillNote AI RSS).",
         ],
         links: [
           {
-            label: "EdgeEver Tasks Repo",
-            href: "https://github.com/tianma-if/edgeever-tasks",
+            label: "StillNote Tasks Repo",
+            href: "https://github.com/CottonChou/stillnote-tasks",
           },
           {
-            label: "EdgeEver AI RSS Repo",
-            href: "https://github.com/tianma-if/edgeever-ai-rss",
+            label: "StillNote AI RSS Repo",
+            href: "https://github.com/CottonChou/stillnote-ai-rss",
           },
           {
             label: "Plugin Development Guide",
-            href: "https://github.com/tianma-if/edgeever/blob/main/docs/plugin-development.md",
+            href: "https://github.com/CottonChou/stillnote/blob/main/docs/plugin-development.md",
           },
         ],
         media: [
           {
             caption: "1. Extension & Plugin Management Center",
-            alt: "EdgeEver plugin marketplace and official extension management",
+            alt: "StillNote plugin marketplace and official extension management",
           },
           {
             caption: "2. Plugin API Namespaces & Documentation",
-            alt: "EdgeEver plugin development API reference and documentation",
+            alt: "StillNote plugin development API reference and documentation",
           },
         ],
       },
@@ -1060,7 +1060,7 @@ const enUsCategories: ShowcaseCategoryCopy[] = [
 export const bestPracticesPageCopy: Record<SiteLocale, BestPracticesPageLocaleCopy> = {
   "zh-CN": {
     eyebrow: "BEST PRACTICES & SHOWCASE",
-    title: "EdgeEver 19 个真机场景与实操指南",
+    title: "StillNote 19 个真机场景与实操指南",
     description:
       "涵盖三栏沉浸写作、微信与全渠道结构化剪藏、AI 对话生成导图/信息图/多维表格、本机 ACP Agent 协同、海报与长图分享及开放插件生态的完整实机演示。",
     zoomHint: "点击任意截图可放大查看高清细节",
@@ -1068,25 +1068,25 @@ export const bestPracticesPageCopy: Record<SiteLocale, BestPracticesPageLocaleCo
     demoCta: "打开在线演示",
     deployCta: "一键 AI 部署",
     githubDocCta: "在 GitHub 查看原文档",
-    githubDocHref: "https://github.com/tianma-if/edgeever/blob/main/docs/best-practices.zh-CN.md",
+    githubDocHref: "https://github.com/CottonChou/stillnote/blob/main/docs/best-practices.zh-CN.md",
     categories: zhCnCategories,
   },
   "en-US": {
     eyebrow: "BEST PRACTICES & SHOWCASE",
-    title: "19 Real-World EdgeEver Workflows & Showcase",
+    title: "19 Real-World StillNote Workflows & Showcase",
     description:
-      "A visual walkthrough of core EdgeEver workflows across desktop and mobile: three-pane writing, omnichannel clipping, AI diagrams & databases, local ACP agents, poster studio, and open plugins.",
+      "A visual walkthrough of core StillNote workflows across desktop and mobile: three-pane writing, omnichannel clipping, AI diagrams & databases, local ACP agents, poster studio, and open plugins.",
     zoomHint: "Click any screenshot to inspect full-resolution details",
     closePreview: "Close preview",
     demoCta: "Open Live Demo",
     deployCta: "Deploy with AI",
     githubDocCta: "View Document on GitHub",
-    githubDocHref: "https://github.com/tianma-if/edgeever/blob/main/docs/best-practices.md",
+    githubDocHref: "https://github.com/CottonChou/stillnote/blob/main/docs/best-practices.md",
     categories: enUsCategories,
   },
   ja: {
     eyebrow: "BEST PRACTICES & SHOWCASE",
-    title: "EdgeEver 19 の実機デモとベストプラクティス",
+    title: "StillNote 19 の実機デモとベストプラクティス",
     description:
       "クラシックな三ペイン執筆、マルチチャネル Web クリッピング、AI による図解・インフォグラフィック・多次元テーブル生成、ローカル ACP Agent 連携、ポスター作成、プラグイン拡張までの実機ワークフロー集です。",
     zoomHint: "スクリーンショットをクリックすると拡大表示できます",
@@ -1094,20 +1094,20 @@ export const bestPracticesPageCopy: Record<SiteLocale, BestPracticesPageLocaleCo
     demoCta: "ライブデモを開く",
     deployCta: "AI で導入",
     githubDocCta: "GitHub でドキュメントを見る",
-    githubDocHref: "https://github.com/tianma-if/edgeever/blob/main/docs/best-practices.md",
+    githubDocHref: "https://github.com/CottonChou/stillnote/blob/main/docs/best-practices.md",
     categories: enUsCategories,
   },
   pl: {
     eyebrow: "BEST PRACTICES & SHOWCASE",
-    title: "19 praktycznych scenariuszy i prezentacja EdgeEver",
+    title: "19 praktycznych scenariuszy i prezentacja StillNote",
     description:
-      "Wizualny przewodnik po najważniejszych przepływach pracy w EdgeEver na komputerze i telefonie: pisanie w trzech panelach, wycinanie treści z sieci, diagramy i bazy danych AI, lokalni agenci ACP, studio plakatów i wtyczki.",
+      "Wizualny przewodnik po najważniejszych przepływach pracy w StillNote na komputerze i telefonie: pisanie w trzech panelach, wycinanie treści z sieci, diagramy i bazy danych AI, lokalni agenci ACP, studio plakatów i wtyczki.",
     zoomHint: "Kliknij dowolny zrzut ekranu, aby powiększyć",
     closePreview: "Zamknij podgląd",
     demoCta: "Otwórz demo na żywo",
     deployCta: "Wdróż z AI",
     githubDocCta: "Zobacz dokument na GitHub",
-    githubDocHref: "https://github.com/tianma-if/edgeever/blob/main/docs/best-practices.md",
+    githubDocHref: "https://github.com/CottonChou/stillnote/blob/main/docs/best-practices.md",
     categories: enUsCategories,
   },
 };

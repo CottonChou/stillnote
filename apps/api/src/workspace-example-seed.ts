@@ -3,14 +3,16 @@ import {
   docToText,
   markdownToDoc,
   normalizeTags,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import {
+  WELCOME_MEMO_LEGACY_SEED_TITLE,
   WELCOME_MEMO_REPAIRED_CONTENT_HASH,
   WELCOME_MEMO_SEED_CONTENT_HASH,
+  WELCOME_MEMO_STILLNOTE_CONTENT_HASH,
   WELCOME_MEMO_TRANSLATIONS,
   buildWelcomeMemoContent,
-} from "@edgeever/shared/default-workspace-seeds";
-import { supportedLocales, type SupportedLocale } from "@edgeever/shared/i18n/locales";
+} from "@stillnote/shared/default-workspace-seeds";
+import { supportedLocales, type SupportedLocale } from "@stillnote/shared/i18n/locales";
 import type { Bindings } from "./api-context";
 import {
   decodeDemoAttachment,
@@ -31,7 +33,7 @@ const EXAMPLE_NOTEBOOKS = [
 
 const WELCOME_MEMO_ID = "memo_welcome";
 const DEFAULT_WORKSPACE_ID = "ws_default";
-const DEFAULT_BUCKET_NAME = "edgeever-resources";
+const DEFAULT_BUCKET_NAME = "stillnote-resources";
 
 // The public demo tells visitors to reset the shared workspace. A personal
 // instance has no such action, so that tip is left out of the copied notes.
@@ -52,6 +54,7 @@ const knownWelcomeContentHashes = async () => {
   const hashes = new Set<string>([
     WELCOME_MEMO_SEED_CONTENT_HASH,
     WELCOME_MEMO_REPAIRED_CONTENT_HASH,
+    WELCOME_MEMO_STILLNOTE_CONTENT_HASH,
   ]);
   for (const locale of supportedLocales) {
     const welcome = buildWelcomeMemoContent(locale);
@@ -60,10 +63,11 @@ const knownWelcomeContentHashes = async () => {
   return hashes;
 };
 
-const knownWelcomeTitles = new Set(
-  (Object.keys(WELCOME_MEMO_TRANSLATIONS) as SupportedLocale[])
+const knownWelcomeTitles = new Set([
+  WELCOME_MEMO_LEGACY_SEED_TITLE,
+  ...(Object.keys(WELCOME_MEMO_TRANSLATIONS) as SupportedLocale[])
     .map((locale) => WELCOME_MEMO_TRANSLATIONS[locale].title),
-);
+]);
 
 type WelcomeRow = {
   id: string;
@@ -132,8 +136,8 @@ export const ensureWorkspaceExampleSeed = async (env: Bindings, workspaceId: str
   ).bind(workspaceId).first<{ workspace_id: string }>();
   if (!pending) return;
 
-  const demoOwnsTheCatalog = isDemoModeEnabled(env.EDGE_EVER_DEMO_MODE)
-    || isDemoModeEnabled(env.EDGE_EVER_LOCAL_DEMO_SEED);
+  const demoOwnsTheCatalog = isDemoModeEnabled(env.STILLNOTE_DEMO_MODE)
+    || isDemoModeEnabled(env.STILLNOTE_LOCAL_DEMO_SEED);
   if (demoOwnsTheCatalog || !await workspaceStillWantsExamples(db, workspaceId)) {
     await clearPending(db, workspaceId);
     return;
@@ -235,7 +239,7 @@ export const ensureWorkspaceExampleSeed = async (env: Bindings, workspaceId: str
     ));
   }
 
-  const bucketName = env.EDGE_EVER_R2_BUCKET_NAME?.trim() || DEFAULT_BUCKET_NAME;
+  const bucketName = env.STILLNOTE_R2_BUCKET_NAME?.trim() || DEFAULT_BUCKET_NAME;
   for (const resource of DEMO_SEED_ATTACHMENT_RESOURCES) {
     const bytes = resourceBytes(resource);
     const extension = "svg" in resource ? "svg" : resource.filename.split(".").pop() || "bin";

@@ -143,7 +143,7 @@ describe("release automation", () => {
 
   test("restores an exact Draft checkpoint without exposing it in Issue text", () => {
     const checkpoint = { releaseSha: "abc", desktopRunId: 123 };
-    const body = `<!-- edgeever-release-checkpoint:v1.42.0\n${JSON.stringify(checkpoint)}\n-->`;
+    const body = `<!-- stillnote-release-checkpoint:v1.42.0\n${JSON.stringify(checkpoint)}\n-->`;
     expect(parseReleaseCheckpoint(body, "v1.42.0")).toEqual(checkpoint);
     expect(parseReleaseCheckpoint(body, "v1.42.1")).toBeNull();
     expect(parseReleaseCheckpoint("malformed", "v1.42.0")).toBeNull();
@@ -274,7 +274,7 @@ describe("release automation", () => {
     let attempts = 0;
     let polls = 0;
     const result = await waitForRun({
-      repository: "tianma-if/edgeever",
+      repository: "CottonChou/stillnote",
       runId: 123,
       label: "Draft assets",
       viewRun: () => {
@@ -693,12 +693,12 @@ describe("release automation", () => {
   test("selects the DMG matching the current Mac architecture", () => {
     const assets = [
       {
-        name: "EdgeEver-1.6.51-mac-arm64.dmg",
+        name: "StillNote-1.6.51-mac-arm64.dmg",
         size: 10,
         digest: "sha256:abc",
       },
       {
-        name: "EdgeEver-1.6.51-mac-x64.dmg",
+        name: "StillNote-1.6.51-mac-x64.dmg",
         size: 11,
         digest: "sha256:def",
       },
@@ -706,11 +706,11 @@ describe("release automation", () => {
     expect(
       selectPublishedDmg(assets, "arm64"),
     ).toMatchObject({
-      asset: { name: "EdgeEver-1.6.51-mac-arm64.dmg" },
+      asset: { name: "StillNote-1.6.51-mac-arm64.dmg" },
       version: "1.6.51",
     });
     expect(selectPublishedDmg(assets, "x64")).toMatchObject({
-      asset: { name: "EdgeEver-1.6.51-mac-x64.dmg" },
+      asset: { name: "StillNote-1.6.51-mac-x64.dmg" },
       version: "1.6.51",
     });
   });

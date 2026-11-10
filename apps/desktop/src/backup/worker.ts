@@ -5,14 +5,14 @@ import { open, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import { createEdgeEverClient } from "../../../../packages/client/src/index";
-import { createEdgeEverZipStream, parseEdgeEverZip, restoreEdgeEverZip, validateBackupRelationships, type JsonBackupSource } from "../../../../packages/shared/src/backup-archive";
+import { createStillNoteClient } from "../../../../packages/client/src/index";
+import { createStillNoteZipStream, parseStillNoteZip, restoreStillNoteZip, validateBackupRelationships, type JsonBackupSource } from "../../../../packages/shared/src/backup-archive";
 import type { JsonBackupManifest } from "../../../../packages/shared/src/backup";
 import type { AuthSession, Notebook, Resource, AiPromptTemplate } from "../../../../packages/shared/src/types";
 import { encryptArchive, decryptArchive } from "./encrypted-archive.mjs";
 
 type Context = { baseUrl: string; accountId: string | null; token: string; locale?: string };
-type Input = { operation: "export" | "import" | "verify"; context: Context; path: string; password?: string; stagingDirectory?: string; previousState?: SourceState; version?: { edgeeverVersion: string; buildId: string } };
+type Input = { operation: "export" | "import" | "verify"; context: Context; path: string; password?: string; stagingDirectory?: string; previousState?: SourceState; version?: { stillnoteVersion: string; buildId: string } };
 type State = { protocolVersion: number; userId: string | null; workspaceId: string; identity: string; backupRevision: string; counts: Required<JsonBackupManifest["counts"]> };
 type SourceState = Pick<State, "identity" | "workspaceId" | "backupRevision">;
 const input = workerData as Input;
@@ -72,7 +72,7 @@ const fetchWithDiagnostics: typeof fetch = async (url, init) => {
 const request = async <T>(context: Context, path: string): Promise<T> => {
   const response = await fetchWithDiagnostics(`${context.baseUrl}${path}`, { signal, headers: { Authorization: `Bearer ${context.token}`, "Accept-Language": context.locale ?? "en-US" }, credentials: "omit" });
   if (!response.ok) {
-    if (response.status === 404 && path === "/api/v1/backups/state") fail("backup_server_upgrade_required", "Update the EdgeEver server to enable consistent backups.", response.status);
+    if (response.status === 404 && path === "/api/v1/backups/state") fail("backup_server_upgrade_required", "Update the StillNote server to enable consistent backups.", response.status);
     const body = await response.json().catch(() => null) as { error?: { code?: string; message?: string } } | null;
     fail(body?.error?.code ?? "backup_request_failed", body?.error?.message ?? `Backup request failed (${response.status}).`, response.status);
   }
@@ -159,7 +159,7 @@ const runExport = async () => {
   };
   const output = await open(input.path, "wx", 0o600);
   try {
-    const zip = await createEdgeEverZipStream(source, input.version!, (progress) => send("progress", { stage: "exporting", ...progress }));
+    const zip = await createStillNoteZipStream(source, input.version!, (progress) => send("progress", { stage: "exporting", ...progress }));
     const stream = Readable.fromWeb(zip as import("node:stream/web").ReadableStream<Uint8Array>);
     const contents = input.password !== undefined ? Readable.from(encryptArchive(stream, input.password, { signal })) : stream;
     await pipeline(contents, createWriteStream(input.path, { fd: output.fd, autoClose: false }), { signal });
@@ -211,7 +211,7 @@ const runImport = async () => {
       finally { await closeOutput(output); }
     }
     archive = await diskArchive(staged);
-    const backup = await parseEdgeEverZip(archive.blob, (percentage) => send("progress", { stage: "checking", completed: percentage, total: 100 }), digestFactory);
+    const backup = await parseStillNoteZip(archive.blob, (percentage) => send("progress", { stage: "checking", completed: percentage, total: 100 }), digestFactory);
     validateBackupRelationships(backup);
     signal.throwIfAborted();
     if (input.operation === "verify") return { manifest: backup.manifest };
@@ -224,7 +224,7 @@ const runImport = async () => {
     await confirmation;
     signal.throwIfAborted();
     await verifyAccount();
-    const client = createEdgeEverClient({
+    const client = createStillNoteClient({
       baseUrl: input.context.baseUrl, token: input.context.token,
       fetch: async (url, init) => {
         // The client builds bounded multipart Blobs (8 MiB). Use byte bodies in
@@ -233,7 +233,7 @@ const runImport = async () => {
         return fetchWithDiagnostics(url, { ...init, body, credentials: "omit", signal: AbortSignal.any(init?.signal ? [signal, init.signal] : [signal]) });
       },
     });
-    await restoreEdgeEverZip(backup, {
+    await restoreStillNoteZip(backup, {
       restoreNotebooks: client.restoreJsonNotebooks, restoreMemos: client.restoreJsonMemos,
       restorePrompts: client.restoreJsonAiPrompts, createResourceRestoreSink: client.createJsonResourceRestoreSink,
     }, (progress) => send("progress", { stage: "restoring", ...progress }));

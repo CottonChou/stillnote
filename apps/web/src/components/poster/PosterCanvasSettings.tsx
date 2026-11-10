@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { PosterDocument } from "@edgeever/shared";
+import type { PosterDocument } from "@stillnote/shared";
 import { PLATFORMS } from "@/lib/poster-design/templates";
 import { PosterColor, PosterNumber, PosterSection } from "./PosterControls";
 export function PosterCanvasSettings({

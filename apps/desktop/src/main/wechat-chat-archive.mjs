@@ -338,7 +338,7 @@ const parseLink = (line) => {
 
 const mediaMarkdown = (item) => {
   const label = escapeMarkdownLabel(item.filename);
-  const url = `edgeever-wechat-media://${item.id}`;
+  const url = `stillnote-wechat-media://${item.id}`;
   return isImage(item.filename) ? `![${label}](${url})` : `[附件：${label}](${url})`;
 };
 

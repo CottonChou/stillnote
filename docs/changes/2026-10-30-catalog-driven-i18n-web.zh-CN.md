@@ -2,7 +2,7 @@
 
 [English](2026-10-30-catalog-driven-i18n-web.md)
 
-需求见 [Issue #606](https://github.com/tianma-if/edgeever/issues/606)，说明见[本地化指南](../i18n.zh-CN.md)。
+需求见 [Issue #606](https://github.com/CottonChou/stillnote/issues/606)，说明见[本地化指南](../i18n.zh-CN.md)。
 
 ## 问题与结果
 

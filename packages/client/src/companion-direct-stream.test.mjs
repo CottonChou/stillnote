@@ -1,5 +1,5 @@
 import { describe, expect, test, spyOn } from "bun:test";
-import { createEdgeEverClient } from "./index.ts";
+import { createStillNoteClient } from "./index.ts";
 import { parsePreparedCompanion } from "./companion-direct-stream.ts";
 
 const preparedTurn = {
@@ -24,7 +24,7 @@ const preparedTurn = {
   baseUrl: "https://openrouter.ai/api/v1",
   apiKey: "or-key",
   modelId: "openai/gpt-4o-mini",
-  instructions: "You are EdgeEver.",
+  instructions: "You are StillNote.",
   messages: [{ role: "user", content: "hi" }],
   tools: [],
   maxSteps: 8,
@@ -65,7 +65,7 @@ describe("companion prepare payload", () => {
 describe("direct companion client", () => {
   test("prepares on the instance then streams from the model provider", async () => {
     const urls = [];
-    const client = createEdgeEverClient({
+    const client = createStillNoteClient({
       baseUrl: "https://notes.example",
       token: "user-token",
       directAiGeneration: true,
@@ -109,7 +109,7 @@ describe("direct companion client", () => {
     const completions = [];
     const events = [];
     let calls = 0;
-    const client = createEdgeEverClient({
+    const client = createStillNoteClient({
       fetch: async (url, init) => {
         paths.push(String(url));
         if (String(url).endsWith("/prepare")) return Response.json(preparedTurn);
@@ -168,13 +168,13 @@ test("direct provider rejection includes safe diagnostics and completes the fail
 
 test("browser fallback continues the same prepared turn and completes the streamed reply", async () => {
   const paths = []; const events = []; let providerCalls = 0;
-  const client = createEdgeEverClient({
+  const client = createStillNoteClient({
     allowAiServerFallback: true,
     fetch: async (url, init) => {
       const path = String(url); paths.push(path);
       if (path.endsWith("/prepare")) return Response.json(preparedTurn);
       if (path.endsWith("/provider-relay")) {
-        expect(new Headers(init.headers).get("x-edgeever-ai-target")).toBe(preparedTurn.baseUrl + "/chat/completions");
+        expect(new Headers(init.headers).get("x-stillnote-ai-target")).toBe(preparedTurn.baseUrl + "/chat/completions");
         return new Response('data: {"choices":[{"delta":{"content":"Relayed reply"}}]}\n\ndata: {"choices":[{"delta":{},"finish_reason":"stop"}]}\n\ndata: [DONE]\n\n', { headers: { "content-type": "text/event-stream" } });
       }
       if (path.endsWith("/complete")) {

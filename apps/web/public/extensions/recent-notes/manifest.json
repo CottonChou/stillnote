@@ -1,6 +1,6 @@
 {
   "type": "plugin",
-  "id": "org.edgeever.examples.recent-notes",
+  "id": "org.stillnote.examples.recent-notes",
   "name": "Recent Notes Example",
   "version": "2.0.0",
   "apiVersion": "2",
@@ -12,7 +12,7 @@
       "description": "演示笔记查询、编辑器选区、命令、通知和自定义面板。"
     }
   },
-  "author": "EdgeEver",
+  "author": "StillNote",
   "entry": "./main.js",
   "platforms": ["web", "desktop"],
   "permissions": ["notes:read", "editor:read", "editor:write", "ui:commands", "ui:notices", "ui:panels"]

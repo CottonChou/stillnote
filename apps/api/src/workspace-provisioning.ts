@@ -1,21 +1,23 @@
 import {
   DEFAULT_AI_PROMPT_SEEDS,
   defaultAiPromptId,
-} from "@edgeever/shared/ai-prompt-seeds";
+} from "@stillnote/shared/ai-prompt-seeds";
 import {
   DEFAULT_NOTEBOOK_SEEDS,
   WELCOME_MEMO_ID,
+  WELCOME_MEMO_LEGACY_SEED_TITLE,
   WELCOME_MEMO_REPAIRED_CONTENT_HASH,
   WELCOME_MEMO_SEED_CONTENT_HASH,
   WELCOME_MEMO_SEED_TITLE,
+  WELCOME_MEMO_STILLNOTE_CONTENT_HASH,
   buildWelcomeMemoContent,
   localizeDefaultNotebookName,
-} from "@edgeever/shared/default-workspace-seeds";
+} from "@stillnote/shared/default-workspace-seeds";
 import {
   DEFAULT_MEMO_TEMPLATE_SEEDS,
   defaultMemoTemplateId,
   localizeMemoTemplateSeed,
-} from "@edgeever/shared/memo-template-seeds";
+} from "@stillnote/shared/memo-template-seeds";
 import { createId, isoNow } from "./entity-utils";
 import { markWorkspaceExampleSeedPendingStatement } from "./workspace-example-seed";
 import { sha256 } from "./hash-utils";
@@ -155,7 +157,7 @@ export const createWorkspaceSeedLocalizationStatements = async (
       AND EXISTS (
         SELECT 1 FROM memos
         WHERE id = ? AND workspace_id = ? AND is_deleted = 0
-          AND title = ? AND updated_by = 'system'
+          AND title IN (?, ?) AND updated_by = 'system'
       )
       AND EXISTS (
         SELECT 1 FROM memo_contents
@@ -166,6 +168,7 @@ export const createWorkspaceSeedLocalizationStatements = async (
       WELCOME_MEMO_ID,
       workspaceId,
       WELCOME_MEMO_SEED_TITLE,
+      WELCOME_MEMO_LEGACY_SEED_TITLE,
       WELCOME_MEMO_ID,
       ...states.flat(),
     ],
@@ -173,8 +176,13 @@ export const createWorkspaceSeedLocalizationStatements = async (
   const welcomeIsUntouched = welcomeGuard([
     [WELCOME_MEMO_SEED_CONTENT_HASH, 0],
     [WELCOME_MEMO_REPAIRED_CONTENT_HASH, 1],
+    [WELCOME_MEMO_STILLNOTE_CONTENT_HASH, 2],
   ]);
-  const welcomeContentWasLocalized = welcomeGuard([[welcomeContentHash, 1], [welcomeContentHash, 2]]);
+  const welcomeContentWasLocalized = welcomeGuard([
+    [welcomeContentHash, 1],
+    [welcomeContentHash, 2],
+    [welcomeContentHash, 3],
+  ]);
 
   return [
     ...createWorkspaceDefaultSeedStatements(db, workspaceId, now, locale, {
@@ -228,7 +236,7 @@ export const createWorkspaceSeedLocalizationStatements = async (
     }),
     db.prepare(
       `INSERT INTO memo_search_documents (memo_id, title, content_text, tags)
-       SELECT ?, ?, ?, 'edgeever welcome'
+       SELECT ?, ?, ?, 'stillnote welcome'
        WHERE ${welcomeIsUntouched.sql}
        ON CONFLICT(memo_id) DO UPDATE SET
          title = excluded.title,

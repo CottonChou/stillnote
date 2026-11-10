@@ -2,7 +2,7 @@
 
 [简体中文](2026-10-30-catalog-driven-i18n-web.zh-CN.md)
 
-Requirements: [Issue #606](https://github.com/tianma-if/edgeever/issues/606). Guide: [Localization](../i18n.md).
+Requirements: [Issue #606](https://github.com/CottonChou/stillnote/issues/606). Guide: [Localization](../i18n.md).
 
 ## Problem and outcome
 

@@ -21,7 +21,7 @@ import {
   type ResourceListItem,
   type TagSummary,
   type TiptapDoc,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { liveQuery } from "dexie";
 import type { MemoFilterMode, MemoSortMode } from "@/lib/app-helpers";
 import { api, type SyncChangesResponse } from "@/lib/api";

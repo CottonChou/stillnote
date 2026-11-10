@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">StillNote</title>
+  <desc id="desc">A warm cotton folio sheet with a deep forest ink swallowtail bookmark on an editorial pine rounded tile.</desc>
+  <rect width="1024" height="1024" rx="224" fill="#187958"/>
+  <rect x="244" y="208" width="536" height="608" rx="52" fill="#FDFCF9"/>
+  <path d="M338 208H454V492L396 444L338 492Z" fill="#07130B"/>
+  <path d="M338 208H454V250H338Z" fill="#125E44" opacity=".35"/>
+  <rect x="338" y="572" width="338" height="46" rx="23" fill="#B7D8C9"/>
+  <rect x="338" y="672" width="222" height="46" rx="23" fill="#B7D8C9"/>
+</svg>

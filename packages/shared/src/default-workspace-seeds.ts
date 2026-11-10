@@ -64,10 +64,13 @@ export const WELCOME_MEMO_ID = "memo_welcome";
  * title-only one, changes the title, the revision, or the actor, so together
  * they identify a welcome note nobody has touched.
  */
-export const WELCOME_MEMO_SEED_TITLE = "欢迎来到 EdgeEver";
+export const WELCOME_MEMO_SEED_TITLE = "欢迎来到 StillNote";
+export const WELCOME_MEMO_LEGACY_SEED_TITLE = ["欢迎来到 ", "Edge", "Ever"].join("");
 export const WELCOME_MEMO_SEED_CONTENT_HASH = "4edcf7092f86c561210d4eb788e96f28ec5c045f93952c82f5f57e1902f548bd";
 // Migration 0071 repairs the original seed's literal backslash-n and advances it to revision 1.
 export const WELCOME_MEMO_REPAIRED_CONTENT_HASH = "30fae5a337f8b9709505c5ab00ee921410b78632c14f4b7577c88aea0f9fc390";
+// Migration 0088 rebrands the untouched Chinese welcome note to StillNote and advances it to revision 2.
+export const WELCOME_MEMO_STILLNOTE_CONTENT_HASH = "253da40ec4cad527bfe05080c78c55b9275b352705d40755946f999c402314c3";
 
 export type WelcomeMemoTranslation = {
   title: string;
@@ -76,37 +79,37 @@ export type WelcomeMemoTranslation = {
 
 export const WELCOME_MEMO_TRANSLATIONS: Record<SupportedLocale, WelcomeMemoTranslation> = {
   "zh-CN": {
-    title: "欢迎来到 EdgeEver",
+    title: "欢迎来到 StillNote",
     paragraphs: [
-      "这是第一条 EdgeEver 笔记，三栏、边缘、Agent-ready。",
+      "这是第一条 StillNote 笔记，三栏、边缘、Agent-ready。",
       "接下来可以创建笔记本、写笔记、搜索内容，并把多条笔记合并成一条新的长期笔记。",
     ],
   },
   "en-US": {
-    title: "Welcome to EdgeEver",
+    title: "Welcome to StillNote",
     paragraphs: [
-      "This is your first EdgeEver note: three panes, running on the edge, ready for AI agents.",
+      "This is your first StillNote note: three panes, running on the edge, ready for AI agents.",
       "Next, create notebooks, write notes, search your content, and merge several notes into a new long-term note.",
     ],
   },
   ja: {
-    title: "EdgeEver へようこそ",
+    title: "StillNote へようこそ",
     paragraphs: [
-      "これは EdgeEver の最初のノートです。3 ペイン構成でエッジ上で動作し、AI エージェントとも連携できます。",
+      "これは StillNote の最初のノートです。3 ペイン構成でエッジ上で動作し、AI エージェントとも連携できます。",
       "ノートブックを作成してノートを書き、内容を検索し、複数のノートを 1 つの新しい長期ノートにまとめてみましょう。",
     ],
   },
   pl: {
-    title: "Witaj w EdgeEver",
+    title: "Witaj w StillNote",
     paragraphs: [
-      "To Twoja pierwsza notatka w EdgeEver: trzy panele, działanie na brzegu sieci i gotowość do pracy z agentami AI.",
+      "To Twoja pierwsza notatka w StillNote: trzy panele, działanie na brzegu sieci i gotowość do pracy z agentami AI.",
       "Teraz możesz tworzyć notatniki, pisać notatki, przeszukiwać treści i scalać kilka notatek w jedną nową, trwałą notatkę.",
     ],
   },
   ru: {
-    title: "Добро пожаловать в EdgeEver",
+    title: "Добро пожаловать в StillNote",
     paragraphs: [
-      "Это первая заметка в EdgeEver: три панели, работа на краю сети и готовность к агентам ИИ.",
+      "Это первая заметка в StillNote: три панели, работа на краю сети и готовность к агентам ИИ.",
       "Дальше можно создавать блокноты, писать заметки, искать по содержимому и объединять несколько заметок в одну новую долгосрочную.",
     ],
   },

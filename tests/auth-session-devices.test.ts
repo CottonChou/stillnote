@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { LoginSchema } from "@edgeever/shared";
+import { LoginSchema } from "@stillnote/shared";
 import {
   groupLoginDeviceSessions,
   resolveSessionDeviceId,
@@ -15,8 +15,8 @@ describe("login device sessions", () => {
   });
 
   test("falls back to a stable legacy user-agent device id", () => {
-    expect(resolveSessionDeviceId(undefined, "EdgeEver/1.4.0", "sess_new"))
-      .toBe("legacy-ua:EdgeEver/1.4.0");
+    expect(resolveSessionDeviceId(undefined, "StillNote/1.4.0", "sess_new"))
+      .toBe("legacy-ua:StillNote/1.4.0");
     expect(resolveSessionDeviceId(undefined, null, "sess_new")).toBe("legacy-session:sess_new");
   });
 
@@ -25,7 +25,7 @@ describe("login device sessions", () => {
       {
         id: "sess_latest",
         device_id: "mobile-installation-1",
-        user_agent: "EdgeEver/1.4.0",
+        user_agent: "StillNote/1.4.0",
         device_label: "手机",
         ip_address: "203.0.113.10",
         ip_country: "CN",
@@ -37,7 +37,7 @@ describe("login device sessions", () => {
       {
         id: "sess_current",
         device_id: "mobile-installation-1",
-        user_agent: "EdgeEver/1.4.0",
+        user_agent: "StillNote/1.4.0",
         device_label: "手机",
         ip_address: "203.0.113.11",
         ip_country: "CN",
@@ -51,7 +51,7 @@ describe("login device sessions", () => {
     expect(groupLoginDeviceSessions(rows, "sess_current")).toEqual([
       {
         id: "sess_current",
-        userAgent: "EdgeEver/1.4.0",
+        userAgent: "StillNote/1.4.0",
         label: "手机",
         ipAddress: "203.0.113.11",
         ipCountry: "CN",

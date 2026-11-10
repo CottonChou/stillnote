@@ -24,8 +24,8 @@ if [[ ! -f "$OUT/index.html" || ! -f "$OUT/font-picker.html" ]]; then
   exit 1
 fi
 
-# XcodeGen only packages paths under EdgeEver/Resources reliably — mirror there.
-RES_OUT="$ROOT/EdgeEver/Resources/EditorBundle"
+# XcodeGen only packages paths under StillNote/Resources reliably — mirror there.
+RES_OUT="$ROOT/StillNote/Resources/EditorBundle"
 mkdir -p "$RES_OUT"
 cp -f "$OUT/index.html" "$RES_OUT/index.html"
 cp -f "$OUT/font-picker.html" "$RES_OUT/font-picker.html"

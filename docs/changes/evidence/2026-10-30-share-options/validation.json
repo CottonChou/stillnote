@@ -47,5 +47,5 @@
   "reusedChecks": [
     "Custom-password failure/pending-save behavior: password-controls-regression.json; SharePasswordControls and its calling password mutation are unchanged"
   ],
-  "ubuntuCI": "https://github.com/tianma-if/edgeever/pull/735/checks"
+  "ubuntuCI": "https://github.com/CottonChou/stillnote/pull/735/checks"
 }

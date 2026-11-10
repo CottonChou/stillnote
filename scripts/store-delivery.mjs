@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const DEFAULT_REPOSITORY = "tianma-if/edgeever";
+const DEFAULT_REPOSITORY = "CottonChou/stillnote";
 const PLATFORMS = new Set(["android", "ios", "both"]);
 const ANDROID_TRACKS = new Set(["internal", "alpha", "beta", "production"]);
 

@@ -3,13 +3,13 @@ import { openBlockSource } from "./markdown-block-start";
 import type { TiptapDoc, TiptapNode } from "./content";
 
 /** TipTap / ProseMirror node type for note-merge section boundaries. */
-export const MERGE_DIVIDER_NODE_TYPE = "edgeeverMergeDivider" as const;
+export const MERGE_DIVIDER_NODE_TYPE = "stillnoteMergeDivider" as const;
 
 /** Markdown marker that round-trips through `docToMarkdown` / `markdownToDoc`. */
-export const MERGE_DIVIDER_MARKDOWN_MARKER = "<!-- edgeever:merge-divider -->";
+export const MERGE_DIVIDER_MARKDOWN_MARKER = "<!-- stillnote:merge-divider -->";
 
 const MERGE_DIVIDER_TOKENIZER =
-  /^<!--\s*edgeever:merge-divider\s*-->\s*(?:\n+---[ \t]*(?:\n+|$)|(?:\n+|$))/;
+  /^<!--\s*stillnote:merge-divider\s*-->\s*(?:\n+---[ \t]*(?:\n+|$)|(?:\n+|$))/;
 
 /**
  * Semantic horizontal rule inserted between source notes during merge.
@@ -24,15 +24,15 @@ export const MergeDivider = Node.create({
   draggable: true,
 
   parseHTML() {
-    return [{ tag: "hr[data-edgeever-merge-divider]" }];
+    return [{ tag: "hr[data-stillnote-merge-divider]" }];
   },
 
   renderHTML({ HTMLAttributes }) {
     return [
       "hr",
       mergeAttributes(HTMLAttributes, {
-        "data-edgeever-merge-divider": "true",
-        class: "edgeever-merge-divider",
+        "data-stillnote-merge-divider": "true",
+        class: "stillnote-merge-divider",
       }),
     ];
   },
@@ -49,7 +49,7 @@ export const MergeDivider = Node.create({
     name: MERGE_DIVIDER_NODE_TYPE,
     level: "block",
     start(src: string) {
-      return openBlockSource(src).indexOf("<!-- edgeever:merge-divider -->");
+      return openBlockSource(src).indexOf("<!-- stillnote:merge-divider -->");
     },
     tokenize(src: string) {
       const match = MERGE_DIVIDER_TOKENIZER.exec(src);

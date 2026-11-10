@@ -23,7 +23,7 @@ AI uses the shared assistant sidebar, with no separate AI panel in the poster wo
 
 ## Source and persistence
 
-`PosterDocument` is validated, versioned source, separate from Fabric.js state. An `edgeever-poster-v1` Markdown comment carries it; readable text and a PNG preview provide a portable fallback. Image elements reference existing workspace attachment IDs; arbitrary URLs and arbitrary Fabric object JSON are not accepted. The rendering engine loads only when entering the poster editor.
+`PosterDocument` is validated, versioned source, separate from Fabric.js state. An `stillnote-poster-v1` Markdown comment carries it; readable text and a PNG preview provide a portable fallback. Image elements reference existing workspace attachment IDs; arbitrary URLs and arbitrary Fabric object JSON are not accepted. The rendering engine loads only when entering the poster editor.
 
 Saving uses the existing note revision, content hash and edit session checks. Each artwork version gets an immutable preview up to 480 pixels wide; metadata-only changes reuse it. Historical previews are retained for revision restores. This increases attachment usage with the number of saved artwork versions. Failed source saves remove only the newly uploaded, uncommitted preview.
 

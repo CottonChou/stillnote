@@ -1,4 +1,4 @@
-import { docToMarkdown, markdownToDoc, type TiptapDoc } from "@edgeever/shared";
+import { docToMarkdown, markdownToDoc, type TiptapDoc } from "@stillnote/shared";
 import { screenshotNoteContent } from "./screenshot-import";
 
 const IMAGE_EXTENSIONS = new Set(["jpg", "jpeg", "png", "gif", "webp"]);

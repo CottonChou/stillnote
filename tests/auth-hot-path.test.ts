@@ -48,10 +48,10 @@ describe("authentication hot path", () => {
   test("reads an authenticated session without provisioning or seeding its workspace", async () => {
     const statements: string[] = [];
     const response = await worker.fetch(
-      new Request("https://edgeever.test/api/v1/auth/session", {
+      new Request("https://stillnote.test/api/v1/auth/session", {
         headers: { Authorization: "Bearer desktop-session-token" },
       }),
-      { DB: createDatabase(statements), EDGE_EVER_AUTH_PASSWORD: "configured-secret" } as never,
+      { DB: createDatabase(statements), STILLNOTE_AUTH_PASSWORD: "configured-secret" } as never,
       executionContext,
     );
 
@@ -71,10 +71,10 @@ describe("authentication hot path", () => {
   test("does not rewrite a recently touched session on a protected request", async () => {
     const statements: string[] = [];
     const response = await worker.fetch(
-      new Request("https://edgeever.test/api/v1/memos/memo_1/share", {
+      new Request("https://stillnote.test/api/v1/memos/memo_1/share", {
         headers: { Authorization: "Bearer desktop-session-token" },
       }),
-      { DB: createDatabase(statements), EDGE_EVER_AUTH_PASSWORD: "configured-secret" } as never,
+      { DB: createDatabase(statements), STILLNOTE_AUTH_PASSWORD: "configured-secret" } as never,
       executionContext,
     );
 
@@ -88,12 +88,12 @@ describe("authentication hot path", () => {
   test("touches a stale session once on a protected request", async () => {
     const statements: string[] = [];
     const response = await worker.fetch(
-      new Request("https://edgeever.test/api/v1/memos/memo_1/share", {
+      new Request("https://stillnote.test/api/v1/memos/memo_1/share", {
         headers: { Authorization: "Bearer desktop-session-token" },
       }),
       {
         DB: createDatabase(statements, { lastSeenAt: "2026-08-14T00:00:00.000Z" }),
-        EDGE_EVER_AUTH_PASSWORD: "configured-secret",
+        STILLNOTE_AUTH_PASSWORD: "configured-secret",
       } as never,
       executionContext,
     );

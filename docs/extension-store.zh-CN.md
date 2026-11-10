@@ -10,7 +10,7 @@ Chrome、Edge 和 Firefox 的上架由官方仓库工作流 **Submit Web Clipper
 
 Edge 用户安装的是 Chrome 网上应用店商品
 `gjadpfmanienmlofajibkfkkpfdkclgo`。一次 Chrome 提交覆盖这个商品。Firefox
-单独提交到 `edgeever-web-clipper`。这条工作流不向 Microsoft Edge 附加组件网站
+单独提交到 `stillnote-web-clipper`。这条工作流不向 Microsoft Edge 附加组件网站
 发布。
 
 工作流会构建安装包、上传并提交审核。它不能代替商店审核。用户会留在各自商店
@@ -25,7 +25,7 @@ Bun 版本。
 
 ## 运行
 
-打开 https://github.com/tianma-if/edgeever/actions/workflows/extension-store.yml，
+打开 https://github.com/CottonChou/stillnote/actions/workflows/extension-store.yml，
 选择 **Run workflow**。Firefox 更新说明留空时，使用一行版本说明；也可以贴上
 希望 Mozilla 展示的说明。`dry_run` 只构建安装包，不会调用商店。
 
@@ -51,7 +51,7 @@ Actions 日志和 Summary 会分别报告每个商店的提交动作、API 状�
 
 ## 凭据
 
-把这些 Actions secrets 加到 `tianma-if/edgeever`。Fork 不会运行这个 Job。
+把这些 Actions secrets 加到 `CottonChou/stillnote`。Fork 不会运行这个 Job。
 
 Chrome 可以使用服务账号，也可以使用 refresh token。服务账号不会过几天就失效：
 
@@ -75,8 +75,8 @@ Firefox 使用 https://addons.mozilla.org/developers/addon/api/key/ 生成的 AP
 
 下面两个可选 secret 会写进 Firefox 给审核员的说明：
 
-- `EDGE_EVER_REVIEW_INSTANCE_URL`
-- `EDGE_EVER_REVIEW_API_TOKEN`
+- `STILLNOTE_REVIEW_INSTANCE_URL`
+- `STILLNOTE_REVIEW_API_TOKEN`
 
 Chrome 的上传接口没有更新说明字段。Chrome 的商店简介和隐私披露保持后台里上次
 保存的内容。权限或公开介绍发生变化时，先在后台修改。Firefox 会把工作流里的说明

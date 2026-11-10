@@ -1,5 +1,5 @@
-import { DEFAULT_MEMO_TITLE, type MemoSummary, type Notebook } from "@edgeever/shared";
-import { resolveSupportedLocale } from "@edgeever/shared/i18n/locales";
+import { DEFAULT_MEMO_TITLE, type MemoSummary, type Notebook } from "@stillnote/shared";
+import { resolveSupportedLocale } from "@stillnote/shared/i18n/locales";
 import type { MobileLocalePreference } from "../lib/preferences";
 
 export type NotebookOption = {
@@ -265,4 +265,27 @@ export const resolveCardSwipe = ({
   // Closing: swiped right past 30px or flick right
   const shouldClose = translationX > 30 || velocityX > 250;
   return !shouldClose;
+};
+
+export const DRAWER_CLOSE_BACK_GRACE_MS = 500;
+export const ANDROID_EXIT_CONFIRM_WINDOW_MS = 2000;
+
+export type RootBackGuardDecision = "swallow-recent-drawer-close" | "prompt-exit" | "allow-exit";
+
+export const resolveAndroidRootBackAction = ({
+  now,
+  lastDrawerCloseAt,
+  lastExitPromptAt,
+}: {
+  now: number;
+  lastDrawerCloseAt: number;
+  lastExitPromptAt: number;
+}): RootBackGuardDecision => {
+  if (lastDrawerCloseAt > 0 && now - lastDrawerCloseAt < DRAWER_CLOSE_BACK_GRACE_MS) {
+    return "swallow-recent-drawer-close";
+  }
+  if (lastExitPromptAt > 0 && now - lastExitPromptAt < ANDROID_EXIT_CONFIRM_WINDOW_MS) {
+    return "allow-exit";
+  }
+  return "prompt-exit";
 };

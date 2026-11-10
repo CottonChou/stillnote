@@ -97,11 +97,11 @@ describe("WeChat chat archive", () => {
     expect(note.markdown).not.toContain("💬 **微信聊天记录**");
     expect(note.markdown).toContain("**鱼** · 2026年9月22日 22:15");
     expect(note.markdown).toContain("[发布说明](https://example.com/post)");
-    expect(note.markdown).toContain("![微信图片_202609222215_1.jpg](edgeever-wechat-media://m1)");
+    expect(note.markdown).toContain("![微信图片_202609222215_1.jpg](stillnote-wechat-media://m1)");
     expect(note.markdown).toContain("😶还没注册");
     expect(note.markdown).toContain("*[动画表情]*");
-    expect(note.markdown).toContain("[附件：微信视频_1.mp4](edgeever-wechat-media://m2)");
-    expect(note.markdown).toContain("[附件：说明.pdf](edgeever-wechat-media://m3)");
+    expect(note.markdown).toContain("[附件：微信视频_1.mp4](stillnote-wechat-media://m2)");
+    expect(note.markdown).toContain("[附件：说明.pdf](stillnote-wechat-media://m3)");
     expect(note.markdown).not.toContain(".zip");
     expect(note.media.map((item) => [item.filename, item.mimeType, Buffer.from(item.bytes).toString()])).toEqual([
       ["微信图片_202609222215_1.jpg", "image/jpeg", "jpeg-bytes"],

@@ -10,7 +10,7 @@ import {
   type MemoDetail,
   type Notebook,
   type TiptapDoc,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { Alert } from "../components/LocalizedText";
 import type { LocalTiptapEditorRef } from "../components/LocalTiptapEditor";
 import {
@@ -24,7 +24,7 @@ import { localizeMissingNotebookName, useMobileLocale, getMobileCatalog, formatM
 import { useSession } from "../lib/session";
 import { recordEditorStartup } from "../lib/startup-performance";
 import { safeDomCall } from "../lib/safe-dom-call";
-import { showEdgeEverKeyboard } from "../../modules/edgeever-keyboard";
+import { showStillNoteKeyboard } from "../../modules/stillnote-keyboard";
 import { parseTags } from "../screens/workspace-utils";
 import type { MobileMemoUpdatePayload } from "../screens/workspace-memo-cache";
 import { resolveEditorCloseAction } from "./mobile-editor-close";
@@ -221,7 +221,7 @@ export const useMobileRichEditor = ({
         }
         initialFocusTimerRef.current = setTimeout(() => {
           initialFocusTimerRef.current = null;
-          showEdgeEverKeyboard();
+          showStillNoteKeyboard();
         }, 180);
       }
     } else {

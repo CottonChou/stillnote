@@ -1,13 +1,13 @@
-# EdgeEver 备份与异地容灾技术方案 (Backup & Disaster Recovery Plan)
+# StillNote 备份与异地容灾技术方案 (Backup & Disaster Recovery Plan)
 
-> 本文档针对 GitHub Issue [#61](https://github.com/tianma-if/edgeever/issues/61) 提出的“加密备份与转存网盘/对象存储”需求，系统性梳理 EdgeEver 的备份策略、技术约束、优先级路线及详细实现方案。
+> 本文档针对 GitHub Issue [#61](https://github.com/CottonChou/stillnote/issues/61) 提出的“加密备份与转存网盘/对象存储”需求，系统性梳理 StillNote 的备份策略、技术约束、优先级路线及详细实现方案。
 
 ---
 
 ## 1. 背景与核心诉求
 
 ### 1.1 问题背景
-EdgeEver 主要运行在 Cloudflare Serverless（D1 数据库 + R2 对象存储 / KV）或自托管 Docker 容器中。
+StillNote 主要运行在 Cloudflare Serverless（D1 数据库 + R2 对象存储 / KV）或自托管 Docker 容器中。
 尽管云服务商具有较高的 SLA，但对知识库与个人笔记用户而言，存在两类核心痛点：
 1. **云端单点故障与实例销毁风险（Extreme Disaster Recovery）**：
    - Cloudflare 账号风控/误封、扣费失败、D1 误操作重置、或 VPS 宿主机硬盘物理损坏。
@@ -42,9 +42,9 @@ EdgeEver 主要运行在 Cloudflare Serverless（D1 数据库 + R2 对象存储 
 flowchart TD
     subgraph P0["P0: 桌面端本地定期自动备份 (最高优先级)"]
         A[桌面端后台调度器] -->|检查周期: 每周/每月/自定义| B{是否已到期?}
-        B -->|是| C[打包完整 EdgeEver ZIP]
+        B -->|是| C[打包完整 StillNote ZIP]
         C -->|检测配置| D{启用加密密码?}
-        D -->|是| E[AES-256-GCM 封装为 .edgeever.enc]
+        D -->|是| E[AES-256-GCM 封装为 .stillnote.enc]
         D -->|否| F[标准 .zip 归档]
         E --> G[写入用户指定本地目录]
         F --> G
@@ -54,7 +54,7 @@ flowchart TD
 
     subgraph P1["P1: Web / 桌面端通用加密导出与恢复"]
         J[DataExportCard] --> K[手动导出增加密码加密选项]
-        J --> L[导入自动识别 .edgeever.enc 弹窗解密]
+        J --> L[导入自动识别 .stillnote.enc 弹窗解密]
     end
 
     subgraph P2["P2: 标准 WebDAV 异地同步"]
@@ -72,7 +72,7 @@ flowchart TD
 
 ## 4. 详细技术方案：P0 桌面端定期自动备份
 
-### 4.1 归档格式规范：标准 EdgeEver ZIP
+### 4.1 归档格式规范：标准 StillNote ZIP
 区别于简单的 SQLite 裸快照，自动导出的备份采用**标准自包含归档**：
 - `manifest.json`：实例版本、打包时间、笔记总数、资源摘要校验码；
 - `memos/`：每条笔记的独立 JSON（保留结构化文档树）与纯文本 Markdown；
@@ -80,7 +80,7 @@ flowchart TD
 - `prompts.json`：AI 提示词配置；
 - `resources/`：包含图片、音视频、PDF 等所有二进制原始附件。
 
-> **价值**：一旦远端实例彻底销毁，用户在任何新部署的 EdgeEver 上直接点击“从备份导入”即可瞬间重建整个知识库；用户也可以直接解压 ZIP 提取所有 Markdown 与图片，不被任何专有数据库格式绑定。
+> **价值**：一旦远端实例彻底销毁，用户在任何新部署的 StillNote 上直接点击“从备份导入”即可瞬间重建整个知识库；用户也可以直接解压 ZIP 提取所有 Markdown 与图片，不被任何专有数据库格式绑定。
 
 ### 4.2 调度策略与生命周期
 1. **触发机制**：
@@ -89,7 +89,7 @@ flowchart TD
    - 提供周期选项：`关闭`、`每天`、`每周（默认）`、`每两周`、`每月`。
 2. **执行流程（静默运行）**：
    - 后端异步获取全量数据流，避免阻塞用户主界面编辑。
-   - 文件命名规则：`edgeever-backup-YYYY-MM-DD-HHmmss.zip`（若加密则为 `.edgeever.enc`）。
+   - 文件命名规则：`stillnote-backup-YYYY-MM-DD-HHmmss.zip`（若加密则为 `.stillnote.enc`）。
 3. **滚动淘汰机制（Retention Policy）**：
    - 默认保留最新 **5** 份备份（用户可在设置中配置为 3~20 份）。
    - 每次生成新备份后，按修改时间排序清理旧备份，杜绝撑满硬盘。
@@ -116,7 +116,7 @@ flowchart TD
 | **功能价值** | **极高**。为用户资产构建最后一道不可摧毁的防线；用极低开发成本让用户零门槛借力电脑本地网盘实现异地云同步。 |
 | **影响范围** | 桌面端主进程/Sidecar、Web 设置面板中的“数据与导出”模块。**不触碰现有核心笔记实时读写与协同同步链路**。 |
 | **最坏后果** | 1. 用户设置了加密密码但在灾难发生时遗忘，导致备份无法恢复；<br>2. 磁盘空间极度不足时导出中断。 |
-| **回滚与兜底方案** | 1. 自动备份为纯增量只读提取，执行失败绝不影响原数据完整性；<br>2. 密码加密为可选配置；开启时必须给用户弹出强提示“请妥善保管密码，EdgeEver 不保留任何备份私钥”。 |
+| **回滚与兜底方案** | 1. 自动备份为纯增量只读提取，执行失败绝不影响原数据完整性；<br>2. 密码加密为可选配置；开启时必须给用户弹出强提示“请妥善保管密码，StillNote 不保留任何备份私钥”。 |
 | **未验证项** | 1. 包含数万张高分辨率图片（超 10GB）的超大知识库在桌面端的内存流式压控；<br>2. Windows / macOS 文件权限保护下的目录写入提示。 |
 
 ---
@@ -128,7 +128,7 @@ flowchart TD
 - **自动备份开关**：[ 开启 / 关闭 ]
 - **备份频率**：下拉选择 [ 每天 / 每周（推荐）/ 每两周 / 每月 ]
 - **备份保存目录**：
-  - 默认路径：`~/Documents/EdgeEver Backups`
+  - 默认路径：`~/Documents/StillNote Backups`
   - 操作按钮：`[ 更改目录... ]`（支持一键选择用户的 iCloud、OneDrive、坚果云同步文件夹）
 - **保留历史份数**：下拉选择 [ 3 份 / 5 份（推荐）/ 10 份 / 20 份 ]
 - **备份加密**：

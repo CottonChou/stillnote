@@ -2,8 +2,8 @@ import { useDeferredValue, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FileText, LoaderCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { MemoSummary } from "@edgeever/shared";
-import type { EdgeEverRepository } from "@/lib/repository";
+import type { MemoSummary } from "@stillnote/shared";
+import type { StillNoteRepository } from "@/lib/repository";
 import {
   Command,
   CommandEmpty,
@@ -23,7 +23,7 @@ import {
 type QuickMemoSwitcherProps = {
   open: boolean;
   query: string;
-  repository: EdgeEverRepository;
+  repository: StillNoteRepository;
   onOpenChange: (open: boolean) => void;
   onQueryChange: (query: string) => void;
   onOpenMemo: (memo: MemoSummary) => void;

@@ -1,17 +1,17 @@
 import AppKit
 import UniformTypeIdentifiers
 
-/// Copies a file from the macOS share sheet into Downloads and opens EdgeEver.
+/// Copies a file from the macOS share sheet into Downloads and opens StillNote.
 /// WeChat merged-forward ZIPs stay on this path; the app turns those into chat notes
 /// and turns every other file into a note attachment.
 @objc(ShareViewController)
 final class ShareViewController: NSViewController {
-    private let incomingDirectoryName = "EdgeEver Incoming"
+    private let incomingDirectoryName = "StillNote Incoming"
     private var started = false
 
     override func loadView() {
         let chinese = Locale.preferredLanguages.first?.hasPrefix("zh") == true
-        let label = NSTextField(labelWithString: chinese ? "正在保存到 EdgeEver…" : "Saving to EdgeEver…")
+        let label = NSTextField(labelWithString: chinese ? "正在保存到 StillNote…" : "Saving to StillNote…")
         label.frame = NSRect(x: 16, y: 28, width: 248, height: 24)
         let container = NSView(frame: NSRect(x: 0, y: 0, width: 280, height: 80))
         container.addSubview(label)
@@ -230,7 +230,7 @@ final class ShareViewController: NSViewController {
 
     private func shareURL(for file: URL) -> URL? {
         var components = URLComponents()
-        components.scheme = "edgeever"
+        components.scheme = "stillnote"
         components.host = "share-import"
         components.queryItems = [URLQueryItem(name: "path", value: file.path)]
         return components.url

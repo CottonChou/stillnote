@@ -33,7 +33,7 @@ type SessionRow = {
   role: "owner" | "member" | null;
 };
 
-const SESSION_COOKIE = "edgeever_session";
+const SESSION_COOKIE = "stillnote_session";
 const DEFAULT_SESSION_TTL_DAYS = 400;
 const MAX_SESSION_TTL_DAYS = 400;
 const SESSION_LAST_SEEN_UPDATE_INTERVAL_MS = 60 * 60 * 1000;
@@ -53,10 +53,10 @@ export const getInstanceAuthMode = async (
     );
   }
 
-  const allowUnauthenticated = isUnauthenticatedAccessEnabled(env.EDGE_EVER_ALLOW_UNAUTHENTICATED);
+  const allowUnauthenticated = isUnauthenticatedAccessEnabled(env.STILLNOTE_ALLOW_UNAUTHENTICATED);
   const bootstrapCredentialConfigured = hasBootstrapCredential(
-    env.EDGE_EVER_AUTH_PASSWORD,
-    env.EDGE_EVER_AUTH_PASSWORD_HASH,
+    env.STILLNOTE_AUTH_PASSWORD,
+    env.STILLNOTE_AUTH_PASSWORD_HASH,
   );
 
   if (!verifyDatabase) {
@@ -124,7 +124,7 @@ export const verifyLogin = async (env: Bindings, username: string, password: str
     if (!isSupportedPasswordHash(existingUser.password_hash)) {
       throw new AppError(
         "password_hash_invalid",
-        "This account has an invalid password hash. Reset it with the EdgeEver password reset command.",
+        "This account has an invalid password hash. Reset it with the StillNote password reset command.",
         503,
       );
     }
@@ -132,14 +132,14 @@ export const verifyLogin = async (env: Bindings, username: string, password: str
     return null;
   }
 
-  const configuredHash = env.EDGE_EVER_AUTH_PASSWORD_HASH?.trim();
-  const configuredPassword = env.EDGE_EVER_AUTH_PASSWORD;
+  const configuredHash = env.STILLNOTE_AUTH_PASSWORD_HASH?.trim();
+  const configuredPassword = env.STILLNOTE_AUTH_PASSWORD;
 
   if (!configuredHash && !configuredPassword) {
     return null;
   }
 
-  const configuredUsername = env.EDGE_EVER_AUTH_USERNAME?.trim() || "admin";
+  const configuredUsername = env.STILLNOTE_AUTH_USERNAME?.trim() || "admin";
 
   if (normalizedUsername !== configuredUsername) {
     return null;
@@ -287,7 +287,7 @@ const authenticateBearerToken = async (c: AppContext, touch: boolean): Promise<A
   }
 
   await ensureWorkspaceExampleSeed(c.env, row.workspace_id).catch((error) => {
-    console.error("EdgeEver example seed failed", error);
+    console.error("StillNote example seed failed", error);
   });
 
   return {
@@ -341,7 +341,7 @@ const authenticateSessionToken = async (c: AppContext, token: string, touch: boo
     : await ensureUserWorkspace(c.env.storage.db, row.user_id, row.username, c.req.header("accept-language"));
 
   await ensureWorkspaceExampleSeed(c.env, workspace.workspaceId).catch((error) => {
-    console.error("EdgeEver example seed failed", error);
+    console.error("StillNote example seed failed", error);
   });
 
   return {
@@ -379,6 +379,6 @@ export const getBearerToken = (c: AppContext) => {
 };
 
 const getSessionMaxAge = (env: Bindings) => {
-  const days = clampNumber(Number(env.EDGE_EVER_SESSION_TTL_DAYS ?? DEFAULT_SESSION_TTL_DAYS), 1, MAX_SESSION_TTL_DAYS);
+  const days = clampNumber(Number(env.STILLNOTE_SESSION_TTL_DAYS ?? DEFAULT_SESSION_TTL_DAYS), 1, MAX_SESSION_TTL_DAYS);
   return days * 24 * 60 * 60;
 };

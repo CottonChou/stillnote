@@ -1,4 +1,4 @@
-import type { PluginSettingField } from "@edgeever/plugin-api";
+import type { PluginSettingField } from "@stillnote/plugin-api";
 
 export interface PluginSettingFieldGroup {
   id: string;

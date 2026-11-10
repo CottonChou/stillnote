@@ -1,12 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import { enableMacShareExtension, macShareExtensionPath } from "./share-extension-registration.mjs";
 
-const executable = "/Applications/EdgeEver.app/Contents/MacOS/EdgeEver";
+const executable = "/Applications/StillNote.app/Contents/MacOS/StillNote";
 
 describe("macOS share extension registration", () => {
   test("points at the PlugIns copy next to the packaged executable", () => {
     expect(macShareExtensionPath(executable)).toBe(
-      "/Applications/EdgeEver.app/Contents/PlugIns/EdgeEverShare.appex",
+      "/Applications/StillNote.app/Contents/PlugIns/StillNoteShare.appex",
     );
   });
 
@@ -24,7 +24,7 @@ describe("macOS share extension registration", () => {
     });
     expect(result).toEqual({ enabled: true });
     expect(calls).toEqual([
-      ["-e", "use", "-i", "org.edgeever.desktop.share"],
+      ["-e", "use", "-i", "org.stillnote.desktop.share"],
     ]);
   });
 

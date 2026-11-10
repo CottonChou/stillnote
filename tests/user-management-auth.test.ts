@@ -50,7 +50,7 @@ const createDatabase = () => ({
 describe("member management authentication", () => {
   test("accepts an owner session supplied as a desktop Bearer token", async () => {
     const response = await worker.fetch(
-      new Request("https://edgeever.test/api/v1/users", {
+      new Request("https://stillnote.test/api/v1/users", {
         headers: { Authorization: "Bearer desktop-session-token" },
       }),
       { DB: createDatabase() } as never,

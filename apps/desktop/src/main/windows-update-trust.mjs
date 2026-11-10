@@ -3,7 +3,7 @@ import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { basename } from "node:path";
 
-export const WINDOWS_UPDATE_KEY_ID = "edgeever-windows-update-2026-01";
+export const WINDOWS_UPDATE_KEY_ID = "stillnote-windows-update-2026-01";
 export const WINDOWS_UPDATE_MANIFEST_NAME = "latest-windows.json";
 export const WINDOWS_UPDATE_SIGNATURE_NAME = `${WINDOWS_UPDATE_MANIFEST_NAME}.sig`;
 
@@ -24,7 +24,7 @@ const releaseAssetUrl = (version, name) => {
   if (!STABLE_VERSION.test(version)) {
     throw new Error(`Windows update version must be stable X.Y.Z: ${version}`);
   }
-  return `https://github.com/tianma-if/edgeever/releases/download/v${version}/${name}`;
+  return `https://github.com/CottonChou/stillnote/releases/download/v${version}/${name}`;
 };
 
 const responseBytes = async (response, label) => {
@@ -65,7 +65,7 @@ const assertManifestShape = (manifest, expectedVersion) => {
     typeof manifest.releaseDate !== "string" ||
     Number.isNaN(Date.parse(manifest.releaseDate)) ||
     typeof manifest.file?.name !== "string" ||
-    !/^EdgeEver-\d+\.\d+\.\d+-windows-x64\.exe$/.test(manifest.file.name) ||
+    !/^StillNote-\d+\.\d+\.\d+-windows-x64\.exe$/.test(manifest.file.name) ||
     typeof manifest.file.size !== "number" ||
     !Number.isSafeInteger(manifest.file.size) ||
     manifest.file.size <= 0 ||
@@ -76,7 +76,7 @@ const assertManifestShape = (manifest, expectedVersion) => {
   ) {
     throw new Error("Windows update manifest fields are invalid");
   }
-  if (manifest.file.name !== `EdgeEver-${expectedVersion}-windows-x64.exe`) {
+  if (manifest.file.name !== `StillNote-${expectedVersion}-windows-x64.exe`) {
     throw new Error("Windows update manifest filename does not match its version");
   }
 };

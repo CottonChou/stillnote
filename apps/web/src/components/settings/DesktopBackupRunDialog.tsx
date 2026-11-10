@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { DesktopBackupActions, DesktopBackupStatus } from "@edgeever/shared";
+import type { DesktopBackupActions, DesktopBackupStatus } from "@stillnote/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";

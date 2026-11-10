@@ -1,4 +1,4 @@
-name: Deploy EdgeEver Site
+name: Deploy StillNote Site
 
 on:
   push:
@@ -18,14 +18,14 @@ permissions:
   deployments: write
 
 concurrency:
-  group: edgeever-site-production
+  group: stillnote-site-production
   cancel-in-progress: true
 
 jobs:
   deploy:
     # The official site is maintained by the upstream repository only. Product
     # deployments and downstream self-hosted instances do not need Cloudflare Pages.
-    if: github.repository == 'tianma-if/edgeever'
+    if: github.repository == 'CottonChou/stillnote'
     name: Deploy Cloudflare Pages
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -56,5 +56,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy apps/site/dist --project-name=edgeever-official
+          command: pages deploy apps/site/dist --project-name=stillnote-official
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

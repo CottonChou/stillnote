@@ -2,7 +2,7 @@
 
 [English](2026-10-21-public-notebook-site.md)
 
-需求见 [Issue #591](https://github.com/tianma-if/edgeever/issues/591)，设计见[公开站点方案](../public-notebook-site-plan.zh-CN.md)。基线为官方 `e15792d0`。本文记录最终行为、边界与验收方式。
+需求见 [Issue #591](https://github.com/CottonChou/stillnote/issues/591)，设计见[公开站点方案](../public-notebook-site-plan.zh-CN.md)。基线为官方 `e15792d0`。本文记录最终行为、边界与验收方式。
 
 ## 问题、目标与风险
 

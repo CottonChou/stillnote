@@ -64,7 +64,7 @@ test("poster downloads reuse pinned assets and retain their integrity and licens
     expect(createHash("sha256").update(bytes).digest("hex")).toBe(font.sha256);
     const urls = remoteFontUrls(remoteFontCssUrl(id));
     expect(urls).toHaveLength(2);
-    expect(urls[1]).toStartWith("https://raw.githubusercontent.com/tianma-if/edgeever/");
+    expect(urls[1]).toStartWith("https://raw.githubusercontent.com/CottonChou/stillnote/");
     expect(urls[1]).toContain("/0da78f6ce8a4643b2dfb7afe9f7a5101472c4ffb/");
     expect(POSTER_FONT_NOTICES[id]).toContain("Copyright");
   }

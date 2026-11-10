@@ -1,4 +1,4 @@
-import { NOTE_IMAGE_EXPORT_PIXEL_RATIO } from "@edgeever/shared/note-image-card";
+import { NOTE_IMAGE_EXPORT_PIXEL_RATIO } from "@stillnote/shared/note-image-card";
 
 // Bound memory independently of canvas height: long, narrow cards can retain
 // their resolution without hitting html-to-image's fixed 16,384px side limit.

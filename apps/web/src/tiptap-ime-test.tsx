@@ -244,7 +244,7 @@ const TiptapImeTestApp = () => {
           <button type="button" onClick={() => editor?.chain().focus().insertContent("测试文字").run()}>
             插入测试文字
           </button>
-          <button type="button" onClick={() => editor?.chain().focus().setImage({ src: "https://edgeever.org/favicon.svg", alt: "测试图片" }).run()}>
+          <button type="button" onClick={() => editor?.chain().focus().setImage({ src: "https://stillnote.org/favicon.svg", alt: "测试图片" }).run()}>
             插入图片
           </button>
         </div>

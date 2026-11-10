@@ -2,16 +2,16 @@
 
 ## Listing
 
-- Name: EdgeEver Web Clipper
-- Summary: Save webpages, selections, images, and Hacker News posts to your self-hosted EdgeEver instance.
+- Name: StillNote Web Clipper
+- Summary: Save webpages, selections, images, and Hacker News posts to your self-hosted StillNote instance.
 - Category: Bookmarks
-- Homepage: https://edgeever.org
-- Support: https://github.com/tianma-if/edgeever/issues
-- Privacy policy: https://edgeever.org/en/privacy
+- Homepage: https://stillnote.org
+- Support: https://github.com/CottonChou/stillnote/issues
+- Privacy policy: https://stillnote.org/en/privacy
 
 ## Description
 
-EdgeEver Web Clipper saves the current webpage, selected text, a right-clicked image, an X post, a Reddit post, a Xiaohongshu note, a Zhihu answer or article, or a GitHub repository's address and description directly to the self-hosted EdgeEver instance you configure.
+StillNote Web Clipper saves the current webpage, selected text, a right-clicked image, an X post, a Reddit post, a Xiaohongshu note, a Zhihu answer or article, or a GitHub repository's address and description directly to the self-hosted StillNote instance you configure.
 
 - Extract readable article content, or right-click selected text and save that passage only.
 - Right-click an image and save that image file as a new note. From Google Search, the note records Google Search and the keyword.
@@ -24,37 +24,37 @@ EdgeEver Web Clipper saves the current webpage, selected text, a right-clicked i
 - On a YouTube or Bilibili watch page, save that video as a note.
 - These commands stay on the top-level right-click menu.
 - Convert captured HTML to Markdown locally.
-- Choose a default EdgeEver notebook.
-- Send content directly to your instance without an EdgeEver-operated relay.
+- Choose a default StillNote notebook.
+- Send content directly to your instance without an StillNote-operated relay.
 - No advertising, analytics, tracking, or telemetry.
 
-Before using the extension, enter your EdgeEver instance URL and API token in the extension settings. The extension reads and sends page content only after you choose a clip or save command, including **Save Reddit post to EdgeEver**.
+Before using the extension, enter your StillNote instance URL and API token in the extension settings. The extension reads and sends page content only after you choose a clip or save command, including **Save Reddit post to StillNote**.
 
 ## Data collection and transmission
 
-- `authenticationInfo`: the API token is sent only to the EdgeEver instance configured by the user.
+- `authenticationInfo`: the API token is sent only to the StillNote instance configured by the user.
 - `browsingActivity`: the current page URL is included in the note created by the user.
 - `websiteContent`: the selected text, extracted article body, image file, or video page the user chooses is included in the note created by the user.
 
-The project maintainers do not receive or retain this data. Instance settings are stored in the browser's local extension storage. Page content goes only to the EdgeEver instance the user configured. When the token includes `ai:generate` and the workspace has a default model, that instance sends the caption text to the configured model provider. The extension does not send the page or its audio to any other third party.
+The project maintainers do not receive or retain this data. Instance settings are stored in the browser's local extension storage. Page content goes only to the StillNote instance the user configured. When the token includes `ai:generate` and the workspace has a default model, that instance sends the caption text to the configured model provider. The extension does not send the page or its audio to any other third party.
 
 ## Reviewer notes
 
 1. Open the extension settings.
-2. Enter the provided review EdgeEver instance URL and API token.
+2. Enter the provided review StillNote instance URL and API token.
 3. Choose **Test connection**, select a notebook, and save.
 4. Open a normal HTTP or HTTPS webpage.
 5. Open the extension, choose **Clip current page**, and verify that the success message appears.
-6. On a normal webpage, select a passage, right-click it, choose **Save selection to EdgeEver**, and verify the note contains that passage and the page link.
-7. On a normal webpage, right-click an image, choose **Save image to EdgeEver**, and verify the new note contains the image.
-8. Open one X post page, right-click the post text (not a photo), choose **Save post to EdgeEver**, and verify the note contains the post text and the post link.
-9. Open one GitHub repository page, right-click the description or README text, choose **Save repository info to EdgeEver**, and verify the note contains the repository address and description.
-10. Open one Xiaohongshu note, right-click the note text (not a photo), choose **Save note to EdgeEver**, and verify the note contains the title, text, and source link.
-11. Open one Zhihu answer or article, right-click the text (not a photo), choose **Save answer or article to EdgeEver**, and verify the note contains the title, text, and source link.
-12. Open one Reddit post, right-click the post text, choose **Save Reddit post to EdgeEver**, and verify the note contains the title, author, community, and source link without comments.
-13. Verify the created notes in the review EdgeEver instance.
-14. Open a Hacker News post detail page and choose **Save Hacker News post to EdgeEver** or **Clip current page**. Verify the main post and source are saved without comments; a selected passage takes priority for the toolbar action.
-15. On a YouTube or Bilibili watch page, right-click the page and choose **Save video note to EdgeEver**. The new menu runs only after that click. Lives and other unsupported pages show a message and create no note.
+6. On a normal webpage, select a passage, right-click it, choose **Save selection to StillNote**, and verify the note contains that passage and the page link.
+7. On a normal webpage, right-click an image, choose **Save image to StillNote**, and verify the new note contains the image.
+8. Open one X post page, right-click the post text (not a photo), choose **Save post to StillNote**, and verify the note contains the post text and the post link.
+9. Open one GitHub repository page, right-click the description or README text, choose **Save repository info to StillNote**, and verify the note contains the repository address and description.
+10. Open one Xiaohongshu note, right-click the note text (not a photo), choose **Save note to StillNote**, and verify the note contains the title, text, and source link.
+11. Open one Zhihu answer or article, right-click the text (not a photo), choose **Save answer or article to StillNote**, and verify the note contains the title, text, and source link.
+12. Open one Reddit post, right-click the post text, choose **Save Reddit post to StillNote**, and verify the note contains the title, author, community, and source link without comments.
+13. Verify the created notes in the review StillNote instance.
+14. Open a Hacker News post detail page and choose **Save Hacker News post to StillNote** or **Clip current page**. Verify the main post and source are saved without comments; a selected passage takes priority for the toolbar action.
+15. On a YouTube or Bilibili watch page, right-click the page and choose **Save video note to StillNote**. The new menu runs only after that click. Lives and other unsupported pages show a message and create no note.
 
 Restricted browser pages, extension stores, built-in PDF viewers, and other privileged pages cannot be captured.
 
@@ -78,7 +78,7 @@ The reviewable source is the repository source before Vite bundling. Third-party
 
 ## 中文商店说明
 
-EdgeEver 网页剪藏插件可将当前网页、选中的文字、右键选中的图片、X 上的一条推文、Reddit 上的一条帖子、小红书上的一篇笔记，或知乎上的一篇回答或文章直接保存到用户配置的自托管 EdgeEver 实例。
+StillNote 网页剪藏插件可将当前网页、选中的文字、右键选中的图片、X 上的一条推文、Reddit 上的一条帖子、小红书上的一篇笔记，或知乎上的一篇回答或文章直接保存到用户配置的自托管 StillNote 实例。
 
 - 提取适合阅读的文章正文。选中文字后右键，只保存这一段。
 - 在图片上右键，把图片文件存成一条新笔记。从 Google 搜索保存时，笔记记录“Google 搜索”和关键词。
@@ -90,8 +90,8 @@ EdgeEver 网页剪藏插件可将当前网页、选中的文字、右键选中�
 - 可以把 YouTube 或哔哩哔哩播放页保存为视频笔记。
 - 这些命令直接出现在右键菜单的第一级。
 - 在浏览器本地将 HTML 转换为 Markdown。
-- 可选择默认 EdgeEver 笔记本。
-- 数据直接发送到用户自己的实例，不经过 EdgeEver 中转服务。
+- 可选择默认 StillNote 笔记本。
+- 数据直接发送到用户自己的实例，不经过 StillNote 中转服务。
 - 不包含广告、分析、追踪或遥测。
 
-使用前，请在插件设置中填写 EdgeEver 实例地址和 API Token。插件只会在用户选择剪藏或保存命令（包括“保存 Reddit 帖子到 EdgeEver”）后读取并发送网页内容。
+使用前，请在插件设置中填写 StillNote 实例地址和 API Token。插件只会在用户选择剪藏或保存命令（包括“保存 Reddit 帖子到 StillNote”）后读取并发送网页内容。

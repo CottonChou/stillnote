@@ -1,5 +1,5 @@
-import type { MemoTemplate } from "@edgeever/shared";
-import { localizeDefaultMemoTemplate } from "@edgeever/shared/memo-template-seeds";
+import type { MemoTemplate } from "@stillnote/shared";
+import { localizeDefaultMemoTemplate } from "@stillnote/shared/memo-template-seeds";
 
 export type TemplateCard = {
   /** The template as stored; editing starts from it. */

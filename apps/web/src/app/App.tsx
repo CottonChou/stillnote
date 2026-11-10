@@ -19,7 +19,7 @@ import { classifyLoginError, getLoginProblemMessageKey } from "@/lib/login-error
 import { EVERNOTE_MIGRATION_PATH } from "@/lib/routes";
 import { syncPublishedNoteBodyFont } from "@/lib/published-note-body-font";
 import { getNoteWindowMemoId } from "@/lib/desktop-note-windows";
-import type { AuthSession } from "@edgeever/shared";
+import type { AuthSession } from "@stillnote/shared";
 
 const EvernoteImportGuidePane = lazy(() =>
   import("@/components/EvernoteImportGuidePane").then((module) => ({ default: module.EvernoteImportGuidePane }))
@@ -32,7 +32,7 @@ const PublicTableFormPage = lazy(() => import("@/components/PublicTableFormPage"
 const NoteWindowApp = lazy(() => import("@/components/NoteWindowApp").then((module) => ({ default: module.NoteWindowApp })));
 const NotebookSiteManagementPage = lazy(() => import("@/components/NotebookSiteManagementPage").then((module) => ({ default: module.NotebookSiteManagementPage })));
 
-const AuthLoadingScreen = ({ title = "EdgeEver", detail }: { title?: string; detail?: string }) => (
+const AuthLoadingScreen = ({ title = "StillNote", detail }: { title?: string; detail?: string }) => (
   <div className="flex h-[100dvh] items-center justify-center bg-slate-50 px-6 text-center text-slate-700">
     <div role="status" aria-live="polite">
       <div className="text-sm font-semibold">{title}</div>
@@ -63,7 +63,7 @@ const EvernoteMigrationRoute = () => {
 const AuthenticatedWorkspace = ({ siteManagement = false }: { siteManagement?: boolean }) => {
   const queryClient = useQueryClient();
   const { t, i18n } = useTranslation();
-  const desktopBridge = window.edgeeverDesktop;
+  const desktopBridge = window.stillnoteDesktop;
   const [desktopScopeReady, setDesktopScopeReady] = useState(() => !desktopBridge?.isAvailable);
   const [desktopScopeError, setDesktopScopeError] = useState<Error | null>(null);
   const [desktopScopeAttempt, setDesktopScopeAttempt] = useState(0);
@@ -152,8 +152,8 @@ const AuthenticatedWorkspace = ({ siteManagement = false }: { siteManagement?: b
       });
     };
 
-    window.addEventListener("edgeever:unauthorized", handleUnauthorized);
-    return () => window.removeEventListener("edgeever:unauthorized", handleUnauthorized);
+    window.addEventListener("stillnote:unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("stillnote:unauthorized", handleUnauthorized);
   }, [queryClient]);
 
   if (sessionQuery.isLoading) {
@@ -221,7 +221,7 @@ const AuthenticatedWorkspace = ({ siteManagement = false }: { siteManagement?: b
 export const App = () => {
   const [noteWindowMemoId] = useState(() => getNoteWindowMemoId());
   useEffect(() => {
-    const bridge = window.edgeeverDesktop;
+    const bridge = window.stillnoteDesktop;
     const baseUrl = getConfiguredDesktopApiBaseUrl();
     // The main window owns the instance; a note window only edits its note.
     if (bridge?.isAvailable && baseUrl && !noteWindowMemoId) void bridge.setApiBaseUrl(baseUrl);

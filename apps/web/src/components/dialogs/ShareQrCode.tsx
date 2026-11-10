@@ -31,7 +31,7 @@ export const shareQrCodeFileName = (url: string, extension: "png" | "svg") => {
     // Keep the generic name for a value that is not a URL.
   }
   const safe = segment.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 48);
-  return `edgeever-share-qr${safe ? `-${safe}` : ""}.${extension}`;
+  return `stillnote-share-qr${safe ? `-${safe}` : ""}.${extension}`;
 };
 
 /**

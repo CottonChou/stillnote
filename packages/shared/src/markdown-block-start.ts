@@ -96,7 +96,7 @@ const paragraphChunkBoundaries = (markdown: string): ChunkBoundary[] => {
       continue;
     }
     if (gallery) {
-      if (line.includes("<!-- /edgeever:image-gallery -->")) gallery = false;
+      if (line.includes("<!-- /stillnote:image-gallery -->")) gallery = false;
       continue;
     }
     if (isBlankLine(line)) continue;
@@ -110,7 +110,7 @@ const paragraphChunkBoundaries = (markdown: string): ChunkBoundary[] => {
       math = true;
       continue;
     }
-    if (line.includes("<!-- edgeever:image-gallery ") && !line.includes("<!-- /edgeever:image-gallery -->")) {
+    if (line.includes("<!-- stillnote:image-gallery ") && !line.includes("<!-- /stillnote:image-gallery -->")) {
       gallery = true;
     }
     const opened = line.match(/<details\b/gi)?.length ?? 0;

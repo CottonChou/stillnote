@@ -45,11 +45,11 @@ describe("planCatalogReconcile", () => {
   test("seeds local-only extensions and installs remote-only extensions", () => {
     expect(planCatalogReconcile({
       local: [local({ extensionId: "com.example.local" })],
-      remote: [remote({ extensionId: "com.example.remote", publisher: "edgeever" })],
+      remote: [remote({ extensionId: "com.example.remote", publisher: "stillnote" })],
       hasTrustAcknowledgement: false,
       officialIds: new Set(["com.example.remote"]),
     })).toEqual([
-      { type: "install", entry: remote({ extensionId: "com.example.remote", publisher: "edgeever" }) },
+      { type: "install", entry: remote({ extensionId: "com.example.remote", publisher: "stillnote" }) },
       { type: "setEnabled", extensionId: "com.example.remote", enabled: true },
       { type: "push", extensionId: "com.example.local" },
     ]);

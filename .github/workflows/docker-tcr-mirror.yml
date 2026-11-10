@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
   sync-source:
-    if: github.repository == 'tianma-if/edgeever'
+    if: github.repository == 'CottonChou/stillnote'
     name: Trigger asynchronous Tencent-side image build
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -80,5 +80,5 @@ jobs:
             destination="refs/tags/${DESTINATION_REF}"
           fi
           git -c http.extraHeader="Authorization: Basic ${auth}" push \
-            https://cnb.cool/tianma-if/edgeever \
+            https://cnb.cool/CottonChou/stillnote \
             "HEAD:${destination}"

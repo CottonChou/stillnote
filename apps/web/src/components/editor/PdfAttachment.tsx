@@ -2,7 +2,7 @@ import {
   getAttachmentFilenameFromLabel,
   PdfAttachment as BasePdfAttachment,
   resolvePdfDisplayMode,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
 import { PdfViewer } from "@/components/pdf/PdfViewer";
 
@@ -17,7 +17,7 @@ const PdfAttachmentNodeView = ({ node, updateAttributes }: NodeViewProps) => {
   return (
     <NodeViewWrapper
       as="span"
-      className="edgeever-pdf-attachment-node"
+      className="stillnote-pdf-attachment-node"
       data-file-name={filename || label}
       data-file-url={url}
       contentEditable={false}

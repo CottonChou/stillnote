@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserPlus, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { InstanceUser } from "@edgeever/shared";
+import type { InstanceUser } from "@stillnote/shared";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -137,11 +137,11 @@ export const UserManagementCard = ({ demoMode }: UserManagementCardProps) => {
             <DialogDescription className="leading-6">{t("users.createDescription")}</DialogDescription>
           </DialogHeader>
           <form className="grid gap-5 px-6 py-5" autoComplete="off" onSubmit={handleCreate}>
-            <label className="grid gap-2 text-xs font-normal leading-5 text-slate-700" htmlFor="edgeever-new-account-username">
+            <label className="grid gap-2 text-xs font-normal leading-5 text-slate-700" htmlFor="stillnote-new-account-username">
               {t("users.username")}
               <Input
-                id="edgeever-new-account-username"
-                name="edgeever-new-account-username"
+                id="stillnote-new-account-username"
+                name="stillnote-new-account-username"
                 autoComplete="off"
                 autoCapitalize="none"
                 spellCheck={false}
@@ -154,11 +154,11 @@ export const UserManagementCard = ({ demoMode }: UserManagementCardProps) => {
                 maxLength={80}
               />
             </label>
-            <label className="grid gap-2 text-xs font-normal leading-5 text-slate-700" htmlFor="edgeever-new-account-display-name">
+            <label className="grid gap-2 text-xs font-normal leading-5 text-slate-700" htmlFor="stillnote-new-account-display-name">
               {t("users.displayName")}
               <Input
-                id="edgeever-new-account-display-name"
-                name="edgeever-new-account-display-name"
+                id="stillnote-new-account-display-name"
+                name="stillnote-new-account-display-name"
                 autoComplete="off"
                 data-1p-ignore
                 data-lpignore="true"
@@ -168,11 +168,11 @@ export const UserManagementCard = ({ demoMode }: UserManagementCardProps) => {
                 maxLength={80}
               />
             </label>
-            <label className="grid gap-2 text-xs font-normal leading-5 text-slate-700" htmlFor="edgeever-new-account-password">
+            <label className="grid gap-2 text-xs font-normal leading-5 text-slate-700" htmlFor="stillnote-new-account-password">
               {t("users.password")}
               <Input
-                id="edgeever-new-account-password"
-                name="edgeever-new-account-password"
+                id="stillnote-new-account-password"
+                name="stillnote-new-account-password"
                 type="password"
                 autoComplete="new-password"
                 data-1p-ignore
@@ -200,9 +200,9 @@ export const UserManagementCard = ({ demoMode }: UserManagementCardProps) => {
         <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>{t("users.resetTitle", { username: resetUser?.username })}</DialogTitle><DialogDescription>{t("users.resetDescription")}</DialogDescription></DialogHeader>
           <form className="grid gap-4" autoComplete="off" onSubmit={handleReset}>
-            <label className="grid gap-2 text-xs font-normal leading-5 text-slate-700" htmlFor="edgeever-reset-account-password">
+            <label className="grid gap-2 text-xs font-normal leading-5 text-slate-700" htmlFor="stillnote-reset-account-password">
               {t("users.newPassword")}
-              <Input id="edgeever-reset-account-password" name="edgeever-reset-account-password" type="password" autoComplete="new-password" value={resetPassword} onChange={(event) => setResetPassword(event.target.value)} placeholder={t("users.passwordPlaceholder")} minLength={8} required />
+              <Input id="stillnote-reset-account-password" name="stillnote-reset-account-password" type="password" autoComplete="new-password" value={resetPassword} onChange={(event) => setResetPassword(event.target.value)} placeholder={t("users.passwordPlaceholder")} minLength={8} required />
             </label>
             <DialogFooter className="gap-2 sm:space-x-0">
               <DialogClose asChild><Button type="button" variant="outline">{t("common.cancel")}</Button></DialogClose>

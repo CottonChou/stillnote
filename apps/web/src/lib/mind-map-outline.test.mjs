@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { createDefaultDiagramDocument } from "@edgeever/shared";
+import { createDefaultDiagramDocument } from "@stillnote/shared";
 import { formatMindMapOutline, projectMindMapOutline, updateMindMapOutlineDraft } from "./mind-map-outline.ts";
 
 const project = (document, draft) => {

@@ -1,14 +1,14 @@
-# 为 EdgeEver 贡献代码
+# 为 StillNote 贡献代码
 
 简体中文 | [English](CONTRIBUTING.md)
 
-感谢您为 EdgeEver 贡献代码。用于 Cloudflare 部署的 Fork 也可以提交代码贡献，但部署与开发必须使用不同的分支。
+感谢您为 StillNote 贡献代码。用于 Cloudflare 部署的 Fork 也可以提交代码贡献，但部署与开发必须使用不同的分支。
 
 ## 将部署分支与贡献分支分开
 
-如果您的 Fork 用于部署 EdgeEver：
+如果您的 Fork 用于部署 StillNote：
 
-- 将 Fork 的 `main` 视为仅用于部署的分支，并交由 **Update deployed EdgeEver** 管理。
+- 将 Fork 的 `main` 视为仅用于部署的分支，并交由 **Update deployed StillNote** 管理。
 - 不要直接在这个 `main` 分支上开发功能。
 - 日常开发和部署更新时，不要通过 GitHub **Sync fork** 更新部署用的 `main`。
 - 每项代码贡献都应从官方仓库最新的 `upstream/main` 创建独立分支。
@@ -20,9 +20,9 @@
 克隆您的 Fork，并将官方仓库添加为 `upstream`：
 
 ```sh
-git clone https://github.com/<您的账号>/edgeever.git
-cd edgeever
-git remote add upstream https://github.com/tianma-if/edgeever.git
+git clone https://github.com/<您的账号>/stillnote.git
+cd stillnote
+git remote add upstream https://github.com/CottonChou/stillnote.git
 git fetch upstream
 ```
 
@@ -41,8 +41,8 @@ git push -u origin feat/简短说明
 然后创建以下 Pull Request：
 
 ```text
-<您的账号>/edgeever:feat/简短说明
-    -> tianma-if/edgeever:main
+<您的账号>/stillnote:feat/简短说明
+    -> CottonChou/stillnote:main
 ```
 
 提交这个 Pull Request 时，您的 Fork `main` 不需要与官方 `main` 保持一致。GitHub 使用的是贡献分支，而不是部署分支。
@@ -81,4 +81,4 @@ bun run build:web
 
 ## 定制部署
 
-如果您希望将个人产品改动长期保留在部署用的 `main`，这属于定制部署，而不是普通的代码贡献流程。定制部署需要设置 `EDGE_EVER_PRESERVE_FORK_CHANGES=true`，并自行维护与上游的合并。使用独立分支贡献代码时不需要设置这个变量。
+如果您希望将个人产品改动长期保留在部署用的 `main`，这属于定制部署，而不是普通的代码贡献流程。定制部署需要设置 `STILLNOTE_PRESERVE_FORK_CHANGES=true`，并自行维护与上游的合并。使用独立分支贡献代码时不需要设置这个变量。

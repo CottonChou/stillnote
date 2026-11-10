@@ -2,17 +2,17 @@
  * 安全的 CSS 过滤器与作用域限制器
  */
 
-import { sanitizeNoteProseDeclarationBlock } from "@edgeever/shared";
+import { sanitizeNoteProseDeclarationBlock } from "@stillnote/shared";
 
 const sanitizeRulesBlock = (block: string): string => sanitizeNoteProseDeclarationBlock(block);
 
 const scopeSelector = (selector: string): string => {
   const trimmed = selector.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/\s+/g, " ").trim();
   if (!trimmed) return "";
-  if (trimmed.startsWith(".ProseMirror") || trimmed.includes(".edgeever-editor")) return trimmed;
+  if (trimmed.startsWith(".ProseMirror") || trimmed.includes(".stillnote-editor")) return trimmed;
   const dark = trimmed.match(/^(?:html\.dark|:root\.dark)\s+(.+)$/);
-  if (dark) return `:root.dark .edgeever-editor .ProseMirror ${dark[1]}`;
-  return `.edgeever-editor .ProseMirror ${trimmed}`;
+  if (dark) return `:root.dark .stillnote-editor .ProseMirror ${dark[1]}`;
+  return `.stillnote-editor .ProseMirror ${trimmed}`;
 };
 
 /**

@@ -12,7 +12,7 @@ import {
   Unlock,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { PosterElement } from "@edgeever/shared";
+import type { PosterElement } from "@stillnote/shared";
 import { Button } from "@/components/ui/button";
 import { PosterTool } from "./PosterControls";
 export function PosterLayers({

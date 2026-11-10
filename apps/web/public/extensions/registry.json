@@ -3,16 +3,16 @@
   "updatedAt": "2026-09-22T02:31:37.000Z",
   "entries": [
     {
-      "id": "org.edgeever.tasks",
-      "name": "EdgeEver Tasks",
+      "id": "org.stillnote.tasks",
+      "name": "StillNote Tasks",
       "description": "Collects Markdown tasks across notes and links every task back to its source.",
-      "author": "EdgeEver",
-      "publisher": "edgeever",
+      "author": "StillNote",
+      "publisher": "stillnote",
       "category": "Productivity",
-      "repositoryUrl": "https://github.com/tianma-if/edgeever-tasks",
+      "repositoryUrl": "https://github.com/CottonChou/stillnote-tasks",
       "distribution": {
         "type": "github",
-        "repositoryUrl": "https://github.com/tianma-if/edgeever-tasks"
+        "repositoryUrl": "https://github.com/CottonChou/stillnote-tasks"
       },
       "verification": {
         "version": "0.6.4",
@@ -24,16 +24,16 @@
       }
     },
     {
-      "id": "org.edgeever.plugins.ai-rss",
-      "name": "EdgeEver AI RSS",
-      "description": "AI-generated daily digests from curated RSS and Atom feeds, saved directly to EdgeEver notes.",
-      "author": "EdgeEver",
-      "publisher": "edgeever",
+      "id": "org.stillnote.plugins.ai-rss",
+      "name": "StillNote AI RSS",
+      "description": "AI-generated daily digests from curated RSS and Atom feeds, saved directly to StillNote notes.",
+      "author": "StillNote",
+      "publisher": "stillnote",
       "category": "News & AI",
-      "repositoryUrl": "https://github.com/tianma-if/edgeever-ai-rss",
+      "repositoryUrl": "https://github.com/CottonChou/stillnote-ai-rss",
       "distribution": {
         "type": "github",
-        "repositoryUrl": "https://github.com/tianma-if/edgeever-ai-rss"
+        "repositoryUrl": "https://github.com/CottonChou/stillnote-ai-rss"
       },
       "verification": {
         "version": "0.5.9",

@@ -1,14 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import { Editor } from "@tiptap/core";
-import { createEdgeEverDocumentExtensions, docToMarkdown } from "@edgeever/shared";
-import { createEdgeEverMathematics } from "@edgeever/shared/mathematics";
+import { createStillNoteDocumentExtensions, docToMarkdown } from "@stillnote/shared";
+import { createStillNoteMathematics } from "@stillnote/shared/mathematics";
 import { ensureTestWindowDom } from "../../lib/restore-test-global.mjs";
 
 const createEditor = (content = { type: "doc", content: [{ type: "paragraph" }] }) => {
   ensureTestWindowDom();
   const editor = new Editor({
-    extensions: createEdgeEverDocumentExtensions({
-      mathematics: createEdgeEverMathematics(),
+    extensions: createStillNoteDocumentExtensions({
+      mathematics: createStillNoteMathematics(),
     }),
     content,
   });

@@ -1,4 +1,4 @@
-import { withFontDeadline } from "@edgeever/shared/font-loader";
+import { withFontDeadline } from "@stillnote/shared/font-loader";
 import { FontLoadFeedback } from "./FontLoadFeedback";
 import { createFontLoadState } from "@/lib/font-load-state";
 import { loadPosterFont } from "@/lib/poster-design/fonts";
@@ -39,7 +39,7 @@ import {
   type Notebook,
   type PosterDocument,
   type PosterElement,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -63,7 +63,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { api } from "@/lib/api";
-import type { EdgeEverRepository } from "@/lib/repository";
+import type { StillNoteRepository } from "@/lib/repository";
 import {
   Canvas,
   ActiveSelection,
@@ -115,13 +115,14 @@ const snapshot = (title: string, document: PosterDocument) =>
   JSON.stringify([title, artwork(document)]);
 type Props = {
   memo: MemoDetail;
-  repository: EdgeEverRepository;
+  repository: StillNoteRepository;
   readOnly: boolean;
   companionAvailable?: boolean;
   beforeCompanionApply?: () => Promise<void>;
   onCompanionNotesChanged?: () => Promise<void>;
   onSaved: (memo: MemoDetail) => Promise<void>;
   onBackToList: () => void;
+  onCloseNote?: () => void;
   onOpenCompanionNote?: (id: string, notebookId: string) => void;
   notebooks?: Notebook[];
   desktopFocusMode?: boolean;
@@ -136,6 +137,7 @@ export default function PosterEditorPane({
   readOnly,
   onSaved,
   onBackToList,
+  onCloseNote,
   onOpenCompanionNote,
   notebooks = [], desktopFocusMode = false, onToggleDesktopFocusMode,
   onOpenExecutionCenter, aiAssistantOpenToken,
@@ -247,7 +249,7 @@ export default function PosterEditorPane({
     left: number;
     top: number;
   } | null>(null);
-  const draftKey = `edgeever:poster-draft:${memo.id}`;
+  const draftKey = `stillnote:poster-draft:${memo.id}`;
   const dirty = snapshot(title, document) !== saved || tagsText !== savedTags;
   const fontStatus = useSyncExternalStore(fontLoadState.subscribe, fontLoadState.getSnapshot, fontLoadState.getSnapshot);
   const editable = !readOnly && Boolean(initial) && ready && !busy;
@@ -1159,7 +1161,7 @@ export default function PosterEditorPane({
       const { memo: source } = await repository.getMemo(sourceId);
       if (
         source.isDeleted ||
-        /<!--\s*edgeever-(?:poster|diagram|table|infographic)-v1:/.test(
+        /<!--\s*stillnote-(?:poster|diagram|table|infographic)-v1:/.test(
           source.contentMarkdown,
         )
       )
@@ -1498,7 +1500,18 @@ export default function PosterEditorPane({
           <div className="flex shrink-0 items-center gap-1 pr-2">
             <span role="status" className="hidden text-xs text-slate-500 sm:inline-flex">{t(readOnly ? "poster.readOnly" : saving ? "poster.saving" : dirty ? "poster.unsaved" : "poster.saved")}</span>
             {onToggleDesktopFocusMode && <MemoEditorFocusModeButton desktopFocusMode={desktopFocusMode} onToggleDesktopFocusMode={onToggleDesktopFocusMode} />}
-            {onOpenExecutionCenter && <MemoEditorHeaderActions onOpenExecutionCenter={onOpenExecutionCenter} moreMenuItems={<DropdownMenuItem disabled={!canvasReady || busy || !initial} onClick={() => setExportOpen(true)}>{t("poster.design.export")}</DropdownMenuItem>} />}
+            {(onOpenExecutionCenter || onCloseNote) && (
+              <MemoEditorHeaderActions
+                onCloseNote={onCloseNote ? () => {
+                  void (async () => {
+                    if (dirty && !(await saveRef.current())) return;
+                    onCloseNote();
+                  })();
+                } : undefined}
+                onOpenExecutionCenter={onOpenExecutionCenter}
+                moreMenuItems={<DropdownMenuItem disabled={!canvasReady || busy || !initial} onClick={() => setExportOpen(true)}>{t("poster.design.export")}</DropdownMenuItem>}
+              />
+            )}
           </div>
         </div>
         <div className="flex min-h-9 items-center justify-end gap-2 overflow-x-auto px-4 py-0.5">

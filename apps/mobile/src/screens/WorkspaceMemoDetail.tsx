@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { DEFAULT_MEMO_TITLE, parseDiagramDocument, type MemoDetail, type Notebook, type TiptapDoc } from "@edgeever/shared";
+import { DEFAULT_MEMO_TITLE, parseDiagramDocument, type MemoDetail, type Notebook, type TiptapDoc } from "@stillnote/shared";
 import {
   NOTE_IMAGE_THEMES,
   NOTE_IMAGE_THEME_OPTIONS,
@@ -8,7 +8,7 @@ import {
   type NoteImageFontStyle,
   type NoteImageFontSize,
   type NoteImageCardWidth,
-} from "@edgeever/shared/note-image-card";
+} from "@stillnote/shared/note-image-card";
 import * as Clipboard from "expo-clipboard";
 import { Directory, File, Paths } from "expo-file-system";
 import * as FileSystem from "expo-file-system/legacy";
@@ -1066,7 +1066,7 @@ export const MemoDetailModal = ({
     if (!event.requestId || event.requestId !== imageExportRequestRef.current) return;
     if (event.type === "font-status") { setImageFontStatus(event.status); return; }
     if (event.type === "progress") {
-      console.info(`[EdgeEverImageExport] ${event.stage}=${event.elapsedMs ?? 0}ms`);
+      console.info(`[StillNoteImageExport] ${event.stage}=${event.elapsedMs ?? 0}ms`);
       setImageExportStage(event.stage);
       return;
     }
@@ -1083,7 +1083,7 @@ export const MemoDetailModal = ({
     try {
       // A fresh URI prevents Android's decoded-image cache from displaying an
       // earlier export when different notes share the same download filename.
-      const directory = new Directory(Paths.cache, "edgeever-note-exports", event.requestId);
+      const directory = new Directory(Paths.cache, "stillnote-note-exports", event.requestId);
       if (!directory.exists) directory.create({ idempotent: true, intermediates: true });
       const file = new File(encodeMobileNoteImageFileUri(Paths.join(directory, event.filename)));
       if (file.exists) file.delete();

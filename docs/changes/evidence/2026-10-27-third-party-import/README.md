@@ -97,7 +97,7 @@ Implementation-baseline large-resource measurements use a separate profile per c
 All three cases end with zero temporary resource chunks. Generate large fixtures when needed rather than committing them:
 
 ```sh
-bun tests/fixtures/note-import/generate-large.mjs /tmp/edgeever-note-import-large
+bun tests/fixtures/note-import/generate-large.mjs /tmp/stillnote-note-import-large
 ```
 
 ## Reproduce affected checks

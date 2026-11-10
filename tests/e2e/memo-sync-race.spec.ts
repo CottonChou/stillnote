@@ -11,7 +11,7 @@ type StoredQueueItem = {
 
 const readSyncQueue = (page: Page) => page.evaluate(
   () => new Promise<StoredQueueItem[]>((resolve, reject) => {
-    const openRequest = indexedDB.open("edgeever-local");
+    const openRequest = indexedDB.open("stillnote-local");
     openRequest.onerror = () => reject(openRequest.error);
     openRequest.onsuccess = () => {
       const database = openRequest.result;
@@ -45,7 +45,7 @@ const waitForPendingQueuedContent = (page: Page, memoId: string, marker: string)
 ).toBe("pending");
 
 const waitForSyncCompleted = (page: Page) => page.evaluate(() => new Promise<void>((resolve) => {
-  window.addEventListener("edgeever:sync-completed", () => resolve(), { once: true });
+  window.addEventListener("stillnote:sync-completed", () => resolve(), { once: true });
 }));
 
 const readEditorSelection = (page: Page) => page.evaluate(() => {
@@ -116,7 +116,7 @@ test("keeps the caret and rebases edits made while autosave sync is in flight", 
     await page.keyboard.insertText(" first-save");
     await waitForQueuedContent(page, memoId, "first-save");
 
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("edgeever:sync-queue-changed")));
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("stillnote:sync-queue-changed")));
     await firstUpdateStarted;
 
     await firstParagraph.click();
@@ -148,7 +148,7 @@ test("keeps the caret and rebases edits made while autosave sync is in flight", 
       (response) => response.request().method() === "PATCH" && new URL(response.url()).pathname === `/api/v1/memos/${memoId}`,
     );
     const secondSyncCompleted = waitForSyncCompleted(page);
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("edgeever:sync-queue-changed")));
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("stillnote:sync-queue-changed")));
     expect((await secondUpdateResponse).ok()).toBe(true);
     await secondSyncCompleted;
     expect(await readEditorSelection(page)).toEqual(selectionBeforeCompletedSync);
@@ -216,7 +216,7 @@ test("preserves a mind-map draft when an earlier autosave is acknowledged", asyn
     const title = page.getByRole("textbox", { name: "图表标题", exact: true });
     await title.fill(`${marker}-first-save`);
     await waitForQueuedContent(page, memoId, "first-save");
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("edgeever:sync-queue-changed")));
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("stillnote:sync-queue-changed")));
     await updateStored;
 
     // Keep the next edit inside the real 1,200 ms debounce window while the
@@ -255,7 +255,7 @@ test("preserves a mind-map draft when an earlier autosave is acknowledged", asyn
       const body = await response.json() as { memo: { contentMarkdown: string } };
       return body.memo.contentMarkdown.includes("draft-during-sync");
     }).toBe(true);
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("edgeever:sync-queue-changed")));
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("stillnote:sync-queue-changed")));
     const nextResponse = await nextUpdate;
     expect(nextResponse.ok(), await nextResponse.text()).toBe(true);
     const savedResponse = await page.request.get(`/api/v1/memos/${memoId}`);
@@ -292,7 +292,7 @@ test("preserves a mind-map draft when an earlier autosave is acknowledged", asyn
       });
       expect(update.ok(), await update.text()).toBe(true);
       const { memo: incoming } = await update.json();
-      await page.evaluate((detail) => window.dispatchEvent(new CustomEvent("edgeever:memo-detail-refreshed", { detail })), incoming);
+      await page.evaluate((detail) => window.dispatchEvent(new CustomEvent("stillnote:memo-detail-refreshed", { detail })), incoming);
       return incoming as { revision: number; contentHash: string };
     };
 
@@ -394,7 +394,7 @@ test("keeps a new mind-map editor and its draft when its temporary id is remappe
     await input.fill("draft-during-id-remap");
     const originalGraph = await canvas.locator(".x6-graph-svg").elementHandle();
     const mapped = page.evaluate(() => new Promise<void>((resolve) => {
-      window.addEventListener("edgeever:memo-id-remapped", () => resolve(), { once: true });
+      window.addEventListener("stillnote:memo-id-remapped", () => resolve(), { once: true });
     }));
     releaseCreate();
     await mapped;
@@ -416,7 +416,7 @@ test("keeps a new mind-map editor and its draft when its temporary id is remappe
       const body = await response.json() as { memo: { contentMarkdown: string } };
       return body.memo.contentMarkdown.includes("draft-during-id-remap");
     }).toBe(true);
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("edgeever:sync-queue-changed")));
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("stillnote:sync-queue-changed")));
     const response = await saved;
     expect(response.ok(), await response.text()).toBe(true);
     await page.clock.resume();

@@ -7,7 +7,7 @@ const webEditorSource = readSource("../apps/web/src/components/EditorPane.tsx");
 const webMemoListSource = readSource("../apps/web/src/components/MemoListPane.tsx");
 const webCopyNoticeSource = readSource("../apps/web/src/components/ClipboardCopyNotice.tsx");
 const androidDetailSource = readSource("../apps/mobile/src/screens/WorkspaceMemoDetail.tsx");
-const iosDetailSource = readSource("../apps/ios/EdgeEver/Features/Workspace/MemoDetailView.swift");
+const iosDetailSource = readSource("../apps/ios/StillNote/Features/Workspace/MemoDetailView.swift");
 
 describe("copy current note ID", () => {
   test("copies the raw memo ID from the desktop and web note menu", () => {

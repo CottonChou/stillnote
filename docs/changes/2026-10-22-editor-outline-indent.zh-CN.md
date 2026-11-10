@@ -24,6 +24,6 @@
 - 产品代码只修改大纲展示组件。行缩进统一为 `depth * 12`，装饰引导线不再占用横向空间，并随主题字号跟随既有折叠按钮宽度对齐；实际 diff 未引入清单外行为。
 - 本地浏览器检查通过：H1–H6 缩进为 0/12/24/36/48/60px；面板仍为 300px，行背景均为 292px；长 H6 标题有 200px 文字空间，超出部分显示省略号。同级与跳级条目保持对齐，已操作折叠、展开、标题选择及跳转、滚动高亮。
 - 已检查浅色和深色实际渲染。主题根字号为 20px 时复现了引导线 3px 错位，改为按既有 rem 按钮宽度的一半定位后误差为 0px，恢复默认 16px 根字号后误差同样为 0px，层级缩进仍为 12px。
-- 在贡献分支基线 `c80645f8` 上，定向 lint、`bun run typecheck:mobile`、大纲层级测试和 `bun run build:web` 通过。根目录 `bun run typecheck` 被 `apps/web/src/lib/note-print-pdf.ts:22` 和 `apps/web/src/note-print.ts:172` 的既有错误阻塞；未应用本补丁时也已复现相同错误，[上游基线 CI](https://github.com/tianma-if/edgeever/actions/runs/39724860542) 同样失败。本修复不修改这些无关打印错误。
+- 在贡献分支基线 `c80645f8` 上，定向 lint、`bun run typecheck:mobile`、大纲层级测试和 `bun run build:web` 通过。根目录 `bun run typecheck` 被 `apps/web/src/lib/note-print-pdf.ts:22` 和 `apps/web/src/note-print.ts:172` 的既有错误阻塞；未应用本补丁时也已复现相同错误，[上游基线 CI](https://github.com/CottonChou/stillnote/actions/runs/39724860542) 同样失败。本修复不修改这些无关打印错误。
 
 浏览器复现方式：执行 `bun run dev`，打开包含嵌套 H1–H6、长 H6 标题、同级与跳级标题的笔记，展开文档大纲，检查缩进、全行背景、截断、折叠、展开和跳转。分别在默认主题根字号与 20px 根字号下检查引导线对齐。本次未验证桌面安装包。

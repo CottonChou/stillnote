@@ -21,15 +21,15 @@ COPY patches patches
 
 FROM manifests AS dependencies
 RUN bun install --frozen-lockfile \
-  --filter edgeever \
-  --filter @edgeever/api \
-  --filter @edgeever/public-network \
-  --filter @edgeever/web
+  --filter stillnote \
+  --filter @stillnote/api \
+  --filter @stillnote/public-network \
+  --filter @stillnote/web
 
 FROM dependencies AS build
 # Only stale template previews need the build browser; it stays out of runtime.
 RUN apk add --no-cache chromium nodejs
-ENV EDGE_EVER_POSTER_CHROME_EXECUTABLE=/usr/bin/chromium
+ENV STILLNOTE_POSTER_CHROME_EXECUTABLE=/usr/bin/chromium
 COPY apps/api apps/api
 COPY apps/web apps/web
 COPY packages packages
@@ -42,23 +42,23 @@ RUN bun run build:web && bun run build:self-hosted
 
 FROM oven/bun:1.3.14-alpine AS runtime
 WORKDIR /app
-ARG EDGE_EVER_BUILD_ID=unknown
+ARG STILLNOTE_BUILD_ID=unknown
 # Image build metadata for System information. Self-built images leave these
 # empty, which the instance reports as unknown. They describe how the image was
-# produced, not how it was deployed; set EDGE_EVER_DEPLOYMENT_* at runtime for that.
-ARG EDGE_EVER_BUILD_CREATED_AT=
-ARG EDGE_EVER_BUILD_TRIGGER=
-ARG EDGE_EVER_BUILD_METHOD=
+# produced, not how it was deployed; set STILLNOTE_DEPLOYMENT_* at runtime for that.
+ARG STILLNOTE_BUILD_CREATED_AT=
+ARG STILLNOTE_BUILD_TRIGGER=
+ARG STILLNOTE_BUILD_METHOD=
 ENV NODE_ENV=production \
-    EDGE_EVER_BUILD_ID=${EDGE_EVER_BUILD_ID} \
-    EDGE_EVER_BUILD_CREATED_AT=${EDGE_EVER_BUILD_CREATED_AT} \
-    EDGE_EVER_BUILD_TRIGGER=${EDGE_EVER_BUILD_TRIGGER} \
-    EDGE_EVER_BUILD_METHOD=${EDGE_EVER_BUILD_METHOD} \
-    EDGE_EVER_DATA_DIR=/data \
-    EDGE_EVER_WEB_DIR=/app/apps/web/dist \
+    STILLNOTE_BUILD_ID=${STILLNOTE_BUILD_ID} \
+    STILLNOTE_BUILD_CREATED_AT=${STILLNOTE_BUILD_CREATED_AT} \
+    STILLNOTE_BUILD_TRIGGER=${STILLNOTE_BUILD_TRIGGER} \
+    STILLNOTE_BUILD_METHOD=${STILLNOTE_BUILD_METHOD} \
+    STILLNOTE_DATA_DIR=/data \
+    STILLNOTE_WEB_DIR=/app/apps/web/dist \
     PORT=8787
 
-LABEL org.opencontainers.image.title="EdgeEver" \
+LABEL org.opencontainers.image.title="StillNote" \
       org.opencontainers.image.description="Self-hosted notes and knowledge management" \
       org.opencontainers.image.licenses="AGPL-3.0-only"
 

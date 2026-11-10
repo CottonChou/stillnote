@@ -70,7 +70,7 @@ describe("scheduled task routes", () => {
       body: JSON.stringify({
         name: "Daily cleanup",
         taskType: "plugin-command",
-        taskPayload: { pluginId: "org.edgeever.cleanup", commandId: "run" },
+        taskPayload: { pluginId: "org.stillnote.cleanup", commandId: "run" },
         cronExpression: "0 9 * * *",
         timezone: "Asia/Shanghai",
         executorDeviceId: deviceId,
@@ -163,7 +163,7 @@ describe("scheduled task routes", () => {
         id: run.id,
         taskId: task.id,
         taskName: "Daily cleanup",
-        pluginId: "org.edgeever.cleanup",
+        pluginId: "org.stillnote.cleanup",
         ownerPluginId: null,
         pluginScheduleKey: null,
         status: "succeeded",
@@ -198,7 +198,7 @@ describe("scheduled task routes", () => {
       body: JSON.stringify({
         name: "Invalid schedule",
         taskType: "plugin-command",
-        taskPayload: { pluginId: "org.edgeever.cleanup", commandId: "run" },
+        taskPayload: { pluginId: "org.stillnote.cleanup", commandId: "run" },
         cronExpression: "not a cron expression",
         timezone: "Mars/Olympus_Mons",
         executorDeviceId: deviceId,
@@ -214,7 +214,7 @@ describe("scheduled task routes", () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        pluginId: "org.edgeever.cleanup",
+        pluginId: "org.stillnote.cleanup",
         scheduleKey: "daily-cleanup",
         name: "Daily cleanup",
         commandId: "run",
@@ -228,7 +228,7 @@ describe("scheduled task routes", () => {
 
     const first = (await (await upsert(deviceId)).json()).task;
     expect(first).toMatchObject({
-      ownerPluginId: "org.edgeever.cleanup",
+      ownerPluginId: "org.stillnote.cleanup",
       pluginScheduleKey: "daily-cleanup",
       executorDeviceId: deviceId,
       isEnabled: true,
@@ -252,11 +252,11 @@ describe("scheduled task routes", () => {
     const repeated = (await (await upsert(otherDeviceId, { name: "Updated cleanup" })).json()).task;
     expect(repeated.updatedAt).toBe(second.updatedAt);
 
-    const listed = await app.request("/api/v1/scheduled-tasks/plugin/org.edgeever.cleanup", {}, environment);
+    const listed = await app.request("/api/v1/scheduled-tasks/plugin/org.stillnote.cleanup", {}, environment);
     expect((await listed.json()).tasks).toHaveLength(1);
 
     const removed = await app.request(
-      "/api/v1/scheduled-tasks/plugin/org.edgeever.cleanup/daily-cleanup",
+      "/api/v1/scheduled-tasks/plugin/org.stillnote.cleanup/daily-cleanup",
       { method: "DELETE" },
       environment,
     );

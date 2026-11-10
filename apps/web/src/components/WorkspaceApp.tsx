@@ -1,6 +1,6 @@
 import { useNoteImport } from "@/lib/note-import/use-note-import";
 import { NotebookAppearanceDialog } from "./dialogs/NotebookAppearanceDialog";
-import type { NotebookUpdateInput } from "@edgeever/shared";
+import type { NotebookUpdateInput } from "@stillnote/shared";
 import { startPosterClientRenderer } from "@/lib/poster-client-render";
 import {
   lazy,
@@ -16,7 +16,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useInfiniteQuery, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { PluginPanelOpenOptions } from "@edgeever/plugin-api";
+import type { PluginPanelOpenOptions } from "@stillnote/plugin-api";
 import { RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import * as m from "motion/react-m";
@@ -27,7 +27,7 @@ import { AppConfirmDialog, MemoDeleteConfirmDialog, NotebookNameDialog } from ".
 import { PluginPanelDialog } from "./plugins/PluginPanelDialog";
 import { shouldDiscardPluginNoteSearchRequest } from "./editor/note-search";
 import { api, ApiRequestError, getConfiguredDesktopApiBaseUrl, getOrCreateClientDeviceId } from "@/lib/api";
-import type { DesktopBackupStatus } from "@edgeever/shared";
+import type { DesktopBackupStatus } from "@stillnote/shared";
 import { useShowDescendantNotesPreference } from "@/lib/descendant-notes-preference";
 import { MarkdownExportMemoryLimitError, type MarkdownExportProgress } from "@/lib/markdown-export";
 import { exportSelectedMemosAsMarkdownZip } from "@/lib/selected-markdown-export";
@@ -49,8 +49,8 @@ import {
 } from "@/lib/mobile-editor";
 import { cn } from "@/lib/utils";
 import { isBrowserOffline, isBrowserOnline } from "@/lib/network-status";
-import { createDefaultDiagramDocument, createDefaultInfographicDocument, hasPosterDocumentMarker, posterFallbackMarkdown, serializePosterDocument, createDefaultTableDocument, diagramFallbackMarkdown, getNotebookScopeIds, hasTableDocumentMarker, infographicFallbackMarkdown, markdownToDoc, parseDiagramDocument, parseInfographicDocument, parseTableDocument, serializeDiagramDocument, serializeInfographicDocument, serializeTableDocument, tableFallbackMarkdown, type NoteCreateKind, type Notebook, type AuthUser, type MemoSummary, type MemoDetail, type MemoTemplate as SavedMemoTemplate, getMemoDisplayTitle } from "@edgeever/shared";
-import { toggleMobileMemoSelection } from "@edgeever/shared/mobile-ui";
+import { createDefaultDiagramDocument, createDefaultInfographicDocument, hasPosterDocumentMarker, posterFallbackMarkdown, serializePosterDocument, createDefaultTableDocument, diagramFallbackMarkdown, getNotebookScopeIds, hasTableDocumentMarker, infographicFallbackMarkdown, markdownToDoc, parseDiagramDocument, parseInfographicDocument, parseTableDocument, serializeDiagramDocument, serializeInfographicDocument, serializeTableDocument, tableFallbackMarkdown, type NoteCreateKind, type Notebook, type AuthUser, type MemoSummary, type MemoDetail, type MemoTemplate as SavedMemoTemplate, getMemoDisplayTitle } from "@stillnote/shared";
+import { toggleMobileMemoSelection } from "@stillnote/shared/mobile-ui";
 import type {
   Pane,
   MemoView,
@@ -130,7 +130,7 @@ import { useMemoSelectionReconciliation } from "@/hooks/useMemoSelectionReconcil
 import { useNotebookSelectionReconciliation } from "@/hooks/useNotebookSelectionReconciliation";
 import { useWorkspaceQueuedSync } from "@/hooks/useWorkspaceQueuedSync";
 import { useWorkspaceMemoRemoval } from "@/hooks/useWorkspaceMemoRemoval";
-import { EdgeEverPluginHost, type RegisteredPluginPanel } from "@/lib/plugins/plugin-host";
+import { StillNotePluginHost, type RegisteredPluginPanel } from "@/lib/plugins/plugin-host";
 import { loadResolvedPluginMarketplace } from "@/lib/plugins/plugin-marketplace";
 import { updateOfficialMarketplacePlugins } from "@/lib/plugins/plugin-updates";
 import { createPublicNetworkAdapter } from "@/lib/plugins/public-network-adapter";
@@ -216,7 +216,7 @@ export const WorkspaceApp = ({
   const isInitialMobileEditorReturn = Boolean(route.mobileEditorReturnMemoId);
   const isTrashRoute = route.isTrash;
   const [rendererRecoveryMode, setRendererRecoveryMode] = useState(() =>
-    Boolean(window.edgeeverDesktop?.recoveredAfterAbnormalExit) || isRendererRecoveryRequired()
+    Boolean(window.stillnoteDesktop?.recoveredAfterAbnormalExit) || isRendererRecoveryRequired()
   );
   const [desktopWorkspaceRestore] = useState(() => (
     shouldRestoreDesktopWorkspace() && !isRendererRecoveryRequired()
@@ -244,12 +244,13 @@ export const WorkspaceApp = ({
     setSelectionMoveTargetNotebookId,
   } = useWorkspaceSelection(desktopWorkspaceRestore);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [noteClosed, setNoteClosed] = useState(false);
   const autoSelectedDemoNotebookRef = useRef(false);
   const [createdMemoEditId, setCreatedMemoEditId] = useState<string | null>(null);
   const pendingCreatedMemoIdRef = useRef<string | null>(null);
   const pendingQuickSwitcherMemoIdRef = useRef<string | null>(desktopWorkspaceRestore?.selectedMemoId ?? null); // also link/companion/plugin opens not yet in the list
   useEffect(() => {
-    if (!window.edgeeverDesktop?.isAvailable) return;
+    if (!window.stillnoteDesktop?.isAvailable) return;
     writeDesktopWorkspaceRestoreState({
       selectedMemoId,
       selectedNotebookId,
@@ -273,7 +274,7 @@ export const WorkspaceApp = ({
   }, []);
   const focusDetachedMemo = useCallback((memoId: string) => {
     if (!detachedMemoIds.has(memoId)) return false;
-    void window.edgeeverDesktop?.focusNoteWindow?.(memoId);
+    void window.stillnoteDesktop?.focusNoteWindow?.(memoId);
     return true;
   }, [detachedMemoIds]);
   const [wechatImportFailureId, setWeChatImportFailureId] = useState<string | null>(null);
@@ -287,7 +288,7 @@ export const WorkspaceApp = ({
   });
   const [demoResetConfirmationOpen, setDemoResetConfirmationOpen] = useState(false);
   const scheduledTaskDeviceId = useMemo(
-    () => window.edgeeverDesktop?.isAvailable ? getOrCreateClientDeviceId() : null,
+    () => window.stillnoteDesktop?.isAvailable ? getOrCreateClientDeviceId() : null,
     [],
   );
   const pluginScheduleAdapter = useMemo(() => scheduledTaskDeviceId
@@ -295,10 +296,10 @@ export const WorkspaceApp = ({
         queryClient.invalidateQueries({ queryKey: ["scheduled-tasks"] }))
     : undefined, [queryClient, scheduledTaskDeviceId]);
   const pluginPublicNetworkAdapter = useMemo(() => createPublicNetworkAdapter(api.pluginNetwork, {
-    desktop: window.edgeeverDesktop?.isAvailable ? window.edgeeverDesktop : undefined,
+    desktop: window.stillnoteDesktop?.isAvailable ? window.stillnoteDesktop : undefined,
   }), []);
   const pluginCatalogAdapter = useMemo(() => demoMode ? undefined : createPluginCatalogAdapter(), [demoMode]);
-  const pluginHost = useMemo(() => new EdgeEverPluginHost({
+  const pluginHost = useMemo(() => new StillNotePluginHost({
     repository,
     scope: localDataScope,
     aiAdapter: api.pluginAi,
@@ -399,17 +400,17 @@ export const WorkspaceApp = ({
   }, [queryClient, scheduledTaskDeviceId, scheduledTasksQuery.data?.tasks]);
 
   useEffect(() => {
-    const bridge = window.edgeeverDesktop;
+    const bridge = window.stillnoteDesktop;
     if (!bridge?.isAvailable || !scheduledTaskDeviceId || !pluginHostReady) return;
     void bridge.syncScheduledTasks(runnableScheduledTasks).catch(() => {});
   }, [pluginHostReady, runnableScheduledTasks, scheduledTaskDeviceId]);
 
   useEffect(() => () => {
-    void window.edgeeverDesktop?.syncScheduledTasks([]).catch(() => {});
+    void window.stillnoteDesktop?.syncScheduledTasks([]).catch(() => {});
   }, []);
 
   useEffect(() => {
-    const bridge = window.edgeeverDesktop;
+    const bridge = window.stillnoteDesktop;
     if (!bridge?.isAvailable || !scheduledTaskDeviceId || !pluginHostReady) return;
     return bridge.onScheduledTask(async ({ task, scheduledFor }) => {
       if (task.executorDeviceId !== scheduledTaskDeviceId || runningScheduledTaskIdsRef.current.has(task.id)) return;
@@ -636,7 +637,7 @@ export const WorkspaceApp = ({
       return { changed: 0, skipped: true };
     }
 
-    const isDesktopRuntime = Boolean(window.edgeeverDesktop?.isAvailable);
+    const isDesktopRuntime = Boolean(window.stillnoteDesktop?.isAvailable);
 
     return refreshWorkspaceData({
       mode,
@@ -658,7 +659,7 @@ export const WorkspaceApp = ({
 
   const refreshedBackupRestores = useRef(new Set<string>());
   useEffect(() => {
-    const bridge = window.edgeeverDesktop;
+    const bridge = window.stillnoteDesktop;
     if (!bridge?.backup || (authRequired && !user) || isLoggingOut) return;
     let active = true;
     const consume = (status: DesktopBackupStatus | null) => {
@@ -966,7 +967,7 @@ export const WorkspaceApp = ({
   }, [isTrashRoute, route.isSettings, route.isPlugins, route.isTemplates, route.isAiPrompts, route.isExecutionCenter]);
 
   useEffect(() => {
-    if (window.edgeeverDesktop?.isAvailable) {
+    if (window.stillnoteDesktop?.isAvailable) {
       let active = true;
       const update = async () => {
         const { getDesktopSyncSummary } = await import("@/lib/desktop-sync");
@@ -1155,7 +1156,7 @@ export const WorkspaceApp = ({
     }
 
     const loadedMemos = Array.from(memoMap.values());
-    return window.edgeeverDesktop?.isAvailable && (memoSortMode === "title-asc" || memoSortMode === "title-desc")
+    return window.stillnoteDesktop?.isAvailable && (memoSortMode === "title-asc" || memoSortMode === "title-desc")
       ? sortDesktopTitleMemoSummaries(loadedMemos, memoSortMode)
       : loadedMemos;
   }, [memosQuery.data?.pages, mobileEditorReturnPreview, memoSortMode]);
@@ -1171,18 +1172,23 @@ export const WorkspaceApp = ({
   const previousMemoId = selectedMemoIndex > 0 ? memos[selectedMemoIndex - 1]?.id : null;
   const nextMemoId =
     selectedMemoIndex >= 0 && selectedMemoIndex < memos.length - 1 ? memos[selectedMemoIndex + 1]?.id : null;
-  const detailMemoId = rendererRecoveryMode ? null : selectedMemoId ?? memos[0]?.id ?? null;
+  const detailMemoId = rendererRecoveryMode || noteClosed ? null : selectedMemoId ?? memos[0]?.id ?? null;
 
   const clearPendingMemoSelection = useMemoSelectionReconciliation({
     memos,
     selectedMemoId,
     setSelectedMemoId,
     rendererRecoveryMode,
+    suppressAutoSelect: noteClosed,
     creatingMemoSelectionRef,
     pendingCreatedMemoIdRef,
     pendingOpenedMemoIdRef: pendingQuickSwitcherMemoIdRef,
     createdMemoEditId,
   });
+
+  useEffect(() => {
+    if (selectedMemoId) setNoteClosed(false);
+  }, [selectedMemoId]);
 
   useEffect(() => {
     // A changed scope must not retain hidden notes in single or bulk selection.
@@ -1238,8 +1244,8 @@ export const WorkspaceApp = ({
       }
     };
 
-    window.addEventListener("edgeever:memo-detail-refreshed", handleMemoDetailRefreshed);
-    return () => window.removeEventListener("edgeever:memo-detail-refreshed", handleMemoDetailRefreshed);
+    window.addEventListener("stillnote:memo-detail-refreshed", handleMemoDetailRefreshed);
+    return () => window.removeEventListener("stillnote:memo-detail-refreshed", handleMemoDetailRefreshed);
   }, [queryClient]);
 
   const createNotebookMutation = useMutation({
@@ -1324,6 +1330,7 @@ export const WorkspaceApp = ({
     ]);
     navigateWorkspaceHome();
     setRightView("editor");
+    setNoteClosed(false);
     pendingCreatedMemoIdRef.current = memo.id;
     setCreatedMemoEditId(isStructuredNote ? null : memo.id);
     setSelectedMemoId(memo.id);
@@ -1338,7 +1345,7 @@ export const WorkspaceApp = ({
     mutationFn: async (input: Parameters<typeof repository.createMemo>[0]) => {
       const requiresRemoteMemo = requiresRemoteMemoForStandaloneMobileEditor({
         mobileViewport: !isDesktopViewport(),
-        desktopRuntime: Boolean(window.edgeeverDesktop?.isAvailable),
+        desktopRuntime: Boolean(window.stillnoteDesktop?.isAvailable),
       });
       const data = requiresRemoteMemo ? await api.createMemo(input) : await repository.createMemo(input);
       if (requiresRemoteMemo) notifyRepositoryMutation(localDataScope, { type: "note.created", note: data.memo });
@@ -1381,7 +1388,7 @@ export const WorkspaceApp = ({
     mutationFn: async (input: { templateId: string; notebookId: string; locale?: string }) => {
       const requiresRemoteMemo = requiresRemoteMemoForStandaloneMobileEditor({
         mobileViewport: !isDesktopViewport(),
-        desktopRuntime: Boolean(window.edgeeverDesktop?.isAvailable),
+        desktopRuntime: Boolean(window.stillnoteDesktop?.isAvailable),
       });
       const data = requiresRemoteMemo
         ? await api.useTemplate(input.templateId, input.notebookId, input.locale)
@@ -1549,6 +1556,7 @@ export const WorkspaceApp = ({
       setSelectedNotebookId(data.memo.notebookId);
       navigateWorkspaceHome();
       setRightView("editor");
+      setNoteClosed(false);
       setSelectedMemoId(data.memo.id);
       setActivePane("editor");
     },
@@ -1579,21 +1587,21 @@ export const WorkspaceApp = ({
   const detachedMemoIdsRef = useRef(detachedMemoIds);
   detachedMemoIdsRef.current = detachedMemoIds;
   const forwardSyncToNoteWindows = useCallback((detail: NoteWindowSyncCompletedDetail | null) => {
-    const bridge = window.edgeeverDesktop;
+    const bridge = window.stillnoteDesktop;
     if (!bridge?.sendNoteWindowSync) return;
     for (const memoId of detachedMemoIdsRef.current) bridge.sendNoteWindowSync(memoId, noteWindowSyncUpdate(detail, memoId));
   }, []);
   useEffect(() => {
     if (!noteWindowsAvailable) return;
     const handleSyncCompleted = (event: Event) => forwardSyncToNoteWindows((event as CustomEvent<NoteWindowSyncCompletedDetail>).detail ?? null);
-    window.addEventListener("edgeever:sync-completed", handleSyncCompleted);
-    return () => window.removeEventListener("edgeever:sync-completed", handleSyncCompleted);
+    window.addEventListener("stillnote:sync-completed", handleSyncCompleted);
+    return () => window.removeEventListener("stillnote:sync-completed", handleSyncCompleted);
   }, [forwardSyncToNoteWindows, noteWindowsAvailable]);
 
   // Moving a note hands its pending edits over first: the editor saves, and
   // only then does the note leave this window. A failed save keeps it here.
   const handleOpenMemoInNewWindow = useCallback(async (memoId: string) => {
-    const bridge = window.edgeeverDesktop;
+    const bridge = window.stillnoteDesktop;
     if (!bridge?.openNoteWindow) return;
     if (focusDetachedMemo(memoId)) return;
     if (selectedMemo?.id === memoId && pendingEditorSaveRef.current && !await pendingEditorSaveRef.current()) {
@@ -1773,7 +1781,7 @@ export const WorkspaceApp = ({
             if (existing) return { url: toDesktopResourceUrl(existing.url), filename: existing.filename || uploadFile.name };
             const staged = await stageDesktopResource(memoId, uploadFile);
             if (!staged) throw error;
-            return { url: `edgeever-staged://${staged.id}`, filename: uploadFile.name };
+            return { url: `stillnote-staged://${staged.id}`, filename: uploadFile.name };
           }
         },
         updateMemo: (created, content) => repository.updateMemo(created, {
@@ -1827,7 +1835,7 @@ export const WorkspaceApp = ({
     filename?: string;
     mimeType?: string;
   }) => {
-    const bridge = window.edgeeverDesktop;
+    const bridge = window.stillnoteDesktop;
     if (!payload.ok || !payload.importId || !payload.filename) {
       setAppNoticeDialog({
         title: t("memoList.importSharedFileFailedTitle"),
@@ -1888,7 +1896,7 @@ export const WorkspaceApp = ({
             if (existing) return { url: toDesktopResourceUrl(existing.url), filename: existing.filename };
             const staged = await stageDesktopResource(memoId, uploadFile);
             if (!staged) throw error;
-            return { url: `edgeever-staged://${staged.id}`, filename: uploadFile.name };
+            return { url: `stillnote-staged://${staged.id}`, filename: uploadFile.name };
           }
         },
         updateMemo: (created, content) => repository.updateMemo(created, {
@@ -1938,7 +1946,7 @@ export const WorkspaceApp = ({
       await handleImportSharedFile(payload);
       return;
     }
-    const bridge = window.edgeeverDesktop;
+    const bridge = window.stillnoteDesktop;
     if (!payload.ok || !payload.importId || !payload.markdown) {
       setAppNoticeDialog({
         title: t("memoList.importWeChatFailedTitle"),
@@ -1999,7 +2007,7 @@ export const WorkspaceApp = ({
             if (existing) return { url: toDesktopResourceUrl(existing.url) };
             const staged = await stageDesktopResource(memoId, uploadFile);
             if (!staged) throw error;
-            return { url: `edgeever-staged://${staged.id}` };
+            return { url: `stillnote-staged://${staged.id}` };
           }
         },
         updateMemo: (created, content) => repository.updateMemo(created, {
@@ -2517,6 +2525,7 @@ export const WorkspaceApp = ({
     setMemoView("notebook");
     setSelectedTag(null);
     setSelectedNotebookId(notebookId);
+    setNoteClosed(false);
     setRightView("editor");
     setMobileBottomNavActive("home");
     clearMemoSelection();
@@ -2532,6 +2541,7 @@ export const WorkspaceApp = ({
     setMemoView("notebook");
     setSelectedTag(null);
     setSelectedNotebookId(null);
+    setNoteClosed(false);
     setRightView("editor");
     setMobileBottomNavActive("home");
     clearMemoSelection();
@@ -2563,6 +2573,7 @@ export const WorkspaceApp = ({
     setMemoView("notebook");
     setSelectedTag(tag);
     setSelectedNotebookId(null);
+    setNoteClosed(false);
     setRightView("editor");
     setMobileBottomNavActive("home");
     clearMemoSelection();
@@ -2800,8 +2811,20 @@ export const WorkspaceApp = ({
     updateDesktopFocusMode(!desktopFocusModeActive);
   }, [desktopFocusModeActive, updateDesktopFocusMode]);
 
+  const handleCloseCurrentNote = useCallback(() => {
+    clearPendingMemoSelection();
+    clearPendingCreatedMemo();
+    setCreatedMemoEditId(null);
+    setNoteClosed(true);
+    setSelectedMemoId(null);
+    if (desktopFocusModeActive) {
+      updateDesktopFocusMode(false);
+    }
+    setActivePane("memos");
+  }, [clearPendingMemoSelection, desktopFocusModeActive, setSelectedMemoId, updateDesktopFocusMode]);
+
   useEffect(() => {
-    const bridge = window.edgeeverDesktop;
+    const bridge = window.stillnoteDesktop;
     if (!bridge?.isAvailable) return;
     const removeCommandListener = bridge.onCommand((command) => {
       if (noteWindowCommandRef.current(command)) return;
@@ -3036,7 +3059,7 @@ export const WorkspaceApp = ({
       }
 
       const targetElement = event.target instanceof Element ? event.target : null;
-      const isEditorTextTarget = Boolean(targetElement?.closest(".ProseMirror, .edgeever-markdown-source-editor"));
+      const isEditorTextTarget = Boolean(targetElement?.closest(".ProseMirror, .stillnote-markdown-source-editor"));
 
       const transientLayerOpen = Boolean(
         appNoticeDialog ||
@@ -3363,7 +3386,7 @@ export const WorkspaceApp = ({
 
   return (
     <WorkspaceMotionProvider>
-      <div className="edgeever-workspace-shell flex h-[100dvh] overflow-hidden text-slate-950">
+      <div className="stillnote-workspace-shell flex h-[100dvh] overflow-hidden text-slate-950">
       {(wechatImportsInProgress > 0 || sharedFileImportsInProgress > 0) && (
         <div className="pointer-events-none fixed inset-x-0 top-3 z-50 flex justify-center" role="status" aria-live="polite">
           <div className="rounded-full border border-slate-200 bg-card px-4 py-2 text-sm font-medium text-slate-700 shadow-lg">
@@ -3386,13 +3409,13 @@ export const WorkspaceApp = ({
       <div className="min-w-0 flex-1">
         <main
           className={cn(
-            "edgeever-workspace-grid grid h-[100dvh] min-h-0 grid-cols-[minmax(0,1fr)]",
+            "stillnote-workspace-grid grid h-[100dvh] min-h-0 grid-cols-[minmax(0,1fr)]",
             desktopFocusModeActive
-              ? "edgeever-workspace-grid--focus"
+              ? "stillnote-workspace-grid--focus"
               : rightView === "editor"
-                ? "edgeever-workspace-grid--editor"
-                : "edgeever-workspace-grid--single-right",
-            !desktopFocusModeActive && desktopNotebookSidebarCollapsed && "edgeever-workspace-grid--sidebar-collapsed"
+                ? "stillnote-workspace-grid--editor"
+                : "stillnote-workspace-grid--single-right",
+            !desktopFocusModeActive && desktopNotebookSidebarCollapsed && "stillnote-workspace-grid--sidebar-collapsed"
           )}
           style={{
             "--memo-list-width": `${editorPaneWidths.list}px`,
@@ -3400,9 +3423,9 @@ export const WorkspaceApp = ({
           } as CSSProperties}
         >
           <aside
-            id="edgeever-notebook-sidebar"
+            id="stillnote-notebook-sidebar"
             className={cn(
-              "edgeever-workspace-sidebar relative min-h-0 overflow-hidden border-r",
+              "stillnote-workspace-sidebar relative min-h-0 overflow-hidden border-r",
               desktopFocusModeActive
                 ? "hidden"
                 : visibleActivePane === "notebooks"
@@ -3491,7 +3514,7 @@ export const WorkspaceApp = ({
 
           <section
             className={cn(
-              "edgeever-workspace-memo-list relative min-w-0 overflow-hidden border-r",
+              "stillnote-workspace-memo-list relative min-w-0 overflow-hidden border-r",
               desktopFocusModeActive
                 ? "hidden"
                 : rightView === "editor"
@@ -3567,6 +3590,7 @@ export const WorkspaceApp = ({
                   navigateWorkspaceHome();
                 }
                 setRightView("editor");
+                setNoteClosed(false);
                 clearPendingCreatedMemo();
                 setCreatedMemoEditId(null);
                 setSelectedMemoId(memoId);
@@ -3598,6 +3622,7 @@ export const WorkspaceApp = ({
                   navigateWorkspaceHome();
                 }
                 setRightView("editor");
+                setNoteClosed(false);
                 clearPendingCreatedMemo();
                 setCreatedMemoEditId(null);
                 setSelectedMemoId(memoId);
@@ -3667,7 +3692,7 @@ export const WorkspaceApp = ({
             />
           </section>
 
-          <section className={cn("edgeever-workspace-editor min-h-0 min-w-0 lg:block", visibleActivePane === "editor" ? "block" : "hidden", showMobileSettingsNav && "pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0")}>
+          <section className={cn("stillnote-workspace-editor min-h-0 min-w-0 lg:block", visibleActivePane === "editor" ? "block" : "hidden", showMobileSettingsNav && "pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0")}>
             {shouldRenderRightPane && (
               <Suspense fallback={<PaneLoadingFallback label={rightPaneLoadingLabel} />}>
                 <m.div key={rightView} className="h-full min-h-0 min-w-0" {...paneEnterMotion}>
@@ -3754,6 +3779,7 @@ export const WorkspaceApp = ({
                             clearPendingCreatedMemo();
                             setActivePane("memos");
                           }}
+                          onCloseNote={handleCloseCurrentNote}
                           onDeleted={async (memoId) => {
                             deleteMemoMutation.mutate({ memoId, permanent: false });
                           }}
@@ -3801,6 +3827,7 @@ export const WorkspaceApp = ({
                             setSelectedMemoId(null);
                             setActivePane("memos");
                           }}
+                          onCloseNote={handleCloseCurrentNote}
                           onOpenExecutionCenter={handleOpenExecutionCenter}
                           onToggleDesktopFocusMode={toggleDesktopFocusMode}
                           aiAssistantOpenToken={noteAiAssistantOpenToken}
@@ -3836,6 +3863,7 @@ export const WorkspaceApp = ({
                             clearPendingCreatedMemo();
                             setActivePane("memos");
                           }}
+                          onCloseNote={handleCloseCurrentNote}
                           onOpenExecutionCenter={handleOpenExecutionCenter}
                           onToggleDesktopFocusMode={toggleDesktopFocusMode}
                           aiAssistantOpenToken={noteAiAssistantOpenToken}
@@ -3883,6 +3911,7 @@ export const WorkspaceApp = ({
                             clearPendingCreatedMemo();
                             setActivePane("memos");
                           }}
+                          onCloseNote={handleCloseCurrentNote}
                           onSaved={async (memo) => {
                             await putLocalMemo(localDataScope, memo);
                             cacheMemoDetail(queryClient, memo, memoView);
@@ -3946,6 +3975,7 @@ export const WorkspaceApp = ({
                       clearPendingCreatedMemo();
                       setActivePane("memos");
                     }}
+                    onCloseNote={handleCloseCurrentNote}
                     onSaved={async (memo) => {
                       await putLocalMemo(localDataScope, memo);
                       cacheMemoDetail(queryClient, memo, memoView);
@@ -4087,7 +4117,7 @@ export const WorkspaceApp = ({
           onConfirm={() => {
             const importId = wechatImportFailureId;
             setWeChatImportFailureId(null);
-            void Promise.resolve(window.edgeeverDesktop?.retryWeChatImport?.(importId) ?? false).then((retried) => {
+            void Promise.resolve(window.stillnoteDesktop?.retryWeChatImport?.(importId) ?? false).then((retried) => {
               if (!retried) setAppNoticeDialog({
                 title: t("memoList.importWeChatFailedTitle"),
                 description: t("memoList.importWeChatFailed"),

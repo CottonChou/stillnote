@@ -1,23 +1,16 @@
-import type { Notebook } from "@edgeever/shared";
-import { getMobileNotebookSearchVisibleIds } from "@edgeever/shared/mobile-ui";
-import { useCallback, useEffect, useRef, useState } from "react";
+import type { Notebook } from "@stillnote/shared";
+import { getMobileNotebookSearchVisibleIds } from "@stillnote/shared/mobile-ui";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
+import { Drawer } from "react-native-drawer-layout";
+import { type PanGesture, ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   BookOpen,
@@ -26,6 +19,7 @@ import {
   ChevronRight,
   Folder,
   Plus,
+  RefreshCw,
   Search,
   Trash2,
   X,
@@ -39,151 +33,131 @@ import {
   flattenNotebooks,
   getNotebookAncestorIds,
   getNotebookParentIdSet,
-  resolveDrawerDrag,
   type NotebookOption,
 } from "./workspace-utils";
 
 export const ALL_NOTES_ID = "all";
 export type MemoView = "notebook" | "trash";
 
-export interface UseNotebookDrawerOptions {
-  drawerWidth: number;
-  enabled?: boolean;
-}
-
-export const useNotebookDrawer = ({ drawerWidth, enabled = true }: UseNotebookDrawerOptions) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const translateX = useSharedValue(-drawerWidth);
-  const backdropOpacity = useSharedValue(0);
-
-  useEffect(() => {
-    if (!isOpen) {
-      translateX.value = -drawerWidth;
-    }
-  }, [drawerWidth, isOpen, translateX]);
-
-  const openDrawer = useCallback(() => {
-    setIsOpen(true);
-    translateX.value = withSpring(0, { damping: 24, stiffness: 220, mass: 0.8 });
-    backdropOpacity.value = withTiming(0.5, { duration: 220 });
-  }, [backdropOpacity, translateX]);
-
-  const closeDrawer = useCallback(() => {
-    translateX.value = withTiming(-drawerWidth, { duration: 200 }, (finished) => {
-      if (finished) {
-        runOnJS(setIsOpen)(false);
-      }
-    });
-    backdropOpacity.value = withTiming(0, { duration: 200 });
-  }, [backdropOpacity, drawerWidth, translateX]);
-
-  // Swipe right gesture on NotesView to pull out the drawer
-  const notesSwipeGesture = Gesture.Pan()
-    .enabled(enabled && !isOpen)
-    .activeOffsetX(22) // Drag right at least 22px
-    .failOffsetX(-15) // Dragging left fails immediately
-    .failOffsetY([-25, 25]) // Vertical scroll > 25px takes priority for note list
-    .onStart(() => {
-      runOnJS(setIsOpen)(true);
-    })
-    .onUpdate((e) => {
-      const offset = Math.max(0, Math.min(drawerWidth, e.translationX));
-      translateX.value = -drawerWidth + offset;
-      backdropOpacity.value = (offset / drawerWidth) * 0.5;
-    })
-    .onEnd((e) => {
-      const willOpen = resolveDrawerDrag({
-        translationX: e.translationX,
-        velocityX: e.velocityX,
-        drawerWidth,
-        isCurrentlyOpen: false,
-      });
-      if (willOpen) {
-        translateX.value = withSpring(0, { damping: 24, stiffness: 220, mass: 0.8 });
-        backdropOpacity.value = withTiming(0.5, { duration: 200 });
-        runOnJS(setIsOpen)(true);
-      } else {
-        translateX.value = withTiming(-drawerWidth, { duration: 200 }, (finished) => {
-          if (finished) {
-            runOnJS(setIsOpen)(false);
-          }
-        });
-        backdropOpacity.value = withTiming(0, { duration: 200 });
-      }
-    });
-
-  // Swipe left gesture on Drawer to close it
-  const drawerPanGesture = Gesture.Pan()
-    .enabled(isOpen)
-    .activeOffsetX(-15) // Dragging left activates dismissal
-    .failOffsetX(15)
-    .onUpdate((e) => {
-      const offset = Math.max(-drawerWidth, Math.min(0, e.translationX));
-      translateX.value = offset;
-      backdropOpacity.value = ((drawerWidth + offset) / drawerWidth) * 0.5;
-    })
-    .onEnd((e) => {
-      const willStayOpen = resolveDrawerDrag({
-        translationX: e.translationX,
-        velocityX: e.velocityX,
-        drawerWidth,
-        isCurrentlyOpen: true,
-      });
-      if (!willStayOpen) {
-        translateX.value = withTiming(-drawerWidth, { duration: 200 }, (finished) => {
-          if (finished) {
-            runOnJS(setIsOpen)(false);
-          }
-        });
-        backdropOpacity.value = withTiming(0, { duration: 200 });
-      } else {
-        translateX.value = withSpring(0, { damping: 24, stiffness: 220, mass: 0.8 });
-        backdropOpacity.value = withTiming(0.5, { duration: 200 });
-      }
-    });
-
-  const drawerAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
-
-  const backdropAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: backdropOpacity.value,
-  }));
-
-  return {
-    isOpen,
-    openDrawer,
-    closeDrawer,
-    notesSwipeGesture,
-    drawerPanGesture,
-    drawerAnimatedStyle,
-    backdropAnimatedStyle,
-  };
-};
-
-export interface NotebookDrawerProps {
+export interface NotebookDrawerLayoutProps {
   activeNotebookId: string;
-  drawerAnimatedStyle: ReturnType<typeof useAnimatedStyle>;
-  backdropAnimatedStyle: ReturnType<typeof useAnimatedStyle>;
-  drawerPanGesture: ReturnType<typeof Gesture.Pan>;
+  children: ReactNode;
   drawerWidth: number;
   isOpen: boolean;
   memoView: MemoView;
   notebooks: Notebook[];
   onClose: () => void;
   onCreateNotebook?: (name: string, parentId: string | null) => Promise<string>;
+  onOpen: () => void;
   onSelectAllNotes: () => void;
   onSelectNotebook: (notebookId: string) => void;
   onSelectTrash: () => void;
+  onSyncNotebook?: (notebookId?: string) => void;
+  swipeEdgeWidth?: number;
+  swipeEnabled?: boolean;
+  syncingNotebookId?: string | null;
   totalNotesCount?: number;
 }
 
-export const NotebookDrawer = ({
+type NotebookDrawerContentProps = Omit<NotebookDrawerLayoutProps, "children" | "drawerWidth" | "onOpen" | "swipeEdgeWidth" | "swipeEnabled">;
+
+export const NotebookDrawerLayout = ({
   activeNotebookId,
-  backdropAnimatedStyle,
-  drawerAnimatedStyle,
-  drawerPanGesture,
+  children,
   drawerWidth,
+  isOpen,
+  memoView,
+  notebooks,
+  onClose,
+  onCreateNotebook,
+  onOpen,
+  onSelectAllNotes,
+  onSelectNotebook,
+  onSelectTrash,
+  onSyncNotebook,
+  swipeEdgeWidth,
+  swipeEnabled = true,
+  syncingNotebookId = null,
+  totalNotesCount,
+}: NotebookDrawerLayoutProps) => {
+  const { translate } = useMobileLocale();
+  const { resolvedTheme } = useMobileTheme();
+  const isDark = resolvedTheme === "dark";
+  const palette = getMobileEditorialPalette(resolvedTheme);
+
+  const configureGestureHandler = useCallback(
+    (gesture: PanGesture) =>
+      gesture
+        .activeOffsetX(isOpen ? -8 : 18)
+        .failOffsetX(isOpen ? 16 : -14)
+        .failOffsetY([-14, 14]),
+    [isOpen]
+  );
+
+  const renderDrawerContent = useCallback(
+    () => (
+      <NotebookDrawerContent
+        activeNotebookId={activeNotebookId}
+        isOpen={isOpen}
+        memoView={memoView}
+        notebooks={notebooks}
+        onClose={onClose}
+        onCreateNotebook={onCreateNotebook}
+        onSelectAllNotes={onSelectAllNotes}
+        onSelectNotebook={onSelectNotebook}
+        onSelectTrash={onSelectTrash}
+        onSyncNotebook={onSyncNotebook}
+        syncingNotebookId={syncingNotebookId}
+        totalNotesCount={totalNotesCount}
+      />
+    ),
+    [
+      activeNotebookId,
+      isOpen,
+      memoView,
+      notebooks,
+      onClose,
+      onCreateNotebook,
+      onSelectAllNotes,
+      onSelectNotebook,
+      onSelectTrash,
+      onSyncNotebook,
+      syncingNotebookId,
+      totalNotesCount,
+    ]
+  );
+
+  return (
+    <Drawer
+      configureGestureHandler={configureGestureHandler}
+      drawerPosition="left"
+      drawerStyle={{
+        backgroundColor: palette.list,
+        borderRightColor: palette.divider,
+        borderRightWidth: StyleSheet.hairlineWidth,
+        width: drawerWidth,
+      }}
+      drawerType="front"
+      onClose={onClose}
+      onOpen={onOpen}
+      open={isOpen}
+      overlayAccessibilityLabel={translate("关闭抽屉")}
+      overlayStyle={{
+        backgroundColor: isDark ? "rgba(0, 0, 0, 0.56)" : "rgba(0, 0, 0, 0.42)",
+      }}
+      renderDrawerContent={renderDrawerContent}
+      swipeEdgeWidth={swipeEdgeWidth ?? Math.max(180, Math.round(drawerWidth * 0.75))}
+      swipeEnabled={isOpen || swipeEnabled}
+      swipeMinDistance={Math.max(48, Math.round(drawerWidth * 0.22))}
+      swipeMinVelocity={350}
+    >
+      {children}
+    </Drawer>
+  );
+};
+
+const NotebookDrawerContent = ({
+  activeNotebookId,
   isOpen,
   memoView,
   notebooks,
@@ -192,8 +166,10 @@ export const NotebookDrawer = ({
   onSelectAllNotes,
   onSelectNotebook,
   onSelectTrash,
+  onSyncNotebook,
+  syncingNotebookId = null,
   totalNotesCount,
-}: NotebookDrawerProps) => {
+}: NotebookDrawerContentProps) => {
   const { translate } = useMobileLocale();
   const { resolvedTheme } = useMobileTheme();
   const isDark = resolvedTheme === "dark";
@@ -271,61 +247,66 @@ export const NotebookDrawer = ({
     setCollapsedNotebookIds(allNotebookBranchesExpanded ? new Set(childNotebookIds) : new Set());
   };
 
+  const isAnySyncing = Boolean(syncingNotebookId);
+  const isSyncingAll = syncingNotebookId === ALL_NOTES_ID;
+
   return (
     <View
-      pointerEvents={isOpen ? "auto" : "none"}
-      style={StyleSheet.absoluteFill}
+      style={[
+        styles.drawerContent,
+        {
+          paddingBottom: Math.max(16, insets.bottom),
+          paddingTop: Math.max(16, insets.top),
+        },
+      ]}
     >
-      {/* Backdrop */}
-      <Animated.View style={[styles.backdrop, backdropAnimatedStyle]}>
-        <Pressable
-          accessibilityLabel="关闭抽屉"
-          accessibilityRole="button"
-          onPress={onClose}
-          style={StyleSheet.absoluteFill}
-        />
-      </Animated.View>
-
-      {/* Drawer Container with Pan Gesture */}
-      <GestureDetector gesture={drawerPanGesture}>
-        <Animated.View
-          style={[
-            styles.drawer,
-            {
-              backgroundColor: palette.list,
-              borderRightColor: palette.divider,
-              paddingBottom: Math.max(16, insets.bottom),
-              paddingTop: Math.max(16, insets.top),
-              width: drawerWidth,
-            },
-            drawerAnimatedStyle,
-          ]}
-        >
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerTitleWrap}>
-              <View style={[styles.headerIconWrap, isDark && styles.headerIconWrapDark]}>
-                <BookOpen color={palette.accent} size={18} />
-              </View>
-              <View style={styles.headerTexts}>
-                <Text style={[styles.headerTitle, isDark && styles.textDark]}>
-                  笔记本
-                </Text>
-                <Text numberOfLines={1} style={[styles.headerSubtitle, isDark && styles.mutedTextDark]}>
-                  {memoView === "trash" ? "当前：回收站" : translate(`当前：${activeNotebookName}`)}
-                </Text>
-              </View>
-            </View>
-            <Pressable
-              accessibilityLabel="关闭侧边栏"
-              accessibilityRole="button"
-              hitSlop={8}
-              onPress={onClose}
-              style={[styles.closeButton, isDark && styles.closeButtonDark]}
-            >
-              <X color={palette.inkSecondary} size={19} />
-            </Pressable>
+      {/* Header */}
+      <View style={styles.header}>
+        <View style={styles.headerTitleWrap}>
+          <View style={[styles.headerIconWrap, isDark && styles.headerIconWrapDark]}>
+            <BookOpen color={palette.accent} size={18} />
           </View>
+          <View style={styles.headerTexts}>
+            <Text style={[styles.headerTitle, isDark && styles.textDark]}>
+              {translate("笔记本")}
+            </Text>
+            <Text numberOfLines={1} style={[styles.headerSubtitle, isDark && styles.mutedTextDark]}>
+              {memoView === "trash" ? translate("当前：回收站") : translate(`当前：${activeNotebookName}`)}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.headerActions}>
+          {onSyncNotebook ? (
+            <Pressable
+              accessibilityLabel={translate("同步笔记本")}
+              accessibilityRole="button"
+              disabled={isAnySyncing}
+              hitSlop={8}
+              onPress={() => onSyncNotebook()}
+              style={[
+                styles.closeButton,
+                isDark && styles.closeButtonDark,
+                isAnySyncing && !isSyncingAll && styles.syncButtonDisabled,
+              ]}
+            >
+              {isSyncingAll ? (
+                <ActivityIndicator color={palette.accent} size="small" />
+              ) : (
+                <RefreshCw color={palette.accent} size={17} />
+              )}
+            </Pressable>
+          ) : null}
+          <Pressable
+            accessibilityLabel={translate("关闭侧边栏")}
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={onClose}
+            style={[styles.closeButton, isDark && styles.closeButtonDark]}
+          >
+            <X color={palette.inkSecondary} size={19} />
+          </Pressable>
+        </View>
+      </View>
 
           {/* Search Box */}
           <View style={[styles.searchBox, isDark && styles.searchBoxDark]}>
@@ -550,7 +531,28 @@ export const NotebookDrawer = ({
                     </Text>
                   </Pressable>
 
-                  {isSelected ? <Check color={palette.accent} size={17} /> : null}
+                  <View style={styles.rowRightActions}>
+                    {isSelected ? <Check color={palette.accent} size={17} /> : null}
+                    {onSyncNotebook ? (
+                      <Pressable
+                        accessibilityLabel={translate(`同步 ${notebook.name}`)}
+                        accessibilityRole="button"
+                        disabled={isAnySyncing}
+                        hitSlop={6}
+                        onPress={() => onSyncNotebook(notebook.id)}
+                        style={[
+                          styles.rowSyncButton,
+                          isAnySyncing && syncingNotebookId !== notebook.id && styles.syncButtonDisabled,
+                        ]}
+                      >
+                        {syncingNotebookId === notebook.id ? (
+                          <ActivityIndicator color={palette.accent} size="small" />
+                        ) : (
+                          <RefreshCw color={palette.inkMuted} size={14} />
+                        )}
+                      </Pressable>
+                    ) : null}
+                  </View>
                 </View>
               );
             })}
@@ -595,28 +597,34 @@ export const NotebookDrawer = ({
               </View>
               {memoView === "trash" ? <Check color={palette.danger} size={17} /> : null}
             </Pressable>
-          </ScrollView>
-        </Animated.View>
-      </GestureDetector>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  backdrop: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: "#000000",
+  drawerContent: {
+    flex: 1,
   },
-  drawer: {
-    bottom: 0,
-    elevation: 20,
-    left: 0,
-    position: "absolute",
-    shadowColor: "#000000",
-    shadowOffset: { width: 6, height: 0 },
-    shadowOpacity: 0.22,
-    shadowRadius: 18,
-    top: 0,
+  headerActions: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 8,
+  },
+  syncButtonDisabled: {
+    opacity: 0.45,
+  },
+  rowRightActions: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 4,
+    marginLeft: 4,
+  },
+  rowSyncButton: {
+    alignItems: "center",
+    height: 28,
+    justifyContent: "center",
+    width: 28,
   },
   header: {
     alignItems: "center",

@@ -39,7 +39,7 @@ permissions:
 
 jobs:
   wrangler:
-    if: github.repository == 'tianma-if/edgeever'
+    if: github.repository == 'CottonChou/stillnote'
     name: Wrangler runner (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:

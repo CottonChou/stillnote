@@ -12,7 +12,7 @@ left empty. A new GitHub Release for the main app is not required.
 
 Edge users install the Chrome Web Store item
 `gjadpfmanienmlofajibkfkkpfdkclgo`. One Chrome submission covers that item.
-Firefox is a separate submission for `edgeever-web-clipper`. The workflow does
+Firefox is a separate submission for `stillnote-web-clipper`. The workflow does
 not publish to Microsoft Edge Add-ons.
 
 The workflow builds the packages, uploads them, and submits them for review.
@@ -29,7 +29,7 @@ Both workflows use the Bun version from the checked-out root `package.json`.
 
 ## Run it
 
-On https://github.com/tianma-if/edgeever/actions/workflows/extension-store.yml,
+On https://github.com/CottonChou/stillnote/actions/workflows/extension-store.yml,
 choose **Run workflow**. Leave the Firefox notes empty for a one-line version
 note, or paste the notes Mozilla should show. `dry_run` builds the packages
 and stops before calling either store.
@@ -60,7 +60,7 @@ After fixing a store-specific issue, retry only that platform.
 
 ## Credentials
 
-Add these Actions secrets to `tianma-if/edgeever`. Forks do not run the job.
+Add these Actions secrets to `CottonChou/stillnote`. Forks do not run the job.
 
 Chrome accepts either a service account or a refresh token. The service
 account does not expire every few days:
@@ -87,8 +87,8 @@ https://addons.mozilla.org/developers/addon/api/key/:
 
 These two optional secrets are added to the Firefox reviewer note:
 
-- `EDGE_EVER_REVIEW_INSTANCE_URL`
-- `EDGE_EVER_REVIEW_API_TOKEN`
+- `STILLNOTE_REVIEW_INSTANCE_URL`
+- `STILLNOTE_REVIEW_API_TOKEN`
 
 Chrome's upload API has no release-notes field. The Chrome listing text and
 privacy disclosure stay as they were last saved in the dashboard. Change those

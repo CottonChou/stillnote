@@ -1,6 +1,6 @@
-# EdgeEver 场景与实操指南
+# StillNote 场景与实操指南
 
-整理 EdgeEver 在日常工作、学习和知识管理中的核心场景与操作工作流。
+整理 StillNote 在日常工作、学习和知识管理中的核心场景与操作工作流。
 
 ## 目录
 
@@ -39,14 +39,14 @@
 
 ### 1. 经典三栏工作区与沉浸排版写作
 
-EdgeEver 采用「目录树 · 笔记列表 · 编辑区」三栏布局：
+StillNote 采用「目录树 · 笔记列表 · 编辑区」三栏布局：
 
 - **专注模式**：侧边栏支持拖拽调宽与折叠，随时切换全屏专注写作。
 - **混合编辑**：主编辑区支持所见即所得（WYSIWYG）与 Markdown 语法混写。
 
 | 三栏工作区布局 |
 :---:
-| ![EdgeEver 经典三栏工作区与沉浸排版编辑效果](assets/best-practices/original-image/class-three-pane/image.png) |
+| ![StillNote 经典三栏工作区与沉浸排版编辑效果](assets/best-practices/original-image/class-three-pane/image.png) |
 
 ---
 
@@ -54,135 +54,135 @@ EdgeEver 采用「目录树 · 笔记列表 · 编辑区」三栏布局：
 
 ### 2. 微信聊天记录归档与整理
 
-在微信中多选对话点击「合并转发」，在「转发到其他应用」中选择 **EdgeEver**，自动转换为结构化笔记。
+在微信中多选对话点击「合并转发」，在「转发到其他应用」中选择 **StillNote**，自动转换为结构化笔记。
 
 - **格式解析**：解析发言人、时间轴、微信表情与超链接。
 - **资源转存**：图片内嵌展示，文档与音视频（如 `.xlsx`、`.pdf`、`.mp4`）转为附件并支持全文检索。
 
-| 1. 微信合并转发至 EdgeEver | 2. 结构化笔记预览 |
+| 1. 微信合并转发至 StillNote | 2. 结构化笔记预览 |
 | :---: | :---: |
-| ![微信转发到其他应用选择 EdgeEver](assets/best-practices/original-image/wechat-chat-message-import/select-export.png) | ![EdgeEver 导入后的微信聊天记录笔记效果](assets/best-practices/original-image/wechat-chat-message-import/import-as-note.png) |
+| ![微信转发到其他应用选择 StillNote](assets/best-practices/original-image/wechat-chat-message-import/select-export.png) | ![StillNote 导入后的微信聊天记录笔记效果](assets/best-practices/original-image/wechat-chat-message-import/import-as-note.png) |
 
 ---
 
 ### 3. 手机端剪藏微信公众号文章
 
-在微信中阅读文章时，点击右上角菜单选择「用 EdgeEver 打开」即可完成剪藏。
+在微信中阅读文章时，点击右上角菜单选择「用 StillNote 打开」即可完成剪藏。
 
 - 提取标题、正文结构与配图，转换为清晰的 Markdown 笔记。
 
-| 1. 选择「用 EdgeEver 打开」 | 2. 内容提取中 | 3. 剪藏生成的 Markdown 笔记 |
+| 1. 选择「用 StillNote 打开」 | 2. 内容提取中 | 3. 剪藏生成的 Markdown 笔记 |
 | :---: | :---: | :---: |
-| ![微信文章分享菜单选择用EdgeEver打开](assets/best-practices/original-image/app-share/wechat-article/share-enter.jpg) | ![EdgeEver正在剪藏文章提取中](assets/best-practices/original-image/app-share/wechat-article/sharing.jpg) | ![生成排版工整的微信文章笔记](assets/best-practices/original-image/app-share/wechat-article/in-note.jpg) |
+| ![微信文章分享菜单选择用StillNote打开](assets/best-practices/original-image/app-share/wechat-article/share-enter.jpg) | ![StillNote正在剪藏文章提取中](assets/best-practices/original-image/app-share/wechat-article/sharing.jpg) | ![生成排版工整的微信文章笔记](assets/best-practices/original-image/app-share/wechat-article/in-note.jpg) |
 
 ---
 
 ### 4. 移动端图片分享转存笔记
 
-在任意手机应用中通过系统分享面板选择 **EdgeEver**，后台自动上传原图并创建以「分享的图片」为标题的笔记。
+在任意手机应用中通过系统分享面板选择 **StillNote**，后台自动上传原图并创建以「分享的图片」为标题的笔记。
 
-| 1. 分享图片 | 2. 选择 EdgeEver | 3. 生成图片笔记 |
+| 1. 分享图片 | 2. 选择 StillNote | 3. 生成图片笔记 |
 | :---: | :---: | :---: |
-| ![社媒App点击图片分享](assets/best-practices/original-image/app-share/socia-image/share-enter.jpg) | ![系统分享面板选择EdgeEver](assets/best-practices/original-image/app-share/socia-image/sharing.jpg) | ![自动生成笔记并上传图片](assets/best-practices/original-image/app-share/socia-image/share-in-note.jpg) |
+| ![社媒App点击图片分享](assets/best-practices/original-image/app-share/socia-image/share-enter.jpg) | ![系统分享面板选择StillNote](assets/best-practices/original-image/app-share/socia-image/sharing.jpg) | ![自动生成笔记并上传图片](assets/best-practices/original-image/app-share/socia-image/share-in-note.jpg) |
 
 ---
 
 ### 5. 小红书图文笔记剪藏
 
-使用 EdgeEver Web Clipper 插件在小红书笔记页面右键点击「保存笔记到 EdgeEver」。
+使用 StillNote Web Clipper 插件在小红书笔记页面右键点击「保存笔记到 StillNote」。
 
 - 提取标题、话题标签、正文、发布时间与原文链接。
 - 多图内容自动排版为多栏画廊。
 
 | 1. 右键菜单剪藏 |
 | :---: |
-| ![右键保存小红书笔记到 EdgeEver](assets/best-practices/original-image/web-clipper/xiaohongshu/xiaohongshu.png) |
+| ![右键保存小红书笔记到 StillNote](assets/best-practices/original-image/web-clipper/xiaohongshu/xiaohongshu.png) |
 
 | 2. 多栏画廊笔记效果 |
 | :---: |
-| ![EdgeEver 剪藏后的小红书笔记多栏画廊效果](assets/best-practices/original-image/web-clipper/xiaohongshu/xiaohongshu-in-note.png) |
+| ![StillNote 剪藏后的小红书笔记多栏画廊效果](assets/best-practices/original-image/web-clipper/xiaohongshu/xiaohongshu-in-note.png) |
 
 ---
 
 ### 6. X (Twitter) 推文与引用剪藏
 
-使用 EdgeEver Web Clipper 插件在推文上右键点击「保存推文到 EdgeEver」。
+使用 StillNote Web Clipper 插件在推文上右键点击「保存推文到 StillNote」。
 
 - 提取作者、推文正文、外链、引用推文（Quote Tweet）及附带图集。
 - 自动渲染为多栏画廊排版。
 
 | 1. 右键保存推文 |
 | :---: |
-| ![右键保存推文到 EdgeEver](assets/best-practices/original-image/web-clipper/twitter/twitter.png) |
+| ![右键保存推文到 StillNote](assets/best-practices/original-image/web-clipper/twitter/twitter.png) |
 
 | 2. 包含引用与图集的笔记效果 |
 | :---: |
-| ![EdgeEver 剪藏后的 X 推文笔记效果](assets/best-practices/original-image/web-clipper/twitter/twitter-in-note.png) |
+| ![StillNote 剪藏后的 X 推文笔记效果](assets/best-practices/original-image/web-clipper/twitter/twitter-in-note.png) |
 
 ---
 
 ### 7. 知乎回答与文章剪藏
 
-在知乎目标回答或文章处右键点击「保存回答/文章到 EdgeEver」。
+在知乎目标回答或文章处右键点击「保存回答/文章到 StillNote」。
 
 - 解析问题标题、作者、正文、发布时间与原始链接，生成问答结构笔记。
 
 | 1. 右键保存回答/文章 |
 | :---: |
-| ![右键保存知乎回答到 EdgeEver](assets/best-practices/original-image/web-clipper/zhihu/zhihu.png) |
+| ![右键保存知乎回答到 StillNote](assets/best-practices/original-image/web-clipper/zhihu/zhihu.png) |
 
 | 2. 问答结构笔记预览 |
 | :---: |
-| ![EdgeEver 剪藏后的知乎回答笔记效果](assets/best-practices/original-image/web-clipper/zhihu/zhihu-in-note.png) |
+| ![StillNote 剪藏后的知乎回答笔记效果](assets/best-practices/original-image/web-clipper/zhihu/zhihu-in-note.png) |
 
 ---
 
 ### 8. Reddit 讨论帖剪藏
 
-在 Reddit 帖子处右键点击「保存所选内容到 EdgeEver」。
+在 Reddit 帖子处右键点击「保存所选内容到 StillNote」。
 
 - 捕获帖子标题、所属版块（Subreddit，如 `r/AskReddit`）、作者、时间戳及链接，保留社区元数据。
 
 | 1. 右键保存帖子 |
 | :---: |
-| ![右键保存 Reddit 帖子到 EdgeEver](assets/best-practices/original-image/web-clipper/reddit/reddit.png) |
+| ![右键保存 Reddit 帖子到 StillNote](assets/best-practices/original-image/web-clipper/reddit/reddit.png) |
 
 | 2. 包含社区元数据的笔记预览 |
 | :---: |
-| ![EdgeEver 剪藏后的 Reddit 帖子笔记效果](assets/best-practices/original-image/web-clipper/reddit/reddit-in-note.png) |
+| ![StillNote 剪藏后的 Reddit 帖子笔记效果](assets/best-practices/original-image/web-clipper/reddit/reddit-in-note.png) |
 
 ---
 
 ### 9. Instagram 帖子与轮播多图剪藏
 
-使用 EdgeEver Web Clipper 插件在 Instagram 帖子或轮播页面右键点击「保存帖子到 EdgeEver」。
+使用 StillNote Web Clipper 插件在 Instagram 帖子或轮播页面右键点击「保存帖子到 StillNote」。
 
 - 提取作者账号、正文描述、发布时间与原文链接，保留话题标签与提及元数据。
 - 完整提取轮播（Carousel）多图与视频封面，并在笔记内自动排版为多栏画廊。
 
 | 1. 右键保存 Instagram 帖子 |
 | :---: |
-| ![右键保存 Instagram 帖子到 EdgeEver](assets/best-practices/original-image/web-clipper/instgram/ins.png) |
+| ![右键保存 Instagram 帖子到 StillNote](assets/best-practices/original-image/web-clipper/instgram/ins.png) |
 
 | 2. 包含完整图集与元数据的笔记效果 |
 | :---: |
-| ![EdgeEver 剪藏后的 Instagram 帖子笔记效果](assets/best-practices/original-image/web-clipper/instgram/ins-in-note.png) |
+| ![StillNote 剪藏后的 Instagram 帖子笔记效果](assets/best-practices/original-image/web-clipper/instgram/ins-in-note.png) |
 
 ---
 
 ### 10. GitHub 仓库元数据剪藏
 
-在 GitHub 仓库页面右键点击「保存仓库信息到 EdgeEver」。
+在 GitHub 仓库页面右键点击「保存仓库信息到 StillNote」。
 
 - 提取仓库名称（Owner/Repo）、简介、官方主页、编程语言、许可证与话题标签，自动生成结构化技术卡片。
 
 | 1. 右键保存仓库信息 |
 | :---: |
-| ![右键保存 GitHub 仓库信息到 EdgeEver](assets/best-practices/original-image/web-clipper/github/github.png) |
+| ![右键保存 GitHub 仓库信息到 StillNote](assets/best-practices/original-image/web-clipper/github/github.png) |
 
 | 2. 结构化仓库卡片预览 |
 | :---: |
-| ![EdgeEver 剪藏后的 GitHub 仓库卡片笔记](assets/best-practices/original-image/web-clipper/github/github-in-note.png) |
+| ![StillNote 剪藏后的 GitHub 仓库卡片笔记](assets/best-practices/original-image/web-clipper/github/github-in-note.png) |
 
 ---
 
@@ -257,7 +257,7 @@ EdgeEver 采用「目录树 · 笔记列表 · 编辑区」三栏布局：
 
 ### 15. 连接本机 Agent (ACP) 实现笔记协同
 
-EdgeEver 支持 **ACP (Agent Client Protocol)** 协议，允许桌面端连接本机运行的各类 AI Agent（如 Codex、Claude Code、DeepSeek Harness、Antigravity 等）。
+StillNote 支持 **ACP (Agent Client Protocol)** 协议，允许桌面端连接本机运行的各类 AI Agent（如 Codex、Claude Code、DeepSeek Harness、Antigravity 等）。
 
 - **本地授权**：授予本地 Agent 当前账号笔记的安全读写权限。
 - **伴随对话**：在笔记右侧栏直接协同，执行代码推理、长文总结与知识库检索。
@@ -279,7 +279,7 @@ EdgeEver 支持 **ACP (Agent Client Protocol)** 协议，允许桌面端连接�
 
 | 1. 「透明」等多款卡片主题预览 | 2. 字体风格与排版微调 |
 | :---: | :---: |
-| ![EdgeEver 分享为图片透明主题卡片预览](assets/best-practices/original-image/note-export-image/clear-theme.png) | ![EdgeEver 分享为图片字体与主题排版调整](assets/best-practices/original-image/note-export-image/code-theme.png) |
+| ![StillNote 分享为图片透明主题卡片预览](assets/best-practices/original-image/note-export-image/clear-theme.png) | ![StillNote 分享为图片字体与主题排版调整](assets/best-practices/original-image/note-export-image/code-theme.png) |
 
 ---
 
@@ -292,7 +292,7 @@ EdgeEver 支持 **ACP (Agent Client Protocol)** 协议，允许桌面端连接�
 
 | 海报设计工作台与模板库 |
 :---:
-| ![EdgeEver 海报设计工作台与丰富设计模板](assets/best-practices/original-image/poster/ai-generate-poster.png) |
+| ![StillNote 海报设计工作台与丰富设计模板](assets/best-practices/original-image/poster/ai-generate-poster.png) |
 
 ---
 
@@ -304,7 +304,7 @@ EdgeEver 支持 **ACP (Agent Client Protocol)** 协议，允许桌面端连接�
 
 | 1. 复制到公众号 / 博客 |
 | :---: |
-| ![EdgeEver 笔记菜单点击复制到公众号](assets/best-practices/original-image/wechat-article-copy-to/right-menu.png) |
+| ![StillNote 笔记菜单点击复制到公众号](assets/best-practices/original-image/wechat-article-copy-to/right-menu.png) |
 
 | 2. 公众号后台编辑器粘贴效果 |
 | :---: |
@@ -316,18 +316,18 @@ EdgeEver 支持 **ACP (Agent Client Protocol)** 协议，允许桌面端连接�
 
 ### 19. 开放插件 API 与自定义插件开发
 
-EdgeEver 内置插件扩展管理，支持通过 GitHub 仓库或 Manifest 地址一键安装，配置在 Web 与桌面端跨设备隔离同步。
+StillNote 内置插件扩展管理，支持通过 GitHub 仓库或 Manifest 地址一键安装，配置在 Web 与桌面端跨设备隔离同步。
 
 - **核心 API 能力**：提供文档双向读写、自定义 DOM 面板/嵌入块、统一设置、隔离存储以及调用工作区已配置的 AI 模型。
 - **官方开源参考范式**：
-  - **待办任务 ([EdgeEver Tasks](https://github.com/tianma-if/edgeever-tasks))**：跨笔记自动汇总 Markdown 待办，支持状态过滤与一键定位跳转。
-  - **AI RSS 订阅助手 ([EdgeEver AI RSS](https://github.com/tianma-if/edgeever-ai-rss))**：抓取订阅源并结合 AI 生成分类每日简报。
-- 更多规范与指南详见 [EdgeEver 插件开发指南](plugin-development.zh-CN.md)。
+  - **待办任务 ([StillNote Tasks](https://github.com/CottonChou/stillnote-tasks))**：跨笔记自动汇总 Markdown 待办，支持状态过滤与一键定位跳转。
+  - **AI RSS 订阅助手 ([StillNote AI RSS](https://github.com/CottonChou/stillnote-ai-rss))**：抓取订阅源并结合 AI 生成分类每日简报。
+- 更多规范与指南详见 [StillNote 插件开发指南](plugin-development.zh-CN.md)。
 
 | 1. 插件与主题管理中心 |
 | :---: |
-| ![EdgeEver 插件市场与官方插件管理](assets/best-practices/original-image/plugin/official-in.png) |
+| ![StillNote 插件市场与官方插件管理](assets/best-practices/original-image/plugin/official-in.png) |
 
 | 2. 插件 API 体系与开发文档 |
 | :---: |
-| ![EdgeEver 插件开发 API 命名空间与规范文档](assets/best-practices/original-image/plugin/plugin-api.png) |
+| ![StillNote 插件开发 API 命名空间与规范文档](assets/best-practices/original-image/plugin/plugin-api.png) |

@@ -3,7 +3,7 @@ import type { FontLoadStatus } from "@/lib/font-load-state";
 import { FontLoadFeedback } from "@/components/FontLoadFeedback";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { findCatalogFont } from "@edgeever/shared/font-catalog";
+import { findCatalogFont } from "@stillnote/shared/font-catalog";
 import { FontLabel } from "@/components/FontLabel";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { POSTER_FONTS, loadPosterFont } from "@/lib/poster-design/fonts";

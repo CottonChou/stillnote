@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "EdgeEver 网页剪藏"
+    "message": "StillNote 网页剪藏"
   },
   "extensionDescription": {
-    "message": "将网页、选中文字、图片及 Hacker News 主帖保存到你自托管的 EdgeEver 实例。"
+    "message": "将网页、选中文字、图片及 Hacker News 主帖保存到你自托管的 StillNote 实例。"
   },
   "actionTitle": {
-    "message": "保存到 EdgeEver"
+    "message": "保存到 StillNote"
   },
   "webClipper": {
     "message": "网页剪藏"
@@ -26,14 +26,14 @@
   "completePluginConfiguration": {
     "message": "请先完成插件配置"
   },
-  "savedToEdgeEver": {
-    "message": "已保存到 EdgeEver。"
+  "savedToStillNote": {
+    "message": "已保存到 StillNote。"
   },
   "saveFailed": {
     "message": "保存失败。"
   },
   "optionsTitle": {
-    "message": "EdgeEver Web Clipper 设置"
+    "message": "StillNote Web Clipper 设置"
   },
   "diagnosticsTitle": {
     "message": "关于与诊断信息"
@@ -90,10 +90,10 @@
     "message": "未知"
   },
   "instanceAddress": {
-    "message": "EdgeEver 实例地址"
+    "message": "StillNote 实例地址"
   },
   "tokenPlaceholder": {
-    "message": "从 EdgeEver 设置中创建"
+    "message": "从 StillNote 设置中创建"
   },
   "defaultNotebook": {
     "message": "默认笔记本"
@@ -140,13 +140,13 @@
     "message": "保存失败。"
   },
   "missingSettingsDetails": {
-    "message": "请先在插件设置中填写 EdgeEver 地址和 API Token。"
+    "message": "请先在插件设置中填写 StillNote 地址和 API Token。"
   },
   "instancePermissionRequired": {
-    "message": "需要允许插件访问你的 EdgeEver 实例。"
+    "message": "需要允许插件访问你的 StillNote 实例。"
   },
   "requestFailed": {
-    "message": "EdgeEver 请求失败（$STATUS$）。",
+    "message": "StillNote 请求失败（$STATUS$）。",
     "placeholders": {
       "status": {
         "content": "$1"
@@ -166,7 +166,7 @@
     "message": "关键词"
   },
   "noAvailableNotebooks": {
-    "message": "EdgeEver 中没有可用的笔记本。"
+    "message": "StillNote 中没有可用的笔记本。"
   },
   "currentPageNotFound": {
     "message": "找不到当前页面。"
@@ -189,10 +189,10 @@
     "message": "未返回具体错误"
   },
   "instanceNetworkFailed": {
-    "message": "无法连接 EdgeEver 实例。请检查实例地址、网络连接和跨域设置。"
+    "message": "无法连接 StillNote 实例。请检查实例地址、网络连接和跨域设置。"
   },
   "saveFailedWithReason": {
-    "message": "保存到 EdgeEver 失败：$DETAIL$",
+    "message": "保存到 StillNote 失败：$DETAIL$",
     "placeholders": {
       "detail": {
         "content": "$1"
@@ -202,11 +202,11 @@
   "emptyPageContent": {
     "message": "（网页没有可提取的正文内容）"
   },
-  "saveSelectionToEdgeEver": {
-    "message": "保存所选内容到 EdgeEver"
+  "saveSelectionToStillNote": {
+    "message": "保存所选内容到 StillNote"
   },
   "selectionSaveHint": {
-    "message": "选中网页上的一段文字后右键，选择“保存所选内容到 EdgeEver”。这段文字会存成一条新笔记，放进上面选择的默认笔记本。"
+    "message": "选中网页上的一段文字后右键，选择“保存所选内容到 StillNote”。这段文字会存成一条新笔记，放进上面选择的默认笔记本。"
   },
   "savingSelection": {
     "message": "正在保存选中文字……"
@@ -220,11 +220,11 @@
   "selectionNoteFallbackTitle": {
     "message": "选中文字"
   },
-  "saveImageToEdgeEver": {
-    "message": "保存图片到 EdgeEver"
+  "saveImageToStillNote": {
+    "message": "保存图片到 StillNote"
   },
   "imageSaveHint": {
-    "message": "在网页图片上右键，选择“保存图片到 EdgeEver”。图片会存成一条新笔记，放进上面选择的默认笔记本。"
+    "message": "在网页图片上右键，选择“保存图片到 StillNote”。图片会存成一条新笔记，放进上面选择的默认笔记本。"
   },
   "savingImage": {
     "message": "正在保存图片……"
@@ -265,7 +265,7 @@
     "message": "没有获得网站访问权限，图片还没有保存。"
   },
   "imageResourceScopeRequired": {
-    "message": "这个 API Token 没有写入附件的权限。请在 EdgeEver 设置里创建一个完整访问的 Token。"
+    "message": "这个 API Token 没有写入附件的权限。请在 StillNote 设置里创建一个完整访问的 Token。"
   },
   "imageNoteFallbackTitle": {
     "message": "图片"
@@ -274,16 +274,16 @@
     "message": "图片"
   },
   "imageSaveWindowTitle": {
-    "message": "保存图片到 EdgeEver"
+    "message": "保存图片到 StillNote"
   },
   "imageSaveExpired": {
     "message": "这次保存已经结束。请在图片上重新右键。"
   },
-  "saveTweetToEdgeEver": {
-    "message": "保存推文到 EdgeEver"
+  "saveTweetToStillNote": {
+    "message": "保存推文到 StillNote"
   },
   "tweetSaveHint": {
-    "message": "在 X 上右键一条推文，选择“保存推文到 EdgeEver”。正文会完整保存，包括被「显示更多」折叠的部分；已经显示的图片也会放进同一条新笔记，笔记本与上面的默认笔记本相同。"
+    "message": "在 X 上右键一条推文，选择“保存推文到 StillNote”。正文会完整保存，包括被「显示更多」折叠的部分；已经显示的图片也会放进同一条新笔记，笔记本与上面的默认笔记本相同。"
   },
   "savingTweet": {
     "message": "正在保存这条推文……"
@@ -316,16 +316,16 @@
     "message": "一条推文"
   },
   "tweetSaveWindowTitle": {
-    "message": "保存推文到 EdgeEver"
+    "message": "保存推文到 StillNote"
   },
   "tweetTimeLabel": {
     "message": "时间"
   },
-  "saveGithubRepoToEdgeEver": {
-    "message": "保存仓库信息到 EdgeEver"
+  "saveGithubRepoToStillNote": {
+    "message": "保存仓库信息到 StillNote"
   },
   "githubRepoSaveHint": {
-    "message": "在 GitHub 仓库主页或代码目录上，右键页面空白、简介或 README 正文，选择“保存仓库信息到 EdgeEver”。仓库地址和简介会存成一条新笔记，放进上面选择的默认笔记本。Issue、讨论和单个文件页不会保存。"
+    "message": "在 GitHub 仓库主页或代码目录上，右键页面空白、简介或 README 正文，选择“保存仓库信息到 StillNote”。仓库地址和简介会存成一条新笔记，放进上面选择的默认笔记本。Issue、讨论和单个文件页不会保存。"
   },
   "savingGithubRepo": {
     "message": "正在保存这个仓库……"
@@ -351,11 +351,11 @@
   "githubRepoTopicsLabel": {
     "message": "话题"
   },
-  "saveXhsToEdgeEver": {
-    "message": "保存笔记到 EdgeEver"
+  "saveXhsToStillNote": {
+    "message": "保存笔记到 StillNote"
   },
   "xhsSaveHint": {
-    "message": "在小红书笔记正文上右键，选择“保存笔记到 EdgeEver”。标题、正文和笔记里的图片会存成一条新笔记，评论不会写入。右键图片仍然只保存这张图片。"
+    "message": "在小红书笔记正文上右键，选择“保存笔记到 StillNote”。标题、正文和笔记里的图片会存成一条新笔记，评论不会写入。右键图片仍然只保存这张图片。"
   },
   "savingXhs": {
     "message": "正在保存这篇笔记……"
@@ -391,13 +391,13 @@
     "message": "一篇小红书笔记"
   },
   "xhsSaveWindowTitle": {
-    "message": "保存笔记到 EdgeEver"
+    "message": "保存笔记到 StillNote"
   },
   "xhsLocationLabel": {
     "message": "地点"
   },
-  "saveZhihuToEdgeEver": {
-    "message": "保存回答/文章到 EdgeEver"
+  "saveZhihuToStillNote": {
+    "message": "保存回答/文章到 StillNote"
   },
   "zhihuQuestionLabel": {
     "message": "问题"
@@ -415,7 +415,7 @@
     "message": "正文"
   },
   "zhihuSaveHint": {
-    "message": "在知乎回答或文章的正文上右键，选择“保存回答/文章到 EdgeEver”。标题、作者、正文和图片会存成一条新笔记，评论不会写入。右键图片仍然只保存这张图片。"
+    "message": "在知乎回答或文章的正文上右键，选择“保存回答/文章到 StillNote”。标题、作者、正文和图片会存成一条新笔记，评论不会写入。右键图片仍然只保存这张图片。"
   },
   "savingZhihu": {
     "message": "正在保存这篇知乎内容……"
@@ -451,10 +451,10 @@
     "message": "一篇知乎内容"
   },
   "zhihuSaveWindowTitle": {
-    "message": "保存回答/文章到 EdgeEver"
+    "message": "保存回答/文章到 StillNote"
   },
-  "saveRedditToEdgeEver": {
-    "message": "保存 Reddit 帖子到 EdgeEver"
+  "saveRedditToStillNote": {
+    "message": "保存 Reddit 帖子到 StillNote"
   },
   "savingReddit": {
     "message": "正在保存这条 Reddit 帖子……"
@@ -477,8 +477,8 @@
   "redditLinkLabel": {
     "message": "外部链接"
   },
-  "saveVideoNoteToEdgeEver": {
-    "message": "保存视频笔记到 EdgeEver"
+  "saveVideoNoteToStillNote": {
+    "message": "保存视频笔记到 StillNote"
   },
   "savingVideoNote": {
     "message": "正在保存视频笔记……"
@@ -552,17 +552,17 @@
   "videoNoteFallbackTitle": {
     "message": "视频笔记"
   },
-  "saveHackerNewsToEdgeEver": {
-    "message": "保存 Hacker News 主帖到 EdgeEver"
+  "saveHackerNewsToStillNote": {
+    "message": "保存 Hacker News 主帖到 StillNote"
   },
-  "saveV2exToEdgeEver": {
-    "message": "保存 V2EX 主题到 EdgeEver"
+  "saveV2exToStillNote": {
+    "message": "保存 V2EX 主题到 StillNote"
   },
-  "saveXiaoyuzhouToEdgeEver": {
-    "message": "保存小宇宙单集到 EdgeEver"
+  "saveXiaoyuzhouToStillNote": {
+    "message": "保存小宇宙单集到 StillNote"
   },
   "savingPlatformClip": {
-    "message": "正在保存当前内容到 EdgeEver…"
+    "message": "正在保存当前内容到 StillNote…"
   },
   "platformNotDetail": {
     "message": "请打开支持的主帖、主题或单集详情页后重试。"
@@ -580,7 +580,7 @@
     "message": "正文已保存，部分图片仍为外链。"
   },
   "platformSavedWithImages": {
-    "message": "已保存到 EdgeEver，图片已全部归档。"
+    "message": "已保存到 StillNote，图片已全部归档。"
   },
   "platformNoShowNotes": {
     "message": "本期无 Show Notes。"
@@ -606,20 +606,20 @@
   "platformPodcastLabel": {
     "message": "节目"
   },
-  "saveFacebookToEdgeEver": {
-    "message": "保存 Facebook 帖子到 EdgeEver"
+  "saveFacebookToStillNote": {
+    "message": "保存 Facebook 帖子到 StillNote"
   },
-  "saveInstagramToEdgeEver": {
-    "message": "保存 Instagram 帖子到 EdgeEver"
+  "saveInstagramToStillNote": {
+    "message": "保存 Instagram 帖子到 StillNote"
   },
-  "saveLinkedinToEdgeEver": {
-    "message": "保存 LinkedIn 动态到 EdgeEver"
+  "saveLinkedinToStillNote": {
+    "message": "保存 LinkedIn 动态到 StillNote"
   },
-  "saveThreadsToEdgeEver": {
-    "message": "保存 Threads 帖子到 EdgeEver"
+  "saveThreadsToStillNote": {
+    "message": "保存 Threads 帖子到 StillNote"
   },
-  "saveBlueskyToEdgeEver": {
-    "message": "保存 Bluesky 帖子到 EdgeEver"
+  "saveBlueskyToStillNote": {
+    "message": "保存 Bluesky 帖子到 StillNote"
   },
   "socialSelectPost": {
     "message": "请打开帖子详情页，或在目标帖子上再次右键保存。"
@@ -645,8 +645,8 @@
   "platformXiaoyuzhou": {
     "message": "小宇宙"
   },
-  "saveSubstackNoteToEdgeEver": {
-    "message": "保存 Substack 短帖到 EdgeEver"
+  "saveSubstackNoteToStillNote": {
+    "message": "保存 Substack 短帖到 StillNote"
   },
   "adaptedPlatformsTitle": {
     "message": "深度适配平台"
@@ -708,11 +708,11 @@
   "clipNotifications": {
     "message": "剪藏提示"
   },
-  "saveBossToEdgeEver": {
-    "message": "保存 BOSS 直聘岗位到 EdgeEver"
+  "saveBossToStillNote": {
+    "message": "保存 BOSS 直聘岗位到 StillNote"
   },
-  "saveXueqiuToEdgeEver": {
-    "message": "保存雪球帖子到 EdgeEver"
+  "saveXueqiuToStillNote": {
+    "message": "保存雪球帖子到 StillNote"
   },
   "platformBoss": {
     "message": "BOSS 直聘"
@@ -729,32 +729,32 @@
   "platformWechat": {
     "message": "微信公众号"
   },
-  "saveWechatToEdgeEver": {
-    "message": "保存微信公众号到 EdgeEver"
+  "saveWechatToStillNote": {
+    "message": "保存微信公众号到 StillNote"
   },
   "platformJike": {
     "message": "即刻"
   },
-  "saveJikeToEdgeEver": {
-    "message": "保存即刻到 EdgeEver"
+  "saveJikeToStillNote": {
+    "message": "保存即刻到 StillNote"
   },
   "platformSspai": {
     "message": "少数派"
   },
-  "saveSspaiToEdgeEver": {
-    "message": "保存少数派到 EdgeEver"
+  "saveSspaiToStillNote": {
+    "message": "保存少数派到 StillNote"
   },
   "platformJuejin": {
     "message": "掘金"
   },
-  "saveJuejinToEdgeEver": {
-    "message": "保存掘金到 EdgeEver"
+  "saveJuejinToStillNote": {
+    "message": "保存掘金到 StillNote"
   },
   "platformDouban": {
     "message": "豆瓣"
   },
-  "saveDoubanToEdgeEver": {
-    "message": "保存豆瓣到 EdgeEver"
+  "saveDoubanToStillNote": {
+    "message": "保存豆瓣到 StillNote"
   },
   "platformOfficialAccountLabel": {
     "message": "公众号"
@@ -763,7 +763,7 @@
     "message": "原列表"
   },
   "doubanSelectComment": {
-    "message": "请在目标短评上右键选择“保存豆瓣到 EdgeEver”，或选中文字后剪藏。"
+    "message": "请在目标短评上右键选择“保存豆瓣到 StillNote”，或选中文字后剪藏。"
   },
   "pageCaptureRestricted": {
     "message": "内容受限"
@@ -813,7 +813,7 @@
     "message": "重新选择"
   },
   "regionSave": {
-    "message": "保存到 EdgeEver"
+    "message": "保存到 StillNote"
   },
   "regionCancel": {
     "message": "取消"

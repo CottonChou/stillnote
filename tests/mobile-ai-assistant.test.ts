@@ -13,10 +13,10 @@ const androidWorkspaceSource = [
   readSource("../apps/mobile/src/screens/WorkspacePickers.tsx"),
 ].join("\n");
 const androidSessionSource = readSource("../apps/mobile/src/lib/session.tsx");
-const iosAssistantSource = readSource("../apps/ios/EdgeEver/Features/Workspace/AiAssistantSheet.swift");
-const iosDetailSource = readSource("../apps/ios/EdgeEver/Features/Workspace/MemoDetailView.swift");
-const iosEditorSource = readSource("../apps/ios/EdgeEver/Features/Workspace/MemoEditView.swift");
-const iosApiSource = readSource("../apps/ios/EdgeEver/Data/Network/APIClient.swift");
+const iosAssistantSource = readSource("../apps/ios/StillNote/Features/Workspace/AiAssistantSheet.swift");
+const iosDetailSource = readSource("../apps/ios/StillNote/Features/Workspace/MemoDetailView.swift");
+const iosEditorSource = readSource("../apps/ios/StillNote/Features/Workspace/MemoEditView.swift");
+const iosApiSource = readSource("../apps/ios/StillNote/Data/Network/APIClient.swift");
 
 describe("native mobile AI note assistant", () => {
   test("exposes all five first-version actions on Android and iOS", () => {
@@ -38,7 +38,7 @@ describe("native mobile AI note assistant", () => {
       'case rewriteProofread = "rewrite-proofread"',
       "case translate",
     ]) {
-      expect(readSource("../apps/ios/EdgeEver/Data/Models/Models.swift")).toContain(action);
+      expect(readSource("../apps/ios/StillNote/Data/Models/Models.swift")).toContain(action);
     }
   });
 
@@ -49,7 +49,7 @@ describe("native mobile AI note assistant", () => {
     expect(androidEditorSource).toContain("resolveAiAssistantOpenAction");
     expect(iosAssistantSource).toContain("lastAiAssistantAction");
     expect(iosAssistantSource).toContain("applyStoredOrDefaultAction");
-    expect(readSource("../apps/ios/EdgeEver/Data/Preferences/PreferencesStore.swift")).toContain("edgeever.aiAssistant.lastAction");
+    expect(readSource("../apps/ios/StillNote/Data/Preferences/PreferencesStore.swift")).toContain("stillnote.aiAssistant.lastAction");
 
     expect(androidAssistantSource).toContain("client!.listAiPrompts(resolvedLocale)");
     expect(androidAssistantSource).toContain("client.streamAiGeneration(");

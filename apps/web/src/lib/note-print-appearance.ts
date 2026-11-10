@@ -3,10 +3,10 @@ import {
   noteProseCssVariables,
   type NoteProsePaletteChoice,
   type ResolvedNoteProse,
-} from "@edgeever/shared";
-import { catalogCodeFontStack, isRemoteNoteImageFont } from "@edgeever/shared/font-catalog-data";
-import { LEGACY_BODY_FONTS } from "@edgeever/shared/font-defaults";
-import type { BodyFontId } from "@edgeever/shared/font-loader";
+} from "@stillnote/shared";
+import { catalogCodeFontStack, isRemoteNoteImageFont } from "@stillnote/shared/font-catalog-data";
+import { LEGACY_BODY_FONTS } from "@stillnote/shared/font-defaults";
+import type { BodyFontId } from "@stillnote/shared/font-loader";
 import type { MermaidThemeName } from "@/components/ThemeProvider";
 import { MERMAID_THEME_NAMES } from "@/components/ThemeProvider";
 import { sanitizeAndScopeCss } from "@/lib/css-sandbox";
@@ -54,21 +54,21 @@ const paletteRules = (palette: NoteProsePaletteChoice) => {
   const colors = NOTE_PROSE_PALETTES[palette];
   if (!colors) return "";
   return [
-    ".edgeever-print-content a:not(.edgeever-attachment-link):not([href*=\"/api/v1/resources/\"]) {",
+    ".stillnote-print-content a:not(.stillnote-attachment-link):not([href*=\"/api/v1/resources/\"]) {",
     `  color: ${colors.link};`,
     `  text-decoration-color: color-mix(in srgb, ${colors.link} 45%, transparent);`,
     "}",
-    ".edgeever-print-content strong,",
-    ".edgeever-print-content b {",
+    ".stillnote-print-content strong,",
+    ".stillnote-print-content b {",
     `  color: ${colors.accent};`,
     "}",
-    ".edgeever-print-content ul[data-type=\"taskList\"] li[data-checked] > label input {",
+    ".stillnote-print-content ul[data-type=\"taskList\"] li[data-checked] > label input {",
     `  accent-color: ${colors.accent};`,
     "}",
-    ".edgeever-print-content th {",
+    ".stillnote-print-content th {",
     `  background: ${colors.surface};`,
     "}",
-    ".edgeever-print-content tbody tr:nth-child(even) td {",
+    ".stillnote-print-content tbody tr:nth-child(even) td {",
     `  background: color-mix(in srgb, ${colors.surface} 60%, transparent);`,
     "}",
   ].join("\n");

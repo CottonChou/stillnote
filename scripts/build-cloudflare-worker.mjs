@@ -1,10 +1,10 @@
 import { execSync } from "node:child_process";
 import { rm, stat } from "node:fs/promises";
 import { resolve, sep } from "node:path";
-import { resolveDeploymentBuildMetadata } from "@edgeever/shared/deployment-metadata";
+import { resolveDeploymentBuildMetadata } from "@stillnote/shared/deployment-metadata";
 import { build } from "esbuild";
 
-export const CLOUDFLARE_WORKER_OUTPUT_DIRECTORY = resolve(".wrangler/edgeever-worker");
+export const CLOUDFLARE_WORKER_OUTPUT_DIRECTORY = resolve(".wrangler/stillnote-worker");
 const normalizePath = (value) => value.replaceAll("\\", "/");
 const resolveBuildId = () => {
   const environmentBuildId = process.env.WORKERS_CI_COMMIT_SHA
@@ -47,9 +47,9 @@ export const buildCloudflareWorker = async () => {
     write: true,
     allowOverwrite: true,
     define: {
-      __EDGEEVER_INSTANCE_BUILD_ID__: JSON.stringify(resolveBuildId()),
-      __EDGEEVER_INSTANCE_DEPLOYMENT_TRIGGER__: JSON.stringify(deploymentMetadata.trigger),
-      __EDGEEVER_INSTANCE_DEPLOYMENT_METHOD__: JSON.stringify(deploymentMetadata.method),
+      __STILLNOTE_INSTANCE_BUILD_ID__: JSON.stringify(resolveBuildId()),
+      __STILLNOTE_INSTANCE_DEPLOYMENT_TRIGGER__: JSON.stringify(deploymentMetadata.trigger),
+      __STILLNOTE_INSTANCE_DEPLOYMENT_METHOD__: JSON.stringify(deploymentMetadata.method),
     },
     outExtension: { ".js": ".js" },
   });

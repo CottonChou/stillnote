@@ -7,14 +7,14 @@ import { loadDisplayPluginMarketplace } from "./community-registry.ts";
 import { communityPluginSubmissionIssueUrl } from "./community-plugin-submission.ts";
 
 const bundledEntry = {
-  id: "org.edgeever.tasks",
+  id: "org.stillnote.tasks",
   name: "Tasks",
   description: "Official tasks",
-  author: "EdgeEver",
-  publisher: "edgeever",
+  author: "StillNote",
+  publisher: "stillnote",
   category: "Productivity",
-  repositoryUrl: "https://github.com/tianma-if/edgeever-tasks",
-  distribution: { type: "github", repositoryUrl: "https://github.com/tianma-if/edgeever-tasks" },
+  repositoryUrl: "https://github.com/CottonChou/stillnote-tasks",
+  distribution: { type: "github", repositoryUrl: "https://github.com/CottonChou/stillnote-tasks" },
   verification: { version: "0.6.4", checksums: { manifestJson: "a".repeat(64), mainJs: "b".repeat(64) } },
 };
 
@@ -96,7 +96,7 @@ describe("signed community registry", () => {
     });
 
     expect(first.community).toBe("refreshed");
-    expect(first.entries.map((entry) => entry.id)).toEqual(["org.edgeever.tasks", "com.example.readwise"]);
+    expect(first.entries.map((entry) => entry.id)).toEqual(["org.stillnote.tasks", "com.example.readwise"]);
     expect(first.entries[1]).toMatchObject({ listing: "community", licenseSpdx: "MIT" });
     expect(first.entries[0].repositoryUrl).toBe(bundledEntry.repositoryUrl);
 
@@ -110,7 +110,7 @@ describe("signed community registry", () => {
     });
 
     expect(retained.community).toBe("retained");
-    expect(retained.entries.map((entry) => entry.id)).toEqual(["org.edgeever.tasks", "com.example.readwise"]);
+    expect(retained.entries.map((entry) => entry.id)).toEqual(["org.stillnote.tasks", "com.example.readwise"]);
   });
 
   test("drops the community catalog when the instance has not configured it", async () => {
@@ -136,7 +136,7 @@ describe("signed community registry", () => {
     });
 
     expect(disabled.community).toBe("disabled");
-    expect(disabled.entries.map((entry) => entry.id)).toEqual(["org.edgeever.tasks"]);
+    expect(disabled.entries.map((entry) => entry.id)).toEqual(["org.stillnote.tasks"]);
   });
 
   test("does not let an older signed file replace the cached catalog", async () => {
@@ -165,7 +165,7 @@ describe("signed community registry", () => {
     });
 
     expect(result.community).toBe("cached");
-    expect(result.entries.map((entry) => entry.id)).toEqual(["org.edgeever.tasks", "com.example.readwise"]);
+    expect(result.entries.map((entry) => entry.id)).toEqual(["org.stillnote.tasks", "com.example.readwise"]);
     expect((await storage.readRegistry("https://official.example"))?.updatedAt).toBe("2026-10-06T00:00:00.000Z");
   });
 
@@ -194,7 +194,7 @@ describe("signed community registry", () => {
     });
 
     expect(first.revocations.map((item) => item.id)).toEqual(["com.example.readwise"]);
-    expect(second.entries.map((entry) => entry.id)).toEqual(["org.edgeever.tasks"]);
+    expect(second.entries.map((entry) => entry.id)).toEqual(["org.stillnote.tasks"]);
     expect(second.revocations.map((item) => item.id)).toEqual(["com.example.readwise"]);
   });
 
@@ -213,7 +213,7 @@ describe("signed community registry", () => {
 describe("community submission precheck", () => {
   test("opens an issue template with the repository and plugin id", () => {
     const url = new URL(communityPluginSubmissionIssueUrl("com.example.readwise", "https://github.com/example/readwise"));
-    expect(url.origin + url.pathname).toBe("https://github.com/tianma-if/edgeever-plugins/issues/new");
+    expect(url.origin + url.pathname).toBe("https://github.com/CottonChou/stillnote-plugins/issues/new");
     expect(url.searchParams.get("template")).toBe("plugin-submission.yml");
     expect(url.searchParams.get("plugin_id")).toBe("com.example.readwise");
     expect(url.searchParams.get("repository_url")).toBe("https://github.com/example/readwise");

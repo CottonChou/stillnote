@@ -24,7 +24,7 @@ const signingIdentity = (identity) => {
 // This replaces mac.sign so the share extension is Developer ID signed, timestamped,
 // and hardened before notarization. The outer app is sealed again afterwards.
 module.exports = async function signMacApp(opts) {
-  const appexPath = join(opts.app, "Contents", "PlugIns", "EdgeEverShare.appex");
+  const appexPath = join(opts.app, "Contents", "PlugIns", "StillNoteShare.appex");
   if (!existsSync(appexPath)) {
     throw new Error(`macOS share extension is missing from the app bundle: ${appexPath}`);
   }
@@ -33,11 +33,11 @@ module.exports = async function signMacApp(opts) {
     throw new Error("macOS share extension cannot be Developer ID signed without an identity");
   }
   await signApp(opts);
-  const entitlements = join(__dirname, "..", "share-extension", "EdgeEverShare.entitlements");
+  const entitlements = join(__dirname, "..", "share-extension", "StillNoteShare.entitlements");
   const shared = ["--force", "--sign", identity, "--timestamp"];
   if (opts.keychain) shared.push("--keychain", opts.keychain);
   // The sandbox entitlement is mandatory: PlugInKit otherwise silently rejects
-  // the extension and WeChat never shows EdgeEver in its share sheet.
+  // the extension and WeChat never shows StillNote in its share sheet.
   codesign([
     ...shared,
     "--options",

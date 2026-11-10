@@ -6,7 +6,7 @@ import {
   AI_ACTIONS,
   AiGenerateSchema,
   AiTagSuggestionsRequestSchema,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { registerAiRoutes } from "./ai-routes.ts";
 
 const auth = {
@@ -28,7 +28,7 @@ const environment = {
     },
     resources: {},
   },
-  EDGE_EVER_AUTH_PASSWORD: "x".repeat(32),
+  STILLNOTE_AUTH_PASSWORD: "x".repeat(32),
 };
 
 class SqliteD1PreparedStatement {
@@ -82,7 +82,7 @@ const createDatabaseEnvironment = () => {
     sqlite,
     environment: {
       storage: { db: new SqliteD1Database(sqlite), resources: {} },
-      EDGE_EVER_AUTH_PASSWORD: "x".repeat(32),
+      STILLNOTE_AUTH_PASSWORD: "x".repeat(32),
     },
   };
 };

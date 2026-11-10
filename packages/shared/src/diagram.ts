@@ -136,7 +136,7 @@ export type DiagramDocument = {
   edges: DiagramEdge[];
 };
 
-const DIAGRAM_MARKER = "edgeever-diagram-v1";
+const DIAGRAM_MARKER = "stillnote-diagram-v1";
 const DIAGRAM_COMMENT = new RegExp(`<!--\\s*${DIAGRAM_MARKER}:([\\s\\S]*?)\\s*-->`);
 
 // Keep the persisted envelope portable across browsers, Node/Bun, and React

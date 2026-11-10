@@ -1,5 +1,5 @@
-import type { CompanionAction } from "@edgeever/shared";
-import { getMemoDisplayTitle } from "@edgeever/shared";
+import type { CompanionAction } from "@stillnote/shared";
+import { getMemoDisplayTitle } from "@stillnote/shared";
 import { ArrowUpRight, Check, FileText, GitMerge } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";

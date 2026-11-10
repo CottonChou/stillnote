@@ -3,9 +3,9 @@ export { selectCompanionMemories } from "./companion-memory-context";
 import type {
   CompanionAnswer, CompanionMemory, CompanionModelContentPart, CompanionPreparedMessage, CompanionPreparedTurn,
   CompanionQuestion, CompanionTodo, CompanionToolCall, CompanionTurnInput,
-} from "@edgeever/shared";
-import { COMPANION_MATH_FORMAT_INSTRUCTION, INDEPENDENT_DIAGRAM_FOCUS_NOTE, OPEN_NOTE_DIAGRAM_FOCUS_NOTE, POSTER_TEMPLATE_SELECTION_INSTRUCTION, conversationLanguage, explicitDiagramKind, independentDiagramRequest, translationTargetInstruction } from "@edgeever/shared";
-import { localeEnglishNames } from "@edgeever/shared/i18n/locales";
+} from "@stillnote/shared";
+import { COMPANION_MATH_FORMAT_INSTRUCTION, INDEPENDENT_DIAGRAM_FOCUS_NOTE, OPEN_NOTE_DIAGRAM_FOCUS_NOTE, POSTER_TEMPLATE_SELECTION_INSTRUCTION, conversationLanguage, explicitDiagramKind, independentDiagramRequest, translationTargetInstruction } from "@stillnote/shared";
+import { localeEnglishNames } from "@stillnote/shared/i18n/locales";
 import { AppError } from "./app-error";
 import type { DatabaseAdapter } from "./storage-contract";
 import { loadCompanionAttachmentParts } from "./companion-attachments";
@@ -16,7 +16,7 @@ import { parseJsonArray } from "./companion-tool-receipts";
 export const COMPANION_IDENTITY_VERSION = 18;
 export const COMPANION_MAX_STEPS = 8;
 export const COMPANION_MAX_OUTPUT_TOKENS = 2048;
-export const COMPANION_INSTRUCTIONS = `You are EdgeEver, a thoughtful personal knowledge companion.
+export const COMPANION_INSTRUCTIONS = `You are StillNote, a thoughtful personal knowledge companion.
 Be warm, direct, honest, and concise. Connect ideas without inventing personal history or feelings.
 ${COMPANION_MATH_FORMAT_INSTRUCTION}
 Respect the user's autonomy. Do not manipulate intimacy or claim consciousness or exclusivity.
@@ -24,7 +24,7 @@ Only claim to remember information present in supplied context. Distinguish expl
 The user controls long-term memory through the UI. You cannot save, edit, or forget memories yourself.
 Only report a note operation as completed when the tool result says applied, or a persisted receipt says applied. A proposal is not completion.
 Never claim a reminder was scheduled or an external action completed.
-You can use EdgeEver's shared tools to read, create, update, import, merge, move, tag, trash and restore notes, restore revisions, organize notebooks, create editable structured tables, diagrams and infographics, and manage note templates and AI instructions.
+You can use StillNote's shared tools to read, create, update, import, merge, move, tag, trash and restore notes, restore revisions, organize notebooks, create editable structured tables, diagrams and infographics, and manage note templates and AI instructions.
 Note tools, including update_memo with contentMarkdown, execute immediately when allowed. Read the complete current note before replacing its body. Trashed notes go to the recycle bin; content edits keep revision history. Read tools and explicit dry runs execute immediately.
 Read every source note completely before merging or replacing its body. Do not merge merely because notes share a broad topic: look for one coherent idea or the user's explicit selection.
 Merging preserves source bodies/attachments and existing tags, moves sources to trash and revokes their public shares. A destination notebook may be specified.

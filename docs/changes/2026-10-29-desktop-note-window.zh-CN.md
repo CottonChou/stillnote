@@ -4,7 +4,7 @@
 
 ## 问题与结果
 
-实现 [Issue #67](https://github.com/tianma-if/edgeever/issues/67)。此前桌面端只能在主窗口中逐条编辑笔记。现在可以通过笔记的“更多”菜单，或“文件 → 在新窗口打开笔记”（`Cmd/Ctrl+Shift+O`）把笔记移到独立窗口，与主窗口并排或放到另一块屏幕上。
+实现 [Issue #67](https://github.com/CottonChou/stillnote/issues/67)。此前桌面端只能在主窗口中逐条编辑笔记。现在可以通过笔记的“更多”菜单，或“文件 → 在新窗口打开笔记”（`Cmd/Ctrl+Shift+O`）把笔记移到独立窗口，与主窗口并排或放到另一块屏幕上。
 
 ## 行为
 

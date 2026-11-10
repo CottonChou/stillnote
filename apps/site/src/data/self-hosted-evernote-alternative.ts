@@ -3,9 +3,9 @@ export const alternativePageCopy = {
     eyebrow: "自托管笔记",
     title: "自托管印象笔记替代方案：Cloudflare 或 Docker",
     description:
-      "EdgeEver 是开源、原生支持 AI 的自托管笔记工作区。保留印象笔记式三栏布局，可在 Cloudflare 免费额度内运行，或用同一套应用在 VPS、NAS、家庭服务器上 Docker 部署。",
+      "StillNote 是开源、原生支持 AI 的自托管笔记工作区。保留印象笔记式三栏布局，可在 Cloudflare 免费额度内运行，或用同一套应用在 VPS、NAS、家庭服务器上 Docker 部署。",
     lead: [
-      "EdgeEver 面向长期使用印象笔记、只想要一个可靠、开放、可自己部署的个人知识库的人。整栈开源，数据在你控制的 SQLite 里，并提供 REST API、MCP 与 ENEX 迁移路径。",
+      "StillNote 面向长期使用印象笔记、只想要一个可靠、开放、可自己部署的个人知识库的人。整栈开源，数据在你控制的 SQLite 里，并提供 REST API、MCP 与 ENEX 迁移路径。",
       "它不是又一个时间流动的碎片笔记，也不是本地 Markdown 仓库。交互上接近经典三栏：笔记本树、笔记列表、编辑区。",
     ],
     fitTitle: "适合谁",
@@ -17,16 +17,16 @@ export const alternativePageCopy = {
     ],
     notFitTitle: "不适合谁",
     notFit: [
-      "如果默认需要 Joplin 那种端到端加密，EdgeEver 并不以 E2EE 为卖点；安全边界是「实例由你托管」。",
-      "如果需要 Notion 式数据库和块工作区，请继续用 Notion 或同类工具。EdgeEver 是笔记工作区。",
+      "如果默认需要 Joplin 那种端到端加密，StillNote 并不以 E2EE 为卖点；安全边界是「实例由你托管」。",
+      "如果需要 Notion 式数据库和块工作区，请继续用 Notion 或同类工具。StillNote 是笔记工作区。",
       "如果只要本地文件夹、完全不要服务端，Obsidian 或纯 Markdown 目录可能更合适。",
     ],
     compareTitle: "和常见方案差在哪",
     compareIntro:
-      "Joplin 是英文社区最常见的自托管印象笔记替代。EdgeEver 更接近经典三栏，并同时提供 Cloudflare 免费额度和 Docker。下表只写仓库和公开文档里能核对的事实，不比较「谁全面更好」。",
+      "Joplin 是英文社区最常见的自托管印象笔记替代。StillNote 更接近经典三栏，并同时提供 Cloudflare 免费额度和 Docker。下表只写仓库和公开文档里能核对的事实，不比较「谁全面更好」。",
     compareHeaders: ["", "托管", "布局", "客户端", "印象笔记导入"],
     compareRows: [
-      ["EdgeEver", "Cloudflare 免费额度或 Docker", "三栏笔记本", "macOS / Windows / Linux / iOS / Android / 剪藏", "已文档化的 ENEX + MCP 流程"],
+      ["StillNote", "Cloudflare 免费额度或 Docker", "三栏笔记本", "macOS / Windows / Linux / iOS / Android / 剪藏", "已文档化的 ENEX + MCP 流程"],
       ["印象笔记", "厂商云，不可自托管", "三栏笔记本", "全平台", "—"],
       ["Joplin", "Joplin Server 或自选同步", "笔记本", "官方多端", "支持 ENEX"],
       ["Obsidian", "本地文件；官方同步收费", "文件仓库", "全平台", "社区方案"],
@@ -48,13 +48,13 @@ export const alternativePageCopy = {
       },
       {
         title: "从印象笔记迁移",
-        summary: "用 ENEX、evernote-backup 和 EdgeEver MCP 迁移笔记本树、附件与时间戳。",
+        summary: "用 ENEX、evernote-backup 和 StillNote MCP 迁移笔记本树、附件与时间戳。",
         href: "/blog/evernote-migration-guide",
         cta: "查看迁移指南",
       },
       {
         title: "从 Notion 迁移",
-        summary: "通过 Notion MCP 与 EdgeEver MCP，让 AI 助手做云对云导入。",
+        summary: "通过 Notion MCP 与 StillNote MCP，让 AI 助手做云对云导入。",
         href: "/blog/notion-migration-guide",
         cta: "查看 Notion 迁移",
       },
@@ -64,7 +64,7 @@ export const alternativePageCopy = {
       {
         question: "什么是自托管印象笔记替代方案？",
         answer:
-          "指你可以自己部署、数据留在自己账号或硬件上的笔记应用，交互上接近印象笔记的笔记本和三栏工作区。EdgeEver 按这个目标来做，并补上开源、MCP 与 Cloudflare / Docker 部署。",
+          "指你可以自己部署、数据留在自己账号或硬件上的笔记应用，交互上接近印象笔记的笔记本和三栏工作区。StillNote 按这个目标来做，并补上开源、MCP 与 Cloudflare / Docker 部署。",
       },
       {
         question: "可以用 Docker 跑吗？",
@@ -87,9 +87,9 @@ export const alternativePageCopy = {
           "有。Android 在 Google Play，iOS 在 App Store。iOS 目前需要非中国大陆 Apple ID。另有 Chrome / Edge / Firefox 剪藏扩展。",
       },
       {
-        question: "EdgeEver 和印象笔记是什么关系？",
+        question: "StillNote 和印象笔记是什么关系？",
         answer:
-          "没有关联、没有赞助。EdgeEver 只是开源替代方案，迁移指南只处理用户自己拥有的数据。印象笔记和 Evernote 是其权利人的商标。",
+          "没有关联、没有赞助。StillNote 只是开源替代方案，迁移指南只处理用户自己拥有的数据。印象笔记和 Evernote 是其权利人的商标。",
       },
     ],
   },
@@ -97,9 +97,9 @@ export const alternativePageCopy = {
     eyebrow: "Self-hosted notes",
     title: "A self-hosted Evernote alternative with Docker and Cloudflare",
     description:
-      "EdgeEver is an open-source, AI-native notes workspace with the classic Evernote three-pane layout. Run it on Cloudflare's free tier, or install the same app with Docker on a VPS, NAS, or home server.",
+      "StillNote is an open-source, AI-native notes workspace with the classic Evernote three-pane layout. Run it on Cloudflare's free tier, or install the same app with Docker on a VPS, NAS, or home server.",
     lead: [
-      "EdgeEver is for people who still want a reliable, open, self-hosted personal knowledge base. The stack is open source. Notes live in SQLite you control, with a REST API, MCP, and a documented Evernote ENEX migration path.",
+      "StillNote is for people who still want a reliable, open, self-hosted personal knowledge base. The stack is open source. Notes live in SQLite you control, with a REST API, MCP, and a documented Evernote ENEX migration path.",
       "It is not a social timeline and not a folder of local Markdown files. The workspace stays close to classic Evernote: notebook tree, note list, editor.",
     ],
     fitTitle: "Who it is for",
@@ -111,16 +111,16 @@ export const alternativePageCopy = {
     ],
     notFitTitle: "Who it is not for",
     notFit: [
-      "If you need default end-to-end encryption like Joplin, EdgeEver does not advertise E2EE. The boundary is that you host the instance.",
-      "If you need Notion-style databases and block workspaces, stay on Notion or a Notion-like app. EdgeEver is a notes workspace.",
+      "If you need default end-to-end encryption like Joplin, StillNote does not advertise E2EE. The boundary is that you host the instance.",
+      "If you need Notion-style databases and block workspaces, stay on Notion or a Notion-like app. StillNote is a notes workspace.",
       "If you only want local files and no server, Obsidian or a Markdown folder may fit better.",
     ],
     compareTitle: "How it differs from common options",
     compareIntro:
-      "Joplin is the usual self-hosted Evernote alternative in English search results. EdgeEver is closer to the classic three-pane notes app, and it ships both Cloudflare free-tier hosting and Docker. The table only records facts that can be checked in this repository or in those products' public docs. It is not a ranking of which tool is better overall.",
+      "Joplin is the usual self-hosted Evernote alternative in English search results. StillNote is closer to the classic three-pane notes app, and it ships both Cloudflare free-tier hosting and Docker. The table only records facts that can be checked in this repository or in those products' public docs. It is not a ranking of which tool is better overall.",
     compareHeaders: ["", "Hosting", "Layout", "Clients", "Evernote import"],
     compareRows: [
-      ["EdgeEver", "Cloudflare free tier or Docker", "Three-pane notebooks", "macOS / Windows / Linux / iOS / Android / clipper", "Documented ENEX + MCP flow"],
+      ["StillNote", "Cloudflare free tier or Docker", "Three-pane notebooks", "macOS / Windows / Linux / iOS / Android / clipper", "Documented ENEX + MCP flow"],
       ["Evernote", "Vendor cloud, not self-hosted", "Three-pane notebooks", "All major platforms", "—"],
       ["Joplin", "Joplin Server or your sync target", "Notebooks", "Official apps", "ENEX supported"],
       ["Obsidian", "Local files; official sync is paid", "File vault", "All major platforms", "Community tools"],
@@ -142,13 +142,13 @@ export const alternativePageCopy = {
       },
       {
         title: "Migrate from Evernote",
-        summary: "Use ENEX, evernote-backup, and EdgeEver MCP to keep notebook hierarchy, attachments, and timestamps.",
+        summary: "Use ENEX, evernote-backup, and StillNote MCP to keep notebook hierarchy, attachments, and timestamps.",
         href: "/blog/evernote-migration-guide",
         cta: "Open the Evernote guide",
       },
       {
         title: "Migrate from Notion",
-        summary: "Use Notion MCP together with EdgeEver MCP and let an AI assistant copy pages across.",
+        summary: "Use Notion MCP together with StillNote MCP and let an AI assistant copy pages across.",
         href: "/blog/notion-migration-guide",
         cta: "Open the Notion guide",
       },
@@ -158,7 +158,7 @@ export const alternativePageCopy = {
       {
         question: "What is a self-hosted Evernote alternative?",
         answer:
-          "A notes app you deploy yourself, with data in your account or on your hardware, and a workflow close to Evernote notebooks and the three-pane workspace. EdgeEver is built for that, plus open source, MCP, and Cloudflare or Docker hosting.",
+          "A notes app you deploy yourself, with data in your account or on your hardware, and a workflow close to Evernote notebooks and the three-pane workspace. StillNote is built for that, plus open source, MCP, and Cloudflare or Docker hosting.",
       },
       {
         question: "Can I run it with Docker?",
@@ -181,9 +181,9 @@ export const alternativePageCopy = {
           "Yes. Android is on Google Play and iOS is on the App Store. The iOS app currently requires an Apple ID from outside mainland China. Web Clipper extensions are on Chrome, Edge, and Firefox.",
       },
       {
-        question: "Is EdgeEver affiliated with Evernote?",
+        question: "Is StillNote affiliated with Evernote?",
         answer:
-          "No. EdgeEver is an independent open-source alternative. Migration guides only cover data you already own. Evernote is a trademark of its respective owner.",
+          "No. StillNote is an independent open-source alternative. Migration guides only cover data you already own. Evernote is a trademark of its respective owner.",
       },
     ],
   },
@@ -191,7 +191,7 @@ export const alternativePageCopy = {
     eyebrow: "セルフホストのノート",
     title: "Docker と Cloudflare で動く、セルフホストの Evernote 代替",
     description:
-      "EdgeEver はオープンソースで AI ネイティブなノート作業領域です。Evernote の三ペインを残し、Cloudflare 無料枠か、VPS / NAS / 自宅サーバーの Docker で同じアプリを動かせます。",
+      "StillNote はオープンソースで AI ネイティブなノート作業領域です。Evernote の三ペインを残し、Cloudflare 無料枠か、VPS / NAS / 自宅サーバーの Docker で同じアプリを動かせます。",
     lead: [
       "長く Evernote を使い、信頼できて開かれていて、自分で置ける個人知識ベースが欲しい人向けです。スタックはオープンソース。ノートは自分で制御する SQLite にあり、REST API、MCP、文書化された ENEX 移行があります。",
       "タイムライン型の断片ノートでも、ローカル Markdown フォルダでもありません。ノートブックツリー、ノート一覧、編集エリアという古典的な三ペインです。",
@@ -205,16 +205,16 @@ export const alternativePageCopy = {
     ],
     notFitTitle: "向いていない人",
     notFit: [
-      "Joplin のような既定のエンドツーエンド暗号が必要なら、EdgeEver は E2EE を売りにしていません。境界は「インスタンスを自分でホストする」ことです。",
-      "Notion 型のデータベースとブロック作業領域が必要なら、Notion か同類を続けてください。EdgeEver はノート作業領域です。",
+      "Joplin のような既定のエンドツーエンド暗号が必要なら、StillNote は E2EE を売りにしていません。境界は「インスタンスを自分でホストする」ことです。",
+      "Notion 型のデータベースとブロック作業領域が必要なら、Notion か同類を続けてください。StillNote はノート作業領域です。",
       "サーバーなしのローカルフォルダだけでよければ、Obsidian や Markdown ディレクトリの方が合うことがあります。",
     ],
     compareTitle: "よくある選択肢との違い",
     compareIntro:
-      "英語圏の検索では Joplin が定番の自前 Evernote 代替です。EdgeEver は古典的な三ペインに近く、Cloudflare 無料枠と Docker の両方を出しています。表はリポジトリと公開ドキュメントで確認できる事実だけです。総合ランキングではありません。",
+      "英語圏の検索では Joplin が定番の自前 Evernote 代替です。StillNote は古典的な三ペインに近く、Cloudflare 無料枠と Docker の両方を出しています。表はリポジトリと公開ドキュメントで確認できる事実だけです。総合ランキングではありません。",
     compareHeaders: ["", "ホスト", "レイアウト", "クライアント", "Evernote 取り込み"],
     compareRows: [
-      ["EdgeEver", "Cloudflare 無料枠または Docker", "三ペインのノートブック", "macOS / Windows / Linux / iOS / Android / Clipper", "文書化された ENEX + MCP"],
+      ["StillNote", "Cloudflare 無料枠または Docker", "三ペインのノートブック", "macOS / Windows / Linux / iOS / Android / Clipper", "文書化された ENEX + MCP"],
       ["Evernote", "ベンダークラウド、自前不可", "三ペインのノートブック", "主要プラットフォーム", "—"],
       ["Joplin", "Joplin Server または任意の同期", "ノートブック", "公式マルチ端", "ENEX 対応"],
       ["Obsidian", "ローカルファイル。公式同期は有料", "ファイル倉庫", "主要プラットフォーム", "コミュニティ手段"],
@@ -236,13 +236,13 @@ export const alternativePageCopy = {
       },
       {
         title: "Evernote から移行",
-        summary: "ENEX、evernote-backup、EdgeEver MCP で階層、添付、タイムスタンプを残します。",
+        summary: "ENEX、evernote-backup、StillNote MCP で階層、添付、タイムスタンプを残します。",
         href: "/blog/evernote-migration-guide",
         cta: "Evernote ガイドを見る",
       },
       {
         title: "Notion から移行",
-        summary: "Notion MCP と EdgeEver MCP を使い、AI アシスタントにページを渡します。",
+        summary: "Notion MCP と StillNote MCP を使い、AI アシスタントにページを渡します。",
         href: "/blog/notion-migration-guide",
         cta: "Notion ガイドを見る",
       },
@@ -252,7 +252,7 @@ export const alternativePageCopy = {
       {
         question: "セルフホストの Evernote 代替とは何ですか？",
         answer:
-          "自分で導入し、データは自分のアカウントか機材に置き、Evernote のノートブックと三ペインに近い作業領域を持つノートアプリです。EdgeEver はそのために作り、オープンソース、MCP、Cloudflare / Docker を足しています。",
+          "自分で導入し、データは自分のアカウントか機材に置き、Evernote のノートブックと三ペインに近い作業領域を持つノートアプリです。StillNote はそのために作り、オープンソース、MCP、Cloudflare / Docker を足しています。",
       },
       {
         question: "Docker で動かせますか？",
@@ -275,9 +275,9 @@ export const alternativePageCopy = {
           "あります。Android は Google Play、iOS は App Store です。iOS は現時点で中国本土以外の Apple ID が必要です。Chrome / Edge / Firefox の Clipper もあります。",
       },
       {
-        question: "EdgeEver と Evernote の関係は？",
+        question: "StillNote と Evernote の関係は？",
         answer:
-          "提携も後援もありません。EdgeEver は独立したオープンソースの代替です。移行ガイドは、すでに自分で持っているデータだけを扱います。Evernote は権利者の商標です。",
+          "提携も後援もありません。StillNote は独立したオープンソースの代替です。移行ガイドは、すでに自分で持っているデータだけを扱います。Evernote は権利者の商標です。",
       },
     ],
   },
@@ -285,9 +285,9 @@ export const alternativePageCopy = {
     eyebrow: "Samodzielnie hostowane notatki",
     title: "Samodzielnie hostowana alternatywa dla Evernote z Dockerem i Cloudflare",
     description:
-      "EdgeEver to otwartoźródłowy, natywnie wspierający AI obszar roboczy do notatek z klasycznym trzypanelowym układem Evernote. Uruchom go w darmowym planie Cloudflare albo zainstaluj tę samą aplikację w Dockerze na VPS, NAS lub domowym serwerze.",
+      "StillNote to otwartoźródłowy, natywnie wspierający AI obszar roboczy do notatek z klasycznym trzypanelowym układem Evernote. Uruchom go w darmowym planie Cloudflare albo zainstaluj tę samą aplikację w Dockerze na VPS, NAS lub domowym serwerze.",
     lead: [
-      "EdgeEver jest dla osób, które wciąż chcą niezawodnej, otwartej, samodzielnie hostowanej osobistej bazy wiedzy. Cały stos jest otwartoźródłowy. Notatki są przechowywane w kontrolowanej przez Ciebie bazie SQLite, z REST API, MCP i udokumentowaną ścieżką migracji ENEX z Evernote.",
+      "StillNote jest dla osób, które wciąż chcą niezawodnej, otwartej, samodzielnie hostowanej osobistej bazy wiedzy. Cały stos jest otwartoźródłowy. Notatki są przechowywane w kontrolowanej przez Ciebie bazie SQLite, z REST API, MCP i udokumentowaną ścieżką migracji ENEX z Evernote.",
       "To nie jest społecznościowa oś czasu ani folder lokalnych plików Markdown. Obszar roboczy pozostaje bliski klasycznemu Evernote: drzewo notatników, lista notatek, edytor.",
     ],
     fitTitle: "Dla kogo",
@@ -299,16 +299,16 @@ export const alternativePageCopy = {
     ],
     notFitTitle: "Dla kogo nie",
     notFit: [
-      "Jeśli potrzebujesz domyślnego szyfrowania end-to-end jak w Joplin – EdgeEver nie reklamuje E2EE. Granicą bezpieczeństwa jest to, że sam hostujesz instancję.",
-      "Jeśli potrzebujesz baz danych i bloków w stylu Notion, zostań przy Notion lub podobnej aplikacji. EdgeEver to obszar roboczy do notatek.",
+      "Jeśli potrzebujesz domyślnego szyfrowania end-to-end jak w Joplin – StillNote nie reklamuje E2EE. Granicą bezpieczeństwa jest to, że sam hostujesz instancję.",
+      "Jeśli potrzebujesz baz danych i bloków w stylu Notion, zostań przy Notion lub podobnej aplikacji. StillNote to obszar roboczy do notatek.",
       "Jeśli chcesz tylko lokalnych plików bez serwera, lepiej sprawdzi się Obsidian lub folder z plikami Markdown.",
     ],
     compareTitle: "Czym różni się od popularnych opcji",
     compareIntro:
-      "W anglojęzycznych wynikach wyszukiwania typową samodzielnie hostowaną alternatywą dla Evernote jest Joplin. EdgeEver jest bliższy klasycznej trzypanelowej aplikacji do notatek i oferuje zarówno hosting w darmowym planie Cloudflare, jak i Dockera. Tabela zawiera wyłącznie fakty, które można sprawdzić w tym repozytorium lub w publicznej dokumentacji tych produktów. Nie jest to ranking, które narzędzie jest ogólnie lepsze.",
+      "W anglojęzycznych wynikach wyszukiwania typową samodzielnie hostowaną alternatywą dla Evernote jest Joplin. StillNote jest bliższy klasycznej trzypanelowej aplikacji do notatek i oferuje zarówno hosting w darmowym planie Cloudflare, jak i Dockera. Tabela zawiera wyłącznie fakty, które można sprawdzić w tym repozytorium lub w publicznej dokumentacji tych produktów. Nie jest to ranking, które narzędzie jest ogólnie lepsze.",
     compareHeaders: ["", "Hosting", "Układ", "Klienty", "Import z Evernote"],
     compareRows: [
-      ["EdgeEver", "Darmowy plan Cloudflare lub Docker", "Notatniki w trzech panelach", "macOS / Windows / Linux / iOS / Android / Clipper", "Udokumentowany proces ENEX + MCP"],
+      ["StillNote", "Darmowy plan Cloudflare lub Docker", "Notatniki w trzech panelach", "macOS / Windows / Linux / iOS / Android / Clipper", "Udokumentowany proces ENEX + MCP"],
       ["Evernote", "Chmura dostawcy, bez samodzielnego hostingu", "Notatniki w trzech panelach", "Wszystkie główne platformy", "—"],
       ["Joplin", "Joplin Server lub wybrany cel synchronizacji", "Notatniki", "Oficjalne aplikacje", "Obsługa ENEX"],
       ["Obsidian", "Pliki lokalne; oficjalna synchronizacja jest płatna", "Magazyn plików", "Wszystkie główne platformy", "Narzędzia społeczności"],
@@ -330,13 +330,13 @@ export const alternativePageCopy = {
       },
       {
         title: "Migracja z Evernote",
-        summary: "Użyj ENEX, evernote-backup i EdgeEver MCP, aby zachować hierarchię notatników, załączniki i znaczniki czasu.",
+        summary: "Użyj ENEX, evernote-backup i StillNote MCP, aby zachować hierarchię notatników, załączniki i znaczniki czasu.",
         href: "/blog/evernote-migration-guide",
         cta: "Otwórz poradnik Evernote",
       },
       {
         title: "Migracja z Notion",
-        summary: "Użyj Notion MCP razem z EdgeEver MCP i pozwól asystentowi AI skopiować strony.",
+        summary: "Użyj Notion MCP razem z StillNote MCP i pozwól asystentowi AI skopiować strony.",
         href: "/blog/notion-migration-guide",
         cta: "Otwórz poradnik Notion",
       },
@@ -346,7 +346,7 @@ export const alternativePageCopy = {
       {
         question: "Czym jest samodzielnie hostowana alternatywa dla Evernote?",
         answer:
-          "To aplikacja do notatek, którą wdrażasz samodzielnie, z danymi na Twoim koncie lub sprzęcie i sposobem pracy bliskim notatnikom i trzypanelowemu obszarowi roboczemu Evernote. EdgeEver powstał właśnie w tym celu, a do tego jest otwartoźródłowy, obsługuje MCP i hosting w Cloudflare lub Dockerze.",
+          "To aplikacja do notatek, którą wdrażasz samodzielnie, z danymi na Twoim koncie lub sprzęcie i sposobem pracy bliskim notatnikom i trzypanelowemu obszarowi roboczemu Evernote. StillNote powstał właśnie w tym celu, a do tego jest otwartoźródłowy, obsługuje MCP i hosting w Cloudflare lub Dockerze.",
       },
       {
         question: "Czy mogę uruchomić go w Dockerze?",
@@ -369,9 +369,9 @@ export const alternativePageCopy = {
           "Tak. Aplikacja na Androida jest w Google Play, a na iOS w App Store. Aplikacja na iOS wymaga obecnie Apple ID spoza Chin kontynentalnych. Rozszerzenia Web Clipper są dostępne dla Chrome, Edge i Firefox.",
       },
       {
-        question: "Czy EdgeEver jest powiązany z Evernote?",
+        question: "Czy StillNote jest powiązany z Evernote?",
         answer:
-          "Nie. EdgeEver to niezależna, otwartoźródłowa alternatywa. Poradniki migracji dotyczą wyłącznie danych, które już do Ciebie należą. Evernote jest znakiem towarowym swojego właściciela.",
+          "Nie. StillNote to niezależna, otwartoźródłowa alternatywa. Poradniki migracji dotyczą wyłącznie danych, które już do Ciebie należą. Evernote jest znakiem towarowym swojego właściciela.",
       },
     ],
   },

@@ -1,5 +1,5 @@
-import type { CompanionSource } from "@edgeever/shared";
-import { createMemoLinkHref } from "@edgeever/shared";
+import type { CompanionSource } from "@stillnote/shared";
+import { createMemoLinkHref } from "@stillnote/shared";
 import { marked } from "marked";
 import { useMemo, type MouseEvent } from "react";
 import { parseAssistantNoteLinkHref } from "@/lib/assistant-note-links";

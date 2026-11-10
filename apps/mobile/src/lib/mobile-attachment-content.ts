@@ -1,4 +1,4 @@
 export {
   getMobileAttachmentLinkClass,
   resolveMobileAttachmentContent,
-} from "@edgeever/shared";
+} from "@stillnote/shared";

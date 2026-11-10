@@ -4,7 +4,7 @@ import {
   parseInfographicDocument,
   parsePosterDocument,
   parseTableDocument,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { computeDiagramLayoutResult } from "../../../packages/shared/src/diagram-layout.ts";
 import {
   decodeDemoAttachment,

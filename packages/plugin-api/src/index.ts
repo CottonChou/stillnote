@@ -44,7 +44,7 @@ export interface PluginManifest {
   name: string;
   version: string;
   apiVersion: typeof PLUGIN_API_VERSION;
-  /** Plugins must delegate ordinary persistent configuration to EdgeEver. */
+  /** Plugins must delegate ordinary persistent configuration to StillNote. */
   settingsUi: "host";
   description?: string;
   /** Localized marketplace and manager copy keyed by a BCP 47 language tag. */
@@ -69,7 +69,7 @@ export interface PluginSettingList {
 }
 
 /**
- * Declarative setting metadata. EdgeEver owns the layout, controls, validation,
+ * Declarative setting metadata. StillNote owns the layout, controls, validation,
  * state feedback, and responsive behavior; plugins cannot supply presentation code or styles.
  */
 interface PluginSettingBase {
@@ -151,7 +151,7 @@ export interface MarketplaceEntry {
   description: string;
   locales?: ExtensionLocales;
   author: string;
-  publisher?: "edgeever";
+  publisher?: "stillnote";
   category: string;
   repositoryUrl: string;
   distribution:
@@ -433,7 +433,7 @@ export interface PluginPanelEmptyState {
 }
 
 /**
- * Host-rendered panel chrome. Plugins describe intent; EdgeEver owns layout and controls.
+ * Host-rendered panel chrome. Plugins describe intent; StillNote owns layout and controls.
  * Callbacks stay in-memory and are not serialized with panel open state.
  */
 export interface PluginPanelChrome {
@@ -617,12 +617,12 @@ export interface PluginContext {
   };
 }
 
-export interface EdgeEverPlugin {
+export interface StillNotePlugin {
   activate(context: PluginContext): void | (() => void) | Promise<void | (() => void)>;
   deactivate?(): void | Promise<void>;
 }
 
-export const definePlugin = <T extends EdgeEverPlugin>(plugin: T): T => plugin;
+export const definePlugin = <T extends StillNotePlugin>(plugin: T): T => plugin;
 export const defineTheme = <T extends ThemeManifest>(theme: T): T => theme;
 
 const ID_PATTERN = /^[a-z0-9]+(?:[._-][a-z0-9]+)+$/;
@@ -1019,7 +1019,7 @@ const API_VERSION_PATTERN = /^\d+(?:\.\d+){0,3}$/;
 const NETWORK_HOST_PATTERN = /^(?:\*\.)?[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/i;
 
 export const isReservedMarketplacePluginId = (id: string) =>
-  id === "org.edgeever" || id.startsWith("org.edgeever.");
+  id === "org.stillnote" || id.startsWith("org.stillnote.");
 
 const readOptionalToken = (
   value: unknown,
@@ -1094,7 +1094,7 @@ export const parseMarketplaceRegistry = (value: unknown): MarketplaceRegistry =>
     const description = item.description as string;
     const author = item.author as string;
     const locales = normalizeExtensionLocales(item.locales, `Marketplace entry ${item.id}`);
-    if (item.publisher !== undefined && item.publisher !== "edgeever") {
+    if (item.publisher !== undefined && item.publisher !== "stillnote") {
       throw new Error(`Marketplace entry ${item.id} has an invalid publisher.`);
     }
     const category = item.category as string;
@@ -1138,7 +1138,7 @@ export const parseMarketplaceRegistry = (value: unknown): MarketplaceRegistry =>
       description: description.trim(),
       ...(locales ? { locales } : {}),
       author: author.trim(),
-      ...(item.publisher === "edgeever" ? { publisher: "edgeever" as const } : {}),
+      ...(item.publisher === "stillnote" ? { publisher: "stillnote" as const } : {}),
       category: category.trim(),
       repositoryUrl: repositoryUrl.trim(),
       distribution,
@@ -1161,7 +1161,7 @@ export const parseMarketplaceRegistry = (value: unknown): MarketplaceRegistry =>
 
 /**
  * Overlay a signed community registry onto the bundled official list.
- * Official entries, their repository URLs, and `publisher: "edgeever"` stay
+ * Official entries, their repository URLs, and `publisher: "stillnote"` stay
  * on the bundled list. A signature does not make a remote entry official.
  */
 export const mergeCommunityMarketplace = (

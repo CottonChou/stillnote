@@ -11,7 +11,7 @@ export const DEMO_ATTACHMENT_RESOURCES: DemoAttachmentSeed[] = [
   {
     id: "res_demo_meeting_notes_docx",
     memoId: "memo_demo_overview",
-    filename: "edgeever-meeting-notes.docx",
+    filename: "stillnote-meeting-notes.docx",
     mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     encoding: "base64",
     content:
@@ -20,7 +20,7 @@ export const DEMO_ATTACHMENT_RESOURCES: DemoAttachmentSeed[] = [
   {
     id: "res_demo_product_brief_pdf",
     memoId: "memo_demo_overview",
-    filename: "edgeever-product-brief.pdf",
+    filename: "stillnote-product-brief.pdf",
     mimeType: "application/pdf",
     encoding: "base64",
     content:
@@ -37,7 +37,7 @@ export const DEMO_ATTACHMENT_RESOURCES: DemoAttachmentSeed[] = [
   {
     id: "res_demo_attachment_bundle_zip",
     memoId: "memo_demo_overview",
-    filename: "edgeever-attachment-demo.zip",
+    filename: "stillnote-attachment-demo.zip",
     mimeType: "application/zip",
     encoding: "base64",
     content:

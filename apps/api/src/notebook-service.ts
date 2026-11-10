@@ -1,4 +1,4 @@
-import type { Notebook, NotebookCreateInput, NotebookUpdateInput } from "@edgeever/shared";
+import type { Notebook, NotebookCreateInput, NotebookUpdateInput } from "@stillnote/shared";
 import type { AuditActor } from "./api-context";
 import { AppError } from "./app-error";
 import { auditStatement } from "./audit";

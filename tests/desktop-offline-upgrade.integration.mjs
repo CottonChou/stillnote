@@ -9,7 +9,7 @@ import { _electron as electron, expect } from "@playwright/test";
 
 const [oldExecutable, fixedExecutable] = process.argv.slice(2).map(path => resolve(path));
 assert.ok(oldExecutable && fixedExecutable, "Pass old and fixed native executables");
-const directory = await mkdtemp(join(tmpdir(), "edgeever-offline-transition-"));
+const directory = await mkdtemp(join(tmpdir(), "stillnote-offline-transition-"));
 const profile = join(directory, "profile");
 const results = [];
 const runtimes = {};
@@ -26,10 +26,10 @@ const api = async (path, init = {}) => {
   return response.json();
 };
 const launch = async executablePath => {
-  application = await electron.launch({ executablePath, args: [`--user-data-dir=${profile}`], env: { ...process.env, EDGE_EVER_DISABLE_AUTO_UPDATE: "1" }, timeout: 60_000 });
-  await expect.poll(() => application.windows().some(w => w.url().startsWith("edgeever-app://app/index.html")), { timeout: 60_000 }).toBe(true);
-  page = application.windows().find(w => w.url().startsWith("edgeever-app://app/index.html"));
-  await page.waitForSelector('[data-edgeever-renderer-ready="true"]', { state: "attached", timeout: 60_000 });
+  application = await electron.launch({ executablePath, args: [`--user-data-dir=${profile}`], env: { ...process.env, STILLNOTE_DISABLE_AUTO_UPDATE: "1" }, timeout: 60_000 });
+  await expect.poll(() => application.windows().some(w => w.url().startsWith("stillnote-app://app/index.html")), { timeout: 60_000 }).toBe(true);
+  page = application.windows().find(w => w.url().startsWith("stillnote-app://app/index.html"));
+  await page.waitForSelector('[data-stillnote-renderer-ready="true"]', { state: "attached", timeout: 60_000 });
   const label = executablePath === oldExecutable ? "old" : "fixed";
   runtimes[label] ??= await application.evaluate(({ app }) => ({ version: app.getVersion(), electron: process.versions.electron, node: process.versions.node, platform: process.platform }));
 };
@@ -40,9 +40,9 @@ const close = async () => {
 const syncNow = () => application.evaluate(({ BrowserWindow }) => {
   BrowserWindow.getAllWindows().find(w => !w.webContents.getURL().includes("noteWindow="))?.webContents.send("desktop:command", "sync-now");
 });
-const local = id => page.evaluate(id => window.edgeeverDesktop.sidecarRequest("memo.get", { memoId: id }), id);
-const cachedUser = () => page.evaluate(() => JSON.parse(localStorage.getItem("edgeever.desktop.session"))?.user?.id);
-const credential = () => page.evaluate(() => window.edgeeverDesktop.getSessionToken());
+const local = id => page.evaluate(id => window.stillnoteDesktop.sidecarRequest("memo.get", { memoId: id }), id);
+const cachedUser = () => page.evaluate(() => JSON.parse(localStorage.getItem("stillnote.desktop.session"))?.user?.id);
+const credential = () => page.evaluate(() => window.stillnoteDesktop.getSessionToken());
 const open = async memo => {
   await page.getByRole("button", { name: "All notes", exact: true }).click();
   await page.getByPlaceholder("Search notes").first().fill(memo.title);
@@ -81,7 +81,7 @@ try {
   let oldCredential, userId;
   await record("released old app signs in and persists real local data", async () => {
     await launch(oldExecutable);
-    await page.evaluate(() => localStorage.setItem("edgeever.locale.preference", "en-US"));
+    await page.evaluate(() => localStorage.setItem("stillnote.locale.preference", "en-US"));
     await page.reload();
     await page.locator('input[autocomplete="username"]').fill("admin");
     await page.locator('input[autocomplete="current-password"]').fill("offline-test-password-only");
@@ -110,7 +110,7 @@ try {
     await edit(memo, "fixed-offline-500-edit");
     assert.equal(await cachedUser(), userId);
     assert.equal(await credential(), oldCredential);
-    const queued = await page.evaluate(() => window.edgeeverDesktop.sidecarRequest("sync.status", {}));
+    const queued = await page.evaluate(() => window.stillnoteDesktop.sidecarRequest("sync.status", {}));
     assert.ok(queued.pending + queued.syncing + queued.error > 0);
     observations.outageQueue = queued;
     await page.screenshot({ path: join(directory, "fixed-500-local-edit.png") });
@@ -148,10 +148,10 @@ try {
     observations.recoveredContent = remote;
     observations.credentialPreserved = true;
     await expect.poll(async () => {
-      const state = await page.evaluate(() => window.edgeeverDesktop.sidecarRequest("sync.status", {}));
+      const state = await page.evaluate(() => window.stillnoteDesktop.sidecarRequest("sync.status", {}));
       return state.pending + state.syncing + state.error + state.conflict;
     }, { timeout: 30_000 }).toBe(0);
-    observations.recoveredQueue = await page.evaluate(() => window.edgeeverDesktop.sidecarRequest("sync.status", {}));
+    observations.recoveredQueue = await page.evaluate(() => window.stillnoteDesktop.sidecarRequest("sync.status", {}));
     await open(memo);
     await expect(page.locator('.ProseMirror[contenteditable="true"]')).toContainText("failed-confirmation-edit");
     await page.screenshot({ path: join(directory, "fixed-recovered.png") });

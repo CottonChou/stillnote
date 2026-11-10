@@ -61,9 +61,9 @@ export const resolvePaperEditorTheme = (theme: string | null | undefined) => {
   return { layout: theme, palette: PAPER_EDITOR_THEME_PALETTES[theme] };
 };
 
-export const PUBLISH_LAYOUT_STORAGE_KEY = "edgeever.publish-layout";
-export const PUBLISH_PALETTE_STORAGE_KEY = "edgeever.publish-palette";
-export const PUBLISH_LAYOUT_CHANGED_EVENT = "edgeever:publish-layout-changed";
+export const PUBLISH_LAYOUT_STORAGE_KEY = "stillnote.publish-layout";
+export const PUBLISH_PALETTE_STORAGE_KEY = "stillnote.publish-palette";
+export const PUBLISH_LAYOUT_CHANGED_EVENT = "stillnote:publish-layout-changed";
 
 export type PublishPalette = {
   id: PublishPaletteId;
@@ -1509,7 +1509,7 @@ const decorateHeadings = (
   const chrome = PUBLISH_LAYOUT_CHROME[layout];
   const phone = surface === "phone";
   const headings = Array.from(root.querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6")).filter((heading) => {
-    if (heading.closest("table, pre, [data-edgeever-theme-block]")) return false;
+    if (heading.closest("table, pre, [data-stillnote-theme-block]")) return false;
     if (heading.closest("[data-ee-publish-heading]")) return false;
     return true;
   });
@@ -1561,7 +1561,7 @@ const decorateQuotes = (
   const chrome = PUBLISH_LAYOUT_CHROME[layout];
   const phone = surface === "phone";
   root.querySelectorAll<HTMLElement>("blockquote").forEach((quote) => {
-    if (quote.closest("[data-ee-publish-quote], table, pre, [data-edgeever-theme-block]")) return;
+    if (quote.closest("[data-ee-publish-quote], table, pre, [data-stillnote-theme-block]")) return;
     const wrapper = wrapBlock(quote, "data-ee-publish-quote", chrome.quote);
     wrapper.style.cssText = css({
       margin: phone ? "0 0 14px" : "0 0 28px",
@@ -1701,7 +1701,7 @@ const applyThemeBlocks = (
   palette: PublishPalette,
   surface: PublishSurface = "desktop",
 ) => {
-  root.querySelectorAll<HTMLElement>("[data-edgeever-theme-block]").forEach((block) => {
+  root.querySelectorAll<HTMLElement>("[data-stillnote-theme-block]").forEach((block) => {
     const kind = block.getAttribute("data-theme-block-kind") || "intro";
     const styles = themeBlockStyles(kind, palette, layout, surface);
     block.style.cssText = `${styles.block}${block.style.cssText}`;
@@ -1750,7 +1750,7 @@ export const applyPublishLayout = (
       "padding: 0; background: transparent; color: inherit; font-family: Menlo, Consolas, monospace; font-size: 13px; white-space: pre-wrap;";
   });
 
-  root.querySelectorAll<HTMLElement>("hr[data-edgeever-merge-divider], hr.edgeever-merge-divider").forEach((divider) => {
+  root.querySelectorAll<HTMLElement>("hr[data-stillnote-merge-divider], hr.stillnote-merge-divider").forEach((divider) => {
     divider.style.cssText = css({
       margin: "1.75em 0",
       border: "0",

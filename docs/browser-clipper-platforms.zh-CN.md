@@ -2,7 +2,7 @@
 
 [English](browser-clipper-platforms.md)
 
-关联 [Issue #493](https://github.com/tianma-if/edgeever/issues/493) 和[实施方案](browser-clipper-platform-expansion-plan.zh-CN.md)。平台适配已通过 #505、#521、#578 合并；跨浏览器与登录态实站验收由 [Issue #588 验收矩阵](browser-clipper-acceptance-588.zh-CN.md)继续跟踪。以下各轮记录保留当时的代码、环境与验收边界。
+关联 [Issue #493](https://github.com/CottonChou/stillnote/issues/493) 和[实施方案](browser-clipper-platform-expansion-plan.zh-CN.md)。平台适配已通过 #505、#521、#578 合并；跨浏览器与登录态实站验收由 [Issue #588 验收矩阵](browser-clipper-acceptance-588.zh-CN.md)继续跟踪。以下各轮记录保留当时的代码、环境与验收边界。
 
 2026-10-18 续验已补齐指定的即刻 Web 信息流、LinkedIn 登录公司信息流、Bluesky 引用信息流和 Edge／Firefox 完整 Substack 文章；新增修复及剩余浏览器环境限制见上述矩阵。
 
@@ -14,7 +14,7 @@
 
 ## 2026-10-18 对照 #493 原始需求复核
 
-重新读取 [#493 正文及维护者结案说明](https://github.com/tianma-if/edgeever/issues/493#issuecomment-6208560808)，逐项对照当前代码、夹具、自动回归和实站记录。#505、#521、#578 的 GitHub 状态均为 MERGED。原文 15 组／17 个平台均有对应实现；原 Issue 以开发交付结案，不把商店／全浏览器／完整 BOSS 实站混为同一完成条件。以下“实站”只指已记录的指定样本，不表示全部版式。
+重新读取 [#493 正文及维护者结案说明](https://github.com/CottonChou/stillnote/issues/493#issuecomment-6208560808)，逐项对照当前代码、夹具、自动回归和实站记录。#505、#521、#578 的 GitHub 状态均为 MERGED。原文 15 组／17 个平台均有对应实现；原 Issue 以开发交付结案，不把商店／全浏览器／完整 BOSS 实站混为同一完成条件。以下“实站”只指已记录的指定样本，不表示全部版式。
 
 | 原要求 | 实现与证据 | 结论／边界 |
 | --- | --- | --- |
@@ -40,7 +40,7 @@
 
 第十一轮已在保留登录的 Edge 原生扩展中补齐：公开 Medium 文章 `1a538c9389fe` 的 40 个代码块逐字符及换行一致，保留 38 个 JavaScript／2 个 XML 语言，屏蔽原站和 CDN 后重开仍有 551 个实际高亮片段；Threads `@mosseri/DeAlGo0I71T` 文字引用和 `@mkbhd/DehHSaCnEmU` 含图引用均保存／重开通过，主帖、引用正文、引用作者及原图保留。来源图片独立下载与实例附件逐字节一致。上述两个定向缺口已补齐；不扩报所有版式或其他浏览器的最新构建。详细风险、测试与清理见 [#588 第十一轮记录](browser-clipper-acceptance-588.zh-CN.md)。
 
-#493 的开发交付结案边界保留；#587 商店交付／更新、#588 跨浏览器及登录态、#589 BOSS 完整岗位仍分别跟踪。初次只读核查证据：`/private/tmp/edgeever-issue-493-audit-20261018`；本轮修复及实站证据：`/private/tmp/edgeever-issue-588-20261017-uz6mqhpj/evidence/eleventh`。未提交、推送、部署或回写 GitHub Issue。
+#493 的开发交付结案边界保留；#587 商店交付／更新、#588 跨浏览器及登录态、#589 BOSS 完整岗位仍分别跟踪。初次只读核查证据：`/private/tmp/stillnote-issue-493-audit-20261018`；本轮修复及实站证据：`/private/tmp/stillnote-issue-588-20261017-uz6mqhpj/evidence/eleventh`。未提交、推送、部署或回写 GitHub Issue。
 
 ## 2026-10-15 PR 提交验证
 
@@ -191,7 +191,7 @@ P1 五站统一过滤 CSS 隐藏内容。正文已缺失时，不靠 SEO 文本�
 
 **28 样本 Chromium 持久化测试在 52.7 秒内通过**，覆盖十份新增详情夹具和先前十八份样例。逐份通过真实构建扩展及本地 API 保存，核对已存正文与预期图片引用，屏蔽来源后重开 Web 编辑器并检查全部正文图片；不可读变体拒绝创建第二条笔记。另两项 HTML 安全检查通过。正文断言排除编辑器自身无来源的 ProseMirror 分隔图与复制代码按钮，仍检查归档正文和每个预期附件。
 
-本地开发的测试请求转发层两次在无关编辑器元数据请求上发生连接重置。现在设置 `EDGE_EVER_CLIPPER_TEST_INSTANCE_URL` 时，测试中的构建 Web、API 与扩展直接使用同一个 workerd 来源；未设置时沿用正常配置的 base URL。Web 构建后已重启本次创建的本地服务，刷新静态资产清单；未修改产品 API、增加重试或放宽超时。清理后通过 API 回读确认测试剪藏与测试令牌均为零，并关闭浏览器任务空间。未提交、推送、创建 PR 或发布，也未替换主工作区已安装的扩展。预览本次适配需加载 `edgeever-clipper-p2/apps/extension/dist` 并刷新来源页。
+本地开发的测试请求转发层两次在无关编辑器元数据请求上发生连接重置。现在设置 `STILLNOTE_CLIPPER_TEST_INSTANCE_URL` 时，测试中的构建 Web、API 与扩展直接使用同一个 workerd 来源；未设置时沿用正常配置的 base URL。Web 构建后已重启本次创建的本地服务，刷新静态资产清单；未修改产品 API、增加重试或放宽超时。清理后通过 API 回读确认测试剪藏与测试令牌均为零，并关闭浏览器任务空间。未提交、推送、创建 PR 或发布，也未替换主工作区已安装的扩展。预览本次适配需加载 `stillnote-clipper-p2/apps/extension/dist` 并刷新来源页。
 
 2026-10-14 追加复审：修复工具栏与右键并发时串存选区，以及受限页选区采集／保存期间导航未被拦截的问题。工具栏保存统一且仅一次进入既有采集队列，入队前固定点击时的标签页和来源 URL。涉及通用网页／选区采集时，在任务开始、采集回包及笔记本查询后的保存前核对原 URL；删除平台／视频分支内层排队，避免相互等待。覆盖另一页通用工具栏并发场景；未新增队列、重试、API 或元数据必填条件。七项真实 bundle 回归覆盖两种并发入口组合、排队时切换活跃页、即刻／豆瓣在注入或笔记本查询期间导航，以及超时后旧回包晚于下一条采集开始的场景。通用网页／选区消息增加请求标识，仅匹配的等待请求消费回包；超时或注入失败不会清空后续请求。
 
@@ -199,7 +199,7 @@ P1 五站统一过滤 CSS 隐藏内容。正文已缺失时，不靠 SEO 文本�
 
 ## Phase 2：BOSS 直聘、雪球、小宇宙（2026-10-12）
 
-基线为官方 `3855efb3`，P1 已由 [PR #521](https://github.com/tianma-if/edgeever/pull/521) 合并。P2 在贡献工作区 `edgeever-clipper-p2`、分支 `feat/clipper-phase2` 实现，保留原工作区无关改动。
+基线为官方 `3855efb3`，P1 已由 [PR #521](https://github.com/CottonChou/stillnote/pull/521) 合并。P2 在贡献工作区 `stillnote-clipper-p2`、分支 `feat/clipper-phase2` 实现，保留原工作区无关改动。
 
 | 平台 | 当前行为 | 明确边界 |
 | --- | --- | --- |
@@ -221,7 +221,7 @@ P2 基础验证：完整非 E2E 3,020 项单元测试和 17 项集成测试通�
 
 2026-10-13 审查修正：撤回无依据的 BOSS 元数据必填／薪资格式限制、雪球详情作者／时间链接必填及通用展开类名拒绝。股票标签与 Markdown 使用同一份净化正文，控件或脚本中的股票链接不再贡献标签；保留实例 24 标签上限，撤回无依据的股票代码 15 字符上限。CSS 过滤区分整子树隐藏与可由后代恢复的 `visibility`：去掉隐藏自身文字，保留显式恢复可见的子节点；BOSS 角标与小宇宙正文同步处理该边界。两份 BOSS 夹具进一步移除无关动作跳转、跟踪与安全参数。
 
-审查后验证：顺序执行完整非 E2E 测试，3,031 项单元测试和 17 项集成测试通过；根目录／移动端类型检查、Web 和 Chromium／Firefox 扩展构建通过，Firefox lint 0 错误、2 条已有依赖警告。Chromium 中的实际 CSS 可见性和惰性 HTML 安全测试通过。初次并行验证中几个未修改测试超时，隔离检查与最终完整重跑均通过；未修改这些测试或生产基础设施。18 样本集成重跑未完成：先遇到本地开发 API 代理 503／超时，改用 `EDGE_EVER_CLIPPER_TEST_INSTANCE_URL` 直连同一 workerd 后，小宇宙与 BOSS 的保存和 API 正文回读通过，但编辑器重开在本地 Vite 页面加载时超时。机器负载约 38 时，最后重跑仍在 Web 导航超时；未放宽测试时限或修改生产链路。先前 18 样本通过记录仅代表当时版本，本轮不声称整组 E2E 验收通过。本轮测试笔记及令牌已清理，并通过 API 回读确认无残留。
+审查后验证：顺序执行完整非 E2E 测试，3,031 项单元测试和 17 项集成测试通过；根目录／移动端类型检查、Web 和 Chromium／Firefox 扩展构建通过，Firefox lint 0 错误、2 条已有依赖警告。Chromium 中的实际 CSS 可见性和惰性 HTML 安全测试通过。初次并行验证中几个未修改测试超时，隔离检查与最终完整重跑均通过；未修改这些测试或生产基础设施。18 样本集成重跑未完成：先遇到本地开发 API 代理 503／超时，改用 `STILLNOTE_CLIPPER_TEST_INSTANCE_URL` 直连同一 workerd 后，小宇宙与 BOSS 的保存和 API 正文回读通过，但编辑器重开在本地 Vite 页面加载时超时。机器负载约 38 时，最后重跑仍在 Web 导航超时；未放宽测试时限或修改生产链路。先前 18 样本通过记录仅代表当时版本，本轮不声称整组 E2E 验收通过。本轮测试笔记及令牌已清理，并通过 API 回读确认无残留。
 
 ## Phase 1：五个社交平台（2026-10-10）
 
@@ -242,7 +242,7 @@ Facebook、Instagram、LinkedIn、Threads、Bluesky 已新增专用读取器。�
 本 PR 包含实现与回归检查。210 项扩展测试、根项目与移动端类型检查、Web 及 Chromium／Firefox 构建通过；Firefox lint 保留两条上游 Readability 警告。登录后的推荐流、Edge／Firefox 运行时保存及 Firefox Android 仍未验收。
 
 
-八个平台的 Chromium E2E 通过（先前三个适配器加 P1），覆盖全部预期图片资源、重新打开编辑器后的图片、不可读页面拒绝和测试数据清理。Wrangler 4.112.0 开发代理间歇对 POST 返回 `503`，正文为 “Your worker restarted mid-request”。本次通过 `EDGE_EVER_CLIPPER_TEST_INSTANCE_URL=http://127.0.0.1:64641` 直连同一本地 workerd API；新开发进程需要重新确定内部端口，测试默认实例 URL 仍使用 base URL。未改生产 API 或运行时代码。Ego 已安装的开发扩展已重新加载；原有来源页需刷新以加载新目标监听器。
+八个平台的 Chromium E2E 通过（先前三个适配器加 P1），覆盖全部预期图片资源、重新打开编辑器后的图片、不可读页面拒绝和测试数据清理。Wrangler 4.112.0 开发代理间歇对 POST 返回 `503`，正文为 “Your worker restarted mid-request”。本次通过 `STILLNOTE_CLIPPER_TEST_INSTANCE_URL=http://127.0.0.1:64641` 直连同一本地 workerd API；新开发进程需要重新确定内部端口，测试默认实例 URL 仍使用 base URL。未改生产 API 或运行时代码。Ego 已安装的开发扩展已重新加载；原有来源页需刷新以加载新目标监听器。
 
 2026-10-11：修复 Instagram 为轮播各页提供独立配文时的误判。读取器用目标帖链接和当前可见页配文确认内容，保留已加载的全部逐张配文与媒体封面；父级文案若只是截断前缀则用完整逐张文案替换，独立父级文案继续保留。Google 的 `DeKe6teEpya` 实站页面已读取已加载的父级配文和 20 张封面（1 个视频、19 张照片）；回归检查任意页配文、隐藏卡片、无关文字和轮播缺项。视频本身仍不下载。新增样例通过真实扩展、本地 API、20 张图片转存和屏蔽来源后重开笔记的 Chromium E2E；本次使用默认本地实例地址。
 
@@ -272,7 +272,7 @@ Medium 仍通过通用网页剪藏入口保存，新增正文块提取：保留�
 
 ## 使用方式
 
-配置扩展的 EdgeEver 实例和 API Token 后，打开详情页，使用工具栏保存，或在页面空白处右键选择对应平台的保存命令。
+配置扩展的 StillNote 实例和 API Token 后，打开详情页，使用工具栏保存，或在页面空白处右键选择对应平台的保存命令。
 
 | 平台 | 详情页 | 保存内容 |
 | --- | --- | --- |
@@ -296,7 +296,7 @@ Medium 仍通过通用网页剪藏入口保存，新增正文块提取：保留�
 - 下载、上传、回写失败或超限时，保留笔记并提示“正文已保存，部分图片仍为外链”。超出 30 张的图片也计入未转存数量。
 - 转存期间编辑过笔记时，保留用户版本，不覆盖，也不重复创建。
 
-图片归档表示图片可从 EdgeEver 实例资源读取，不是对整个客户端断网能力的新承诺。
+图片归档表示图片可从 StillNote 实例资源读取，不是对整个客户端断网能力的新承诺。
 
 ## 验证记录
 
@@ -341,7 +341,7 @@ bunx playwright test tests/e2e/web-clipper-html-safety.spec.ts tests/e2e/web-cli
 | [小宇宙第 25 期](https://www.xiaoyuzhoufm.com/episode/62ad4ae5f9b62781ea058a02) | 完整保留时间轴和最后的音乐条目。展开前 DOM 已含全文，无需额外点击。 |
 | [小宇宙第 161 期](https://www.xiaoyuzhoufm.com/episode/6a8ef24e1352af56ff3c83f3) | 从第 25 期经节目页切换后，首屏 `__NEXT_DATA__` 仍为旧 ID。改用当前路由已加载的单集数据校验 DOM 后，提取新 ID、新标题、新正文，无旧单集内容。 |
 
-**尚未完成** Chrome、Edge、Firefox 各自加载扩展后的三站完整实站保存验收；Firefox Android 也未验证，因此本批不能标为全部验收完成。2026-10-09 核对确认 HN 初版已通过 [PR #505](https://github.com/tianma-if/edgeever/pull/505) 合并；本 PR 包含 HN 时间修正、预加载修正及 V2EX/小宇宙实现。
+**尚未完成** Chrome、Edge、Firefox 各自加载扩展后的三站完整实站保存验收；Firefox Android 也未验证，因此本批不能标为全部验收完成。2026-10-09 核对确认 HN 初版已通过 [PR #505](https://github.com/CottonChou/stillnote/pull/505) 合并；本 PR 包含 HN 时间修正、预加载修正及 V2EX/小宇宙实现。
 
 
 ## 2026-10-11 本地审查

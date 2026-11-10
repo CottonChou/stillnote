@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import type { MemoSortMode } from "@edgeever/client";
+import type { MemoSortMode } from "@stillnote/client";
 import { Modal, ScrollView, View } from "react-native";
-import { Check, CheckSquare, FileText, Folder, Image, List, MoreVertical, Share2, Sparkles, Tag, Trash2, X } from "../components/icons";
+import { ActivityIndicator, Check, CheckSquare, FileText, Folder, Image, List, MoreVertical, RefreshCw, Share2, Sparkles, Tag, Trash2, X } from "../components/icons";
 import { Pressable, Text } from "../components/LocalizedText";
 import type { MobileMemoListDensity } from "../lib/preferences";
 import { useMobileTheme } from "../lib/mobile-theme";
@@ -83,11 +83,14 @@ export const NotesActionsModal = ({
   onMemoListDensityChange,
   onOpenTagFilter,
   onSortModeChange,
+  onSyncNotebook,
+  isSyncingNotebook = false,
   selectionMode,
   visible,
 }: {
   bottomOffset: number;
   canEnterSelection: boolean;
+  isSyncingNotebook?: boolean;
   listDescription: string;
   listTitle: string;
   memoListDensity: MobileMemoListDensity;
@@ -97,6 +100,7 @@ export const NotesActionsModal = ({
   onMemoListDensityChange: (density: MobileMemoListDensity) => void;
   onOpenTagFilter: () => void;
   onSortModeChange: (sortMode: MemoSortMode) => void;
+  onSyncNotebook?: () => void;
   selectionMode: boolean;
   visible: boolean;
 }) => {
@@ -119,6 +123,17 @@ export const NotesActionsModal = ({
         <ScrollView contentContainerStyle={styles.listActionSheetContent} style={styles.listActionSheetScroll}>
           {!selectionMode ? (
             <>
+              {onSyncNotebook ? (
+                <ActionSheetItem
+                  compact
+                  disabled={isSyncingNotebook}
+                  icon={isSyncingNotebook
+                    ? <ActivityIndicator color={palette.accent} size="small" />
+                    : <RefreshCw color={palette.ink} size={18} />}
+                  label="同步当前笔记本"
+                  onPress={onSyncNotebook}
+                />
+              ) : null}
               <ActionSheetItem
                 compact
                 disabled={!canEnterSelection}

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { Hono } from "hono";
-import { listMemoTemplateGallery } from "@edgeever/shared/memo-template-gallery";
+import { listMemoTemplateGallery } from "@stillnote/shared/memo-template-gallery";
 import { mapMemoTemplateRow, registerTemplateRoutes } from "./template-routes.ts";
 
 const row = {

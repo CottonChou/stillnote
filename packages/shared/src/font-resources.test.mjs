@@ -13,7 +13,7 @@ test("optional template and legacy fonts have pinned sources and verified origin
     const url = pinnedFontUrl(key);
     expect(url).toContain("@cb13c0759256caed174b4063845c7948d90fc1bd/");
     expect(remoteFontIntegrity(url)).toEqual(entry);
-    expect(remoteFontUrls(url)[1]).toStartWith("https://raw.githubusercontent.com/tianma-if/edgeever/cb13c0759256caed174b4063845c7948d90fc1bd/");
+    expect(remoteFontUrls(url)[1]).toStartWith("https://raw.githubusercontent.com/CottonChou/stillnote/cb13c0759256caed174b4063845c7948d90fc1bd/");
   }
 });
 

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import type { DesktopBackupStatus, DesktopBackupError } from "@edgeever/shared";
+import type { DesktopBackupStatus, DesktopBackupError } from "@stillnote/shared";
 import type { TFunction } from "i18next";
 
 export const useDesktopBackup = () => {
   const [status, setStatus] = useState<DesktopBackupStatus | null>(null);
-  const bridge = window.edgeeverDesktop;
+  const bridge = window.stillnoteDesktop;
   useEffect(() => {
     if (!bridge?.backup) return;
     let active = true;

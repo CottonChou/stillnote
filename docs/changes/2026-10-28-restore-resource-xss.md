@@ -4,7 +4,7 @@
 
 ## Problem and outcome
 
-[Issue #701](https://github.com/tianma-if/edgeever/issues/701) reports that restore accepts `kind=image` with `mimeType=text/html`, while resource responses trust `kind` to enable inline rendering. Close both the write-time mismatch and the read-time exposure of previously stored resources. Work starts from official `main` at `b8496806` in a separate worktree.
+[Issue #701](https://github.com/CottonChou/stillnote/issues/701) reports that restore accepts `kind=image` with `mimeType=text/html`, while resource responses trust `kind` to enable inline rendering. Close both the write-time mismatch and the read-time exposure of previously stored resources. Work starts from official `main` at `b8496806` in a separate worktree.
 
 The change affects API resource restore and resource response headers shared by Cloudflare and Docker. Backups explicitly labeling an image as an incompatible type such as HTML are rejected; valid old backups must still restore. The existing nullable MIME contract and unknown/binary fallback remain supported, with unknown types downloading instead of rendering inline. HTML and other arbitrary attachments remain downloadable. There is no migration or deletion of existing data. Rollback reverts the code without rewriting resources; reverting also reintroduces the vulnerability. Native-platform runtime and deployment acceptance are separate from the local checks below.
 

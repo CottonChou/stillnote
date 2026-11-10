@@ -49,14 +49,14 @@ import { api, getConfiguredDesktopApiBaseUrl } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { useShowDescendantNotesPreference } from "@/lib/descendant-notes-preference";
 import { BETA_BADGE_CLASSNAME } from "@/lib/workspace-ui";
-import type { Notebook, AuthUser, NoteCreateKind } from "@edgeever/shared";
+import type { Notebook, AuthUser, NoteCreateKind } from "@stillnote/shared";
 import type { NotebookDropPosition, NotebookSortMode } from "@/lib/app-helpers";
 import type { SyncQueueSummary } from "@/lib/sync-queue";
 import {
   buildNotebookTree,
   getNotebookSortOptions,
   getNotebookSortComparator,
-  hasEdgeEverDragData,
+  hasStillNoteDragData,
   readNotebookSectionCollapsedPreference,
   readNotebookTreeCollapsedIdsPreference,
   readNotebookSortPreference,
@@ -64,8 +64,8 @@ import {
   writeNotebookTreeCollapsedIdsPreference,
   writeNotebookSortPreference,
 } from "@/lib/app-helpers";
-import type { EdgeEverRepository } from "@/lib/repository";
-import type { EdgeEverPluginHost } from "@/lib/plugins/plugin-host";
+import type { StillNoteRepository } from "@/lib/repository";
+import type { StillNotePluginHost } from "@/lib/plugins/plugin-host";
 import { statusSettleMotion } from "@/lib/motion";
 import { DesktopUpdateNotice } from "./DesktopUpdateNotice";
 import { useDeployedUpdateNotice } from "@/hooks/useDeployedUpdateNotice";
@@ -73,15 +73,15 @@ import { PluginToolbarMenu } from "./plugins/PluginToolbarMenu";
 
 const DesktopSyncIssuesDialog = lazy(() => import("./DesktopSyncIssuesDialog").then((module) => ({ default: module.DesktopSyncIssuesDialog })));
 
-const NOTEBOOK_SIDEBAR_ID = "edgeever-notebook-sidebar";
+const NOTEBOOK_SIDEBAR_ID = "stillnote-notebook-sidebar";
 const NOTEBOOK_DRAG_SCROLL_EDGE_PX = 56;
 const NOTEBOOK_DRAG_SCROLL_MAX_STEP_PX = 18;
-const DESKTOP_DOWNLOAD_URL = "https://github.com/tianma-if/edgeever/releases/latest";
-const ANDROID_PLAY_URL = "https://play.google.com/store/apps/details?id=org.edgeever.mobile";
-const ANDROID_APK_URL = "https://github.com/tianma-if/edgeever/releases/latest";
-const IOS_DOWNLOAD_URL = "https://apps.apple.com/us/app/edgeever/id6792625631";
-const CHROMIUM_CLIPPER_URL = "https://chromewebstore.google.com/detail/edgeever-web-clipper/gjadpfmanienmlofajibkfkkpfdkclgo";
-const FIREFOX_CLIPPER_URL = "https://addons.mozilla.org/firefox/addon/edgeever-web-clipper/";
+const DESKTOP_DOWNLOAD_URL = "https://github.com/CottonChou/stillnote/releases/latest";
+const ANDROID_PLAY_URL = "https://play.google.com/store/apps/details?id=org.stillnote.mobile";
+const ANDROID_APK_URL = "https://github.com/CottonChou/stillnote/releases/latest";
+const IOS_DOWNLOAD_URL = "https://apps.apple.com/us/app/stillnote/id6792625631";
+const CHROMIUM_CLIPPER_URL = "https://chromewebstore.google.com/detail/stillnote-web-clipper/gjadpfmanienmlofajibkfkkpfdkclgo";
+const FIREFOX_CLIPPER_URL = "https://addons.mozilla.org/firefox/addon/stillnote-web-clipper/";
 
 const BrandIconContainer = ({ children, className }: { children: ReactNode; className?: string }) => (
   <span
@@ -155,7 +155,7 @@ const SidebarNavButton = ({
       tone === "warning"
         ? "text-amber-700 hover:bg-amber-50/70 hover:text-amber-800"
         : active
-          ? "edgeever-workspace-selection text-slate-950 font-medium"
+          ? "stillnote-workspace-selection text-slate-950 font-medium"
           : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
     )}
     type="button"
@@ -184,7 +184,7 @@ const SidebarShortcutButton = ({
     <button
       className={cn(
         "flex h-9 min-w-0 w-full items-center justify-center rounded-md px-0 text-xs font-medium transition-colors duration-200",
-        active ? "edgeever-workspace-selection text-slate-950" : "text-slate-600 hover:bg-slate-50 hover:text-slate-950"
+        active ? "stillnote-workspace-selection text-slate-950" : "text-slate-600 hover:bg-slate-50 hover:text-slate-950"
       )}
       type="button"
       aria-current={active ? "page" : undefined}
@@ -364,7 +364,7 @@ const SidebarRailButton = ({
         onClick={onClick}
         className={cn(
           "relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 disabled:cursor-not-allowed disabled:opacity-50",
-          active && "edgeever-workspace-selection text-slate-950"
+          active && "stillnote-workspace-selection text-slate-950"
         )}
       >
         {icon}
@@ -571,7 +571,7 @@ export const NotebookPane = ({
   onToggleCollapsed,
   collapseShortcutLabel,
 }: {
-  repository: EdgeEverRepository;
+  repository: StillNoteRepository;
   user: AuthUser | null;
   view: string;
   selectedNotebookId: string | null;
@@ -586,7 +586,7 @@ export const NotebookPane = ({
   onOpenTags: () => void;
   onOpenAssets: () => void;
   onOpenTemplates: () => void;
-  pluginHost: EdgeEverPluginHost;
+  pluginHost: StillNotePluginHost;
   onOpenPluginManager: () => void;
   onOpenTrash: () => void;
   onEmptyTrash: () => void;
@@ -644,7 +644,7 @@ export const NotebookPane = ({
   }, []);
 
   const handleNotebookScrollDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    if (!hasEdgeEverDragData(event.dataTransfer)) {
+    if (!hasStillNoteDragData(event.dataTransfer)) {
       stopNotebookDragAutoScroll();
       return;
     }
@@ -786,7 +786,7 @@ export const NotebookPane = ({
         </nav>
       </TooltipProvider>
 
-      {window.edgeeverDesktop?.isAvailable && (
+      {window.stillnoteDesktop?.isAvailable && (
         <div className="px-3 pt-1.5">
           <SyncStatusBar
             summary={syncSummary}
@@ -800,7 +800,7 @@ export const NotebookPane = ({
       )}
 
       <div className="hidden shrink-0 px-3 pb-2 pt-2 lg:block">
-        <div className="edgeever-create-memo-split flex overflow-hidden rounded-xl border border-[var(--workspace-divider)] bg-card/90 shadow-none transition-colors duration-150 hover:bg-card">
+        <div className="stillnote-create-memo-split flex overflow-hidden rounded-xl border border-[var(--workspace-divider)] bg-card/90 shadow-none transition-colors duration-150 hover:bg-card">
           <button
             className="group flex h-12 max-w-[calc(100%-2.25rem)] shrink-0 items-center gap-2 px-2.5 text-left transition-colors duration-150 hover:bg-workspace-hover focus-visible:bg-workspace-hover focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             type="button"
@@ -821,7 +821,7 @@ export const NotebookPane = ({
                 aria-label={t("diagram.createType")}
                 disabled={!canCreateMemo || isCreatingMemo}
               >
-                <span className="edgeever-create-memo-split__more-label min-w-0 truncate">{t("diagram.moreTypes")}</span>
+                <span className="stillnote-create-memo-split__more-label min-w-0 truncate">{t("diagram.moreTypes")}</span>
                 <ChevronDown className="h-3.5 w-3.5 shrink-0 transition-transform duration-150 group-data-[state=open]:rotate-180" aria-hidden="true" />
               </button>
             </DropdownMenuTrigger>
@@ -1043,14 +1043,14 @@ export const NotebookPane = ({
           </div>
         </TooltipProvider>
       ) : (
-      <footer className="edgeever-workspace-sidebar-footer border-t border-[var(--workspace-divider)] px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2">
+      <footer className="stillnote-workspace-sidebar-footer border-t border-[var(--workspace-divider)] px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2">
         <div className="space-y-1">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
                 className="flex h-9 w-full items-center gap-3 rounded-md px-3 text-left text-xs font-medium leading-5 text-slate-700 transition-colors duration-200 hover:bg-workspace-hover hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 data-[state=open]:bg-workspace-hover data-[state=open]:text-slate-950"
                 type="button"
-                aria-label={t("pwa.sidebarDownloadsTitle") || "下载 EdgeEver 客户端与浏览器插件"}
+                aria-label={t("pwa.sidebarDownloadsTitle") || "下载 StillNote 客户端与浏览器插件"}
               >
                 <span className="flex h-4 w-4 shrink-0 items-center justify-center">
                   <Download className="h-4 w-4" />
@@ -1147,7 +1147,7 @@ export const NotebookPane = ({
                     href={ANDROID_PLAY_URL}
                     target="_blank"
                     rel="noreferrer"
-                    aria-label={t("pwa.sidebarAndroidTitle") || "在 Google Play 下载 EdgeEver 安卓端"}
+                    aria-label={t("pwa.sidebarAndroidTitle") || "在 Google Play 下载 StillNote 安卓端"}
                     className="group flex cursor-pointer items-center justify-between gap-2.5 rounded-md px-2 py-1.5 text-sm text-slate-700 outline-none transition-colors hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:text-slate-900   "
                   >
                     <div className="flex min-w-0 items-center gap-2.5">
@@ -1186,7 +1186,7 @@ export const NotebookPane = ({
                     href={IOS_DOWNLOAD_URL}
                     target="_blank"
                     rel="noreferrer"
-                    aria-label={t("pwa.sidebarIosTitle") || "在 App Store 下载 EdgeEver iOS 端（仅支持非大陆区 Apple ID）"}
+                    aria-label={t("pwa.sidebarIosTitle") || "在 App Store 下载 StillNote iOS 端（仅支持非大陆区 Apple ID）"}
                     className="group flex cursor-pointer items-center justify-between gap-2.5 rounded-md px-2 py-1.5 text-sm text-slate-700 outline-none transition-colors hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:text-slate-900   "
                   >
                     <div className="flex min-w-0 items-center gap-2">

@@ -1,4 +1,4 @@
-import { posterDesignTemplate } from "@edgeever/shared";
+import { posterDesignTemplate } from "@stillnote/shared";
 import { BadgeBox } from './badge';
 import { arch, barcode, blob, burst, cropMarks, dotGrid, glow as kitGlow, grain, metaBlock, paper, rays, regMark, rule, seal, sideText, sparkle, stickerDot, tape, ticker } from './kit';
 import { ghost } from './kit';

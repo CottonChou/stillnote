@@ -4,7 +4,7 @@ import { dirname, extname, join, normalize, relative, resolve } from "node:path"
 import { fileURLToPath } from "node:url";
 import { hasBootstrapCredential } from "../apps/api/src/auth-bootstrap.ts";
 import { isUnauthenticatedAccessEnabled } from "../apps/api/src/auth-state.ts";
-import { fetchEdgeEverApp } from "../apps/api/src/index.ts";
+import { fetchStillNoteApp } from "../apps/api/src/index.ts";
 import { isNotebookSitePagePath, renderNotebookSitePage } from "../apps/api/src/notebook-site-page.ts";
 import { isPublicMemoSharePagePath, renderPublicMemoSharePage } from "../apps/api/src/share-page.ts";
 import { isPublicPagePath, PUBLIC_PAGE_HEADERS } from "../packages/shared/src/public-page-headers.ts";
@@ -29,14 +29,14 @@ const migrationFiles = (await readdir(join(projectRoot, "migrations")))
   .sort();
 
 sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS _edgeever_migrations (
+  CREATE TABLE IF NOT EXISTS _stillnote_migrations (
     name TEXT PRIMARY KEY,
     applied_at TEXT NOT NULL
   )
 `);
 
 const appliedMigrations = new Set(
-  sqlite.query("SELECT name FROM _edgeever_migrations").all().map((row) => row.name),
+  sqlite.query("SELECT name FROM _stillnote_migrations").all().map((row) => row.name),
 );
 
 for (const name of migrationFiles) {
@@ -47,7 +47,7 @@ for (const name of migrationFiles) {
   const sql = await readFile(join(projectRoot, "migrations", name), "utf8");
   sqlite.transaction(() => {
     sqlite.exec(sql);
-    sqlite.query("INSERT INTO _edgeever_migrations (name, applied_at) VALUES (?, ?)").run(name, new Date().toISOString());
+    sqlite.query("INSERT INTO _stillnote_migrations (name, applied_at) VALUES (?, ?)").run(name, new Date().toISOString());
   })();
   console.log(`[self-hosted] applied migration ${name}`);
 }
@@ -55,13 +55,13 @@ for (const name of migrationFiles) {
 const existingUser = sqlite.query("SELECT id FROM users WHERE is_disabled = 0 LIMIT 1").get();
 if (
   !existingUser
-  && !hasBootstrapCredential(runtimeEnvironment.EDGE_EVER_AUTH_PASSWORD, runtimeEnvironment.EDGE_EVER_AUTH_PASSWORD_HASH)
-  && !isUnauthenticatedAccessEnabled(runtimeEnvironment.EDGE_EVER_ALLOW_UNAUTHENTICATED)
+  && !hasBootstrapCredential(runtimeEnvironment.STILLNOTE_AUTH_PASSWORD, runtimeEnvironment.STILLNOTE_AUTH_PASSWORD_HASH)
+  && !isUnauthenticatedAccessEnabled(runtimeEnvironment.STILLNOTE_ALLOW_UNAUTHENTICATED)
 ) {
   sqlite.close();
   throw new Error(
-    "Authentication is not configured. Set EDGE_EVER_AUTH_PASSWORD (recommended), "
-    + "EDGE_EVER_AUTH_PASSWORD_HASH, or explicitly set EDGE_EVER_ALLOW_UNAUTHENTICATED=true.",
+    "Authentication is not configured. Set STILLNOTE_AUTH_PASSWORD (recommended), "
+    + "STILLNOTE_AUTH_PASSWORD_HASH, or explicitly set STILLNOTE_ALLOW_UNAUTHENTICATED=true.",
   );
 }
 
@@ -71,43 +71,43 @@ const storage = config.storageBackend === "s3"
   ? (
       await import("../apps/api/src/s3-compatible-storage-adapter.ts")
     ).createS3CompatibleStorageAdapter(sqlite, {
-        bucket: runtimeEnvironment.EDGE_EVER_S3_BUCKET ?? "",
-        region: runtimeEnvironment.EDGE_EVER_S3_REGION,
-        endpoint: runtimeEnvironment.EDGE_EVER_S3_ENDPOINT,
-        accessKeyId: runtimeEnvironment.EDGE_EVER_S3_ACCESS_KEY_ID,
-        secretAccessKey: runtimeEnvironment.EDGE_EVER_S3_SECRET_ACCESS_KEY,
-        forcePathStyle: runtimeEnvironment.EDGE_EVER_S3_FORCE_PATH_STYLE
-          ? runtimeEnvironment.EDGE_EVER_S3_FORCE_PATH_STYLE === "true"
+        bucket: runtimeEnvironment.STILLNOTE_S3_BUCKET ?? "",
+        region: runtimeEnvironment.STILLNOTE_S3_REGION,
+        endpoint: runtimeEnvironment.STILLNOTE_S3_ENDPOINT,
+        accessKeyId: runtimeEnvironment.STILLNOTE_S3_ACCESS_KEY_ID,
+        secretAccessKey: runtimeEnvironment.STILLNOTE_S3_SECRET_ACCESS_KEY,
+        forcePathStyle: runtimeEnvironment.STILLNOTE_S3_FORCE_PATH_STYLE
+          ? runtimeEnvironment.STILLNOTE_S3_FORCE_PATH_STYLE === "true"
           : undefined,
       })
   : createSelfHostedStorageAdapter(sqlite, resourcesDirectory);
 const env = {
   storage,
   publicNetworkFetch: nodePublicFetch,
-  EDGE_EVER_AUTH_USERNAME: runtimeEnvironment.EDGE_EVER_AUTH_USERNAME ?? "admin",
-  EDGE_EVER_RUNTIME: "self-hosted-bun",
-  EDGE_EVER_CONTAINER_IMAGE: runtimeEnvironment.EDGE_EVER_CONTAINER_IMAGE,
-  EDGE_EVER_DEPLOYMENT_TRIGGER: runtimeEnvironment.EDGE_EVER_DEPLOYMENT_TRIGGER,
-  EDGE_EVER_DEPLOYMENT_METHOD: runtimeEnvironment.EDGE_EVER_DEPLOYMENT_METHOD,
-  EDGE_EVER_BUILD_CREATED_AT: runtimeEnvironment.EDGE_EVER_BUILD_CREATED_AT,
-  EDGE_EVER_BUILD_TRIGGER: runtimeEnvironment.EDGE_EVER_BUILD_TRIGGER,
-  EDGE_EVER_BUILD_METHOD: runtimeEnvironment.EDGE_EVER_BUILD_METHOD,
-  EDGE_EVER_AUTH_PASSWORD: runtimeEnvironment.EDGE_EVER_AUTH_PASSWORD,
-  EDGE_EVER_AUTH_PASSWORD_HASH: runtimeEnvironment.EDGE_EVER_AUTH_PASSWORD_HASH,
-  EDGE_EVER_AUTH_PASSWORD_FALLBACK: runtimeEnvironment.EDGE_EVER_AUTH_PASSWORD_FALLBACK,
-  EDGE_EVER_SESSION_TTL_DAYS: runtimeEnvironment.EDGE_EVER_SESSION_TTL_DAYS ?? "400",
-  EDGE_EVER_AUTH_LOGIN_WINDOW_SECONDS: runtimeEnvironment.EDGE_EVER_AUTH_LOGIN_WINDOW_SECONDS,
-  EDGE_EVER_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS: runtimeEnvironment.EDGE_EVER_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS,
-  EDGE_EVER_AUTH_LOGIN_USERNAME_COOLDOWN_SECONDS: runtimeEnvironment.EDGE_EVER_AUTH_LOGIN_USERNAME_COOLDOWN_SECONDS,
-  EDGE_EVER_AUTH_LOGIN_IP_MAX_ATTEMPTS: runtimeEnvironment.EDGE_EVER_AUTH_LOGIN_IP_MAX_ATTEMPTS,
-  EDGE_EVER_AUTH_LOGIN_IP_COOLDOWN_SECONDS: runtimeEnvironment.EDGE_EVER_AUTH_LOGIN_IP_COOLDOWN_SECONDS,
+  STILLNOTE_AUTH_USERNAME: runtimeEnvironment.STILLNOTE_AUTH_USERNAME ?? "admin",
+  STILLNOTE_RUNTIME: "self-hosted-bun",
+  STILLNOTE_CONTAINER_IMAGE: runtimeEnvironment.STILLNOTE_CONTAINER_IMAGE,
+  STILLNOTE_DEPLOYMENT_TRIGGER: runtimeEnvironment.STILLNOTE_DEPLOYMENT_TRIGGER,
+  STILLNOTE_DEPLOYMENT_METHOD: runtimeEnvironment.STILLNOTE_DEPLOYMENT_METHOD,
+  STILLNOTE_BUILD_CREATED_AT: runtimeEnvironment.STILLNOTE_BUILD_CREATED_AT,
+  STILLNOTE_BUILD_TRIGGER: runtimeEnvironment.STILLNOTE_BUILD_TRIGGER,
+  STILLNOTE_BUILD_METHOD: runtimeEnvironment.STILLNOTE_BUILD_METHOD,
+  STILLNOTE_AUTH_PASSWORD: runtimeEnvironment.STILLNOTE_AUTH_PASSWORD,
+  STILLNOTE_AUTH_PASSWORD_HASH: runtimeEnvironment.STILLNOTE_AUTH_PASSWORD_HASH,
+  STILLNOTE_AUTH_PASSWORD_FALLBACK: runtimeEnvironment.STILLNOTE_AUTH_PASSWORD_FALLBACK,
+  STILLNOTE_SESSION_TTL_DAYS: runtimeEnvironment.STILLNOTE_SESSION_TTL_DAYS ?? "400",
+  STILLNOTE_AUTH_LOGIN_WINDOW_SECONDS: runtimeEnvironment.STILLNOTE_AUTH_LOGIN_WINDOW_SECONDS,
+  STILLNOTE_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS: runtimeEnvironment.STILLNOTE_AUTH_LOGIN_USERNAME_MAX_ATTEMPTS,
+  STILLNOTE_AUTH_LOGIN_USERNAME_COOLDOWN_SECONDS: runtimeEnvironment.STILLNOTE_AUTH_LOGIN_USERNAME_COOLDOWN_SECONDS,
+  STILLNOTE_AUTH_LOGIN_IP_MAX_ATTEMPTS: runtimeEnvironment.STILLNOTE_AUTH_LOGIN_IP_MAX_ATTEMPTS,
+  STILLNOTE_AUTH_LOGIN_IP_COOLDOWN_SECONDS: runtimeEnvironment.STILLNOTE_AUTH_LOGIN_IP_COOLDOWN_SECONDS,
   // Legacy decryption fallback for credentials saved by older releases.
-  EDGE_EVER_STORAGE_ENCRYPTION_KEY: runtimeEnvironment.EDGE_EVER_STORAGE_ENCRYPTION_KEY,
-  EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY: runtimeEnvironment.EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY,
-  EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS: runtimeEnvironment.EDGE_EVER_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS,
-  EDGE_EVER_DEMO_MODE: runtimeEnvironment.EDGE_EVER_DEMO_MODE,
-  EDGE_EVER_ALLOW_UNAUTHENTICATED: runtimeEnvironment.EDGE_EVER_ALLOW_UNAUTHENTICATED,
-  EDGE_EVER_COMMUNITY_REGISTRY_URL: runtimeEnvironment.EDGE_EVER_COMMUNITY_REGISTRY_URL,
+  STILLNOTE_STORAGE_ENCRYPTION_KEY: runtimeEnvironment.STILLNOTE_STORAGE_ENCRYPTION_KEY,
+  STILLNOTE_CREDENTIALS_ENCRYPTION_KEY: runtimeEnvironment.STILLNOTE_CREDENTIALS_ENCRYPTION_KEY,
+  STILLNOTE_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS: runtimeEnvironment.STILLNOTE_CREDENTIALS_ENCRYPTION_KEY_PREVIOUS,
+  STILLNOTE_DEMO_MODE: runtimeEnvironment.STILLNOTE_DEMO_MODE,
+  STILLNOTE_ALLOW_UNAUTHENTICATED: runtimeEnvironment.STILLNOTE_ALLOW_UNAUTHENTICATED,
+  STILLNOTE_COMMUNITY_REGISTRY_URL: runtimeEnvironment.STILLNOTE_COMMUNITY_REGISTRY_URL,
 };
 
 const executionContext = {
@@ -173,7 +173,7 @@ const server = Bun.serve({
       if (page) return page;
     }
     if (pathname.startsWith("/api/") || pathname === "/mcp" || pathname.startsWith("/mcp/")) {
-      return fetchEdgeEverApp(request, env, executionContext);
+      return fetchStillNoteApp(request, env, executionContext);
     }
     return serveStatic(request);
   },

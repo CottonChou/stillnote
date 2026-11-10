@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "EdgeEver Web Clipper"
+    "message": "StillNote Web Clipper"
   },
   "extensionDescription": {
-    "message": "Zapisuj strony, wybrany tekst, obrazy i wpisy Hacker News w swojej instancji EdgeEver."
+    "message": "Zapisuj strony, wybrany tekst, obrazy i wpisy Hacker News w swojej instancji StillNote."
   },
   "actionTitle": {
-    "message": "Zapisz w EdgeEver"
+    "message": "Zapisz w StillNote"
   },
   "webClipper": {
     "message": "Web Clipper"
@@ -26,14 +26,14 @@
   "completePluginConfiguration": {
     "message": "Dokończ konfigurację rozszerzenia"
   },
-  "savedToEdgeEver": {
-    "message": "Zapisano w EdgeEver."
+  "savedToStillNote": {
+    "message": "Zapisano w StillNote."
   },
   "saveFailed": {
     "message": "Nie udało się zapisać."
   },
   "optionsTitle": {
-    "message": "Ustawienia EdgeEver Web Clipper"
+    "message": "Ustawienia StillNote Web Clipper"
   },
   "diagnosticsTitle": {
     "message": "Informacje i diagnostyka"
@@ -90,10 +90,10 @@
     "message": "Nieznane"
   },
   "instanceAddress": {
-    "message": "Adres URL instancji EdgeEver"
+    "message": "Adres URL instancji StillNote"
   },
   "tokenPlaceholder": {
-    "message": "Utwórz go w ustawieniach EdgeEver"
+    "message": "Utwórz go w ustawieniach StillNote"
   },
   "defaultNotebook": {
     "message": "Domyślny notatnik"
@@ -140,13 +140,13 @@
     "message": "Nie udało się zapisać ustawień."
   },
   "missingSettingsDetails": {
-    "message": "Najpierw wpisz adres URL instancji EdgeEver i token API w ustawieniach rozszerzenia."
+    "message": "Najpierw wpisz adres URL instancji StillNote i token API w ustawieniach rozszerzenia."
   },
   "instancePermissionRequired": {
-    "message": "Zezwól rozszerzeniu na dostęp do Twojej instancji EdgeEver."
+    "message": "Zezwól rozszerzeniu na dostęp do Twojej instancji StillNote."
   },
   "requestFailed": {
-    "message": "Żądanie do EdgeEver nie powiodło się ($STATUS$).",
+    "message": "Żądanie do StillNote nie powiodło się ($STATUS$).",
     "placeholders": {
       "status": {
         "content": "$1"
@@ -166,7 +166,7 @@
     "message": "Słowo kluczowe"
   },
   "noAvailableNotebooks": {
-    "message": "Brak dostępnych notatników w EdgeEver."
+    "message": "Brak dostępnych notatników w StillNote."
   },
   "currentPageNotFound": {
     "message": "Nie znaleziono bieżącej strony."
@@ -189,10 +189,10 @@
     "message": "Brak dodatkowych szczegółów"
   },
   "instanceNetworkFailed": {
-    "message": "Nie udało się połączyć z instancją EdgeEver. Sprawdź adres URL instancji, połączenie sieciowe i ustawienia CORS."
+    "message": "Nie udało się połączyć z instancją StillNote. Sprawdź adres URL instancji, połączenie sieciowe i ustawienia CORS."
   },
   "saveFailedWithReason": {
-    "message": "Nie udało się zapisać w EdgeEver: $DETAIL$",
+    "message": "Nie udało się zapisać w StillNote: $DETAIL$",
     "placeholders": {
       "detail": {
         "content": "$1"
@@ -202,11 +202,11 @@
   "emptyPageContent": {
     "message": "(Na tej stronie nie znaleziono treści do odczytania)"
   },
-  "saveSelectionToEdgeEver": {
-    "message": "Zapisz zaznaczenie w EdgeEver"
+  "saveSelectionToStillNote": {
+    "message": "Zapisz zaznaczenie w StillNote"
   },
   "selectionSaveHint": {
-    "message": "Zaznacz tekst na stronie, kliknij prawym przyciskiem i wybierz „Zapisz zaznaczenie w EdgeEver”. Zostanie zapisany jako nowa notatka w domyślnym notatniku wybranym poniżej."
+    "message": "Zaznacz tekst na stronie, kliknij prawym przyciskiem i wybierz „Zapisz zaznaczenie w StillNote”. Zostanie zapisany jako nowa notatka w domyślnym notatniku wybranym poniżej."
   },
   "savingSelection": {
     "message": "Zapisywanie zaznaczenia…"
@@ -220,11 +220,11 @@
   "selectionNoteFallbackTitle": {
     "message": "Zaznaczenie"
   },
-  "saveImageToEdgeEver": {
-    "message": "Zapisz obraz w EdgeEver"
+  "saveImageToStillNote": {
+    "message": "Zapisz obraz w StillNote"
   },
   "imageSaveHint": {
-    "message": "Kliknij prawym przyciskiem obraz na stronie i wybierz „Zapisz obraz w EdgeEver”. Zostanie zapisany jako nowa notatka w domyślnym notatniku wybranym poniżej."
+    "message": "Kliknij prawym przyciskiem obraz na stronie i wybierz „Zapisz obraz w StillNote”. Zostanie zapisany jako nowa notatka w domyślnym notatniku wybranym poniżej."
   },
   "savingImage": {
     "message": "Zapisywanie obrazu…"
@@ -242,7 +242,7 @@
     "message": "Tego formatu obrazu nie można jeszcze zapisać w notatce. Obsługiwane formaty: PNG, JPEG, GIF, WebP i AVIF."
   },
   "imagePermissionIntro": {
-    "message": "Ta strona nie może odczytać pliku obrazu. Gdy zezwolisz na dostęp do witryny, która go udostępnia, EdgeEver zapisze go jako nową notatkę w domyślnym notatniku Web Clippera. Odczytywany jest tylko wybrany obraz."
+    "message": "Ta strona nie może odczytać pliku obrazu. Gdy zezwolisz na dostęp do witryny, która go udostępnia, StillNote zapisze go jako nową notatkę w domyślnym notatniku Web Clippera. Odczytywany jest tylko wybrany obraz."
   },
   "imagePermissionHost": {
     "message": "Witryna: $HOST$",
@@ -265,7 +265,7 @@
     "message": "Nie zezwolono na dostęp do witryny, więc obraz nie został zapisany."
   },
   "imageResourceScopeRequired": {
-    "message": "Ten token API nie może zapisywać załączników. Utwórz token z pełnym dostępem w ustawieniach EdgeEver."
+    "message": "Ten token API nie może zapisywać załączników. Utwórz token z pełnym dostępem w ustawieniach StillNote."
   },
   "imageNoteFallbackTitle": {
     "message": "Obraz"
@@ -274,16 +274,16 @@
     "message": "Obraz"
   },
   "imageSaveWindowTitle": {
-    "message": "Zapisz obraz w EdgeEver"
+    "message": "Zapisz obraz w StillNote"
   },
   "imageSaveExpired": {
     "message": "Ten zapis wygasł. Kliknij obraz prawym przyciskiem i spróbuj ponownie."
   },
-  "saveTweetToEdgeEver": {
-    "message": "Zapisz post w EdgeEver"
+  "saveTweetToStillNote": {
+    "message": "Zapisz post w StillNote"
   },
   "tweetSaveHint": {
-    "message": "W serwisie X kliknij post prawym przyciskiem i wybierz „Zapisz post w EdgeEver”. Tekst posta, także ten ukryty pod „Pokaż więcej”, oraz zdjęcia trafią do jednej nowej notatki w tym samym domyślnym notatniku."
+    "message": "W serwisie X kliknij post prawym przyciskiem i wybierz „Zapisz post w StillNote”. Tekst posta, także ten ukryty pod „Pokaż więcej”, oraz zdjęcia trafią do jednej nowej notatki w tym samym domyślnym notatniku."
   },
   "savingTweet": {
     "message": "Zapisywanie posta…"
@@ -316,16 +316,16 @@
     "message": "Post"
   },
   "tweetSaveWindowTitle": {
-    "message": "Zapisz post w EdgeEver"
+    "message": "Zapisz post w StillNote"
   },
   "tweetTimeLabel": {
     "message": "Czas"
   },
-  "saveGithubRepoToEdgeEver": {
-    "message": "Zapisz informacje o repozytorium w EdgeEver"
+  "saveGithubRepoToStillNote": {
+    "message": "Zapisz informacje o repozytorium w StillNote"
   },
   "githubRepoSaveHint": {
-    "message": "Na stronie repozytorium GitHub lub w drzewie kodu kliknij prawym przyciskiem tło strony, opis lub tekst README i wybierz „Zapisz informacje o repozytorium w EdgeEver”. Adres i opis zostaną zapisane jako nowa notatka w domyślnym notatniku wybranym powyżej. Strony zgłoszeń, dyskusji i pojedynczych plików nie są zapisywane."
+    "message": "Na stronie repozytorium GitHub lub w drzewie kodu kliknij prawym przyciskiem tło strony, opis lub tekst README i wybierz „Zapisz informacje o repozytorium w StillNote”. Adres i opis zostaną zapisane jako nowa notatka w domyślnym notatniku wybranym powyżej. Strony zgłoszeń, dyskusji i pojedynczych plików nie są zapisywane."
   },
   "savingGithubRepo": {
     "message": "Zapisywanie repozytorium…"
@@ -351,11 +351,11 @@
   "githubRepoTopicsLabel": {
     "message": "Tematy"
   },
-  "saveXhsToEdgeEver": {
-    "message": "Zapisz notatkę w EdgeEver"
+  "saveXhsToStillNote": {
+    "message": "Zapisz notatkę w StillNote"
   },
   "xhsSaveHint": {
-    "message": "W serwisie Xiaohongshu kliknij prawym przyciskiem tekst notatki i wybierz „Zapisz notatkę w EdgeEver”. Tytuł, tekst i zdjęcia trafią do jednej nowej notatki. Komentarze są pomijane. Kliknięcie prawym przyciskiem zdjęcia nadal zapisuje tylko ten obraz."
+    "message": "W serwisie Xiaohongshu kliknij prawym przyciskiem tekst notatki i wybierz „Zapisz notatkę w StillNote”. Tytuł, tekst i zdjęcia trafią do jednej nowej notatki. Komentarze są pomijane. Kliknięcie prawym przyciskiem zdjęcia nadal zapisuje tylko ten obraz."
   },
   "savingXhs": {
     "message": "Zapisywanie notatki…"
@@ -391,13 +391,13 @@
     "message": "Notatka z Xiaohongshu"
   },
   "xhsSaveWindowTitle": {
-    "message": "Zapisz notatkę w EdgeEver"
+    "message": "Zapisz notatkę w StillNote"
   },
   "xhsLocationLabel": {
     "message": "Lokalizacja"
   },
-  "saveZhihuToEdgeEver": {
-    "message": "Zapisz odpowiedź lub artykuł w EdgeEver"
+  "saveZhihuToStillNote": {
+    "message": "Zapisz odpowiedź lub artykuł w StillNote"
   },
   "zhihuQuestionLabel": {
     "message": "Pytanie"
@@ -415,7 +415,7 @@
     "message": "Treść"
   },
   "zhihuSaveHint": {
-    "message": "W serwisie Zhihu kliknij prawym przyciskiem tekst odpowiedzi lub artykułu i wybierz „Zapisz odpowiedź lub artykuł w EdgeEver”. Tytuł, autor, tekst i zdjęcia trafią do jednej nowej notatki. Komentarze są pomijane. Kliknięcie prawym przyciskiem zdjęcia nadal zapisuje tylko ten obraz."
+    "message": "W serwisie Zhihu kliknij prawym przyciskiem tekst odpowiedzi lub artykułu i wybierz „Zapisz odpowiedź lub artykuł w StillNote”. Tytuł, autor, tekst i zdjęcia trafią do jednej nowej notatki. Komentarze są pomijane. Kliknięcie prawym przyciskiem zdjęcia nadal zapisuje tylko ten obraz."
   },
   "savingZhihu": {
     "message": "Zapisywanie odpowiedzi lub artykułu z Zhihu…"
@@ -451,10 +451,10 @@
     "message": "Odpowiedź lub artykuł z Zhihu"
   },
   "zhihuSaveWindowTitle": {
-    "message": "Zapisz odpowiedź lub artykuł w EdgeEver"
+    "message": "Zapisz odpowiedź lub artykuł w StillNote"
   },
-  "saveRedditToEdgeEver": {
-    "message": "Zapisz post z Reddita w EdgeEver"
+  "saveRedditToStillNote": {
+    "message": "Zapisz post z Reddita w StillNote"
   },
   "savingReddit": {
     "message": "Zapisywanie posta z Reddita…"
@@ -477,8 +477,8 @@
   "redditLinkLabel": {
     "message": "Strona z linku"
   },
-  "saveVideoNoteToEdgeEver": {
-    "message": "Zapisz notatkę z wideo w EdgeEver"
+  "saveVideoNoteToStillNote": {
+    "message": "Zapisz notatkę z wideo w StillNote"
   },
   "savingVideoNote": {
     "message": "Zapisywanie notatki z wideo…"
@@ -552,17 +552,17 @@
   "videoNoteFallbackTitle": {
     "message": "Notatka z wideo"
   },
-  "saveHackerNewsToEdgeEver": {
-    "message": "Zapisz wpis Hacker News w EdgeEver"
+  "saveHackerNewsToStillNote": {
+    "message": "Zapisz wpis Hacker News w StillNote"
   },
-  "saveV2exToEdgeEver": {
-    "message": "Zapisz temat V2EX w EdgeEver"
+  "saveV2exToStillNote": {
+    "message": "Zapisz temat V2EX w StillNote"
   },
-  "saveXiaoyuzhouToEdgeEver": {
-    "message": "Zapisz odcinek Xiaoyuzhou w EdgeEver"
+  "saveXiaoyuzhouToStillNote": {
+    "message": "Zapisz odcinek Xiaoyuzhou w StillNote"
   },
   "savingPlatformClip": {
-    "message": "Zapisywanie strony w EdgeEver…"
+    "message": "Zapisywanie strony w StillNote…"
   },
   "platformNotDetail": {
     "message": "Otwórz stronę konkretnego wpisu, tematu lub odcinka i spróbuj ponownie."
@@ -580,7 +580,7 @@
     "message": "Tekst zapisano. Część obrazów nadal korzysta z linków zewnętrznych."
   },
   "platformSavedWithImages": {
-    "message": "Zapisano w EdgeEver wraz ze wszystkimi obrazami."
+    "message": "Zapisano w StillNote wraz ze wszystkimi obrazami."
   },
   "platformNoShowNotes": {
     "message": "Ten odcinek nie ma Show Notes."
@@ -606,20 +606,20 @@
   "platformPodcastLabel": {
     "message": "Podcast"
   },
-  "saveFacebookToEdgeEver": {
-    "message": "Zapisz post Facebooka w EdgeEver"
+  "saveFacebookToStillNote": {
+    "message": "Zapisz post Facebooka w StillNote"
   },
-  "saveInstagramToEdgeEver": {
-    "message": "Zapisz post Instagrama w EdgeEver"
+  "saveInstagramToStillNote": {
+    "message": "Zapisz post Instagrama w StillNote"
   },
-  "saveLinkedinToEdgeEver": {
-    "message": "Zapisz post LinkedIn w EdgeEver"
+  "saveLinkedinToStillNote": {
+    "message": "Zapisz post LinkedIn w StillNote"
   },
-  "saveThreadsToEdgeEver": {
-    "message": "Zapisz post Threads w EdgeEver"
+  "saveThreadsToStillNote": {
+    "message": "Zapisz post Threads w StillNote"
   },
-  "saveBlueskyToEdgeEver": {
-    "message": "Zapisz post Bluesky w EdgeEver"
+  "saveBlueskyToStillNote": {
+    "message": "Zapisz post Bluesky w StillNote"
   },
   "socialSelectPost": {
     "message": "Otwórz stronę posta lub kliknij wybrany post ponownie prawym przyciskiem, aby go zapisać."
@@ -645,8 +645,8 @@
   "platformXiaoyuzhou": {
     "message": "Xiaoyuzhou"
   },
-  "saveSubstackNoteToEdgeEver": {
-    "message": "Zapisz notatkę Substack w EdgeEver"
+  "saveSubstackNoteToStillNote": {
+    "message": "Zapisz notatkę Substack w StillNote"
   },
   "adaptedPlatformsTitle": {
     "message": "Platformy z dedykowaną obsługą"
@@ -708,11 +708,11 @@
   "clipNotifications": {
     "message": "Powiadomienia o zapisywaniu"
   },
-  "saveBossToEdgeEver": {
-    "message": "Zapisz ofertę BOSS Zhipin w EdgeEver"
+  "saveBossToStillNote": {
+    "message": "Zapisz ofertę BOSS Zhipin w StillNote"
   },
-  "saveXueqiuToEdgeEver": {
-    "message": "Zapisz wpis Xueqiu w EdgeEver"
+  "saveXueqiuToStillNote": {
+    "message": "Zapisz wpis Xueqiu w StillNote"
   },
   "platformBoss": {
     "message": "BOSS Zhipin"
@@ -729,32 +729,32 @@
   "platformWechat": {
     "message": "WeChat"
   },
-  "saveWechatToEdgeEver": {
-    "message": "Zapisz WeChat w EdgeEver"
+  "saveWechatToStillNote": {
+    "message": "Zapisz WeChat w StillNote"
   },
   "platformJike": {
     "message": "Jike"
   },
-  "saveJikeToEdgeEver": {
-    "message": "Zapisz Jike w EdgeEver"
+  "saveJikeToStillNote": {
+    "message": "Zapisz Jike w StillNote"
   },
   "platformSspai": {
     "message": "SSPAI"
   },
-  "saveSspaiToEdgeEver": {
-    "message": "Zapisz SSPAI w EdgeEver"
+  "saveSspaiToStillNote": {
+    "message": "Zapisz SSPAI w StillNote"
   },
   "platformJuejin": {
     "message": "Juejin"
   },
-  "saveJuejinToEdgeEver": {
-    "message": "Zapisz Juejin w EdgeEver"
+  "saveJuejinToStillNote": {
+    "message": "Zapisz Juejin w StillNote"
   },
   "platformDouban": {
     "message": "Douban"
   },
-  "saveDoubanToEdgeEver": {
-    "message": "Zapisz Douban w EdgeEver"
+  "saveDoubanToStillNote": {
+    "message": "Zapisz Douban w StillNote"
   },
   "platformOfficialAccountLabel": {
     "message": "Konto oficjalne"
@@ -763,7 +763,7 @@
     "message": "Lista źródłowa"
   },
   "doubanSelectComment": {
-    "message": "Kliknij krótką opinię prawym przyciskiem i wybierz „Zapisz Douban w EdgeEver” lub zapisz zaznaczony tekst."
+    "message": "Kliknij krótką opinię prawym przyciskiem i wybierz „Zapisz Douban w StillNote” lub zapisz zaznaczony tekst."
   },
   "pageCaptureRestricted": {
     "message": "Ograniczona treść"
@@ -813,7 +813,7 @@
     "message": "Wybierz ponownie"
   },
   "regionSave": {
-    "message": "Zapisz w EdgeEver"
+    "message": "Zapisz w StillNote"
   },
   "regionCancel": {
     "message": "Anuluj"

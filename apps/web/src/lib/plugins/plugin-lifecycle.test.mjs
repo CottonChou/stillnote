@@ -10,7 +10,7 @@ const StubMutationObserver = class { observe() {} disconnect() {} };
 globalThis.window = stubWindow;
 globalThis.document = stubDocument;
 globalThis.MutationObserver = StubMutationObserver;
-const { EdgeEverPluginHost } = await import('./plugin-host');
+const { StillNotePluginHost } = await import('./plugin-host');
 afterAll(() => {
   restoreTestGlobal('window', originalWindow, stubWindow);
   restoreTestGlobal('document', originalDocument, stubDocument);
@@ -21,8 +21,8 @@ function setup() {
   let release, entered, calls = 0;
   const started = new Promise(resolve => { entered = resolve; });
   const gate = new Promise(resolve => { release = resolve; });
-  const host = new EdgeEverPluginHost({ scope: crypto.randomUUID(), packageStorage: { get: async () => null }, repository: { listMemos: async () => { calls++; entered(); await gate; return { memos: [], totalCount: 0, nextCursor: null }; } } });
-  const id = `org.edgeever.lifecycle-${crypto.randomUUID()}`;
+  const host = new StillNotePluginHost({ scope: crypto.randomUUID(), packageStorage: { get: async () => null }, repository: { listMemos: async () => { calls++; entered(); await gate; return { memos: [], totalCount: 0, nextCursor: null }; } } });
+  const id = `org.stillnote.lifecycle-${crypto.randomUUID()}`;
   host.installManifest({ type: 'plugin', id, name: 'Delayed activation', version: '1.0.0', apiVersion: '2', settingsUi: 'host', entry: new URL('./plugin-lifecycle.fixture.mjs', import.meta.url).href, permissions: ['notes:read', 'ui:commands', 'ui:panels'] }, 'https://example.test/manifest.json');
   return { host, id, started, release, calls: () => calls };
 }

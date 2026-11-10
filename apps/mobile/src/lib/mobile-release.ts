@@ -1,34 +1,18 @@
 import { clean, gt, valid } from "semver";
 
-const LATEST_RELEASE_API_URL = "https://api.github.com/repos/tianma-if/edgeever/releases/latest";
+const LATEST_RELEASE_API_URL = "https://api.github.com/repos/CottonChou/stillnote/releases/latest";
 
-export const GITHUB_LATEST_RELEASE_URL = "https://github.com/tianma-if/edgeever/releases/latest";
-export const ANDROID_APPLICATION_ID = "org.edgeever.mobile";
-export const GOOGLE_PLAY_APP_URL = "market://details?id=org.edgeever.mobile";
-export const GOOGLE_PLAY_WEB_URL = "https://play.google.com/store/apps/details?id=org.edgeever.mobile";
+export const GITHUB_LATEST_RELEASE_URL = "https://github.com/CottonChou/stillnote/releases/latest";
+const GITHUB_RELEASE_DOWNLOAD_PREFIX = "https://github.com/CottonChou/stillnote/releases/download/";
+const GITHUB_RELEASE_TAG_PREFIX = "https://github.com/CottonChou/stillnote/releases/tag/";
 
-type MobileInstallUpdateSourceBase = {
+export type MobileInstallUpdateSource = {
+  id: "github";
   url: string;
 };
 
-export type MobileInstallUpdateSource =
-  | MobileInstallUpdateSourceBase & {
-    applicationId: string;
-    fallbackUrl: string;
-    id: "google-play";
-  }
-  | MobileInstallUpdateSourceBase & {
-    id: "github";
-  };
-
 /** Manual destinations presented when a newer Android binary is available. */
 export const ANDROID_INSTALL_UPDATE_SOURCES: readonly MobileInstallUpdateSource[] = [
-  {
-    applicationId: ANDROID_APPLICATION_ID,
-    fallbackUrl: GOOGLE_PLAY_WEB_URL,
-    id: "google-play",
-    url: GOOGLE_PLAY_APP_URL,
-  },
   {
     id: "github",
     url: GITHUB_LATEST_RELEASE_URL,
@@ -37,6 +21,7 @@ export const ANDROID_INSTALL_UPDATE_SOURCES: readonly MobileInstallUpdateSource[
 
 type LatestReleaseResponse = {
   assets?: unknown;
+  html_url?: unknown;
   tag_name?: unknown;
 };
 
@@ -44,6 +29,7 @@ export type MobileRelease = {
   digest: string;
   downloadUrl: string;
   fileName: string;
+  releaseUrl: string;
   size: number;
   version: string;
 };
@@ -53,9 +39,20 @@ const normalizeVersion = (value: string) => {
   return normalized && valid(normalized) ? normalized : null;
 };
 
-const ANDROID_ASSET_PATTERN = /^edgeever-android-v(\d+\.\d+\.\d+)-arm64-v8a\.apk$/;
+const ANDROID_ASSET_PATTERNS = [
+  /^StillNote-(\d+\.\d+\.\d+)-android-signed\.apk$/,
+  /^stillnote-android-v(\d+\.\d+\.\d+)-arm64-v8a\.apk$/,
+];
 
-const findAndroidReleaseAsset = (assets: unknown): MobileRelease | null => {
+const extractAndroidAssetVersion = (name: string) => {
+  for (const pattern of ANDROID_ASSET_PATTERNS) {
+    const version = pattern.exec(name)?.[1];
+    if (version) return version;
+  }
+  return null;
+};
+
+const findAndroidReleaseAsset = (assets: unknown, releaseUrl: string): MobileRelease | null => {
   if (!Array.isArray(assets)) return null;
   const releases = assets
     .map((asset) => {
@@ -67,12 +64,12 @@ const findAndroidReleaseAsset = (assets: unknown): MobileRelease | null => {
       ) {
         return null;
       }
-      const version = ANDROID_ASSET_PATTERN.exec(asset.name)?.[1];
+      const version = extractAndroidAssetVersion(asset.name);
       if (
         !version ||
         !("browser_download_url" in asset) ||
         typeof asset.browser_download_url !== "string" ||
-        !asset.browser_download_url.startsWith("https://github.com/tianma-if/edgeever/releases/download/") ||
+        !asset.browser_download_url.startsWith(GITHUB_RELEASE_DOWNLOAD_PREFIX) ||
         !("digest" in asset) ||
         typeof asset.digest !== "string" ||
         !/^sha256:[a-f0-9]{64}$/.test(asset.digest) ||
@@ -87,6 +84,7 @@ const findAndroidReleaseAsset = (assets: unknown): MobileRelease | null => {
         digest: asset.digest,
         downloadUrl: asset.browser_download_url,
         fileName: asset.name,
+        releaseUrl,
         size: asset.size,
         version,
       };
@@ -95,7 +93,8 @@ const findAndroidReleaseAsset = (assets: unknown): MobileRelease | null => {
   return releases.length === 1 ? releases[0] : null;
 };
 
-export const findAndroidReleaseVersion = (assets: unknown) => findAndroidReleaseAsset(assets)?.version ?? null;
+export const findAndroidReleaseVersion = (assets: unknown) =>
+  findAndroidReleaseAsset(assets, GITHUB_LATEST_RELEASE_URL)?.version ?? null;
 
 export const findNewerMobileRelease = async (
   currentVersion: string,
@@ -124,7 +123,10 @@ export const findNewerMobileRelease = async (
   if (!releaseVersion) {
     throw new Error(`Invalid GitHub release version: ${release.tag_name}`);
   }
-  const latestRelease = findAndroidReleaseAsset(release.assets);
+  const releaseUrl = typeof release.html_url === "string" && release.html_url.startsWith(GITHUB_RELEASE_TAG_PREFIX)
+    ? release.html_url
+    : `${GITHUB_RELEASE_TAG_PREFIX}${encodeURIComponent(release.tag_name)}`;
+  const latestRelease = findAndroidReleaseAsset(release.assets, releaseUrl);
   if (!latestRelease) {
     throw new Error("GitHub release response does not contain exactly one Android APK");
   }

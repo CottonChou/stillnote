@@ -3,9 +3,9 @@
 // item. No imports: content scripts are classic scripts, and this file is also
 // injected again after the user grants access.
 (() => {
-  const root = globalThis as typeof globalThis & { __edgeeverZhihuTarget?: boolean };
-  if (root.__edgeeverZhihuTarget) return;
-  root.__edgeeverZhihuTarget = true;
+  const root = globalThis as typeof globalThis & { __stillnoteZhihuTarget?: boolean };
+  if (root.__stillnoteZhihuTarget) return;
+  root.__stillnoteZhihuTarget = true;
 
   // Keep identical to targetFromLocation in zhihu-clip.ts.
   const targetFromLocation = (hostname: string, pathname: string) => {
@@ -53,26 +53,26 @@
         ? rawTarget.parentElement
         : null;
     if (!element) return;
-    for (const node of document.querySelectorAll("[data-edgeever-zhihu-target]")) {
-      node.removeAttribute("data-edgeever-zhihu-target");
-      node.removeAttribute("data-edgeever-zhihu-kind");
-      node.removeAttribute("data-edgeever-zhihu-id");
+    for (const node of document.querySelectorAll("[data-stillnote-zhihu-target]")) {
+      node.removeAttribute("data-stillnote-zhihu-target");
+      node.removeAttribute("data-stillnote-zhihu-kind");
+      node.removeAttribute("data-stillnote-zhihu-id");
     }
     const item = element.closest(".ContentItem");
     if (item) {
       const info = readItem(item);
       if (!info) return;
-      item.setAttribute("data-edgeever-zhihu-target", "1");
-      item.setAttribute("data-edgeever-zhihu-kind", info.kind);
-      item.setAttribute("data-edgeever-zhihu-id", info.id);
+      item.setAttribute("data-stillnote-zhihu-target", "1");
+      item.setAttribute("data-stillnote-zhihu-kind", info.kind);
+      item.setAttribute("data-stillnote-zhihu-id", info.id);
       return;
     }
     const post = element.closest("article.Post-Main, .Post-Main");
     if (!post) return;
     const fromPage = targetFromLocation(location.hostname, location.pathname);
     if (!fromPage || fromPage.kind !== "article") return;
-    post.setAttribute("data-edgeever-zhihu-target", "1");
-    post.setAttribute("data-edgeever-zhihu-kind", fromPage.kind);
-    post.setAttribute("data-edgeever-zhihu-id", fromPage.id);
+    post.setAttribute("data-stillnote-zhihu-target", "1");
+    post.setAttribute("data-stillnote-zhihu-kind", fromPage.kind);
+    post.setAttribute("data-stillnote-zhihu-id", fromPage.id);
   }, true);
 })();

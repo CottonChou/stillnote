@@ -14,18 +14,18 @@ module.exports = async function afterPack(context) {
   if (context.electronPlatformName !== "darwin") return;
 
   const appPath = join(context.appOutDir, `${context.packager.appInfo.productFilename}.app`);
-  const appexPath = join(appPath, "Contents", "PlugIns", "EdgeEverShare.appex");
+  const appexPath = join(appPath, "Contents", "PlugIns", "StillNoteShare.appex");
   const extensionEntitlements = join(
     __dirname,
     "..",
     "share-extension",
-    "EdgeEverShare.entitlements",
+    "StillNoteShare.entitlements",
   );
   if (!existsSync(appPath) || !existsSync(appexPath) || !existsSync(extensionEntitlements)) {
     throw new Error(`macOS share extension is incomplete in ${appPath}`);
   }
 
-  const temporaryDirectory = mkdtempSync(join(tmpdir(), "edgeever-adhoc-entitlements-"));
+  const temporaryDirectory = mkdtempSync(join(tmpdir(), "stillnote-adhoc-entitlements-"));
   const appEntitlements = join(temporaryDirectory, "app.plist");
   writeFileSync(appEntitlements, `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">

@@ -1,5 +1,5 @@
 import i18n, { type i18n as I18n } from "i18next";
-import { enUS } from "@edgeever/shared/i18n/en-US";
+import { enUS } from "@stillnote/shared/i18n/en-US";
 
 export type ErrorScreenKey = keyof typeof enUS.errorScreens;
 

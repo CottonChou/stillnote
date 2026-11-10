@@ -1,6 +1,6 @@
 # 网页区域剪藏
 
-[English](2026-10-29-region-clip.md) · [Issue #703](https://github.com/tianma-if/edgeever/issues/703)
+[English](2026-10-29-region-clip.md) · [Issue #703](https://github.com/CottonChou/stillnote/issues/703)
 
 ## 问题与目标
 

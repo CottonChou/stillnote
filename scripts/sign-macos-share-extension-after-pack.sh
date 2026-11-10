@@ -3,10 +3,10 @@
 # Developer ID builds use apps/desktop/scripts/sign-share-extension.cjs instead.
 set -euo pipefail
 
-app="${1:?Usage: sign-macos-share-extension-after-pack.sh <EdgeEver.app>}"
+app="${1:?Usage: sign-macos-share-extension-after-pack.sh <StillNote.app>}"
 root="$(cd "$(dirname "$0")/.." && pwd)"
-entitlements="$root/apps/desktop/share-extension/EdgeEverShare.entitlements"
-appex="$app/Contents/PlugIns/EdgeEverShare.appex"
+entitlements="$root/apps/desktop/share-extension/StillNoteShare.entitlements"
+appex="$app/Contents/PlugIns/StillNoteShare.appex"
 
 test -d "$app"
 test -d "$appex"
@@ -20,7 +20,7 @@ codesign \
 
 # electron-builder leaves the outer bundle linker-signed in ad-hoc mode, which
 # macOS rejects when the share extension is present. Re-seal it last.
-app_entitlements="$(mktemp -t edgeever-app-entitlements)"
+app_entitlements="$(mktemp -t stillnote-app-entitlements)"
 trap 'rm -f "$app_entitlements"' EXIT
 cat > "$app_entitlements" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>

@@ -1,4 +1,4 @@
-import { createMemoLinkHref, type CompanionToolCall } from "@edgeever/shared";
+import { createMemoLinkHref, type CompanionToolCall } from "@stillnote/shared";
 import { parseAssistantNoteLinkHref } from "@/lib/assistant-note-links";
 
 export function missingCreatedNoteLinks(response: string, tools: CompanionToolCall[]) {

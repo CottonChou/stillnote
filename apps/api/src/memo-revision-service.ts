@@ -7,7 +7,7 @@ import {
   type MemoDetail,
   type MemoRevision,
   type TiptapDoc,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import type { AuditActor } from "./api-context";
 import { AppError } from "./app-error";
 import { auditStatement } from "./audit";

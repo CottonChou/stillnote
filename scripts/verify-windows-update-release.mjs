@@ -8,7 +8,7 @@ import {
   verifyWindowsUpdateMetadata,
 } from "../apps/desktop/src/main/windows-update-trust.mjs";
 
-export const verifyWindowsUpdateRelease = async (directory) => {
+export const verifyWindowsUpdateRelease = async (directory, options = {}) => {
   const manifestBytes = readFileSync(join(directory, WINDOWS_UPDATE_MANIFEST_NAME));
   const signatureBytes = readFileSync(join(directory, WINDOWS_UPDATE_SIGNATURE_NAME));
   const untrustedManifest = JSON.parse(manifestBytes.toString("utf8"));
@@ -35,6 +35,7 @@ export const verifyWindowsUpdateRelease = async (directory) => {
         sha512: untrustedManifest.file?.sha512,
       }],
     },
+    ...(options.trustedPublicKeys ? { trustedPublicKeys: options.trustedPublicKeys } : {}),
   });
   await verifyDownloadedWindowsUpdate({
     path: join(directory, manifest.file.name),

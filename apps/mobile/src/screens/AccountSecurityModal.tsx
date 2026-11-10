@@ -1,4 +1,4 @@
-import { ApiRequestError } from "@edgeever/client";
+import { ApiRequestError } from "@stillnote/client";
 import { useMutation } from "@tanstack/react-query";
 import { KeyRound } from "../components/icons";
 import { useEffect, useState } from "react";

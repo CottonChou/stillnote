@@ -37,7 +37,7 @@ import {
   type TableFilter,
   type TableFilterOperator,
   type TableRecord,
-} from "@edgeever/shared";
+} from "@stillnote/shared";
 import { AiSidebar, readAiSidebarOpen, writeAiSidebarOpen } from "@/components/ai-sidebar/AiSidebar";
 import { AiSidebarErrorBoundary } from "@/components/ai-sidebar/AiSidebarErrorBoundary";
 import { IconTooltip } from "@/components/editor/EditorPaneChrome";
@@ -60,15 +60,16 @@ import { EDITOR_LOCAL_SAVE_DELAY_MS, formatShortcutBinding, getNotebookMoveOptio
 import { createLocalEditSession } from "@/components/editor/editor-pane-helpers";
 import { isLocalMemoId } from "@/lib/local-mirror";
 import { isBrowserOffline } from "@/lib/network-status";
-import type { EdgeEverRepository } from "@/lib/repository";
-import type { MemoEditSession } from "@edgeever/shared";
+import type { StillNoteRepository } from "@/lib/repository";
+import type { MemoEditSession } from "@stillnote/shared";
 
 type TableEditorPaneProps = {
   memo: MemoDetail;
   notebooks: Notebook[];
-  repository: EdgeEverRepository;
+  repository: StillNoteRepository;
   readOnly: boolean;
   onBackToList: () => void;
+  onCloseNote?: () => void;
   onSaved: (memo: MemoDetail) => Promise<void>;
   aiAssistantOpenToken: number;
   shortcutSettings: ShortcutSettings;
@@ -196,7 +197,7 @@ const AttachmentCell = ({
   record: TableRecord;
   memoId: string;
   readOnly: boolean;
-  repository: EdgeEverRepository;
+  repository: StillNoteRepository;
   onAdd: (attachment: TableAttachment) => boolean;
   onRemove: (resourceId: string) => void;
   onUploaded: (resourceId: string) => void;
@@ -385,7 +386,7 @@ const RecordCell = ({
   readOnly: boolean;
   onEdit: (cell: EditingCell | null) => void;
   memoId: string;
-  repository: EdgeEverRepository;
+  repository: StillNoteRepository;
   onCommit: (value: string) => void;
   onDraft: (value: string) => void;
   onChange: (document: TableDocument) => void;
@@ -482,6 +483,7 @@ export const TableEditorPane = ({
   repository,
   readOnly,
   onBackToList,
+  onCloseNote,
   onSaved,
   aiAssistantOpenToken,
   shortcutSettings,
@@ -554,7 +556,7 @@ export const TableEditorPane = ({
     setSaveError(null);
     setSaveFailed(false);
     if (readOnly || !parsed) return;
-    if (isLocalMemoId(memo.id) || isBrowserOffline() || window.edgeeverDesktop?.isAvailable) {
+    if (isLocalMemoId(memo.id) || isBrowserOffline() || window.stillnoteDesktop?.isAvailable) {
       editSessionRef.current = createLocalEditSession(memo);
       setEditSessionReady(true);
       return;
@@ -943,6 +945,28 @@ export const TableEditorPane = ({
           </TooltipTrigger>
           <TooltipContent>{recordLimitReached ? t("structuredTable.recordLimit") : t("structuredTable.addRecord")}</TooltipContent>
         </Tooltip>
+        {onCloseNote ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 text-slate-500 hover:text-slate-950"
+                aria-label={t("editor.closeNote")}
+                onClick={() => {
+                  void (async () => {
+                    if ((dirty || editingRef.current) && !(await save())) return;
+                    onCloseNote();
+                  })();
+                }}
+              >
+                <X className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t("editor.closeNote")}</TooltipContent>
+          </Tooltip>
+        ) : null}
       </div>
       <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 px-3 py-2">
         <span className="text-xs text-slate-500">{t("structuredTable.filter")}</span>

@@ -35,7 +35,7 @@ export function automaticPosterThumbnails({ root = projectRoot, generate = runPo
     })().finally(() => { running = undefined; });
   };
   return {
-    name: "edgeever-automatic-poster-thumbnails",
+    name: "stillnote-automatic-poster-thumbnails",
     configResolved(config) { command = config.command; },
     async buildStart() {
       if (command === "build") await generate({ root });

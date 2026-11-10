@@ -22,7 +22,7 @@ type McpProtocolEra = "modern" | "legacy";
 const LEGACY_MCP_PROTOCOL_VERSION = LEGACY_MCP_PROTOCOL_VERSIONS[0];
 const MCP_CACHE_TTL_MS = 60 * 60 * 1000;
 const MCP_SERVER_INFO = {
-  name: "edgeever",
+  name: "stillnote",
   version: packageMetadata.version,
   description: "A workspace-scoped notes and knowledge management MCP server.",
 };
@@ -331,7 +331,7 @@ export const registerMcpRoutes = (
     const result = await handleMcpMessage(context, payload, dependencies, validation.era);
     if (!result) return new Response(null, { status: 202 });
     if (result.status === 401) {
-      context.header("WWW-Authenticate", 'Bearer realm="EdgeEver MCP"');
+      context.header("WWW-Authenticate", 'Bearer realm="StillNote MCP"');
     }
     return context.json(result.body, result.status as 200);
   });

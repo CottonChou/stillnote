@@ -4,7 +4,7 @@
 
 ## 问题与结果
 
-实现 [Issue #717](https://github.com/tianma-if/edgeever/issues/717)。此前化学式只能手动用上下标、箭头命令和 `\mathrm{}` 拼写。笔记中的公式现在支持 KaTeX 的 `mhchem` 扩展：`\ce{…}` 用于化学式和化学方程式，`\pu{…}` 用于带单位的物理量。“插入公式”对话框新增“数学 / 化学”切换，并提供一键示例。
+实现 [Issue #717](https://github.com/CottonChou/stillnote/issues/717)。此前化学式只能手动用上下标、箭头命令和 `\mathrm{}` 拼写。笔记中的公式现在支持 KaTeX 的 `mhchem` 扩展：`\ce{…}` 用于化学式和化学方程式，`\pu{…}` 用于带单位的物理量。“插入公式”对话框新增“数学 / 化学”切换，并提供一键示例。
 
 ## 行为
 

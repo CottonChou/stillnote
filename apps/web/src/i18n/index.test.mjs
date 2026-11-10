@@ -22,7 +22,7 @@ describe("lazy Japanese catalog", () => {
   test("keeps the Japanese chunk out of HTML modulepreload and caches it after first use", () => {
     expect(viteConfig).toContain("globPatterns: []");
     expect(viteConfig).toContain("name: \"i18n-ja\"");
-    expect(viteConfig).toContain("edgeever-optional-locales");
+    expect(viteConfig).toContain("stillnote-optional-locales");
     expect(viteConfig).toContain("i18n-(?:ja|pl|ru)-");
   });
 

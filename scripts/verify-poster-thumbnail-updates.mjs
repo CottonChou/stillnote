@@ -9,7 +9,7 @@ import { automaticPosterThumbnails } from "../apps/web/poster-thumbnails.ts";
 import { sources, projectRoot, ensurePosterThumbnails, sourceState, thumbnailsCurrent } from "./prepare-poster-thumbnails.mjs";
 
 await ensurePosterThumbnails();
-const root = await mkdtemp(path.join(tmpdir(), "edgeever-poster-watch-"));
+const root = await mkdtemp(path.join(tmpdir(), "stillnote-poster-watch-"));
 let server;
 const output = path.join(root, "apps/web/src/assets/poster-template-previews");
 const readManifest = async () => JSON.parse(await readFile(path.join(output, "manifest.json"), "utf8"));

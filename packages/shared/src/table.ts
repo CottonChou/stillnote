@@ -69,7 +69,7 @@ export type TableSummaryPreview = {
   fieldNames: string[];
 };
 
-const TABLE_MARKER = "edgeever-table-v1";
+const TABLE_MARKER = "stillnote-table-v1";
 const TABLE_COMMENT = new RegExp(`<!--\\s*${TABLE_MARKER}:([\\s\\S]*?)\\s*-->`);
 const FIELD_NAME_LIMIT = 80;
 const OPTION_LIMIT = 40;

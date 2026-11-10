@@ -2,11 +2,11 @@
 // xhs-target.js. Must stay import-free.
 (() => {
   const root = globalThis as typeof globalThis & {
-    __edgeeverXhsTarget?: boolean;
-    __edgeeverXhsClipPayload?: { requestId?: string };
+    __stillnoteXhsTarget?: boolean;
+    __stillnoteXhsClipPayload?: { requestId?: string };
   };
-  const payload = root.__edgeeverXhsClipPayload;
-  delete root.__edgeeverXhsClipPayload;
+  const payload = root.__stillnoteXhsClipPayload;
+  delete root.__stillnoteXhsClipPayload;
   if (!payload || typeof payload.requestId !== "string") return;
   const requestId = payload.requestId;
 
@@ -180,12 +180,12 @@
   void (async () => {
     try {
       const pageId = noteIdFromPath(location.pathname);
-      const marked = document.querySelector("[data-edgeever-xhs-target='1']");
-      const markedId = marked?.getAttribute("data-edgeever-xhs-note-id")
+      const marked = document.querySelector("[data-stillnote-xhs-target='1']");
+      const markedId = marked?.getAttribute("data-stillnote-xhs-note-id")
         || noteIdFromHref(marked?.querySelector("a[href]")?.getAttribute("href") || "");
       const detail = document.querySelector("#noteContainer");
       if (!pageId && !markedId && !detail) {
-        finish({ ok: false, reason: root.__edgeeverXhsTarget ? "not-found" : "needs-listener" });
+        finish({ ok: false, reason: root.__stillnoteXhsTarget ? "not-found" : "needs-listener" });
         return;
       }
       const noteState = stateRoot();
