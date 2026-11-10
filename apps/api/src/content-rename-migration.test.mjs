@@ -81,7 +81,7 @@ describe("migration 0089 stillnote content rename", () => {
       sqlite
         .query(
           `INSERT INTO resources (id, memo_id, bucket_name, object_key, kind, filename, mime_type, byte_size, sha256)
-           VALUES ('res_demo', 'memo_legacy', 'stillnote-resources', 'k', 'attachment', 'edgeever-attachment-demo.zip', 'application/zip', 12, 's')`,
+           VALUES ('res_demo', 'memo_legacy', 'edgeever-resources', 'k', 'attachment', 'edgeever-attachment-demo.zip', 'application/zip', 12, 's')`,
         )
         .run();
 
@@ -109,6 +109,7 @@ describe("migration 0089 stillnote content rename", () => {
       sqlite.exec(readFileSync("migrations/0089_stillnote_content_rename.sql", "utf8"));
       sqlite.exec(readFileSync("migrations/0090_stillnote_demo_attachment_rename.sql", "utf8"));
       sqlite.exec(readFileSync("migrations/0091_stillnote_demo_asset_rename.sql", "utf8"));
+      sqlite.exec(readFileSync("migrations/0092_stillnote_resource_bucket_rename.sql", "utf8"));
 
       const updatedContent = sqlite
         .query("SELECT content_json, content_markdown, content_text FROM memo_contents WHERE memo_id = 'memo_legacy'")
@@ -142,9 +143,10 @@ describe("migration 0089 stillnote content rename", () => {
       expect(updatedContent.content_text).toBe("stillnote-diagram-v1:abc stillnote-attachment-demo.zip EdgeEver");
 
       const updatedResource = sqlite
-        .query("SELECT filename FROM resources WHERE id = 'res_demo'")
+        .query("SELECT filename, bucket_name FROM resources WHERE id = 'res_demo'")
         .get();
       expect(updatedResource.filename).toBe("stillnote-attachment-demo.zip");
+      expect(updatedResource.bucket_name).toBe("stillnote-resources");
 
       const updatedRevision = sqlite
         .query("SELECT content_json, content_markdown, content_text FROM memo_revisions WHERE id = 'rev_legacy'")
