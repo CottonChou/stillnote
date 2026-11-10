@@ -1,23 +1,23 @@
 {
-  "version": "2.16.1",
+  "version": "2.17.0",
   "changes": {
     "en-US": [
-      "Preserve unsaved mind-map, flowchart and architecture edits during synchronization, including new-note creation. Thanks @sivdead (#742); fixes #737.",
-      "Preserve infographic drafts and active input during synchronization, and refresh remote changes when the editor is idle.",
-      "Reduce database reads during backups while preserving consistency checks, and improve desktop backup network diagnostics.",
-      "Reduce repeated database counts during pagination, exports, synchronization and task-history polling. Upgrading the server applies migration 0084 with a one-time task-count backfill."
+      "Rebrand the workspace, desktop, mobile, iOS, extension, and site packages to StillNote with Editorial Flow UI and pine bookmark branding.",
+      "Speed up Android synchronization by loading notebook trees and note titles first with on-demand note content loading and manual single-notebook sync.",
+      "Redesign the Android notebook drawer with DrawerLayout swipe gestures and add an Android double-back exit confirmation guard.",
+      "Move the desktop/web note Share action into the More menu, add a Close Note button to the note header, and point desktop/APK update checks to CottonChou/stillnote releases."
     ],
     "zh-CN": [
-      "修复思维导图、流程图及架构图在同步和新建笔记时丢失未保存编辑的问题。感谢 @sivdead（#742）；修复 #737。",
-      "修复信息图同步时的草稿与输入丢失问题，并在空闲时正确显示远端更新。",
-      "减少备份过程中的数据库读取，保留一致性检查，并改善桌面备份网络故障诊断。",
-      "减少分页、导出、同步和任务历史轮询中的重复数据库计数。服务端升级会执行迁移 0084，一次性回填任务计数。"
+      "将工作区、桌面端、移动端、iOS、扩展与站点全量切换为 StillNote 品牌，并统一 Editorial Flow UI 与松绿书签图标。",
+      "重构 Android 端同步机制为笔记本与笔记标题优先、正文按需延迟加载，并新增手动同步单本或全部笔记本能力。",
+      "基于 DrawerLayout 重构 Android 左侧笔记本抽屉手势交互，并增加返回键二次确认防误退保护。",
+      "将桌面端与 Web 端笔记右上角的分享收拢至“更多”菜单、增加关闭当前笔记按钮，并将 macOS/APK 更新检查源指向 CottonChou/stillnote。"
     ],
     "ja": [
-      "同期中や新規ノート作成時に、マインドマップ・フローチャート・構成図の未保存の編集が失われる問題を修正しました。",
-      "インフォグラフィックの同期中に下書きや入力が失われる問題を修正し、編集中でない場合はリモートの変更を正しく反映します。",
-      "バックアップの整合性チェックを維持しながらデータベース読み取りを削減し、デスクトップのネットワーク障害診断を改善しました。",
-      "ページ送り・エクスポート・同期・タスク履歴のポーリング時の重複集計を削減しました。サーバー更新時にマイグレーション0084でタスク件数を一度だけ集計します。"
+      "ワークスペース・デスクトップ・モバイル・iOS・拡張機能・サイト全体を StillNote ブランドと松緑アイコンに刷新しました。",
+      "Android の同期をノートブック・見出し優先＆本文オンデマンド読込に最適化し、単一／全ノートブックの手動同期を追加しました。",
+      "DrawerLayout によるスムーズなノートブックドロワー操作と Android の戻るキー二重押し終了確認を追加しました。",
+      "ノートヘッダーの共有操作を「…」メニューに整理して閉じるボタンを追加し、更新チェック先を CottonChou/stillnote に設定しました。"
     ]
   }
 }
