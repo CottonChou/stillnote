@@ -15,6 +15,8 @@ import {
   type MobileSelectableTemplate,
 } from "../lib/mobile-templates";
 import { useMobileLocale } from "../lib/mobile-locale";
+import { useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import { styles } from "../screens/workspace-styles";
 
 type MobileClient = ReturnType<typeof createEdgeEverClient>;
@@ -41,6 +43,8 @@ export const MobileTemplatePickerModal = ({
   visible: boolean;
 }) => {
   const { resolvedLocale, translate } = useMobileLocale();
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
 
   const savedTemplatesQuery = useQuery({
     queryKey: ["mobile", "templates"],
@@ -104,7 +108,7 @@ export const MobileTemplatePickerModal = ({
             </Text>
           </View>
           <Pressable accessibilityLabel={translate("关闭")} accessibilityRole="button" onPress={onClose} style={styles.sheetCloseButton}>
-            <X color="#0f172a" size={18} />
+            <X color={palette.ink} size={18} />
           </Pressable>
         </View>
 
@@ -112,7 +116,7 @@ export const MobileTemplatePickerModal = ({
           <Text style={styles.actionSheetSectionTitle}>{translate("模板")}</Text>
           {isLoadingSaved ? (
             <View style={styles.templatePickerLoading}>
-              <ActivityIndicator color="#0f172a" size="small" />
+              <ActivityIndicator color={palette.ink} size="small" />
               <Text style={styles.mutedText}>{translate("正在加载模板")}</Text>
             </View>
           ) : null}
@@ -179,6 +183,8 @@ export const MobileCreateChoiceModal = ({
   visible: boolean;
 }) => {
   const { translate } = useMobileLocale();
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   return (
     <Modal animationType="fade" onRequestClose={onClose} transparent visible={visible}>
       <Pressable onPress={onClose} style={[styles.actionSheetBackdrop, { paddingBottom: bottomOffset }]}>
@@ -190,7 +196,7 @@ export const MobileCreateChoiceModal = ({
               <Text numberOfLines={1} style={styles.actionSheetSubtitle}>{translate("选择创建方式")}</Text>
             </View>
             <Pressable accessibilityLabel={translate("关闭")} accessibilityRole="button" onPress={onClose} style={styles.sheetCloseButton}>
-              <X color="#0f172a" size={18} />
+              <X color={palette.ink} size={18} />
             </Pressable>
           </View>
           <View style={styles.listActionSheetContent}>
@@ -204,7 +210,7 @@ export const MobileCreateChoiceModal = ({
               style={[styles.templateChoiceRow, !canCreate && styles.templateChoiceRowDisabled]}
             >
               <View style={styles.templateChoiceIcon}>
-                <FileText color="#0f172a" size={18} />
+                <FileText color={palette.ink} size={18} />
               </View>
               <View style={styles.templateChoiceText}>
                 <Text style={styles.templateChoiceTitle}>{translate("空白笔记")}</Text>
@@ -221,7 +227,7 @@ export const MobileCreateChoiceModal = ({
               style={[styles.templateChoiceRow, !canCreate && styles.templateChoiceRowDisabled]}
             >
               <View style={styles.templateChoiceIcon}>
-                <LayoutTemplate color="#0f172a" size={18} />
+                <LayoutTemplate color={palette.ink} size={18} />
               </View>
               <View style={styles.templateChoiceText}>
                 <Text style={styles.templateChoiceTitle}>{translate("从模板新建")}</Text>
@@ -242,10 +248,12 @@ const TemplateRow = ({
   onPress: () => void;
   template: MobileSelectableTemplate;
 }) => {
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={styles.templateRow}>
       <View style={styles.templateRowIcon}>
-        <LayoutTemplate color="#047857" size={16} />
+        <LayoutTemplate color={palette.accentText} size={16} />
       </View>
       <View style={styles.templateRowText}>
         <View style={styles.templateRowTitleRow}>

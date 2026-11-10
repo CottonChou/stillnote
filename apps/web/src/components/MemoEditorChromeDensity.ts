@@ -5,7 +5,7 @@ export const MEMO_EDITOR_READING_GUTTER_CLASS_NAME =
   `${MEMO_EDITOR_READING_GUTTER_PROPERTIES_CLASS_NAME} px-[var(--editor-reading-gutter)]`;
 
 export const MEMO_EDITOR_TOP_ROW_CLASS_NAME =
-  "relative flex min-h-12 items-center justify-between gap-2 border-b border-slate-100 py-2 sm:min-h-9 sm:py-0.5 sm:[container-type:inline-size]";
+  "relative flex min-h-12 items-center justify-between gap-2 border-b border-[var(--workspace-divider)] py-2 sm:min-h-9 sm:py-0.5 sm:[container-type:inline-size]";
 
 /**
  * Metadata measures its intrinsic width against the space left by the title.

@@ -4,6 +4,8 @@ import { Modal, ScrollView, View } from "react-native";
 import { Check, CheckSquare, FileText, Folder, Image, List, MoreVertical, Share2, Sparkles, Tag, Trash2, X } from "../components/icons";
 import { Pressable, Text } from "../components/LocalizedText";
 import type { MobileMemoListDensity } from "../lib/preferences";
+import { useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import { styles } from "./workspace-styles";
 
 const ActionSheetItem = ({
@@ -97,7 +99,10 @@ export const NotesActionsModal = ({
   onSortModeChange: (sortMode: MemoSortMode) => void;
   selectionMode: boolean;
   visible: boolean;
-}) => (
+}) => {
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
+  return (
   <Modal animationType="fade" onRequestClose={onClose} transparent visible={visible}>
     <Pressable onPress={onClose} style={[styles.actionSheetBackdrop, { paddingBottom: bottomOffset }]}>
       <Pressable style={styles.listActionSheet}>
@@ -108,7 +113,7 @@ export const NotesActionsModal = ({
             <Text numberOfLines={1} style={styles.actionSheetSubtitle}>{listTitle} · {listDescription}</Text>
           </View>
           <Pressable accessibilityLabel="关闭" accessibilityRole="button" onPress={onClose} style={styles.sheetCloseButton}>
-            <X color="#0f172a" size={18} />
+            <X color={palette.ink} size={18} />
           </Pressable>
         </View>
         <ScrollView contentContainerStyle={styles.listActionSheetContent} style={styles.listActionSheetScroll}>
@@ -117,13 +122,13 @@ export const NotesActionsModal = ({
               <ActionSheetItem
                 compact
                 disabled={!canEnterSelection}
-                icon={<CheckSquare color="#0f172a" size={18} />}
+                icon={<CheckSquare color={palette.ink} size={18} />}
                 label="选择笔记"
                 onPress={onEnterSelection}
               />
               <ActionSheetItem
                 compact
-                icon={<Tag color="#0f172a" size={18} />}
+                icon={<Tag color={palette.ink} size={18} />}
                 label="按标签筛选"
                 onPress={onOpenTagFilter}
               />
@@ -133,13 +138,13 @@ export const NotesActionsModal = ({
           <Text style={styles.actionSheetSectionTitle}>显示方式</Text>
           <SheetOptionRow
             active={memoListDensity === "preview"}
-            icon={<FileText color={memoListDensity === "preview" ? "#10b981" : "#64748b"} size={18} />}
+            icon={<FileText color={memoListDensity === "preview" ? palette.accent : palette.inkSecondary} size={18} />}
             label="预览列表"
             onPress={() => onMemoListDensityChange("preview")}
           />
           <SheetOptionRow
             active={memoListDensity === "compact"}
-            icon={<List color={memoListDensity === "compact" ? "#10b981" : "#64748b"} size={18} />}
+            icon={<List color={memoListDensity === "compact" ? palette.accent : palette.inkSecondary} size={18} />}
             label="紧凑列表"
             onPress={() => onMemoListDensityChange("compact")}
           />
@@ -153,7 +158,8 @@ export const NotesActionsModal = ({
       </Pressable>
     </Pressable>
   </Modal>
-);
+  );
+};
 
 const SelectionAction = ({
   danger = false,
@@ -192,31 +198,35 @@ export const SelectionActionBar = ({
   onMore: () => void;
   onMove: () => void;
   selectedCount: number;
-}) => (
+}) => {
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
+  return (
   <View accessibilityLabel="批量操作" style={[styles.selectionBar, { paddingBottom: Math.max(2, bottomInset) }]}>
     <View style={styles.selectionActions}>
       <SelectionAction
         disabled={isBusy || !canMove}
-        icon={<Folder color={canMove ? "#0f172a" : "#cbd5e1"} size={20} />}
+        icon={<Folder color={canMove ? palette.ink : palette.inkPlaceholder} size={20} />}
         label="移动"
         onPress={onMove}
       />
       <SelectionAction
         danger
         disabled={isBusy || selectedCount === 0}
-        icon={<Trash2 color={selectedCount === 0 ? "#cbd5e1" : "#b91c1c"} size={20} />}
+        icon={<Trash2 color={selectedCount === 0 ? palette.inkPlaceholder : palette.danger} size={20} />}
         label={isTrashView ? "永久删除" : "删除"}
         onPress={onDelete}
       />
       <SelectionAction
         disabled={isBusy}
-        icon={<MoreVertical color="#0f172a" size={20} />}
+        icon={<MoreVertical color={palette.ink} size={20} />}
         label="更多"
         onPress={onMore}
       />
     </View>
   </View>
-);
+  );
+};
 
 export const SelectionMoreModal = ({
   bottomOffset,
@@ -248,7 +258,10 @@ export const SelectionMoreModal = ({
   selectedCount: number;
   selectionToggleLabel: string;
   visible: boolean;
-}) => (
+}) => {
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
+  return (
   <Modal animationType="fade" onRequestClose={onClose} transparent visible={visible}>
     <Pressable onPress={onClose} style={[styles.actionSheetBackdrop, { paddingBottom: bottomOffset }]}>
       <Pressable style={styles.selectionMoreSheet}>
@@ -259,35 +272,36 @@ export const SelectionMoreModal = ({
             <Text style={styles.actionSheetSubtitle}>{selectedCount > 0 ? `已选择 ${selectedCount} 条` : "选择笔记"}</Text>
           </View>
           <Pressable accessibilityLabel="关闭" accessibilityRole="button" onPress={onClose} style={styles.sheetCloseButton}>
-            <X color="#0f172a" size={18} />
+            <X color={palette.ink} size={18} />
           </Pressable>
         </View>
         <ActionSheetItem
           disabled={!canToggleVisibleSelection}
-          icon={<CheckSquare color={canToggleVisibleSelection ? "#0f172a" : "#cbd5e1"} size={18} />}
+          icon={<CheckSquare color={canToggleVisibleSelection ? palette.ink : palette.inkPlaceholder} size={18} />}
           label={selectionToggleLabel}
           onPress={onToggleVisibleSelection}
         />
         <ActionSheetItem
           disabled={!canPin}
-          icon={<Sparkles color={canPin ? "#0f172a" : "#cbd5e1"} size={18} />}
+          icon={<Sparkles color={canPin ? palette.ink : palette.inkPlaceholder} size={18} />}
           label={pinLabel}
           onPress={onPin}
         />
         <ActionSheetItem
           disabled={!canShare}
-          icon={<Share2 color={canShare ? "#0f172a" : "#cbd5e1"} size={18} />}
+          icon={<Share2 color={canShare ? palette.ink : palette.inkPlaceholder} size={18} />}
           label="分享笔记"
           onPress={onShare}
         />
         <ActionSheetItem
           disabled={!canShare}
-          icon={<Image color={canShare ? "#0f172a" : "#cbd5e1"} size={18} />}
+          icon={<Image color={canShare ? palette.ink : palette.inkPlaceholder} size={18} />}
           label="分享为图片"
           onPress={onShareImage}
         />
-        <ActionSheetItem icon={<X color="#0f172a" size={18} />} label="取消选择" onPress={onClear} />
+        <ActionSheetItem icon={<X color={palette.ink} size={18} />} label="取消选择" onPress={onClear} />
       </Pressable>
     </Pressable>
   </Modal>
-);
+  );
+};

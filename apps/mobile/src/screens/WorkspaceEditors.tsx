@@ -42,6 +42,7 @@ import { showEdgeEverKeyboard } from "../../modules/edgeever-keyboard";
 import { MobileResourceActions } from "../components/MobileResourceActions";
 import { MobileTemplatePickerModal } from "../components/MobileTemplatePicker";
 import { useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import { createMemoSeedHasContent, type MobileCreateMemoSeed } from "../lib/mobile-templates";
 import { createMobileDraftWriteBarrier } from "../lib/mobile-draft-write-barrier";
 import {
@@ -96,9 +97,11 @@ const MobileEditorStartupOverlay = ({
   timedOut: boolean;
 }) => {
   const { translate } = useMobileLocale();
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   return (
     <View accessibilityLiveRegion="polite" style={styles.richEditorLoading}>
-      {!timedOut ? <ActivityIndicator color="#16a06e" size="large" /> : null}
+      {!timedOut ? <ActivityIndicator color={palette.accent} size="large" /> : null}
       <Text style={styles.richEditorLoadingTitle}>
         {translate(timedOut ? "编辑器启动时间过长" : "正在启动编辑器")}
       </Text>
@@ -114,7 +117,7 @@ const MobileEditorStartupOverlay = ({
           onPress={onRetry}
           style={styles.actionButton}
         >
-          <RotateCcw color="#0f172a" size={16} />
+          <RotateCcw color={palette.ink} size={16} />
           <Text style={styles.actionButtonText}>{translate("重试")}</Text>
         </Pressable>
       ) : null}
@@ -174,6 +177,7 @@ export const CreateMemoModal = ({
   const queryClient = useQueryClient();
   const { resolvedLocale, translate } = useMobileLocale();
   const { resolvedTheme } = useMobileTheme();
+  const createPalette = getMobileEditorialPalette(resolvedTheme);
   const fallbackNotebookId = defaultNotebookId;
   const editorRef = useRef<LocalTiptapEditorRef>(null);
   const resourceDataUrlCacheRef = useRef(new Map<string, Promise<string | null>>());
@@ -720,7 +724,7 @@ export const CreateMemoModal = ({
     <SafeAreaView edges={["top", "left", "right", "bottom"]} style={styles.createMemoSafeArea}>
       <View style={styles.createMemoHeader}>
         <Pressable accessibilityLabel="返回" accessibilityRole="button" disabled={submitStarted || createMutation.isPending || imageOperation !== "idle"} onPress={() => void requestClose()} style={styles.createMemoBackButton}>
-          <ChevronLeft color={submitStarted || createMutation.isPending || imageOperation !== "idle" ? "#cbd5e1" : "#0f172a"} size={30} />
+          <ChevronLeft color={submitStarted || createMutation.isPending || imageOperation !== "idle" ? createPalette.inkPlaceholder : createPalette.ink} size={30} />
         </Pressable>
         <View style={styles.createMemoHeaderActions}>
           <Text style={[styles.createMemoStatus, (submitStarted || createMutation.isPending) && styles.createMemoStatusActive]}>
@@ -741,7 +745,7 @@ export const CreateMemoModal = ({
             onPress={() => void submitCreateMemo()}
             style={[styles.createMemoDoneButton, !canSubmitCreateMemo && styles.createMemoDoneButtonDisabled]}
           >
-            {submitStarted || createMutation.isPending ? <ActivityIndicator color="#64748b" size="small" /> : <Text style={[styles.createMemoDoneText, !canSubmitCreateMemo && styles.createMemoDoneTextDisabled]}>完成</Text>}
+            {submitStarted || createMutation.isPending ? <ActivityIndicator color={canSubmitCreateMemo ? "#ffffff" : createPalette.inkSecondary} size="small" /> : <Text style={[styles.createMemoDoneText, !canSubmitCreateMemo && styles.createMemoDoneTextDisabled]}>完成</Text>}
           </Pressable>
         </View>
       </View>
@@ -755,7 +759,7 @@ export const CreateMemoModal = ({
             markDirty();
           }}
           placeholder={DEFAULT_MEMO_TITLE}
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor={createPalette.inkPlaceholder}
           style={styles.createMemoTitleInput}
           value={title}
         />
@@ -763,13 +767,13 @@ export const CreateMemoModal = ({
         <View style={styles.createMemoMetaRow}>
           <Pressable accessibilityLabel="所在笔记本" accessibilityRole="button" onPress={() => setNotebookPickerOpen(true)} style={styles.createMemoNotebookButton}>
             <Text numberOfLines={1} style={styles.createMemoNotebookText}>{selectedNotebookName}</Text>
-            <ChevronDown color="#64748b" size={14} />
+            <ChevronDown color={createPalette.inkSecondary} size={14} />
           </Pressable>
           <Pressable accessibilityLabel="选择笔记标签" accessibilityRole="button" onPress={() => setTagPickerOpen(true)} style={styles.createMemoTagsButton}>
             <Text numberOfLines={1} style={[styles.createMemoTagsInput, !tagsText && styles.createMemoTagsPlaceholder]}>
               {tagsText || "添加标签"}
             </Text>
-            <ChevronDown color="#94a3b8" size={14} />
+            <ChevronDown color={createPalette.inkPlaceholder} size={14} />
           </Pressable>
           <SmartTagButton
             client={client}
@@ -865,6 +869,7 @@ export const RichEditorModal = ({
   const { client, session } = useSession();
   const { resolvedLocale } = useMobileLocale();
   const { resolvedTheme } = useMobileTheme();
+  const editPalette = getMobileEditorialPalette(resolvedTheme);
   const restoredDraft = initialDraft?.expectedRevision === memo?.revision ? initialDraft : null;
   const initialContentJson = restoredDraft
     ? markdownToDoc(restoredDraft.contentMarkdown)
@@ -1215,7 +1220,7 @@ export const RichEditorModal = ({
       >
         <View style={styles.createMemoHeader}>
           <Pressable accessibilityLabel="返回" accessibilityRole="button" disabled={uploading} onPress={() => void requestClose()} style={styles.createMemoBackButton}>
-            <ChevronLeft color={uploading ? "#cbd5e1" : "#0f172a"} size={30} />
+            <ChevronLeft color={uploading ? editPalette.inkPlaceholder : editPalette.ink} size={30} />
           </Pressable>
           <View style={styles.createMemoHeaderActions}>
             <Text numberOfLines={1} style={[styles.createMemoStatus, styles.richEditorHeaderStatus, saveChrome.emphasized && styles.createMemoStatusActive, error && styles.richEditorStatusError]}>{saveChrome.label}</Text>
@@ -1240,7 +1245,7 @@ export const RichEditorModal = ({
                 markAutosaveDirty();
               }}
               placeholder={DEFAULT_MEMO_TITLE}
-              placeholderTextColor="#94a3b8"
+              placeholderTextColor={editPalette.inkPlaceholder}
               selectTextOnFocus={initialFocus === "title"}
               style={styles.createMemoTitleInput}
               value={title}
@@ -1248,13 +1253,13 @@ export const RichEditorModal = ({
             <View style={[styles.createMemoMetaRow, styles.richStandaloneMetaRow]}>
               <Pressable accessibilityLabel="所在笔记本" accessibilityRole="button" onPress={() => setNotebookPickerOpen(true)} style={styles.createMemoNotebookButton}>
                 <Text numberOfLines={1} style={styles.createMemoNotebookText}>{notebookLabel}</Text>
-                <ChevronDown color="#64748b" size={14} />
+                <ChevronDown color={editPalette.inkSecondary} size={14} />
               </Pressable>
               <Pressable accessibilityLabel="选择笔记标签" accessibilityRole="button" onPress={() => setTagPickerOpen(true)} style={[styles.createMemoTagsButton, styles.richStandaloneTagsInput]}>
                 <Text numberOfLines={1} style={[styles.createMemoTagsInput, !tagsText && styles.createMemoTagsPlaceholder]}>
                   {tagsText || "添加标签"}
                 </Text>
-                <ChevronDown color="#94a3b8" size={14} />
+                <ChevronDown color={editPalette.inkPlaceholder} size={14} />
               </Pressable>
               <SmartTagButton
                 client={client}

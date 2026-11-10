@@ -50,6 +50,7 @@ import { useMobileRichEditor, type MobileMemoUpdateMutation } from "../hooks/use
 import type { MobileMemoDraft } from "../lib/mobile-drafts";
 import { createMobileDataScope, getLocalMemo } from "../lib/local-mirror";
 import { useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette, resolveMobileThemeStyles } from "../lib/mobile-theme-colors";
 import { useSession } from "../lib/session";
 import { beginEditorStartup } from "../lib/startup-performance";
 import type { MobileSyncQueueItem } from "../lib/sync-queue";
@@ -349,7 +350,7 @@ const AuthenticatedResourceImage = ({
         accessible={Boolean(alt)}
         style={[imageStyle, resourceImageStyles.previewPlaceholder]}
       >
-        {loadFailed ? null : <ActivityIndicator color="#94a3b8" />}
+        {loadFailed ? null : <ActivityIndicator color="#9e978b" />}
       </View>
     );
   }
@@ -498,6 +499,15 @@ export const MemoDetailModal = ({
 }) => {
   const { client, session } = useSession();
   const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
+  const themedImageShareStyles = useMemo(
+    () => resolveMobileThemeStyles(imageShareStyles, resolvedTheme),
+    [resolvedTheme],
+  );
+  const themedDetailLayoutStyles = useMemo(
+    () => resolveMobileThemeStyles(detailLayoutStyles, resolvedTheme),
+    [resolvedTheme],
+  );
   const { resolvedLocale } = useMobileLocale();
   const safeAreaInsets = useSafeAreaInsets();
   const [actionsOpen, setActionsOpen] = useState(false);
@@ -592,10 +602,10 @@ export const MemoDetailModal = ({
     overScrollMode: "never" as const,
     scrollEnabled: false,
     style: [
-      detailLayoutStyles.viewer,
+      themedDetailLayoutStyles.viewer,
       resolvedTheme === "dark" ? detailLayoutStyles.viewerDark : null,
     ],
-  }), [resolvedTheme]);
+  }), [resolvedTheme, themedDetailLayoutStyles]);
   const editor = useMobileRichEditor({
     active: isEditing,
     alreadyReady: viewerReady,
@@ -1256,7 +1266,7 @@ export const MemoDetailModal = ({
         {isEditing ? (
           <View style={styles.createMemoHeader}>
             <Pressable accessibilityLabel="返回" accessibilityRole="button" disabled={editor.uploading} onPress={() => void editor.requestClose()} style={styles.createMemoBackButton}>
-              <ChevronLeft color={editor.uploading ? "#cbd5e1" : "#0f172a"} size={30} />
+              <ChevronLeft color={editor.uploading ? palette.inkPlaceholder : palette.ink} size={30} />
             </Pressable>
             <View style={styles.createMemoHeaderActions}>
               <Text numberOfLines={1} style={[styles.createMemoStatus, styles.richEditorHeaderStatus, editor.saveEmphasized && styles.createMemoStatusActive, editor.error && styles.richEditorStatusError]}>{editor.saveLabel}</Text>
@@ -1274,9 +1284,9 @@ export const MemoDetailModal = ({
         ) : (
         <View style={styles.detailHeader}>
           <Pressable accessibilityLabel="返回列表" accessibilityRole="button" onPress={onClose} style={styles.detailHeaderButton}>
-            <ChevronLeft color="#475569" size={21} />
+            <ChevronLeft color={palette.inkBody} size={21} />
           </Pressable>
-          <View style={detailLayoutStyles.headerTitleSlot}>
+          <View style={themedDetailLayoutStyles.headerTitleSlot}>
             {titleCollapsed && !searchOpen && memo ? (
               !memo.isDeleted && !locksRichTextEdit ? (
                 <Pressable
@@ -1288,10 +1298,10 @@ export const MemoDetailModal = ({
                     onRichEdit(memo, "title");
                   }}
                 >
-                  <Text numberOfLines={1} style={detailLayoutStyles.headerTitle}>{memoTitle}</Text>
+                  <Text numberOfLines={1} style={themedDetailLayoutStyles.headerTitle}>{memoTitle}</Text>
                 </Pressable>
               ) : (
-                <Text numberOfLines={1} style={detailLayoutStyles.headerTitle}>{memoTitle}</Text>
+                <Text numberOfLines={1} style={themedDetailLayoutStyles.headerTitle}>{memoTitle}</Text>
               )
             ) : null}
           </View>
@@ -1331,7 +1341,7 @@ export const MemoDetailModal = ({
                 onPress={openViewerTags}
                 style={styles.detailHeaderIconButton}
               >
-                <Tag color={memo.tags.length > 0 ? "#16A06E" : "#475569"} size={20} />
+                <Tag color={memo.tags.length > 0 ? palette.accent : palette.inkBody} size={20} />
               </Pressable>
             ) : null}
             {memo && !memo.isDeleted ? (
@@ -1341,12 +1351,12 @@ export const MemoDetailModal = ({
                 onPress={() => setSearchOpen(true)}
                 style={styles.detailHeaderIconButton}
               >
-                <Search color="#475569" size={20} />
+                <Search color={palette.inkBody} size={20} />
               </Pressable>
             ) : null}
             {memo ? (
               <Pressable accessibilityLabel="笔记操作" accessibilityRole="button" onPress={() => setActionsOpen(true)} style={styles.detailHeaderIconButton}>
-                <MoreHorizontal color="#475569" size={21} />
+                <MoreHorizontal color={palette.inkBody} size={21} />
               </Pressable>
             ) : null}
           </View>
@@ -1420,10 +1430,10 @@ export const MemoDetailModal = ({
 
         {isLoading ? (
           <View style={styles.centerState}>
-            <ActivityIndicator color="#0f172a" />
+            <ActivityIndicator color={palette.ink} />
           </View>
         ) : memo ? (
-          <View style={detailLayoutStyles.body}>
+          <View style={themedDetailLayoutStyles.body}>
             {isEditing ? (
               <View style={{ paddingHorizontal: 12, paddingTop: 8 }}>
                 <TextInput
@@ -1433,7 +1443,7 @@ export const MemoDetailModal = ({
                     editor.markDirty();
                   }}
                   placeholder={DEFAULT_MEMO_TITLE}
-                  placeholderTextColor="#94a3b8"
+                  placeholderTextColor={palette.inkPlaceholder}
                   selectTextOnFocus={editingSession?.initialFocus === "title"}
                   style={styles.createMemoTitleInput}
                   value={editor.title}
@@ -1441,13 +1451,13 @@ export const MemoDetailModal = ({
                 <View style={[styles.createMemoMetaRow, styles.richStandaloneMetaRow]}>
                   <Pressable accessibilityLabel="所在笔记本" accessibilityRole="button" onPress={() => editor.setNotebookPickerOpen(true)} style={styles.createMemoNotebookButton}>
                     <Text numberOfLines={1} style={styles.createMemoNotebookText}>{editor.notebookLabel}</Text>
-                    <ChevronDown color="#64748b" size={14} />
+                    <ChevronDown color={palette.inkSecondary} size={14} />
                   </Pressable>
                   <Pressable accessibilityLabel="选择笔记标签" accessibilityRole="button" onPress={() => editor.setTagPickerOpen(true)} style={[styles.createMemoTagsButton, styles.richStandaloneTagsInput]}>
                     <Text numberOfLines={1} style={[styles.createMemoTagsInput, !editor.tagsText && styles.createMemoTagsPlaceholder]}>
                       {editor.tagsText || "添加标签"}
                     </Text>
-                    <ChevronDown color="#94a3b8" size={14} />
+                    <ChevronDown color={palette.inkPlaceholder} size={14} />
                   </Pressable>
                   <SmartTagButton
                     client={client}
@@ -1465,7 +1475,7 @@ export const MemoDetailModal = ({
                 {editor.error ? <Text style={styles.richEditorInlineError}>{editor.error}</Text> : null}
               </View>
             ) : titleCollapsed && !searchOpen ? null : (
-            <View style={detailLayoutStyles.meta}>
+            <View style={themedDetailLayoutStyles.meta}>
               {!memo.isDeleted && !locksRichTextEdit ? (
                 <Pressable
                   accessibilityHint="进入编辑并聚焦标题"
@@ -1498,7 +1508,7 @@ export const MemoDetailModal = ({
                 {memo.isDeleted ? (
                 <View style={styles.detailNotebookButton}>
                   <Text numberOfLines={1} selectable style={styles.detailNotebookName}>{notebookName}</Text>
-                  <ChevronDown color="#94a3b8" size={14} />
+                  <ChevronDown color={palette.inkPlaceholder} size={14} />
                 </View>
                 ) : (
                 <Pressable
@@ -1511,11 +1521,11 @@ export const MemoDetailModal = ({
                   style={styles.detailNotebookButton}
                 >
                   <Text numberOfLines={1} style={styles.detailNotebookName}>{notebookName}</Text>
-                  <ChevronDown color="#94a3b8" size={14} />
+                  <ChevronDown color={palette.inkPlaceholder} size={14} />
                 </Pressable>
                 )}
                 <View style={styles.detailTagsGroup}>
-                  <Tag color="#64748b" size={13} />
+                  <Tag color={palette.inkSecondary} size={13} />
                   <HighlightedMetadataText
                     activeIndex={activeMatchIndex}
                     matchOffset={metadataSearchMatches.title.length}
@@ -1528,7 +1538,7 @@ export const MemoDetailModal = ({
               ) : null}
               {searchOpen ? (
                 <View style={styles.noteSearchPanel}>
-                  <Search color="#64748b" size={16} />
+                  <Search color={palette.inkSecondary} size={16} />
                   <TextInput
                     accessibilityLabel="在当前笔记内搜索"
                     autoCapitalize="none"
@@ -1540,7 +1550,7 @@ export const MemoDetailModal = ({
                     }}
                     onSubmitEditing={() => moveSearchMatch(1)}
                     placeholder="搜索"
-                    placeholderTextColor="#94a3b8"
+                    placeholderTextColor={palette.inkPlaceholder}
                     returnKeyType="search"
                     style={styles.noteSearchInput}
                     value={searchQuery}
@@ -1559,7 +1569,7 @@ export const MemoDetailModal = ({
                     onPress={() => moveSearchMatch(-1)}
                     style={[styles.noteSearchIconButton, searchMatchCount === 0 && styles.buttonDisabled]}
                   >
-                    <ChevronUp color={searchMatchCount === 0 ? "#cbd5e1" : "#0f172a"} size={18} />
+                    <ChevronUp color={searchMatchCount === 0 ? palette.inkPlaceholder : palette.ink} size={18} />
                   </Pressable>
                   <Pressable
                     accessibilityLabel="下一个搜索结果"
@@ -1569,7 +1579,7 @@ export const MemoDetailModal = ({
                     onPress={() => moveSearchMatch(1)}
                     style={[styles.noteSearchIconButton, searchMatchCount === 0 && styles.buttonDisabled]}
                   >
-                    <ChevronDown color={searchMatchCount === 0 ? "#cbd5e1" : "#0f172a"} size={18} />
+                    <ChevronDown color={searchMatchCount === 0 ? palette.inkPlaceholder : palette.ink} size={18} />
                   </Pressable>
                   <Pressable
                     accessibilityLabel="关闭搜索"
@@ -1578,7 +1588,7 @@ export const MemoDetailModal = ({
                     onPress={closeNoteSearch}
                     style={styles.noteSearchIconButton}
                   >
-                    <X color="#0f172a" size={16} />
+                    <X color={palette.ink} size={16} />
                   </Pressable>
                 </View>
               ) : null}
@@ -1628,8 +1638,14 @@ export const MemoDetailModal = ({
               </View>
             )}
             {!viewerReady ? (
-              <View pointerEvents="none" style={detailLayoutStyles.viewerLoading}>
-                <ActivityIndicator color="#0f172a" />
+              <View
+                pointerEvents="none"
+                style={[
+                  themedDetailLayoutStyles.viewerLoading,
+                  resolvedTheme === "dark" ? detailLayoutStyles.viewerLoadingDark : null,
+                ]}
+              >
+                <ActivityIndicator color={palette.ink} />
               </View>
             ) : null}
           </View>
@@ -1648,7 +1664,7 @@ export const MemoDetailModal = ({
             }}
             style={[styles.detailEditFab, { bottom: editFabBottom }]}
           >
-            <Pencil color="#ffffff" size={20} />
+            <Pencil color={palette.fabIcon} size={20} />
           </Pressable>
         ) : null}
         </KeyboardAvoidingView>
@@ -1662,12 +1678,12 @@ export const MemoDetailModal = ({
                   <>
                     <DetailActionSheetItem
                       disabled={isSharing}
-                      icon={isSharing ? <ActivityIndicator color="#16A06E" size="small" /> : <Share2 color="#0f172a" size={18} />}
+                      icon={isSharing ? <ActivityIndicator color={palette.accent} size="small" /> : <Share2 color={palette.ink} size={18} />}
                       label={getMobileCatalog(resolvedLocale).mobile.memoDetail.shareNote}
                       onPress={() => closeActionsAndRun(() => onShare(memo))}
                     />
                     <DetailActionSheetItem
-                      icon={<History color="#0f172a" size={18} />}
+                      icon={<History color={palette.ink} size={18} />}
                       label={getMobileCatalog(resolvedLocale).editor.versionHistory}
                       onPress={() => closeActionsAndRun(() => onOpenRevisions(memo))}
                     />
@@ -1675,14 +1691,14 @@ export const MemoDetailModal = ({
                 ) : null}
                 {!memo.isDeleted && !locksRichTextEdit ? (
                   <DetailActionSheetItem
-                    icon={<Sparkles color="#16A06E" size={18} />}
+                    icon={<Sparkles color={palette.accent} size={18} />}
                     label={getMobileCatalog(resolvedLocale).aiAssistant.title}
                     onPress={() => closeActionsAndRun(() => setAiAssistantOpen(true))}
                   />
                 ) : null}
                 <DetailActionSheetItem
                   disabled={!canCopyMemoId}
-                  icon={<Copy color="#0f172a" size={18} />}
+                  icon={<Copy color={palette.ink} size={18} />}
                   label={canCopyMemoId
                     ? getMobileCatalog(resolvedLocale).editor.copyNoteId
                     : getMobileCatalog(resolvedLocale).editor.copyNoteIdAfterSync}
@@ -1690,7 +1706,7 @@ export const MemoDetailModal = ({
                 />
                 <DetailActionSheetItem
                   disabled={isExportingImage || !viewerReady || !imageSharePreferencesReady}
-                  icon={isExportingImage ? <ActivityIndicator color="#16A06E" size="small" /> : <Share2 color="#0f172a" size={18} />}
+                  icon={isExportingImage ? <ActivityIndicator color={palette.accent} size="small" /> : <Share2 color={palette.ink} size={18} />}
                   label={isExportingImage
                     ? getMobileCatalog(resolvedLocale).mobile.imageShare.generating
                     : getMobileCatalog(resolvedLocale).editor.imageShare.title}
@@ -1698,25 +1714,25 @@ export const MemoDetailModal = ({
                 />
                 <DetailActionSheetItem
                   disabled={isExportingImage || !viewerReady || !imageSharePreferencesReady}
-                  icon={<Download color="#0f172a" size={18} />}
+                  icon={<Download color={palette.ink} size={18} />}
                   label={getMobileCatalog(resolvedLocale).mobile.imageShare.advancedPng}
                   onPress={() => closeActionsAndRun(() => exportMemoImage("png"))}
                 />
                 <DetailActionSheetItem
                   disabled={isExportingImage || !viewerReady || !imageSharePreferencesReady}
-                  icon={<Download color="#0f172a" size={18} />}
+                  icon={<Download color={palette.ink} size={18} />}
                   label={getMobileCatalog(resolvedLocale).mobile.imageShare.advancedJpeg}
                   onPress={() => closeActionsAndRun(() => exportMemoImage("jpeg"))}
                 />
                 {memo.isDeleted ? (
                   <>
-                    <DetailActionSheetItem icon={<Search color="#0f172a" size={18} />} label="搜索当前笔记" onPress={() => closeActionsAndRun(() => {
+                    <DetailActionSheetItem icon={<Search color={palette.ink} size={18} />} label="搜索当前笔记" onPress={() => closeActionsAndRun(() => {
                       setSearchOpen(true);
                     })} />
-                    <DetailActionSheetItem icon={<History color="#0f172a" size={18} />} label="版本历史" onPress={() => closeActionsAndRun(() => onOpenRevisions(memo))} />
-                    <DetailActionSheetItem disabled={isRestoring} icon={<RotateCcw color="#0f172a" size={18} />} label={isRestoring ? "恢复中" : "恢复笔记"} onPress={() => closeActionsAndRun(() => onRestore(memo))} />
+                    <DetailActionSheetItem icon={<History color={palette.ink} size={18} />} label="版本历史" onPress={() => closeActionsAndRun(() => onOpenRevisions(memo))} />
+                    <DetailActionSheetItem disabled={isRestoring} icon={<RotateCcw color={palette.ink} size={18} />} label={isRestoring ? "恢复中" : "恢复笔记"} onPress={() => closeActionsAndRun(() => onRestore(memo))} />
                     <View style={styles.listActionDivider} />
-                    <DetailActionSheetItem danger disabled={isDeleting} icon={<Trash2 color="#b91c1c" size={18} />} label={isDeleting ? "删除中" : "彻底删除"} onPress={() => closeActionsAndRun(() => onDelete(memo))} />
+                    <DetailActionSheetItem danger disabled={isDeleting} icon={<Trash2 color={palette.danger} size={18} />} label={isDeleting ? "删除中" : "彻底删除"} onPress={() => closeActionsAndRun(() => onDelete(memo))} />
                   </>
                 ) : null}
               </Pressable>
@@ -1725,14 +1741,14 @@ export const MemoDetailModal = ({
         ) : null}
         <Modal animationType="fade" onRequestClose={preparedNoteImage ? closeImagePreview : imageShareFontPickerOpen ? () => setImageShareFontPickerOpen(false) : closeImageShareOptions} transparent visible={!imageSavePickerOpen && (imageShareOptionsOpen || Boolean(preparedNoteImage))}>
           {preparedNoteImage ? (
-          <SafeAreaView style={imageShareStyles.previewSafeArea}>
-            <View style={imageShareStyles.previewHeader}>
-              <Text style={imageShareStyles.previewTitle}>{getMobileCatalog(resolvedLocale).mobile.imageShare.preview}</Text>
-              <Pressable accessibilityLabel={getMobileCatalog(resolvedLocale).mobile.imageShare.closePreview} accessibilityRole="button" onPress={closeImagePreview} style={imageShareStyles.previewCloseButton}>
-                <X color="#0f172a" size={22} />
+          <SafeAreaView style={themedImageShareStyles.previewSafeArea}>
+            <View style={themedImageShareStyles.previewHeader}>
+              <Text style={themedImageShareStyles.previewTitle}>{getMobileCatalog(resolvedLocale).mobile.imageShare.preview}</Text>
+              <Pressable accessibilityLabel={getMobileCatalog(resolvedLocale).mobile.imageShare.closePreview} accessibilityRole="button" onPress={closeImagePreview} style={themedImageShareStyles.previewCloseButton}>
+                <X color={palette.ink} size={22} />
               </Pressable>
             </View>
-            <ScrollView contentContainerStyle={imageShareStyles.previewScrollContent} style={imageShareStyles.previewScroll}>
+            <ScrollView contentContainerStyle={themedImageShareStyles.previewScrollContent} style={themedImageShareStyles.previewScroll}>
               {/* The exporter caps images at 12 MP / 15,000 px. Keep those pixels:
                   Android's default decoder downsamples tall images into unreadable text. */}
               <RNImage
@@ -1740,7 +1756,7 @@ export const MemoDetailModal = ({
                 resizeMode="contain"
                 source={{ uri: preparedNoteImage.uri }}
                 style={[
-                  imageShareStyles.previewImage,
+                  themedImageShareStyles.previewImage,
                   preparedNoteImage.width > 0 && preparedNoteImage.height > 0
                     ? { aspectRatio: preparedNoteImage.width / preparedNoteImage.height, minHeight: 0 }
                     : null,
@@ -1767,21 +1783,21 @@ export const MemoDetailModal = ({
                 </Text>
               ) : null}
             </ScrollView>
-            <View style={imageShareStyles.previewActions}>
-              <Pressable accessibilityRole="button" onPress={() => void savePreparedNoteImage(preparedNoteImage)} style={imageShareStyles.previewSecondaryButton}>
-                <Download color="#0f172a" size={18} />
-                <Text style={imageShareStyles.previewSecondaryButtonText}>{getMobileCatalog(resolvedLocale).mobile.imageShare.save}</Text>
+            <View style={themedImageShareStyles.previewActions}>
+              <Pressable accessibilityRole="button" onPress={() => void savePreparedNoteImage(preparedNoteImage)} style={themedImageShareStyles.previewSecondaryButton}>
+                <Download color={palette.ink} size={18} />
+                <Text style={themedImageShareStyles.previewSecondaryButtonText}>{getMobileCatalog(resolvedLocale).mobile.imageShare.save}</Text>
               </Pressable>
-              <Pressable accessibilityRole="button" onPress={() => void sharePreparedNoteImage(preparedNoteImage)} style={imageShareStyles.previewPrimaryButton}>
+              <Pressable accessibilityRole="button" onPress={() => void sharePreparedNoteImage(preparedNoteImage)} style={themedImageShareStyles.previewPrimaryButton}>
                 <Share2 color="#ffffff" size={18} />
-                <Text style={imageShareStyles.previewPrimaryButtonText}>{getMobileCatalog(resolvedLocale).mobile.imageShare.share}</Text>
+                <Text style={themedImageShareStyles.previewPrimaryButtonText}>{getMobileCatalog(resolvedLocale).mobile.imageShare.share}</Text>
               </Pressable>
             </View>
             {savedImagePath ? (
-              <View accessibilityLiveRegion="polite" pointerEvents="none" style={imageShareStyles.savedImageTipContainer}>
-                <View style={imageShareStyles.savedImageTip}>
-                  <Text style={imageShareStyles.savedImageTipTitle}>{getMobileCatalog(resolvedLocale).mobile.imageShare.savedTo}</Text>
-                  <Text style={imageShareStyles.savedImageTipPath}>{savedImagePath}</Text>
+              <View accessibilityLiveRegion="polite" pointerEvents="none" style={themedImageShareStyles.savedImageTipContainer}>
+                <View style={themedImageShareStyles.savedImageTip}>
+                  <Text style={themedImageShareStyles.savedImageTipTitle}>{getMobileCatalog(resolvedLocale).mobile.imageShare.savedTo}</Text>
+                  <Text style={themedImageShareStyles.savedImageTipPath}>{savedImagePath}</Text>
                 </View>
               </View>
             ) : null}
@@ -1794,15 +1810,15 @@ export const MemoDetailModal = ({
               { paddingBottom: Math.max(safeAreaInsets.bottom, Platform.OS === "android" ? ANDROID_SYSTEM_NAVIGATION_FALLBACK : 0) },
             ]}
           >
-            <Pressable style={[styles.actionSheet, imageShareStyles.sheetContainer]}>
+            <Pressable style={[styles.actionSheet, themedImageShareStyles.sheetContainer]}>
               <View style={styles.actionSheetHandle} />
               {imageShareFontPickerOpen ? (
-                <View style={imageShareStyles.fontPicker}>
-                  <View style={imageShareStyles.fontPickerHeader}>
-                    <Pressable accessibilityRole="button" accessibilityLabel={getMobileCatalog(resolvedLocale).mobile.imageShare.backToSettings} onPress={() => setImageShareFontPickerOpen(false)} style={imageShareStyles.previewCloseButton}>
-                      <ChevronLeft color="#0f172a" size={22} />
+                <View style={themedImageShareStyles.fontPicker}>
+                  <View style={themedImageShareStyles.fontPickerHeader}>
+                    <Pressable accessibilityRole="button" accessibilityLabel={getMobileCatalog(resolvedLocale).mobile.imageShare.backToSettings} onPress={() => setImageShareFontPickerOpen(false)} style={themedImageShareStyles.previewCloseButton}>
+                      <ChevronLeft color={palette.ink} size={22} />
                     </Pressable>
-                    <Text style={imageShareStyles.previewTitle}>{getMobileCatalog(resolvedLocale).editor.imageShare.fontStyle}</Text>
+                    <Text style={themedImageShareStyles.previewTitle}>{getMobileCatalog(resolvedLocale).editor.imageShare.fontStyle}</Text>
                   </View>
                   <MobileNoteImageFontPicker
                     selected={imageShareFontStyle}
@@ -1823,13 +1839,13 @@ export const MemoDetailModal = ({
                   />
                 </View>
               ) : null}
-              <View style={[imageShareStyles.settingsContent, imageShareFontPickerOpen && imageShareStyles.hidden]}>
+              <View style={[themedImageShareStyles.settingsContent, imageShareFontPickerOpen && themedImageShareStyles.hidden]}>
               <Text style={styles.actionSheetTitle}>{getMobileCatalog(resolvedLocale).editor.imageShare.title}</Text>
-              <ScrollView contentContainerStyle={imageShareStyles.optionsContent} showsVerticalScrollIndicator={false} style={imageShareStyles.optionsScroll}>
+              <ScrollView contentContainerStyle={themedImageShareStyles.optionsContent} showsVerticalScrollIndicator={false} style={themedImageShareStyles.optionsScroll}>
 
               {imageSharePreferencesReady ? <>
               <Text style={styles.actionSheetSectionTitle}>{getMobileCatalog(resolvedLocale).editor.imageShare.theme}</Text>
-              <View style={imageShareStyles.themeGrid}>
+              <View style={themedImageShareStyles.themeGrid}>
                 {MOBILE_THEME_OPTIONS.map((item) => {
                   const isSelected = imageShareTheme === item.id;
                   const label = getMobileCatalog(resolvedLocale).editor.imageShare.themes[item.id];
@@ -1840,9 +1856,9 @@ export const MemoDetailModal = ({
                       accessibilityState={{ selected: isSelected }}
                       onPress={() => setImageSharePreference("theme", item.id)}
                       style={[
-                        imageShareStyles.themeCard,
+                        themedImageShareStyles.themeCard,
                         { backgroundColor: item.previewBg },
-                        isSelected && imageShareStyles.themeCardActive,
+                        isSelected && themedImageShareStyles.themeCardActive,
                       ]}
                     >
                       <View accessibilityElementsHidden style={{ width: 46, padding: 5, borderRadius: 3, backgroundColor: NOTE_IMAGE_THEMES[item.id].cardBg, borderWidth: 1, borderColor: NOTE_IMAGE_THEMES[item.id].dividerColor }}>
@@ -1850,7 +1866,7 @@ export const MemoDetailModal = ({
                         <View style={{ height: 2, width: 32, backgroundColor: NOTE_IMAGE_THEMES[item.id].textColor, marginBottom: 4 }} />
                         <View style={{ height: 6, borderLeftWidth: 2, borderLeftColor: NOTE_IMAGE_THEMES[item.id].quoteBorder, backgroundColor: NOTE_IMAGE_THEMES[item.id].quoteBg }} />
                       </View>
-                      <Text numberOfLines={1} style={[imageShareStyles.themeLabel, { color: item.id === "book" || item.id === "black-sun" ? "#f8fafc" : "#1f2937" }, isSelected && imageShareStyles.themeLabelActive]}>
+                      <Text numberOfLines={1} style={[themedImageShareStyles.themeLabel, { color: item.id === "book" || item.id === "black-sun" ? "#f8fafc" : "#1f2937" }, isSelected && themedImageShareStyles.themeLabelActive]}>
                         {label}
                       </Text>
                     </Pressable>
@@ -1859,27 +1875,27 @@ export const MemoDetailModal = ({
               </View>
 
               <Text style={styles.actionSheetSectionTitle}>{getMobileCatalog(resolvedLocale).mobile.imageShare.fontSize}</Text>
-              <View style={imageShareStyles.choiceRow}>
+              <View style={themedImageShareStyles.choiceRow}>
                 {([
                   ["sm", getMobileCatalog(resolvedLocale).editor.imageShare.fontSizes.sm],
                   ["md", getMobileCatalog(resolvedLocale).editor.imageShare.fontSizes.md],
                   ["lg", getMobileCatalog(resolvedLocale).editor.imageShare.fontSizes.lg],
                 ] as const).map(([value, label]) => (
-                  <Pressable key={value} accessibilityRole="button" onPress={() => setImageSharePreference("fontSize", value)} style={[imageShareStyles.choice, imageShareFontSize === value && imageShareStyles.choiceActive]}>
-                    <Text style={[imageShareStyles.choiceText, imageShareFontSize === value && imageShareStyles.choiceTextActive]}>{label}</Text>
+                  <Pressable key={value} accessibilityRole="button" onPress={() => setImageSharePreference("fontSize", value)} style={[themedImageShareStyles.choice, imageShareFontSize === value && themedImageShareStyles.choiceActive]}>
+                    <Text style={[themedImageShareStyles.choiceText, imageShareFontSize === value && themedImageShareStyles.choiceTextActive]}>{label}</Text>
                   </Pressable>
                 ))}
               </View>
 
               <Text style={styles.actionSheetSectionTitle}>{getMobileCatalog(resolvedLocale).mobile.imageShare.cardWidth}</Text>
-              <View style={imageShareStyles.choiceRow}>
+              <View style={themedImageShareStyles.choiceRow}>
                 {([
                   ["compact", getMobileCatalog(resolvedLocale).editor.imageShare.fontSizes.sm],
                   ["standard", getMobileCatalog(resolvedLocale).editor.imageShare.fontSizes.md],
                   ["wide", getMobileCatalog(resolvedLocale).mobile.imageShare.wide],
                 ] as const).map(([value, label]) => (
-                  <Pressable key={value} accessibilityRole="button" onPress={() => setImageSharePreference("cardWidth", value)} style={[imageShareStyles.choice, imageShareCardWidth === value && imageShareStyles.choiceActive]}>
-                    <Text style={[imageShareStyles.choiceText, imageShareCardWidth === value && imageShareStyles.choiceTextActive]}>{label}</Text>
+                  <Pressable key={value} accessibilityRole="button" onPress={() => setImageSharePreference("cardWidth", value)} style={[themedImageShareStyles.choice, imageShareCardWidth === value && themedImageShareStyles.choiceActive]}>
+                    <Text style={[themedImageShareStyles.choiceText, imageShareCardWidth === value && themedImageShareStyles.choiceTextActive]}>{label}</Text>
                   </Pressable>
                 ))}
               </View>
@@ -1889,16 +1905,16 @@ export const MemoDetailModal = ({
                 accessibilityLabel={`${getMobileCatalog(resolvedLocale).editor.imageShare.fontStyle}: ${imageShareFontLabel}`}
                 accessibilityHint={getMobileCatalog(resolvedLocale).mobile.imageShare.openFontPicker}
                 onPress={() => setImageShareFontPickerOpen(true)}
-                style={imageShareStyles.fontSelector}
+                style={themedImageShareStyles.fontSelector}
               >
-                <Text style={imageShareStyles.optionLabel}>{getMobileCatalog(resolvedLocale).editor.imageShare.fontStyle}</Text>
-                <Text style={imageShareStyles.fontSelectorValue}>
+                <Text style={themedImageShareStyles.optionLabel}>{getMobileCatalog(resolvedLocale).editor.imageShare.fontStyle}</Text>
+                <Text style={themedImageShareStyles.fontSelectorValue}>
                   {imageShareFontLabel}
                 </Text>
-                <ChevronDown color="#64748b" size={18} />
+                <ChevronDown color={palette.inkSecondary} size={18} />
               </Pressable>
 
-              <Text style={imageShareStyles.choiceText}>{getMobileCatalog(resolvedLocale).mobile.imageShare.fontDownloadNotice}</Text>
+              <Text style={themedImageShareStyles.choiceText}>{getMobileCatalog(resolvedLocale).mobile.imageShare.fontDownloadNotice}</Text>
 
               <Text style={styles.actionSheetSectionTitle}>{getMobileCatalog(resolvedLocale).editor.imageShare.metadata}</Text>
               {([
@@ -1908,17 +1924,17 @@ export const MemoDetailModal = ({
                 [getMobileCatalog(resolvedLocale).editor.imageShare.fields.updatedAt, imageShareUpdatedAt, "showUpdatedAt"],
                 [getMobileCatalog(resolvedLocale).editor.imageShare.fields.branding, imageShareBranding, "showBranding"],
               ] as const).map(([label, selected, preferenceKey]) => (
-                <Pressable key={label} accessibilityRole="checkbox" accessibilityState={{ checked: selected }} onPress={() => setImageSharePreference(preferenceKey, !selected)} style={imageShareStyles.optionRow}>
-                  <Text style={imageShareStyles.optionLabel}>{label}</Text>
-                  <Text style={imageShareStyles.optionCheck}>{selected ? "✓" : ""}</Text>
+                <Pressable key={label} accessibilityRole="checkbox" accessibilityState={{ checked: selected }} onPress={() => setImageSharePreference(preferenceKey, !selected)} style={themedImageShareStyles.optionRow}>
+                  <Text style={themedImageShareStyles.optionLabel}>{label}</Text>
+                  <Text style={themedImageShareStyles.optionCheck}>{selected ? "✓" : ""}</Text>
                 </Pressable>
               ))}
 
               <Text style={styles.actionSheetSectionTitle}>{getMobileCatalog(resolvedLocale).mobile.imageShare.format}</Text>
-              <View style={imageShareStyles.choiceRow}>
+              <View style={themedImageShareStyles.choiceRow}>
                 {(["png", "jpeg"] as const).map((value) => (
-                  <Pressable key={value} accessibilityRole="button" onPress={() => setImageSharePreference("format", value)} style={[imageShareStyles.formatChoice, imageShareFormat === value && imageShareStyles.choiceActive]}>
-                    <Text style={[imageShareStyles.choiceText, imageShareFormat === value && imageShareStyles.choiceTextActive]}>
+                  <Pressable key={value} accessibilityRole="button" onPress={() => setImageSharePreference("format", value)} style={[themedImageShareStyles.formatChoice, imageShareFormat === value && themedImageShareStyles.choiceActive]}>
+                    <Text style={[themedImageShareStyles.choiceText, imageShareFormat === value && themedImageShareStyles.choiceTextActive]}>
                       {value === "png"
                         ? getMobileCatalog(resolvedLocale).mobile.imageShare.pngOption
                         : getMobileCatalog(resolvedLocale).mobile.imageShare.jpegOption}
@@ -1928,7 +1944,7 @@ export const MemoDetailModal = ({
               </View>
               </> : <ActivityIndicator />}
               </ScrollView>
-              <View style={imageShareStyles.sheetFooter}>
+              <View style={themedImageShareStyles.sheetFooter}>
                 <Pressable
                   accessibilityRole="button"
                   disabled={isExportingImage || !viewerReady || !imageSharePreferencesReady}
@@ -1946,10 +1962,10 @@ export const MemoDetailModal = ({
                       intent: "preview",
                     });
                   }}
-                  style={[imageShareStyles.shareButton, (isExportingImage || !viewerReady || !imageSharePreferencesReady) && styles.buttonDisabled]}
+                  style={[themedImageShareStyles.shareButton, (isExportingImage || !viewerReady || !imageSharePreferencesReady) && styles.buttonDisabled]}
                 >
                   {isExportingImage ? <ActivityIndicator color="#ffffff" size="small" /> : <Share2 color="#ffffff" size={18} />}
-                  <Text style={imageShareStyles.shareButtonText}>
+                  <Text style={themedImageShareStyles.shareButtonText}>
                     {isExportingImage
                       ? (imageFontStatus === "loading" ? getMobileCatalog(resolvedLocale).mobile.imageShare.loadingFont : imageExportStage === "render"
                         ? getMobileCatalog(resolvedLocale).mobile.imageShare.rendering
@@ -2113,13 +2129,13 @@ export const MemoDetailModal = ({
                 <Text numberOfLines={1} style={styles.detailNotebookName}>
                   {notebooks.find((notebook) => notebook.id === viewerNotebookId)?.name ?? notebookName}
                 </Text>
-                <ChevronDown color="#64748b" size={14} />
+                <ChevronDown color={palette.inkSecondary} size={14} />
               </Pressable>
             )}
             footerContent={(
-              <View style={detailLayoutStyles.metadataActions}>
-                <Pressable accessibilityRole="button" disabled={metadataSaving} onPress={() => setViewerTagsOpen(false)} style={[styles.createMemoDoneButton, detailLayoutStyles.metadataCancel]}>
-                  <Text style={[styles.createMemoDoneText, detailLayoutStyles.metadataCancelText]}>取消</Text>
+              <View style={themedDetailLayoutStyles.metadataActions}>
+                <Pressable accessibilityRole="button" disabled={metadataSaving} onPress={() => setViewerTagsOpen(false)} style={[styles.createMemoDoneButton, themedDetailLayoutStyles.metadataCancel]}>
+                  <Text style={[styles.createMemoDoneText, themedDetailLayoutStyles.metadataCancelText]}>取消</Text>
                 </Pressable>
                 <Pressable accessibilityRole="button" disabled={metadataSaving || isSaving} onPress={() => void saveViewerMetadata()} style={[styles.createMemoDoneButton, (metadataSaving || isSaving) && styles.createMemoDoneButtonDisabled]}>
                   <Text style={[styles.createMemoDoneText, (metadataSaving || isSaving) && styles.createMemoDoneTextDisabled]}>{metadataSaving ? "保存中" : "保存"}</Text>
@@ -2162,7 +2178,7 @@ const imageShareStyles = StyleSheet.create({
     flex: 1,
   },
   sheetFooter: {
-    borderTopColor: "#e2e8f0",
+    borderTopColor: "#e6e1d6",
     borderTopWidth: 1,
     paddingTop: 12,
   },
@@ -2183,14 +2199,14 @@ const imageShareStyles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#e2e8f0",
+    borderColor: "#e6e1d6",
   },
   themeCardActive: {
-    borderColor: "#16A06E",
+    borderColor: "#187958",
     borderWidth: 2,
   },
   themeLabel: {
-    color: "#334155",
+    color: "#2c2925",
     fontSize: 12,
     fontWeight: "600",
   },
@@ -2199,19 +2215,19 @@ const imageShareStyles = StyleSheet.create({
   },
   choice: {
     alignItems: "center",
-    borderColor: "#cbd5e1",
+    borderColor: "#d4cdbf",
     borderRadius: 8,
     borderWidth: 1,
     flex: 1,
     justifyContent: "center",
     minHeight: 40,
     paddingHorizontal: 8,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#f9f7f2",
   },
   choiceActive: {
-    borderColor: "#16A06E",
+    borderColor: "#187958",
     borderWidth: 2,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fdfcf9",
   },
   choiceRow: {
     flexDirection: "row",
@@ -2242,44 +2258,44 @@ const imageShareStyles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
+    borderColor: "#d4cdbf",
     borderRadius: 8,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#f9f7f2",
   },
   fontSelectorValue: {
-    color: "#64748b",
+    color: "#6b665e",
     fontSize: 14,
     flexShrink: 1,
     textAlign: "right",
   },
   choiceText: {
-    color: "#64748b",
+    color: "#6b665e",
     fontSize: 13,
     fontWeight: "600",
   },
   choiceTextActive: {
-    color: "#0f172a",
+    color: "#1c1b18",
     fontWeight: "700",
   },
   formatChoice: {
     alignItems: "center",
-    borderColor: "#cbd5e1",
+    borderColor: "#d4cdbf",
     borderRadius: 8,
     borderWidth: 1,
     flex: 1,
     justifyContent: "center",
     minHeight: 42,
     paddingHorizontal: 8,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#f9f7f2",
   },
   optionCheck: {
-    color: "#16A06E",
+    color: "#187958",
     fontSize: 18,
-    fontWeight: "800",
+    fontWeight: "600",
     width: 24,
   },
   optionLabel: {
-    color: "#0f172a",
+    color: "#1c1b18",
     flex: 1,
     fontSize: 14,
     fontWeight: "600",
@@ -2292,7 +2308,7 @@ const imageShareStyles = StyleSheet.create({
   },
   shareButton: {
     alignItems: "center",
-    backgroundColor: "#16A06E",
+    backgroundColor: "#187958",
     borderRadius: 10,
     flexDirection: "row",
     gap: 8,
@@ -2302,16 +2318,16 @@ const imageShareStyles = StyleSheet.create({
   shareButtonText: {
     color: "#ffffff",
     fontSize: 15,
-    fontWeight: "800",
+    fontWeight: "600",
   },
   previewSafeArea: {
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "#f4f1ea",
     flex: 1,
   },
   previewHeader: {
     alignItems: "center",
-    backgroundColor: "#ffffff",
-    borderBottomColor: "#e2e8f0",
+    backgroundColor: "#fdfcf9",
+    borderBottomColor: "#e6e1d6",
     borderBottomWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -2319,9 +2335,9 @@ const imageShareStyles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   previewTitle: {
-    color: "#0f172a",
+    color: "#1c1b18",
     fontSize: 17,
-    fontWeight: "800",
+    fontWeight: "600",
   },
   previewCloseButton: {
     alignItems: "center",
@@ -2337,7 +2353,7 @@ const imageShareStyles = StyleSheet.create({
   },
   previewImage: {
     alignSelf: "stretch",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fdfcf9",
     borderRadius: 12,
     minHeight: 240,
     width: "100%",
@@ -2345,15 +2361,15 @@ const imageShareStyles = StyleSheet.create({
   previewWarning: {
     backgroundColor: "#fffbeb",
     borderRadius: 8,
-    color: "#a16207",
+    color: "#92400e",
     fontSize: 13,
     lineHeight: 20,
     marginTop: 12,
     padding: 10,
   },
   previewActions: {
-    backgroundColor: "#ffffff",
-    borderTopColor: "#e2e8f0",
+    backgroundColor: "#fdfcf9",
+    borderTopColor: "#e6e1d6",
     borderTopWidth: 1,
     flexDirection: "row",
     gap: 8,
@@ -2361,7 +2377,7 @@ const imageShareStyles = StyleSheet.create({
   },
   previewSecondaryButton: {
     alignItems: "center",
-    borderColor: "#cbd5e1",
+    borderColor: "#d4cdbf",
     borderRadius: 9,
     borderWidth: 1,
     flex: 1,
@@ -2371,13 +2387,13 @@ const imageShareStyles = StyleSheet.create({
     minHeight: 44,
   },
   previewSecondaryButtonText: {
-    color: "#0f172a",
+    color: "#1c1b18",
     fontSize: 13,
     fontWeight: "700",
   },
   previewPrimaryButton: {
     alignItems: "center",
-    backgroundColor: "#16A06E",
+    backgroundColor: "#187958",
     borderRadius: 9,
     flex: 1,
     flexDirection: "row",
@@ -2388,7 +2404,7 @@ const imageShareStyles = StyleSheet.create({
   previewPrimaryButtonText: {
     color: "#ffffff",
     fontSize: 13,
-    fontWeight: "800",
+    fontWeight: "600",
   },
   savedImageTipContainer: {
     alignItems: "center",
@@ -2398,7 +2414,7 @@ const imageShareStyles = StyleSheet.create({
     right: 16,
   },
   savedImageTip: {
-    backgroundColor: "#0f172a",
+    backgroundColor: "#181816",
     borderRadius: 12,
     maxWidth: 520,
     paddingHorizontal: 16,
@@ -2411,7 +2427,7 @@ const imageShareStyles = StyleSheet.create({
     fontWeight: "700",
   },
   savedImageTipPath: {
-    color: "#cbd5e1",
+    color: "#d4cdbf",
     fontSize: 12,
     lineHeight: 18,
     marginTop: 4,
@@ -2420,10 +2436,10 @@ const imageShareStyles = StyleSheet.create({
 
 const detailLayoutStyles = StyleSheet.create({
   metadataCancel: {
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "#ebe6db",
   },
   metadataCancelText: {
-    color: "#475569",
+    color: "#57534e",
   },
   metadataActions: {
     flexDirection: "row",
@@ -2448,38 +2464,41 @@ const detailLayoutStyles = StyleSheet.create({
     minWidth: 0,
   },
   headerTitle: {
-    color: "#0f172a",
+    color: "#1c1b18",
     fontSize: 14,
     fontWeight: "600",
   },
   viewer: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fdfcf9",
     flex: 1,
     minHeight: 0,
   },
   viewerDark: {
-    backgroundColor: "#0f172a",
+    backgroundColor: "#22211e",
   },
   viewerLoading: {
     ...StyleSheet.absoluteFill,
     alignItems: "center",
-    backgroundColor: "rgba(248,250,252,0.72)",
+    backgroundColor: "rgba(253,252,249,0.72)",
     justifyContent: "center",
     top: 120,
+  },
+  viewerLoadingDark: {
+    backgroundColor: "rgba(34,33,30,0.72)",
   },
 });
 
 const resourceImageStyles = StyleSheet.create({
   previewBackdrop: {
     alignItems: "center",
-    backgroundColor: "rgba(2,6,23,0.96)",
+    backgroundColor: "rgba(21,21,19,0.96)",
     flex: 1,
     justifyContent: "center",
     padding: 16,
   },
   previewClose: {
     alignItems: "center",
-    backgroundColor: "rgba(15,23,42,0.78)",
+    backgroundColor: "rgba(28,27,24,0.82)",
     borderRadius: 999,
     height: 46,
     justifyContent: "center",

@@ -218,11 +218,13 @@ export const MobileAiAssistantModal = ({
     }
   };
 
-  const surface = dark ? "#111c18" : "#ffffff";
-  const mutedSurface = dark ? "#17251f" : "#f8fafc";
-  const border = dark ? "#33453d" : "#dbe4df";
-  const foreground = dark ? "#e2e8f0" : "#0f172a";
-  const muted = dark ? "#94a3b8" : "#64748b";
+  const surface = dark ? "#22211e" : "#fdfcf9";
+  const mutedSurface = dark ? "#1d1c1a" : "#f9f7f2";
+  const border = dark ? "#2e2c28" : "#e6e1d6";
+  const foreground = dark ? "#eae6df" : "#1c1b18";
+  const muted = dark ? "#948e84" : "#6b665e";
+  const accent = dark ? "#43b88c" : "#187958";
+  const accentText = dark ? "#7cd9b4" : "#125e44";
   const actionDisabled = applying || (!selectedPrompt && action === "custom" && !customInstruction.trim());
 
   const selectField = (label: string, value: string, onPress: () => void) => (
@@ -279,7 +281,7 @@ export const MobileAiAssistantModal = ({
       <SafeAreaView style={[styles.safeArea, { backgroundColor: surface }]}>
         <View style={[styles.header, { borderBottomColor: border }]}>
           <View style={styles.titleRow}>
-            <Sparkles color="#16A06E" size={20} />
+            <Sparkles color={accent} size={20} />
             <Text style={[styles.title, { color: foreground }]}>{getMobileCatalog(resolvedLocale).aiAssistant.title}</Text>
           </View>
           <Pressable accessibilityLabel={getMobileCatalog(resolvedLocale).common.close} accessibilityRole="button" onPress={onClose} style={styles.iconButton}>
@@ -309,7 +311,7 @@ export const MobileAiAssistantModal = ({
           ) : null}
           <View style={styles.resultHeader}>
             <Text style={[styles.fieldLabel, { color: foreground }]}>{getMobileCatalog(resolvedLocale).mobile.ai.draft}</Text>
-            {generating ? <Text style={styles.streaming}>{getMobileCatalog(resolvedLocale).mobile.ai.generating}</Text> : null}
+            {generating ? <Text style={[styles.streaming, { color: accentText }]}>{getMobileCatalog(resolvedLocale).mobile.ai.generating}</Text> : null}
           </View>
           <View style={[styles.result, { borderColor: border, backgroundColor: mutedSurface }]}>
             <Text selectable style={[styles.resultText, { color: output ? foreground : muted }]}>
@@ -376,8 +378,8 @@ export const MobileAiAssistantModal = ({
               <ScrollView style={styles.pickerScroll}>
                 {pickerOptions.map((option) => (
                   <Pressable key={option.value} onPress={() => choosePickerOption(option.value)} style={[styles.pickerOption, { borderBottomColor: border }]}>
-                    <Text style={[styles.pickerOptionText, { color: option.active ? "#16A06E" : foreground }]}>{option.label}</Text>
-                    {option.active ? <Check color="#16A06E" size={18} /> : null}
+                    <Text style={[styles.pickerOptionText, { color: option.active ? accent : foreground }]}>{option.label}</Text>
+                    {option.active ? <Check color={accent} size={18} /> : null}
                   </Pressable>
                 ))}
               </ScrollView>
@@ -403,22 +405,22 @@ const styles = StyleSheet.create({
   selectText: { fontSize: 15, fontWeight: "600" },
   instructionInput: { minHeight: 88, borderWidth: 1, borderRadius: 9, paddingHorizontal: 12, paddingVertical: 10, fontSize: 15, textAlignVertical: "top" },
   resultHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  streaming: { color: "#087a51", fontSize: 12, fontWeight: "600" },
+  streaming: { color: "#125e44", fontSize: 12, fontWeight: "600" },
   result: { minHeight: 220, borderWidth: 1, borderRadius: 10, padding: 14 },
   resultText: { fontSize: 15, lineHeight: 23 },
   refineRow: { flexDirection: "row", gap: 8, alignItems: "center" },
   refineInput: { flex: 1, height: 44, borderWidth: 1, borderRadius: 9, paddingHorizontal: 12, fontSize: 14 },
-  refineButton: { height: 44, paddingHorizontal: 14, borderRadius: 9, backgroundColor: "#16A06E", alignItems: "center", justifyContent: "center" },
-  refineButtonText: { color: "#ffffff", fontSize: 14, fontWeight: "700" },
+  refineButton: { height: 44, paddingHorizontal: 14, borderRadius: 9, backgroundColor: "#187958", alignItems: "center", justifyContent: "center" },
+  refineButtonText: { color: "#ffffff", fontSize: 14, fontWeight: "600" },
   error: { color: "#be123c", fontSize: 13, lineHeight: 19 },
   footer: { padding: 12, gap: 10, borderTopWidth: StyleSheet.hairlineWidth },
   footerRow: { flexDirection: "row", gap: 8 },
   secondaryButton: { minHeight: 40, flex: 1, flexDirection: "row", gap: 6, borderWidth: 1, borderRadius: 9, alignItems: "center", justifyContent: "center" },
   secondaryText: { fontSize: 13, fontWeight: "600" },
-  primaryButton: { height: 44, borderRadius: 9, backgroundColor: "#16A06E", flexDirection: "row", gap: 7, alignItems: "center", justifyContent: "center" },
-  primaryText: { color: "#ffffff", fontSize: 15, fontWeight: "700" },
+  primaryButton: { height: 44, borderRadius: 9, backgroundColor: "#187958", flexDirection: "row", gap: 7, alignItems: "center", justifyContent: "center" },
+  primaryText: { color: "#ffffff", fontSize: 15, fontWeight: "600" },
   disabled: { opacity: 0.45 },
-  pickerBackdrop: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(15,23,42,0.38)" },
+  pickerBackdrop: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(28,27,24,0.38)" },
   pickerSheet: { maxHeight: "72%", borderTopLeftRadius: 18, borderTopRightRadius: 18, paddingHorizontal: 16, paddingTop: 18, paddingBottom: 24 },
   pickerTitle: { fontSize: 17, fontWeight: "700", paddingBottom: 12 },
   pickerScroll: { flexGrow: 0 },

@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Pressable, Text, TextInput } from "../components/LocalizedText";
 import { resolveMobileThemeStyles, useMobileTheme, type MobileResolvedTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import { useSession } from "../lib/session";
 
 export const AccountSecurityPanel = ({
@@ -16,6 +17,7 @@ export const AccountSecurityPanel = ({
   active: boolean;
 }) => {
   const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   refreshAccountSecurityThemeStyles(resolvedTheme);
   const { client } = useSession();
   const [currentPassword, setCurrentPassword] = useState("");
@@ -50,7 +52,7 @@ export const AccountSecurityPanel = ({
   return (
     <View style={styles.content}>
       <View style={styles.hero}>
-        <KeyRound color="#15803d" size={22} />
+        <KeyRound color={palette.accent} size={22} />
         <View style={styles.flex}>
           <Text style={styles.cardTitle}>修改密码</Text>
           <Text style={styles.help}>修改后会保留当前设备登录，并退出其他设备上的登录会话。</Text>
@@ -77,7 +79,10 @@ const Field = ({ help, label, onChangeText, placeholder, secure = true, value }:
   placeholder?: string;
   secure?: boolean;
   value: string;
-}) => (
+}) => {
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
+  return (
   <View style={styles.field}>
     <Text style={styles.label}>{label}</Text>
     <TextInput
@@ -85,14 +90,15 @@ const Field = ({ help, label, onChangeText, placeholder, secure = true, value }:
       autoCorrect={false}
       onChangeText={onChangeText}
       placeholder={placeholder}
-      placeholderTextColor="#94a3b8"
+      placeholderTextColor={palette.inkPlaceholder}
       secureTextEntry={secure}
       style={styles.input}
       value={value}
     />
     {help ? <Text style={styles.help}>{help}</Text> : null}
   </View>
-);
+  );
+};
 
 const PrimaryButton = ({ disabled, label, onPress }: { disabled: boolean; label: string; onPress: () => void }) => (
   <Pressable disabled={disabled} onPress={onPress} style={[styles.primaryButton, disabled && styles.disabled]}>
@@ -104,16 +110,16 @@ const baseAccountSecurityStyles = StyleSheet.create({
   content: { gap: 14, padding: 16, paddingBottom: 40 },
   hero: { alignItems: "flex-start", backgroundColor: "transparent", flexDirection: "row", gap: 10 },
   flex: { flex: 1 },
-  cardTitle: { color: "#17211a", fontSize: 16, fontWeight: "800" },
-  help: { color: "#64748b", fontSize: 12, lineHeight: 18, marginTop: 3 },
+  cardTitle: { color: "#1c1b18", fontSize: 16, fontWeight: "600" },
+  help: { color: "#6b665e", fontSize: 12, lineHeight: 18, marginTop: 3 },
   field: { gap: 7 },
-  label: { color: "#334155", fontSize: 13, fontWeight: "700" },
-  input: { backgroundColor: "#ffffff", borderColor: "#cad8cc", borderRadius: 10, borderWidth: 1, color: "#17211a", minHeight: 48, paddingHorizontal: 13 },
-  primaryButton: { alignItems: "center", backgroundColor: "#15803d", borderRadius: 10, minHeight: 48, justifyContent: "center", paddingHorizontal: 16 },
-  primaryButtonText: { color: "#ffffff", fontSize: 14, fontWeight: "800" },
+  label: { color: "#2c2925", fontSize: 13, fontWeight: "600" },
+  input: { backgroundColor: "#fdfcf9", borderColor: "#d4cdbf", borderRadius: 10, borderWidth: 1, color: "#1c1b18", minHeight: 48, paddingHorizontal: 13 },
+  primaryButton: { alignItems: "center", backgroundColor: "#187958", borderRadius: 10, minHeight: 48, justifyContent: "center", paddingHorizontal: 16 },
+  primaryButtonText: { color: "#ffffff", fontSize: 14, fontWeight: "600" },
   disabled: { opacity: 0.45 },
   error: { color: "#be123c", fontSize: 13, lineHeight: 19 },
-  success: { color: "#15803d", fontSize: 13, fontWeight: "700", lineHeight: 19 },
+  success: { color: "#187958", fontSize: 13, fontWeight: "600", lineHeight: 19 },
 });
 
 let styles = baseAccountSecurityStyles;

@@ -39,15 +39,15 @@ const MobileBottomNavButton = ({
     className={cn(
       "relative mx-auto flex h-12 w-20 flex-col items-center justify-center gap-0.5 rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/25",
       active
-        ? "font-bold text-slate-950 [&_svg]:text-slate-950"
-        : "text-slate-500 hover:bg-slate-100 hover:text-slate-950"
+        ? "font-semibold text-slate-950 [&_svg]:text-[var(--brand-green-text)]"
+        : "text-slate-500 hover:bg-workspace-hover hover:text-slate-950"
     )}
     type="button"
     aria-current={active ? "page" : undefined}
     aria-label={label}
     onClick={onClick}
   >
-    {active ? <span aria-hidden="true" className="absolute top-0 h-0.5 w-5 rounded-full bg-slate-950" /> : null}
+    {active ? <span aria-hidden="true" className="absolute top-0 h-0.5 w-5 rounded-full bg-[var(--brand-green)]" /> : null}
     <span className="relative">
       {icon}
       {notice ? <span className="absolute -right-1 -top-1 h-1.5 w-1.5 rounded-full bg-emerald-500 ring-2 ring-card" /> : null}
@@ -77,7 +77,7 @@ export const MobileBottomNav = ({
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-card/95 px-5 pb-[max(0.125rem,env(safe-area-inset-bottom))] pt-0 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--workspace-divider)] bg-workspace-editor/95 px-5 pb-[max(0.125rem,env(safe-area-inset-bottom))] pt-0 shadow-none backdrop-blur lg:hidden"
       aria-label={t("nav.mobileMain")}
     >
       <div className="relative grid h-mobile-bottom-nav grid-cols-3 items-center">
@@ -85,7 +85,7 @@ export const MobileBottomNav = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="flex h-mobile-touch flex-col items-center justify-center gap-0.5 rounded-md text-xs font-medium text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-mobile-touch flex-col items-center justify-center gap-0.5 rounded-md text-xs font-medium text-[var(--brand-green-text)] transition hover:bg-[var(--brand-green-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 disabled:cursor-not-allowed disabled:opacity-50"
               type="button"
               aria-label={createMemoLabel}
               disabled={!canCreateMemo || isCreating}

@@ -1,4 +1,4 @@
-import { app, Notification, BrowserWindow, Menu, Tray, globalShortcut, nativeImage, ipcMain, session, net, protocol, shell, dialog, safeStorage, clipboard, ClipboardItem, powerMonitor, desktopCapturer, screen } from "electron";
+import { app, Notification, BrowserWindow, Menu, Tray, globalShortcut, nativeImage, nativeTheme, ipcMain, session, net, protocol, shell, dialog, safeStorage, clipboard, ClipboardItem, powerMonitor, desktopCapturer, screen } from "electron";
 import { createReadStream, existsSync } from "node:fs";
 import { appendFile, mkdir, open, readdir, readFile, rename, rm, stat, unlink, writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
@@ -1595,6 +1595,7 @@ const createWindow = async ({ show = true } = {}) => {
     y: state.y,
     minWidth: 960,
     minHeight: 640,
+    backgroundColor: nativeTheme.shouldUseDarkColors ? "#151513" : "#f4f1ea",
     show,
     webPreferences: {
       preload: join(currentDirectory, "../preload/index.cjs"),
@@ -1737,6 +1738,7 @@ const createNoteWindow = (memoId) => {
     ...(bounds ? { x: bounds.x + offset, y: bounds.y + offset } : {}),
     minWidth: 480,
     minHeight: 400,
+    backgroundColor: nativeTheme.shouldUseDarkColors ? "#22211e" : "#fdfcf9",
     show: false,
     webPreferences: {
       preload: join(currentDirectory, "../preload/index.cjs"),

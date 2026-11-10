@@ -1,17 +1,24 @@
-import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { copyFile, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import { prepareDesktopIcons } from "./prepare-desktop-icons.mjs";
+import { prepareMobileIcons, renderBrandPng } from "./prepare-mobile-icons.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const sourcePath = path.join(projectRoot, "assets/brand/edgeever-icon.png");
 const svgSourcePath = path.join(projectRoot, "assets/brand/edgeever-icon.svg");
-const adaptiveForegroundSourcePath = path.join(projectRoot, "apps/mobile/assets/adaptive-icon-foreground.svg");
-const adaptiveTransparentSourcePath = path.join(projectRoot, "apps/mobile/assets/adaptive-icon-transparent.svg");
+const svgSource = await readFile(svgSourcePath);
+await sharp(svgSource, { density: 384 })
+  .resize(1024, 1024, {
+    fit: "contain",
+    background: { r: 0, g: 0, b: 0, alpha: 0 },
+    kernel: sharp.kernel.lanczos3,
+  })
+  .png({ compressionLevel: 9 })
+  .toFile(sourcePath);
+
 const source = await readFile(sourcePath);
-const adaptiveForegroundSource = await readFile(adaptiveForegroundSourcePath);
-const adaptiveTransparentSource = await readFile(adaptiveTransparentSourcePath);
 
 await copyFile(svgSourcePath, path.join(projectRoot, "apps/web/public/favicon.svg"));
 await copyFile(svgSourcePath, path.join(projectRoot, "apps/site/public/favicon.svg"));
@@ -19,14 +26,12 @@ await copyFile(svgSourcePath, path.join(projectRoot, "apps/site/public/favicon.s
 const pngTargets = [
   ["apps/web/public/pwa-192x192.png", 192, { preserveAlpha: true }],
   ["apps/web/public/pwa-512x512.png", 512, { preserveAlpha: true }],
-  ["apps/web/public/maskable-icon-512x512.png", 512, { background: "#071522" }],
-  ["apps/web/public/apple-touch-icon.png", 180, { background: "#071522" }],
+  ["apps/web/public/maskable-icon-512x512.png", 512, { background: "#187958" }],
+  ["apps/web/public/apple-touch-icon.png", 180, { background: "#187958" }],
   ["apps/site/public/icon-192.png", 192, { preserveAlpha: true }],
   ["apps/site/public/icon-512.png", 512, { preserveAlpha: true }],
-  ["apps/site/public/apple-touch-icon.png", 180, { background: "#071522" }],
-  ["apps/mobile/assets/icon.png", 1024, { background: "#071522" }],
-  ["apps/mobile/store-assets/play-icon-512.png", 512, { background: "#071522" }],
-  ["apps/ios/EdgeEver/Resources/Assets.xcassets/AppIcon.appiconset/icon.png", 1024, { background: "#071522" }],
+  ["apps/site/public/apple-touch-icon.png", 180, { background: "#187958" }],
+  ["apps/ios/EdgeEver/Resources/Assets.xcassets/AppIcon.appiconset/icon.png", 1024, { background: "#187958" }],
   ["apps/extension/public/icons/icon-16.png", 16, { preserveAlpha: true }],
   ["apps/extension/public/icons/icon-32.png", 32, { preserveAlpha: true }],
   ["apps/extension/public/icons/icon-48.png", 48, { preserveAlpha: true }],
@@ -34,29 +39,11 @@ const pngTargets = [
   ["apps/extension/store-assets/store-icon-128.png", 128, { preserveAlpha: true }],
 ];
 
-const renderPng = async (input, destination, size, { preserveAlpha = false, background = "#071522" } = {}) => {
-  const outputPath = path.join(projectRoot, destination);
-  await mkdir(path.dirname(outputPath), { recursive: true });
-  const pipeline = sharp(input, { density: 384 }).resize(size, size, {
-    fit: "contain",
-    kernel: sharp.kernel.lanczos3,
-  });
-  if (!preserveAlpha) {
-    pipeline.flatten({ background }).removeAlpha();
-  }
-  await pipeline.png({ compressionLevel: 9 }).toFile(outputPath);
-};
-
 for (const [destination, size, options] of pngTargets) {
-  await renderPng(source, destination, size, options);
+  await renderBrandPng(source, destination, size, options);
 }
 
-await renderPng(adaptiveForegroundSource, "apps/mobile/assets/adaptive-icon-foreground.png", 1024, {
-  preserveAlpha: true,
-});
-await renderPng(adaptiveTransparentSource, "apps/mobile/assets/adaptive-icon-transparent.png", 1024, {
-  preserveAlpha: true,
-});
+await prepareMobileIcons();
 
 const faviconPng = await sharp(source, { density: 384 }).resize(32, 32).png().toBuffer();
 const icoHeader = Buffer.alloc(22);

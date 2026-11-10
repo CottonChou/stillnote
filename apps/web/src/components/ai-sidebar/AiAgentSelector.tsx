@@ -158,7 +158,7 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange }
                           className="aria-disabled:text-slate-400" onSelect={(event) => event.preventDefault()}>
                           <span className="flex min-w-0 flex-1 items-center justify-between gap-2">
                             <span className="flex min-w-0 items-center gap-2"><AgentLogo id={agent.id} /><span className="min-w-0 break-words">{name}</span></span>
-                            <span aria-hidden="true" className={`size-2 shrink-0 rounded-full ${available ? "bg-[#16A06E]" : "bg-amber-500"} ${checking ? "motion-safe:animate-pulse" : ""}`} />
+                            <span aria-hidden="true" className={`size-2 shrink-0 rounded-full ${available ? "bg-[var(--brand-green)]" : "bg-amber-500"} ${checking ? "motion-safe:animate-pulse" : ""}`} />
                           </span>
                         </DropdownMenuRadioItem>
                       </TooltipTrigger>

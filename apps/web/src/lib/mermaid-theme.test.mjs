@@ -34,12 +34,12 @@ describe("official Mermaid theme variables", () => {
     const dark = MERMAID_THEME_PALETTES["zinc-dark"];
     const lightVariables = getOfficialMermaidThemeVariables(light);
 
-    expect(light.bg).toBe("#f8fafb");
-    expect(light.fg).toBe("#27272A");
-    expect(light.muted).toBe("#3f3f46");
-    expect(light.line).toBe("#52525b");
+    expect(light.bg).toBe("#fdfcf9");
+    expect(light.fg).toBe("#1c1b18");
+    expect(light.muted).toBe("#57534e");
+    expect(light.line).toBe("#6b665e");
     expect(light.surface).toBe("#ffffff");
-    expect(light.border).toBe("#d4d4d8");
+    expect(light.border).toBe("#ddd7ca");
     expect(lightVariables.background).toBe(light.bg);
     expect(lightVariables.primaryColor).toBe(light.surface);
     expect(lightVariables.primaryTextColor).toBe(light.fg);
@@ -48,11 +48,11 @@ describe("official Mermaid theme variables", () => {
     expect(lightVariables.fontSize).toBe("12px");
     const globals = readFileSync(new URL("../styles/globals.css", import.meta.url), "utf8");
     expect(globals).toContain(`--workspace-editor: ${dark.bg};`);
-    expect(dark.bg).toBe("#222325");
-    expect(dark.line).toBe("#85898f");
-    expect(dark.surface).toBe("#2d2f32");
-    expect(dark.border).toBe("#46494e");
-    expect(dark.muted).toBe("#b9bdc1");
+    expect(dark.bg).toBe("#22211e");
+    expect(dark.line).toBe("#948e84");
+    expect(dark.surface).toBe("#2c2a26");
+    expect(dark.border).toBe("#3d3a34");
+    expect(dark.muted).toBe("#b5afa5");
   });
 
   test("keeps primary and secondary diagram text readable in every theme", () => {

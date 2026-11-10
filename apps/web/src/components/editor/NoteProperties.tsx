@@ -40,7 +40,7 @@ const PropertyRow = ({ name, value, readOnly, onChange, onRemove }: {
   const locked = readOnly || systemProperties.has(name);
   return <div className="grid grid-cols-[minmax(80px,1fr)_minmax(0,2fr)_32px] items-start gap-2 py-1.5">
     <span className="break-words pt-2 text-sm text-muted-foreground">{name}</span>
-    {type === "checkbox" ? <input className="mt-3 h-4 w-4 accent-[#16A06E]" type="checkbox" aria-label={name} checked={Boolean(value)} disabled={locked} onChange={(event) => onChange(event.target.checked)} />
+    {type === "checkbox" ? <input className="mt-3 h-4 w-4 accent-[var(--brand-green)]" type="checkbox" aria-label={name} checked={Boolean(value)} disabled={locked} onChange={(event) => onChange(event.target.checked)} />
       : type === "nested" ? <span className="break-all py-2 text-xs text-muted-foreground">{display}</span>
       : type === "list" || display.includes("\n") ? <textarea className="min-h-10 w-full rounded-md border bg-card px-3 py-2 text-sm" aria-label={name} placeholder={type === "list" ? t("noteProperties.listHint") : undefined} value={draft} readOnly={locked} onChange={(event) => setDraft(event.target.value)} onBlur={commit} />
       : <Input className="h-9" aria-label={name} aria-invalid={invalid} type={type === "number" ? "text" : type === "date" ? "date" : "text"} value={draft} readOnly={locked}

@@ -333,17 +333,16 @@ export const MemoCard = ({
       draggable={!isTrashView}
       onDragStart={handleDragStart}
       className={cn(
-        "edgeever-memo-divider group relative overflow-hidden border border-slate-100 bg-card transition lg:my-0.5 lg:rounded-lg lg:border lg:border-transparent lg:bg-transparent lg:shadow-none transition-all duration-200 select-none",
-        isLast && "lg:border-b-transparent",
-        listDensity === "compact" ? "rounded-md shadow-none" : "rounded-lg shadow-[0_4px_16px_rgba(15,23,42,0.045)] lg:shadow-none",
+        "edgeever-memo-divider group relative overflow-hidden border-0 border-b border-l-2 bg-transparent transition-colors duration-150 select-none rounded-none lg:my-0.5 lg:rounded-md",
+        isLast && "border-b-transparent lg:border-b-transparent",
         !selectionMode && selected
-          ? "edgeever-workspace-selection border-[var(--workspace-divider)] bg-workspace-selection lg:border-[var(--workspace-divider)] lg:bg-workspace-selection"
+          ? "edgeever-workspace-selection border-l-[var(--brand-green)] border-b-transparent bg-workspace-selection"
           : checked
-            ? "bg-slate-50 ring-1 ring-slate-200 lg:border-[var(--workspace-divider)] lg:bg-[var(--workspace-selection)] lg:ring-0"
-            : "active:bg-slate-50 lg:hover:bg-workspace-hover"
+            ? "border-l-slate-700 bg-workspace-selection/80 border-b-transparent"
+            : "border-l-transparent border-b-[var(--workspace-memo-divider)] active:bg-workspace-hover lg:hover:bg-workspace-hover"
       )}
     >
-      <div className={cn("flex min-h-[132px] items-center", listDensity === "compact" && "min-h-[84px] lg:min-h-[76px]")}>
+      <div className={cn("flex min-h-[124px] items-center", listDensity === "compact" && "min-h-[80px] lg:min-h-[72px]")}>
         {showSelectionControl && (
           <Tooltip><TooltipTrigger asChild><button
             className="ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/70 focus-visible:ring-offset-2 lg:ml-3 lg:h-6 lg:w-6"
@@ -389,8 +388,8 @@ export const MemoCard = ({
           onContextMenu={handleContextMenu}
           onKeyDown={handleKeyDown}
         >
-          <div className={cn("mb-1.5 flex min-w-0 items-center gap-1.5 text-[14px] font-semibold tracking-[-0.012em] leading-snug text-slate-950", listDensity === "compact" && "mb-0.5")}>
-            {memo.isPinned && <Star className="h-4 w-4 shrink-0 fill-amber-400 text-amber-500" />}
+          <div className={cn("mb-1.5 flex min-w-0 items-center gap-1.5 text-[15px] font-semibold tracking-[-0.015em] leading-snug text-slate-950", listDensity === "compact" && "mb-0.5 text-[14px]")}>
+            {memo.isPinned && <Star className="h-3.5 w-3.5 shrink-0 fill-amber-400 text-amber-500" />}
             <span className="min-w-0 truncate">{memoTitle}</span>
           </div>
           {diagramLabel ? (
@@ -445,15 +444,15 @@ export const MemoCard = ({
           ) : (
             <div
               className={cn(
-                "line-clamp-2 min-h-10 text-xs leading-relaxed text-slate-500",
+                "line-clamp-2 min-h-10 text-xs leading-relaxed text-slate-600",
                 listDensity === "compact" && "line-clamp-1 min-h-0"
               )}
             >
               {memoExcerpt}
             </div>
           )}
-          <div className={cn("mt-3.5 flex flex-wrap items-center gap-2", listDensity === "compact" && "mt-1.5")}>
-            <time className="text-xs font-normal text-slate-500 " dateTime={listTimestamp.value}>
+          <div className={cn("mt-3 flex flex-wrap items-center gap-1.5", listDensity === "compact" && "mt-1.5")}>
+            <time className="text-xs font-normal tabular-nums text-slate-500" dateTime={listTimestamp.value}>
               {listTimestamp.field === "createdAt"
                 ? t("memoCard.createdAt", { time: listTimestampLabel })
                 : listTimestampLabel}
@@ -461,7 +460,7 @@ export const MemoCard = ({
             {memo.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="text-xs tracking-tight text-slate-400"
+                className="rounded border border-[var(--workspace-divider)] px-1.5 py-0.5 text-xs leading-none tracking-tight text-slate-500"
               >
                 #{tag}
               </span>

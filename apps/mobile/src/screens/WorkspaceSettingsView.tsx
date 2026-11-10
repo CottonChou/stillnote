@@ -9,6 +9,7 @@ import { Activity, ActivityIndicator, Check, ChevronDown, ChevronLeft, ChevronRi
 import { Pressable, Text } from "../components/LocalizedText";
 import { useMobileLocale, getMobileCatalog, type MobileLocale } from "../lib/mobile-locale";
 import { useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import { useMobileUpdate } from "../lib/mobile-update";
 import type { MobileLocalePreference } from "../lib/preferences";
 import { useSession } from "../lib/session";
@@ -108,6 +109,7 @@ export const SettingsView = ({
   showDescendantNotesSaveFailed: boolean;
 }) => {
   const { resolvedTheme, toggleTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const { translate } = useMobileLocale();
   const { hasUpdate } = useMobileUpdate();
   const { client, session } = useSession();
@@ -141,13 +143,13 @@ export const SettingsView = ({
     refetchInterval: activeTab === "system" ? 10_000 : false,
   });
   const tabs: Array<{ key: SettingsTab; label: string; icon: ReactNode }> = [
-    { key: "general", label: "常规设置", icon: <SlidersHorizontal color="#059669" size={17} /> },
-    { key: "account", label: "登录设置", icon: <ShieldCheck color="#059669" size={17} /> },
+    { key: "general", label: "常规设置", icon: <SlidersHorizontal color={palette.accent} size={17} /> },
+    { key: "account", label: "登录设置", icon: <ShieldCheck color={palette.accent} size={17} /> },
   ];
   const systemInfoCopy = getMobileSystemInfoText(localePreference);
   const systemInfoDescription = hasUpdate ? systemInfoCopy.updateAvailableDescription : systemInfoCopy.description;
   const activeTabItem = activeTab === "system"
-    ? { label: systemInfoCopy.title, icon: <Info color="#059669" size={17} /> }
+    ? { label: systemInfoCopy.title, icon: <Info color={palette.accent} size={17} /> }
     : tabs.find((tab) => tab.key === activeTab);
   const title = activeTabItem?.label ?? "我的";
   const activeLocaleLabel = MOBILE_LOCALE_OPTIONS.find((option) => option.value === localePreference)?.label ?? "跟随系统";
@@ -204,7 +206,7 @@ export const SettingsView = ({
     if (activeTab === "general") {
       return (
         <View style={styles.settingsDetailList}>
-          <SettingsGroup title="偏好设置" icon={<ImageIcon color="#047857" size={16} />}>
+          <SettingsGroup title="偏好设置" icon={<ImageIcon color={palette.accentText} size={16} />}>
             <View style={styles.settingsContentRow}>
               <View style={styles.preferenceStack}>
                 <View style={styles.preferenceText}>
@@ -213,7 +215,7 @@ export const SettingsView = ({
                 </View>
                 <Pressable accessibilityLabel="界面语言" accessibilityRole="button" onPress={openLocalePicker} ref={localeSelectRef} style={styles.settingsSelect}>
                   <Text style={styles.settingsSelectText}>{activeLocaleLabel}</Text>
-                  <ChevronDown color="#64748b" size={18} />
+                  <ChevronDown color={palette.inkSecondary} size={18} />
                 </Pressable>
               </View>
             </View>
@@ -247,7 +249,7 @@ export const SettingsView = ({
       <View style={styles.settingsDetailList}>
         <View style={styles.accountSummaryCard}>
           <View style={styles.accountSummaryIcon}>
-            <UserRound color="#047857" size={19} />
+            <UserRound color={palette.accentText} size={19} />
           </View>
       <View style={styles.accountSummaryContent}>
             <Text style={styles.accountSummaryTitle}>{translate("当前账户")}</Text>
@@ -274,10 +276,10 @@ export const SettingsView = ({
     <View style={styles.settingsScreen}>
       <View style={styles.settingsHeader}>
         <Pressable accessibilityLabel="返回" onPress={() => activeTab ? setActiveTab(null) : onClose()} style={styles.settingsBackButton}>
-          <ChevronLeft color="#64748b" size={21} />
+          <ChevronLeft color={palette.inkSecondary} size={21} />
         </Pressable>
         <View style={styles.settingsHeaderTitle}>
-          {activeTab ? activeTabItem?.icon : <UserRound color="#047857" size={17} />}
+          {activeTab ? activeTabItem?.icon : <UserRound color={palette.accentText} size={17} />}
           <Text numberOfLines={1} style={styles.settingsTitle}>{title}</Text>
         </View>
         <Pressable
@@ -286,7 +288,7 @@ export const SettingsView = ({
           onPress={toggleTheme}
           style={styles.settingsThemeButton}
         >
-          {resolvedTheme === "dark" ? <Sun color="#64748b" size={19} /> : <Moon color="#64748b" size={19} />}
+          {resolvedTheme === "dark" ? <Sun color={palette.inkSecondary} size={19} /> : <Moon color={palette.inkSecondary} size={19} />}
           <Text numberOfLines={1} style={styles.settingsThemeText}>{resolvedTheme === "dark" ? "切换到浅色模式" : "切换到深色模式"}</Text>
         </Pressable>
       </View>
@@ -300,7 +302,7 @@ export const SettingsView = ({
                     <View style={styles.settingsMenuIcon}>{tab.icon}</View>
                     <Text style={styles.settingsMenuText}>{tab.label}</Text>
                   </View>
-                  <ChevronRight color="#94a3b8" size={17} />
+                  <ChevronRight color={palette.inkPlaceholder} size={17} />
                 </Pressable>
               ))}
             </View>
@@ -313,7 +315,7 @@ export const SettingsView = ({
                 style={styles.settingsMenuRow}
               >
                 <View style={styles.settingsMenuLabel}>
-                  <View style={styles.settingsMenuIcon}><Info color="#059669" size={17} /></View>
+                  <View style={styles.settingsMenuIcon}><Info color={palette.accent} size={17} /></View>
                   <View style={styles.settingsFeedbackCopy}>
                     <View style={styles.settingsMenuTitleRow}>
                       <Text style={styles.settingsMenuText}>{systemInfoCopy.title}</Text>
@@ -324,17 +326,17 @@ export const SettingsView = ({
                     </Text>
                   </View>
                 </View>
-                <ChevronRight color="#94a3b8" size={17} />
+                <ChevronRight color={palette.inkPlaceholder} size={17} />
               </Pressable>
               <Pressable accessibilityRole="link" onPress={() => void openFeedback()} style={[styles.settingsMenuRow, styles.settingsMenuRowBorder]}>
                 <View style={styles.settingsMenuLabel}>
-                  <View style={[styles.settingsMenuIcon, styles.settingsFeedbackIcon]}><MessageSquare color="#64748b" size={17} /></View>
+                  <View style={[styles.settingsMenuIcon, styles.settingsFeedbackIcon]}><MessageSquare color={palette.inkSecondary} size={17} /></View>
                   <View style={styles.settingsFeedbackCopy}>
                     <Text style={styles.settingsMenuText}>意见反馈</Text>
                     <Text style={styles.settingsFeedbackDescription}>报告问题或提出功能建议</Text>
                   </View>
                 </View>
-                <ExternalLink color="#94a3b8" size={17} />
+                <ExternalLink color={palette.inkPlaceholder} size={17} />
               </Pressable>
             </View>
           </View>
@@ -358,7 +360,7 @@ export const SettingsView = ({
                     style={[styles.localePickerOption, active && styles.localePickerOptionActive]}
                   >
                     <Text style={[styles.localePickerOptionText, active && styles.localePickerOptionTextActive]}>{option.label}</Text>
-                    {active ? <Check color="#047857" size={16} /> : null}
+                    {active ? <Check color={palette.accentText} size={16} /> : null}
                   </Pressable>
                 );
               })}
@@ -410,6 +412,8 @@ const SystemInfoCard = ({
 }) => {
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(defaultExpanded);
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const { checkForUpdate, hasUpdate, openUpdate, status, updateKind } = useMobileUpdate();
   const localePreference = useMobileLocalePreference();
   const locale = getResolvedMobileLocale(localePreference);
@@ -444,18 +448,18 @@ const SystemInfoCard = ({
       <Pressable accessibilityState={{ expanded }} onPress={() => setExpanded((value) => !value)} style={styles.settingsAccordionHeader}>
         <View style={styles.settingsLinkCopy}>
           <View style={styles.settingsGroupHeader}>
-            <Info color="#047857" size={16} />
+            <Info color={palette.accentText} size={16} />
             <Text style={styles.settingsGroupTitle}>{copy.title}</Text>
             {hasUpdate ? <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={styles.updateDot} /> : null}
           </View>
           <Text style={[styles.settingsLinkDescription, hasUpdate && styles.settingsUpdateDescription]}>{description}</Text>
         </View>
-        {expanded ? <ChevronDown color="#94a3b8" size={17} /> : <ChevronRight color="#94a3b8" size={17} />}
+        {expanded ? <ChevronDown color={palette.inkPlaceholder} size={17} /> : <ChevronRight color={palette.inkPlaceholder} size={17} />}
       </Pressable>
       {expanded ? (
         <View style={styles.settingsAccordionContent}>
           <SettingsActionButton label={copied ? getMobileCatalog(locale).common.copied : getMobileCatalog(locale).systemInfo.copy} onPress={copySystemInfo}>
-            {copied ? <ShieldCheck color="#047857" size={16} /> : <Copy color="#0f172a" size={16} />}
+            {copied ? <ShieldCheck color={palette.accentText} size={16} /> : <Copy color={palette.ink} size={16} />}
           </SettingsActionButton>
           {hasUpdate ? (
             <SettingsActionButton
@@ -464,10 +468,10 @@ const SystemInfoCard = ({
               onPress={() => void openUpdate()}
             >
               {downloading
-                ? <ActivityIndicator color="#047857" size="small" />
+                ? <ActivityIndicator color={palette.accentText} size="small" />
                 : updateKind === "install"
-                  ? <ExternalLink color="#047857" size={16} />
-                  : <RefreshCw color="#047857" size={16} />}
+                  ? <ExternalLink color={palette.accentText} size={16} />
+                  : <RefreshCw color={palette.accentText} size={16} />}
             </SettingsActionButton>
           ) : null}
           <SettingsActionButton
@@ -475,7 +479,7 @@ const SystemInfoCard = ({
             label={checkLabel}
             onPress={() => void checkForUpdate()}
           >
-            {checking ? <ActivityIndicator color="#047857" size="small" /> : <RefreshCw color="#047857" size={16} />}
+            {checking ? <ActivityIndicator color={palette.accentText} size="small" /> : <RefreshCw color={palette.accentText} size={16} />}
           </SettingsActionButton>
           {infoGroups.map((group) => <MobileSystemInfoSection group={group} key={group.id} />)}
         </View>
@@ -485,14 +489,16 @@ const SystemInfoCard = ({
 };
 
 const MobileSystemInfoSection = ({ group }: { group: MobileSystemInfoGroup }) => {
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   return (
     <View style={styles.systemInfoSection}>
       <View style={styles.systemInfoSectionHeader}>
         {group.id === "cloud"
-          ? <Cloud color="#047857" size={16} />
+          ? <Cloud color={palette.accentText} size={16} />
           : group.id === "client"
-            ? <MonitorSmartphone color="#047857" size={16} />
-            : <Activity color="#047857" size={16} />}
+            ? <MonitorSmartphone color={palette.accentText} size={16} />
+            : <Activity color={palette.accentText} size={16} />}
         <View style={styles.systemInfoSectionCopy}>
           <Text style={styles.systemInfoSectionTitle}>{group.title}</Text>
           <Text style={styles.systemInfoSectionDescription}>{group.description}</Text>
@@ -500,7 +506,7 @@ const MobileSystemInfoSection = ({ group }: { group: MobileSystemInfoGroup }) =>
       </View>
       {group.notice ? (
         <View accessibilityLiveRegion="polite" style={styles.systemInfoNotice}>
-          <Info color="#94a3b8" size={14} />
+          <Info color={palette.inkPlaceholder} size={14} />
           <Text style={styles.systemInfoNoticeText}>{group.notice}</Text>
         </View>
       ) : null}

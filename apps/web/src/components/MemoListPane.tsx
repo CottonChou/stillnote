@@ -93,7 +93,6 @@ import {
 } from "@/lib/app-helpers";
 import {
   estimateMemoListItemSize,
-  MEMO_LIST_MOBILE_ITEM_GAP_PX,
   MEMO_LIST_VIRTUAL_OVERSCAN,
 } from "@/lib/memo-list-virtual";
 
@@ -552,7 +551,7 @@ export const MemoListPane = ({
     getScrollElement: () => listScrollElement,
     estimateSize: () => estimateMemoListItemSize(listDensity, isDesktopList),
     overscan: MEMO_LIST_VIRTUAL_OVERSCAN,
-    gap: isDesktopList ? 0 : MEMO_LIST_MOBILE_ITEM_GAP_PX,
+    gap: 0,
     getItemKey: (index) => memos[index]?.id ?? index,
   });
 
@@ -1056,7 +1055,7 @@ export const MemoListPane = ({
           </div>
         </div>
       )}
-      <header className="border-b border-slate-200 bg-slate-50 px-4 pb-2 pt-[max(0.375rem,env(safe-area-inset-bottom))] lg:bg-transparent lg:py-3 lg:pt-3">
+      <header className="border-b border-[var(--workspace-divider)] bg-workspace-memo-list px-4 pb-2.5 pt-[max(0.5rem,env(safe-area-inset-bottom))] lg:bg-transparent lg:py-3.5 lg:pt-3.5">
         {selectionMode ? (
           <div className="mb-3 flex h-10 min-w-0 items-center gap-3 lg:hidden">
             <button
@@ -1427,7 +1426,7 @@ export const MemoListPane = ({
 
       <div
         ref={setListScrollNode}
-        className="relative min-h-0 flex-1 overflow-y-auto p-3 pb-[calc(7rem+env(safe-area-inset-bottom))] lg:px-2 lg:py-2 lg:pb-3 lg:[scrollbar-gutter:stable_both-edges]"
+        className="relative min-h-0 flex-1 overflow-y-auto px-3 py-1 pb-[calc(7rem+env(safe-area-inset-bottom))] lg:px-2 lg:py-2 lg:pb-3 lg:[scrollbar-gutter:stable_both-edges]"
       >
         {isLoading || (isRefreshing && memos.length === 0) ? (
           <div className="px-2 py-4 text-sm text-slate-500">{t("memoList.fetchingLatest")}</div>

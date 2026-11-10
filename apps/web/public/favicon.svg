@@ -1,41 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
   <title id="title">EdgeEver</title>
-  <desc id="desc">A folded paper house with a blue bookmark on a midnight-blue rounded tile.</desc>
-  <defs>
-    <linearGradient id="tile" x1="148" y1="100" x2="866" y2="934" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0C1A2A"/>
-      <stop offset="1" stop-color="#040A14"/>
-    </linearGradient>
-    <linearGradient id="paper" x1="381" y1="235" x2="662" y2="836" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFFDF6"/>
-      <stop offset=".58" stop-color="#F8FAFE"/>
-      <stop offset="1" stop-color="#E8EEF9"/>
-    </linearGradient>
-    <linearGradient id="fold" x1="762" y1="291" x2="610" y2="734" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#E8F1FF"/>
-      <stop offset="1" stop-color="#91B7EF"/>
-    </linearGradient>
-    <linearGradient id="ribbon" x1="365" y1="345" x2="438" y2="580" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#78B4FF"/>
-      <stop offset=".46" stop-color="#287EF6"/>
-      <stop offset="1" stop-color="#0757D8"/>
-    </linearGradient>
-    <filter id="shadow" x="-30%" y="-25%" width="170%" height="180%">
-      <feGaussianBlur stdDeviation="24"/>
-    </filter>
-  </defs>
-  <rect width="1024" height="1024" rx="224" fill="url(#tile)"/>
-  <path d="M448 823 642 727c55-27 90-62 118-115l59 50c34 30 26 84-16 108L543 934c-30 17-69 16-100-3l-28-18c-11-8-1-26 13-31Z" fill="#020711" opacity=".5" filter="url(#shadow)"/>
-  <path d="M500 166 785 370q40 29 40 76v262q0 49-36 67L533 879q-19 9-38-1L227 738q-33-19-33-58V445q0-38 33-60l226-185q24-19 47-34Z" fill="#020711" opacity=".45" filter="url(#shadow)" transform="translate(10 16)"/>
-  <path d="M500 151 788 358q39 28 39 74v277q0 48-35 66L526 881q-18 9-37-1L226 751q-32-19-32-57V438q0-37 32-58l226-184q24-19 48-45Z" fill="url(#paper)"/>
-  <path d="M500 151 788 358q39 28 39 73v268q0 44-37 55L621 802V567L500 151Z" fill="url(#fold)" opacity=".98"/>
-  <path d="M500 151 788 358q39 28 39 73v268q0 44-37 55L621 802V567L500 151Z" fill="none" stroke="#DDEAFF" stroke-width="8" stroke-linejoin="round"/>
-  <path d="M318 362h111v286l-54-46-57 48V362Z" fill="url(#ribbon)"/>
-  <path d="M318 362h111v286l-54-46-57 48V362Z" fill="none" stroke="#4A94FA" stroke-width="5" opacity=".7"/>
-  <g fill="#A5BAE4">
-    <rect x="319" y="592" width="322" height="42" rx="21"/>
-    <rect x="319" y="678" width="322" height="42" rx="21"/>
-    <rect x="319" y="764" width="286" height="42" rx="21"/>
-  </g>
-  <path d="M249 411 475 241l14 91-188 153Z" fill="#06111E" opacity=".12" filter="url(#shadow)"/>
+  <desc id="desc">A warm cotton folio sheet with a deep forest ink swallowtail bookmark on an editorial pine rounded tile.</desc>
+  <rect width="1024" height="1024" rx="224" fill="#187958"/>
+  <rect x="244" y="208" width="536" height="608" rx="52" fill="#FDFCF9"/>
+  <path d="M338 208H454V492L396 444L338 492Z" fill="#07130B"/>
+  <path d="M338 208H454V250H338Z" fill="#125E44" opacity=".35"/>
+  <rect x="338" y="572" width="338" height="46" rx="23" fill="#B7D8C9"/>
+  <rect x="338" y="672" width="222" height="46" rx="23" fill="#B7D8C9"/>
 </svg>

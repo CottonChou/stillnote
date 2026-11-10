@@ -19,7 +19,7 @@ export const DesktopUpdateProgress = ({ progress }: { progress?: DesktopUpdateDo
       </div>
       <progress
         aria-label={label}
-        className="h-2 w-full overflow-hidden rounded-full accent-[#16A06E] [&::-moz-progress-bar]:bg-[#16A06E] [&::-webkit-progress-bar]:bg-slate-200 [&::-webkit-progress-value]:bg-[#16A06E]"
+        className="h-2 w-full overflow-hidden rounded-full accent-[var(--brand-green)] [&::-moz-progress-bar]:bg-[var(--brand-green)] [&::-webkit-progress-bar]:bg-slate-200 [&::-webkit-progress-value]:bg-[var(--brand-green)]"
         max={100}
         value={progress?.percent ?? undefined}
       />

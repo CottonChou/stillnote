@@ -27,6 +27,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Alert, Pressable, Text, TextInput } from "../components/LocalizedText";
 import { useMobileLocale } from "../lib/mobile-locale";
+import { useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import { listLocalTags } from "../lib/local-mirror";
 import { useSession } from "../lib/session";
 import {
@@ -103,6 +105,8 @@ export const NotebookPickerModal = ({
   visible: boolean;
 }) => {
   const { translate } = useMobileLocale();
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const safeAreaInsets = useSafeAreaInsets();
   const [searchText, setSearchText] = useState("");
   const [creating, setCreating] = useState(false);
@@ -184,19 +188,19 @@ export const NotebookPickerModal = ({
               <Text style={styles.panelLabel}>{translate(`当前：${activeNotebookName}`)}</Text>
             </View>
             <Pressable accessibilityLabel="关闭" accessibilityRole="button" onPress={onClose} style={styles.notebookPickerCloseButton}>
-              <X color="#0f172a" size={20} />
+              <X color={palette.ink} size={20} />
             </Pressable>
           </View>
 
           {onCreate ? (
             <View style={styles.notebookCreateWrap}>
               <Pressable accessibilityLabel="新建笔记本" accessibilityRole="button" onPress={() => { setCreating((value) => !value); setCreateError(""); }} style={styles.notebookCreateToggle}>
-                <Plus color="#059669" size={18} />
+                <Plus color={palette.accent} size={18} />
                 <Text style={styles.notebookCreateToggleText}>新建笔记本</Text>
               </Pressable>
               {creating ? (
                 <View style={styles.notebookCreateForm}>
-                  <TextInput accessibilityLabel="笔记本名称" autoFocus maxLength={80} onChangeText={setNewNotebookName} placeholder="笔记本名称" placeholderTextColor="#94a3b8" returnKeyType="done" style={styles.notebookCreateInput} value={newNotebookName} />
+                  <TextInput accessibilityLabel="笔记本名称" autoFocus maxLength={80} onChangeText={setNewNotebookName} placeholder="笔记本名称" placeholderTextColor={palette.inkPlaceholder} returnKeyType="done" style={styles.notebookCreateInput} value={newNotebookName} />
                   <View style={styles.notebookCreateParentRow}>
                     <Pressable accessibilityRole="button" accessibilityState={{ selected: newNotebookParentId === null }} onPress={() => setNewNotebookParentId(null)} style={[styles.notebookCreateParentChoice, newNotebookParentId === null && styles.notebookCreateParentChoiceActive]}>
                       <Text style={styles.notebookCreateParentText}>顶层笔记本</Text>
@@ -223,20 +227,20 @@ export const NotebookPickerModal = ({
             style={styles.notebookPickerScroll}
           >
           <View style={styles.notebookPickerSearchBox}>
-            <Search color="#64748b" size={18} />
+            <Search color={palette.inkSecondary} size={18} />
             <TextInput
               accessibilityLabel="搜索笔记本"
               autoCapitalize="none"
               autoCorrect={false}
               onChangeText={setSearchText}
               placeholder="搜索笔记本"
-              placeholderTextColor="#94a3b8"
+              placeholderTextColor={palette.inkPlaceholder}
               style={styles.notebookPickerSearchInput}
               value={searchText}
             />
             {searchText ? (
               <Pressable onPress={() => setSearchText("")}>
-                <X color="#64748b" size={18} />
+                <X color={palette.inkSecondary} size={18} />
               </Pressable>
             ) : null}
           </View>
@@ -255,7 +259,7 @@ export const NotebookPickerModal = ({
                 全部笔记
               </Text>
             </View>
-            {activeNotebookId === ALL_NOTES_ID ? <Check color="#0f172a" size={18} /> : null}
+            {activeNotebookId === ALL_NOTES_ID ? <Check color={palette.ink} size={18} /> : null}
           </Pressable>
           ) : null}
 
@@ -286,7 +290,7 @@ export const NotebookPickerModal = ({
                   onPress={() => toggleNotebookCollapsed(notebook.id)}
                   style={styles.notebookTreeToggle}
                 >
-                  {collapsedNotebookIds.has(notebook.id) ? <ChevronRight color="#64748b" size={17} /> : <ChevronDown color="#64748b" size={17} />}
+                  {collapsedNotebookIds.has(notebook.id) ? <ChevronRight color={palette.inkSecondary} size={17} /> : <ChevronDown color={palette.inkSecondary} size={17} />}
                 </Pressable>
               ) : (
                 <View style={styles.notebookTreeTogglePlaceholder} />
@@ -302,12 +306,12 @@ export const NotebookPickerModal = ({
                   {notebook.name}
                 </Text>
               </Pressable>
-              {activeNotebookId === notebook.id ? <Check color="#0f172a" size={18} /> : null}
+              {activeNotebookId === notebook.id ? <Check color={palette.ink} size={18} /> : null}
             </View>
           ))}
           {visibleNotebookOptions.length === 0 ? (
             <View style={styles.emptyInlinePanel}>
-              <Folder color="#94a3b8" size={28} />
+              <Folder color={palette.inkPlaceholder} size={28} />
               <Text style={styles.mutedText}>没有匹配的笔记本</Text>
             </View>
           ) : null}
@@ -334,6 +338,8 @@ export const SmartTagButton = ({
   title: string;
 }) => {
   const { resolvedLocale, translate } = useMobileLocale();
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
   const controllerRef = useRef<AbortController | null>(null);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -406,10 +412,10 @@ export const SmartTagButton = ({
       style={[styles.smartTagButton, status === "success" && styles.smartTagButtonSuccess, unavailable && styles.buttonDisabled]}
     >
       {status === "loading"
-        ? <ActivityIndicator color="#047857" size="small" />
+        ? <ActivityIndicator color={palette.accentText} size="small" />
         : status === "success"
-          ? <Check color="#047857" size={17} />
-          : <TagPlus color="#047857" size={18} />}
+          ? <Check color={palette.accentText} size={17} />
+          : <TagPlus color={palette.accentText} size={18} />}
     </Pressable>
   );
 };
@@ -442,6 +448,8 @@ export const TagPickerModal = ({
   visible: boolean;
 }) => {
   const { translate } = useMobileLocale();
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const safeAreaInsets = useSafeAreaInsets();
   const [searchText, setSearchText] = useState("");
   const tagsQuery = useQuery({
@@ -486,7 +494,7 @@ export const TagPickerModal = ({
               <Text style={styles.panelLabel}>{translate(description)}</Text>
             </View>
             <Pressable accessibilityLabel="关闭" accessibilityRole="button" disabled={disabled} onPress={onClose} style={styles.notebookPickerCloseButton}>
-              <X color="#0f172a" size={20} />
+              <X color={palette.ink} size={20} />
             </Pressable>
           </View>
 
@@ -497,14 +505,14 @@ export const TagPickerModal = ({
                 {selectedTags.map((tag) => (
                   <Pressable key={tag} accessibilityLabel={`移除标签 ${tag}`} accessibilityRole="button" disabled={disabled} onPress={() => toggleTag(tag)} style={styles.tagPickerChip}>
                     <Text style={styles.tagPickerChipText}>#{tag}</Text>
-                    <X color="#047857" size={14} />
+                    <X color={palette.accentText} size={14} />
                   </Pressable>
                 ))}
               </View>
             ) : null}
 
             <View style={styles.notebookPickerSearchBox}>
-              <Search color="#64748b" size={18} />
+              <Search color={palette.inkSecondary} size={18} />
               <TextInput
                 accessibilityLabel={allowCreate ? "搜索或输入新标签" : "搜索标签"}
                 autoCapitalize="none"
@@ -513,7 +521,7 @@ export const TagPickerModal = ({
                 onChangeText={setSearchText}
                 onSubmitEditing={allowCreate ? createTag : undefined}
                 placeholder={allowCreate ? "搜索或输入新标签" : "搜索标签"}
-                placeholderTextColor="#94a3b8"
+                placeholderTextColor={palette.inkPlaceholder}
                 returnKeyType={allowCreate ? "done" : "search"}
                 style={styles.notebookPickerSearchInput}
                 value={searchText}
@@ -526,10 +534,10 @@ export const TagPickerModal = ({
             </View>
 
             {tagsQuery.isLoading ? (
-              <ActivityIndicator color="#16a06e" style={styles.tagPickerLoading} />
+              <ActivityIndicator color={palette.accent} style={styles.tagPickerLoading} />
             ) : visibleTags.length === 0 ? (
               <View style={styles.emptyInlinePanel}>
-                <Tag color="#94a3b8" size={28} />
+                <Tag color={palette.inkPlaceholder} size={28} />
                 <Text style={styles.mutedText}>{translate(allowCreate ? "没有匹配的现有标签，可直接新建" : "没有匹配的标签")}</Text>
               </View>
             ) : visibleTags.map((tag) => {
@@ -579,6 +587,8 @@ export const MoveSelectionModal = ({
   selectedNotebookId: string;
   visible: boolean;
 }) => {
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const [searchText, setSearchText] = useState("");
   const notebookOptions = flattenNotebooks(notebooks);
   const selectedScroll = useAutoCenterSelectedScrollRow(visible, selectedNotebookId);
@@ -600,24 +610,24 @@ export const MoveSelectionModal = ({
               <Text style={styles.actionSheetSubtitle}>{selectedCount > 0 ? `已选择 ${selectedCount} 条` : "选择笔记"}</Text>
             </View>
             <Pressable accessibilityLabel="关闭" accessibilityRole="button" onPress={onClose} style={styles.sheetCloseButton}>
-              <X color="#0f172a" size={18} />
+              <X color={palette.ink} size={18} />
             </Pressable>
           </View>
           <View style={styles.moveSelectionSearch}>
             <View style={styles.searchBox}>
-              <Search color="#64748b" size={18} />
+              <Search color={palette.inkSecondary} size={18} />
               <TextInput
                 autoCapitalize="none"
                 autoCorrect={false}
                 onChangeText={setSearchText}
                 placeholder="搜索笔记本"
-                placeholderTextColor="#94a3b8"
+                placeholderTextColor={palette.inkPlaceholder}
                 style={styles.searchInput}
                 value={searchText}
               />
               {searchText ? (
                 <Pressable onPress={() => setSearchText("")}>
-                  <X color="#64748b" size={18} />
+                  <X color={palette.inkSecondary} size={18} />
                 </Pressable>
               ) : null}
             </View>
@@ -642,7 +652,7 @@ export const MoveSelectionModal = ({
               selectedNotebookId={selectedNotebookId}
               onRowLayout={selectedScroll.onRowLayout}
             />
-            {isMoving ? <ActivityIndicator color="#0f172a" style={styles.listLoadingFooter} /> : null}
+            {isMoving ? <ActivityIndicator color={palette.ink} style={styles.listLoadingFooter} /> : null}
           </ScrollView>
         </Pressable>
       </Pressable>
@@ -677,6 +687,8 @@ const NotebookTreeOptionRows = ({
   showDepthPrefix?: boolean;
   showMemoCount?: boolean;
 }) => {
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const [collapsedNotebookIds, setCollapsedNotebookIds] = useState<Set<string>>(() => new Set());
   const searchQuery = searchText.trim();
   const childNotebookIds = getNotebookParentIdSet(notebooks);
@@ -701,7 +713,7 @@ const NotebookTreeOptionRows = ({
   if (visibleNotebookOptions.length === 0) {
     return (
       <View style={styles.emptyInlinePanel}>
-        <Folder color="#94a3b8" size={emptyIconSize} />
+        <Folder color={palette.inkPlaceholder} size={emptyIconSize} />
         <Text style={styles.mutedText}>没有匹配的笔记本</Text>
       </View>
     );
@@ -723,11 +735,11 @@ const NotebookTreeOptionRows = ({
         >
           {collapsible && childNotebookIds.has(notebook.id) && !searchQuery ? (
             <Pressable accessibilityRole="button" onPress={() => toggleNotebookCollapsed(notebook.id)} style={styles.notebookTreeToggle}>
-              {collapsedNotebookIds.has(notebook.id) ? <ChevronRight color="#64748b" size={17} /> : <ChevronDown color="#64748b" size={17} />}
+              {collapsedNotebookIds.has(notebook.id) ? <ChevronRight color={palette.inkSecondary} size={17} /> : <ChevronDown color={palette.inkSecondary} size={17} />}
             </Pressable>
           ) : !collapsible ? (
             <View style={styles.notebookTreeTogglePlaceholder}>
-              <Folder color={selectedNotebookId === notebook.id ? "#059669" : "#64748b"} size={17} />
+              <Folder color={selectedNotebookId === notebook.id ? palette.accent : palette.inkSecondary} size={17} />
             </View>
           ) : (
             <View style={styles.notebookTreeTogglePlaceholder} />
@@ -738,7 +750,7 @@ const NotebookTreeOptionRows = ({
             </Text>
             {showMemoCount ? <Text style={styles.panelLabel}>{notebook.memoCount} 条笔记</Text> : null}
           </Pressable>
-          {selectedNotebookId === notebook.id ? <Check color={compact ? "#059669" : "#0f172a"} size={18} /> : null}
+          {selectedNotebookId === notebook.id ? <Check color={compact ? palette.accent : palette.ink} size={18} /> : null}
         </View>
       ))}
     </View>

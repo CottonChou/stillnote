@@ -6,10 +6,12 @@ import { Pressable, Text } from "./LocalizedText";
 import { useMobileLocale, getMobileCatalog } from "../lib/mobile-locale";
 import { useMobileUpdate } from "../lib/mobile-update";
 import { useMobileTheme, resolveMobileThemeStyles } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 
 export const MobileUpdateCard = () => {
   const { resolvedLocale } = useMobileLocale();
   const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const { checkForUpdate, hasUpdate, isSupported, openUpdate, status, updateKind } = useMobileUpdate();
   const busy = status === "checking" || status === "downloading";
   const styles = resolveMobileThemeStyles(baseStyles, resolvedTheme);
@@ -45,7 +47,7 @@ export const MobileUpdateCard = () => {
           onPress={() => void openUpdate()}
           style={[styles.button, busy && styles.buttonDisabled]}
         >
-          {status === "downloading" ? <ActivityIndicator color="#047857" size="small" /> : <RefreshCw color="#047857" size={16} />}
+          {status === "downloading" ? <ActivityIndicator color={palette.accentText} size="small" /> : <RefreshCw color={palette.accentText} size={16} />}
           <Text style={styles.buttonText}>{openLabel}</Text>
         </Pressable>
       ) : null}
@@ -56,7 +58,7 @@ export const MobileUpdateCard = () => {
         onPress={() => void checkForUpdate()}
         style={[styles.button, busy && styles.buttonDisabled]}
       >
-        {status === "checking" ? <ActivityIndicator color="#047857" size="small" /> : <RefreshCw color="#047857" size={16} />}
+        {status === "checking" ? <ActivityIndicator color={palette.accentText} size="small" /> : <RefreshCw color={palette.accentText} size={16} />}
         <Text style={styles.buttonText}>{checkLabel}</Text>
       </Pressable>
       {!isSupported ? (
@@ -70,7 +72,7 @@ export const MobileUpdateCard = () => {
 
 const baseStyles = StyleSheet.create({
   card: {
-    borderTopColor: "#f1f5f9",
+    borderTopColor: "#eae5da",
     borderTopWidth: 1,
     gap: 12,
     padding: 16,
@@ -79,25 +81,25 @@ const baseStyles = StyleSheet.create({
     gap: 4,
   },
   title: {
-    color: "#0f172a",
+    color: "#1c1b18",
     fontSize: 14,
-    fontWeight: "700",
+    fontWeight: "600",
   },
   description: {
-    color: "#64748b",
+    color: "#6b665e",
     fontSize: 12,
     lineHeight: 17,
   },
   version: {
-    color: "#64748b",
+    color: "#6b665e",
     fontSize: 12,
     lineHeight: 17,
   },
   button: {
     alignItems: "center",
     alignSelf: "flex-start",
-    backgroundColor: "#ecfdf5",
-    borderColor: "#a7f3d0",
+    backgroundColor: "#e9f3ee",
+    borderColor: "#b7d8c9",
     borderRadius: 8,
     borderWidth: 1,
     flexDirection: "row",
@@ -109,12 +111,12 @@ const baseStyles = StyleSheet.create({
     opacity: 0.65,
   },
   buttonText: {
-    color: "#047857",
+    color: "#125e44",
     fontSize: 13,
-    fontWeight: "700",
+    fontWeight: "600",
   },
   hint: {
-    color: "#94a3b8",
+    color: "#9e978b",
     fontSize: 11,
     lineHeight: 16,
   },

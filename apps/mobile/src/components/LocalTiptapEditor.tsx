@@ -2298,8 +2298,8 @@ const applyImageWidth = (
 let mermaidRenderSequence = 0;
 
 const getMobileMermaidThemeVariables = (theme: "light" | "dark") => {
-  const ink = theme === "dark" ? "#cbd5e1" : "#26384a";
-  const surface = theme === "dark" ? "#0f172a" : "#ffffff";
+  const ink = theme === "dark" ? "#eae6df" : "#2c2925";
+  const surface = theme === "dark" ? "#22211e" : "#fdfcf9";
   return {
     background: "transparent",
     primaryColor: surface,
@@ -3097,10 +3097,10 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     min-width: 0;
     height: 100%;
     margin: 0;
-    background: ${theme === "dark" ? "#0f172a" : "#fff"};
+    background: ${theme === "dark" ? "#22211e" : "#fdfcf9"};
   }
   html { font-size: var(--editor-body-font-size); }
-  body { overflow: hidden; color: ${theme === "dark" ? "#f8fafc" : "#0f172a"}; font-size: 1rem; }
+  body { overflow: hidden; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-size: 1rem; }
   .edgeever-editor-shell {
     position: relative;
     display: flex;
@@ -3110,18 +3110,18 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     height: 100%;
     min-height: 100%;
     flex-direction: column;
-    background: ${theme === "dark" ? "#0f172a" : "#fff"};
+    background: ${theme === "dark" ? "#22211e" : "#fdfcf9"};
     overflow: hidden;
   }
   .edgeever-viewer-shell { -webkit-user-select: text; user-select: text; }
-  .edgeever-editor-toolbar { display: flex; flex: 0 0 auto; align-items: center; gap: 4px; min-height: 38px; overflow-x: auto; padding: 6px 12px; border-block: 1px solid ${theme === "dark" ? "#334155" : "#f1f5f9"}; background: ${theme === "dark" ? "#0f172a" : "#fff"}; scrollbar-width: none; }
+  .edgeever-editor-toolbar { display: flex; flex: 0 0 auto; align-items: center; gap: 4px; min-height: 38px; overflow-x: auto; padding: 6px 12px; border-block: 1px solid ${theme === "dark" ? "#2e2c28" : "#eae5da"}; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; scrollbar-width: none; }
   .edgeever-editor-toolbar::-webkit-scrollbar { display: none; }
-  .edgeever-editor-toolbar button { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 36px; min-height: 32px; padding: 0; border: 1px solid transparent; border-radius: 999px; background: transparent; color: ${theme === "dark" ? "#cbd5e1" : "#64748b"}; }
-  .edgeever-editor-toolbar button:active, .edgeever-editor-toolbar button.is-active { border-color: ${theme === "dark" ? "#166534" : "#bbf7d0"}; background: ${theme === "dark" ? "#14532d" : "#ecfdf5"}; color: ${theme === "dark" ? "#86efac" : "#047857"}; }
+  .edgeever-editor-toolbar button { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 36px; min-height: 32px; padding: 0; border: 1px solid transparent; border-radius: 999px; background: transparent; color: ${theme === "dark" ? "#a8a298" : "#6b665e"}; }
+  .edgeever-editor-toolbar button:active, .edgeever-editor-toolbar button.is-active { border-color: ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#43b88c" : "#187958"}; }
   .edgeever-editor-toolbar button:disabled { opacity: 0.38; }
-  .edgeever-editor-toolbar .edgeever-ai-toolbar-button { width: auto; gap: 4px; padding: 0 10px; border-color: ${theme === "dark" ? "#166534" : "#bbf7d0"}; background: ${theme === "dark" ? "#052e24" : "#ecfdf5"}; color: ${theme === "dark" ? "#6ee7b7" : "#047857"}; font-weight: 750; }
-  .edgeever-ai-selection-trigger { position: absolute; z-index: 18; display: inline-flex; min-width: 74px; min-height: 38px; align-items: center; justify-content: center; gap: 6px; padding: 0 13px; border: 1px solid ${theme === "dark" ? "#166534" : "#a7f3d0"}; border-radius: 999px; background: ${theme === "dark" ? "#052e24" : "#fff"}; color: ${theme === "dark" ? "#6ee7b7" : "#047857"}; box-shadow: 0 8px 24px rgb(2 44 34 / 20%); font-size: 14px; font-weight: 800; touch-action: manipulation; animation: edgeever-ai-selection-trigger-in 130ms ease-out; }
-  .edgeever-ai-selection-trigger:active { border-color: #16a06e; background: ${theme === "dark" ? "#0b3b2d" : "#ecfdf5"}; transform: scale(.97); }
+  .edgeever-editor-toolbar .edgeever-ai-toolbar-button { width: auto; gap: 4px; padding: 0 10px; border-color: ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; font-weight: 600; }
+  .edgeever-ai-selection-trigger { position: absolute; z-index: 18; display: inline-flex; min-width: 74px; min-height: 38px; align-items: center; justify-content: center; gap: 6px; padding: 0 13px; border: 1px solid ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; border-radius: 999px; background: ${theme === "dark" ? "#1b3128" : "#fdfcf9"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; box-shadow: 0 8px 24px rgb(21 21 19 / 18%); font-size: 14px; font-weight: 600; touch-action: manipulation; animation: edgeever-ai-selection-trigger-in 130ms ease-out; }
+  .edgeever-ai-selection-trigger:active { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; background: ${theme === "dark" ? "#223d32" : "#e9f3ee"}; transform: scale(.97); }
   .edgeever-ai-selection-trigger svg { width: 16px; height: 16px; }
   @keyframes edgeever-ai-selection-trigger-in { from { opacity: 0; transform: translateY(4px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
   @media (prefers-reduced-motion: reduce) { .edgeever-ai-selection-trigger { animation: none; } }
@@ -3138,55 +3138,55 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
   }
-  .edgeever-ai-selection-hint { position: absolute; z-index: 15; top: 64px; left: 50%; max-width: calc(100% - 32px); transform: translateX(-50%); padding: 9px 13px; border-radius: 999px; background: ${theme === "dark" ? "#1e293b" : "#0f172a"}; color: #fff; font-size: 13px; font-weight: 650; box-shadow: 0 8px 24px rgb(15 23 42 / 24%); }
-  .edgeever-ai-undo { position: absolute; z-index: 15; top: 64px; right: 14px; left: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 10px 9px 13px; border-radius: 10px; background: ${theme === "dark" ? "#1e293b" : "#0f172a"}; color: #fff; font-size: 13px; font-weight: 650; box-shadow: 0 8px 24px rgb(15 23 42 / 24%); }
-  .edgeever-ai-undo button { min-height: 32px; padding: 0 11px; border: 1px solid rgb(255 255 255 / 28%); border-radius: 8px; background: transparent; color: #6ee7b7; font: inherit; font-weight: 750; }
-  .edgeever-ai-panel { position: absolute; z-index: 20; inset: 0; display: flex; min-width: 0; flex-direction: column; background: ${theme === "dark" ? "#0f172a" : "#f8fafc"}; color: ${theme === "dark" ? "#f8fafc" : "#0f172a"}; }
+  .edgeever-ai-selection-hint { position: absolute; z-index: 15; top: 64px; left: 50%; max-width: calc(100% - 32px); transform: translateX(-50%); padding: 9px 13px; border-radius: 999px; background: ${theme === "dark" ? "#2c2a26" : "#1c1b18"}; color: #fff; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgb(21 21 19 / 22%); }
+  .edgeever-ai-undo { position: absolute; z-index: 15; top: 64px; right: 14px; left: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 10px 9px 13px; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#1c1b18"}; color: #fff; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgb(21 21 19 / 22%); }
+  .edgeever-ai-undo button { min-height: 32px; padding: 0 11px; border: 1px solid rgb(255 255 255 / 28%); border-radius: 8px; background: transparent; color: #7cd9b4; font: inherit; font-weight: 600; }
+  .edgeever-ai-panel { position: absolute; z-index: 20; inset: 0; display: flex; min-width: 0; flex-direction: column; background: ${theme === "dark" ? "#181816" : "#f4f1ea"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; }
   .edgeever-ai-panel button, .edgeever-ai-panel input, .edgeever-ai-panel textarea { font: inherit; }
-  .edgeever-ai-panel-header { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 12px; min-height: 58px; padding: 10px 14px; border-bottom: 1px solid ${theme === "dark" ? "#334155" : "#e2e8f0"}; background: ${theme === "dark" ? "#111c18" : "#fff"}; }
+  .edgeever-ai-panel-header { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 12px; min-height: 58px; padding: 10px 14px; border-bottom: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; }
   .edgeever-ai-panel-header div { display: grid; min-width: 0; gap: 2px; }
   .edgeever-ai-panel-header strong { font-size: 16px; }
-  .edgeever-ai-panel-header small { color: ${theme === "dark" ? "#94a3b8" : "#64748b"}; font-size: 12px; }
-  .edgeever-ai-panel-header > button { width: 36px; height: 36px; border: 0; border-radius: 999px; background: transparent; color: ${theme === "dark" ? "#cbd5e1" : "#475569"}; font-size: 25px; }
+  .edgeever-ai-panel-header small { color: ${theme === "dark" ? "#948e84" : "#6b665e"}; font-size: 12px; }
+  .edgeever-ai-panel-header > button { width: 36px; height: 36px; border: 0; border-radius: 999px; background: transparent; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font-size: 25px; }
   .edgeever-ai-panel-body { display: grid; min-height: 0; flex: 1 1 auto; align-content: start; gap: 14px; overflow-y: auto; padding: 14px; }
-  .edgeever-ai-panel label, .edgeever-ai-picker-field { display: grid; gap: 6px; color: ${theme === "dark" ? "#e2e8f0" : "#334155"}; font-size: 13px; font-weight: 700; }
-  .edgeever-ai-panel input, .edgeever-ai-panel textarea { width: 100%; border: 1px solid ${theme === "dark" ? "#475569" : "#cbd5e1"}; border-radius: 9px; outline: none; background: ${theme === "dark" ? "#111c18" : "#fff"}; color: ${theme === "dark" ? "#f8fafc" : "#0f172a"}; font-size: 15px; font-weight: 500; }
+  .edgeever-ai-panel label, .edgeever-ai-picker-field { display: grid; gap: 6px; color: ${theme === "dark" ? "#dfdbd2" : "#2c2925"}; font-size: 13px; font-weight: 600; }
+  .edgeever-ai-panel input, .edgeever-ai-panel textarea { width: 100%; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 9px; outline: none; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-size: 15px; font-weight: 500; }
   .edgeever-ai-panel input { min-height: 44px; padding: 0 11px; }
   .edgeever-ai-panel textarea { min-height: 78px; resize: vertical; padding: 10px 11px; }
-  .edgeever-ai-panel input:focus, .edgeever-ai-panel textarea:focus { border-color: #16a06e; box-shadow: 0 0 0 2px rgb(22 160 110 / 14%); }
-  .edgeever-ai-picker-trigger { display: flex; width: 100%; min-height: 46px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 13px; border: 1px solid ${theme === "dark" ? "#475569" : "#cbd5e1"}; border-radius: 10px; outline: none; background: ${theme === "dark" ? "#111c18" : "#fff"}; color: ${theme === "dark" ? "#f8fafc" : "#0f172a"}; text-align: left; font-size: 15px; font-weight: 550; }
-  .edgeever-ai-picker-trigger:focus-visible, .edgeever-ai-picker-trigger[aria-expanded="true"] { border-color: #16a06e; box-shadow: 0 0 0 2px rgb(22 160 110 / 14%); }
+  .edgeever-ai-panel input:focus, .edgeever-ai-panel textarea:focus { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; box-shadow: 0 0 0 2px rgb(24 121 88 / 16%); }
+  .edgeever-ai-picker-trigger { display: flex; width: 100%; min-height: 46px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 13px; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 10px; outline: none; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; text-align: left; font-size: 15px; font-weight: 550; }
+  .edgeever-ai-picker-trigger:focus-visible, .edgeever-ai-picker-trigger[aria-expanded="true"] { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; box-shadow: 0 0 0 2px rgb(24 121 88 / 16%); }
   .edgeever-ai-picker-trigger > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .edgeever-ai-picker-chevron { flex: 0 0 auto; width: 9px; height: 9px; margin: -4px 2px 0 0; border-right: 2px solid ${theme === "dark" ? "#94a3b8" : "#64748b"}; border-bottom: 2px solid ${theme === "dark" ? "#94a3b8" : "#64748b"}; transform: rotate(45deg); }
-  .edgeever-ai-picker-backdrop { position: absolute; z-index: 40; inset: 0; display: flex; align-items: flex-end; background: rgb(2 6 23 / 48%); animation: edgeever-ai-picker-fade 150ms ease-out; }
-  .edgeever-ai-picker-sheet { display: flex; width: 100%; max-height: min(74%, 560px); min-height: 0; flex-direction: column; padding: 8px 12px max(12px, env(safe-area-inset-bottom)); border: 1px solid ${theme === "dark" ? "#33453d" : "#dbe4df"}; border-bottom: 0; border-radius: 22px 22px 0 0; background: ${theme === "dark" ? "#111c18" : "#fff"}; color: ${theme === "dark" ? "#f8fafc" : "#0f172a"}; box-shadow: 0 -18px 48px rgb(2 6 23 / 24%); animation: edgeever-ai-picker-rise 180ms cubic-bezier(.2,.8,.2,1); }
-  .edgeever-ai-picker-handle { width: 38px; height: 4px; margin: 0 auto 5px; border-radius: 999px; background: ${theme === "dark" ? "#475569" : "#cbd5e1"}; }
+  .edgeever-ai-picker-chevron { flex: 0 0 auto; width: 9px; height: 9px; margin: -4px 2px 0 0; border-right: 2px solid ${theme === "dark" ? "#948e84" : "#6b665e"}; border-bottom: 2px solid ${theme === "dark" ? "#948e84" : "#6b665e"}; transform: rotate(45deg); }
+  .edgeever-ai-picker-backdrop { position: absolute; z-index: 40; inset: 0; display: flex; align-items: flex-end; background: rgb(21 21 19 / 48%); animation: edgeever-ai-picker-fade 150ms ease-out; }
+  .edgeever-ai-picker-sheet { display: flex; width: 100%; max-height: min(74%, 560px); min-height: 0; flex-direction: column; padding: 8px 12px max(12px, env(safe-area-inset-bottom)); border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; border-bottom: 0; border-radius: 22px 22px 0 0; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; box-shadow: 0 -18px 48px rgb(21 21 19 / 24%); animation: edgeever-ai-picker-rise 180ms cubic-bezier(.2,.8,.2,1); }
+  .edgeever-ai-picker-handle { width: 38px; height: 4px; margin: 0 auto 5px; border-radius: 999px; background: ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; }
   .edgeever-ai-picker-header { display: flex; flex: 0 0 auto; min-height: 48px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 4px 4px 8px; }
-  .edgeever-ai-picker-header strong { font-size: 17px; font-weight: 780; }
-  .edgeever-ai-picker-header button { width: 36px; height: 36px; padding: 0; border: 0; border-radius: 999px; background: ${theme === "dark" ? "#17251f" : "#f1f5f9"}; color: ${theme === "dark" ? "#cbd5e1" : "#475569"}; font-size: 24px; line-height: 1; }
+  .edgeever-ai-picker-header strong { font-size: 17px; font-weight: 600; }
+  .edgeever-ai-picker-header button { width: 36px; height: 36px; padding: 0; border: 0; border-radius: 999px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font-size: 24px; line-height: 1; }
   .edgeever-ai-picker-options { min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
-  .edgeever-ai-picker-options > button { display: flex; width: 100%; min-height: 50px; align-items: center; justify-content: space-between; gap: 14px; padding: 8px 12px; border: 0; border-bottom: 1px solid ${theme === "dark" ? "#26382f" : "#edf2ef"}; border-radius: 9px; outline: none; background: transparent; color: ${theme === "dark" ? "#e2e8f0" : "#0f172a"}; text-align: left; font-size: 15px; font-weight: 550; }
+  .edgeever-ai-picker-options > button { display: flex; width: 100%; min-height: 50px; align-items: center; justify-content: space-between; gap: 14px; padding: 8px 12px; border: 0; border-bottom: 1px solid ${theme === "dark" ? "#2e2c28" : "#eae5da"}; border-radius: 9px; outline: none; background: transparent; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; text-align: left; font-size: 15px; font-weight: 550; }
   .edgeever-ai-picker-options > button:last-child { border-bottom-color: transparent; }
-  .edgeever-ai-picker-options > button.is-selected { background: ${theme === "dark" ? "#0b3328" : "#ecfdf5"}; color: ${theme === "dark" ? "#6ee7b7" : "#047857"}; font-weight: 720; }
-  .edgeever-ai-picker-options > button:focus-visible { box-shadow: inset 0 0 0 2px #16a06e; }
-  .edgeever-ai-picker-check { display: grid; width: 20px; height: 20px; flex: 0 0 auto; place-items: center; border-radius: 999px; background: #16a06e; color: #fff; font-size: 13px; font-weight: 850; opacity: 0; }
+  .edgeever-ai-picker-options > button.is-selected { background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; font-weight: 600; }
+  .edgeever-ai-picker-options > button:focus-visible { box-shadow: inset 0 0 0 2px ${theme === "dark" ? "#43b88c" : "#187958"}; }
+  .edgeever-ai-picker-check { display: grid; width: 20px; height: 20px; flex: 0 0 auto; place-items: center; border-radius: 999px; background: #187958; color: #fff; font-size: 13px; font-weight: 600; opacity: 0; }
   .edgeever-ai-picker-options > button.is-selected .edgeever-ai-picker-check { opacity: 1; }
   @keyframes edgeever-ai-picker-fade { from { opacity: 0; } to { opacity: 1; } }
   @keyframes edgeever-ai-picker-rise { from { transform: translateY(20px); opacity: .7; } to { transform: translateY(0); opacity: 1; } }
   @media (prefers-reduced-motion: reduce) { .edgeever-ai-picker-backdrop, .edgeever-ai-picker-sheet { animation: none; } }
-  .edgeever-ai-result-heading { display: flex; align-items: center; justify-content: space-between; color: ${theme === "dark" ? "#e2e8f0" : "#334155"}; font-size: 13px; font-weight: 750; }
-  .edgeever-ai-result-heading small { color: #16a06e; }
-  .edgeever-ai-result { min-height: 170px; max-height: min(42vh, 360px); overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 12px; border: 1px solid ${theme === "dark" ? "#334155" : "#dbe4df"}; border-radius: 10px; background: ${theme === "dark" ? "#17251f" : "#fff"}; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 15px; line-height: 1.55; }
-  .edgeever-ai-result > span { color: ${theme === "dark" ? "#94a3b8" : "#64748b"}; }
+  .edgeever-ai-result-heading { display: flex; align-items: center; justify-content: space-between; color: ${theme === "dark" ? "#dfdbd2" : "#2c2925"}; font-size: 13px; font-weight: 600; }
+  .edgeever-ai-result-heading small { color: ${theme === "dark" ? "#43b88c" : "#187958"}; }
+  .edgeever-ai-result { min-height: 170px; max-height: min(42vh, 360px); overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 12px; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; border-radius: 10px; background: ${theme === "dark" ? "#1d1c1a" : "#fdfcf9"}; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 15px; line-height: 1.55; }
+  .edgeever-ai-result > span { color: ${theme === "dark" ? "#948e84" : "#6b665e"}; }
   .edgeever-ai-refine-row { display: flex; gap: 8px; }
   .edgeever-ai-refine-row input { min-width: 0; flex: 1; }
-  .edgeever-ai-refine-row button, .edgeever-ai-panel-footer button { min-height: 40px; padding: 0 12px; border: 1px solid ${theme === "dark" ? "#475569" : "#cbd5e1"}; border-radius: 9px; background: ${theme === "dark" ? "#111c18" : "#fff"}; color: ${theme === "dark" ? "#f8fafc" : "#0f172a"}; font-weight: 700; }
+  .edgeever-ai-refine-row button, .edgeever-ai-panel-footer button { min-height: 40px; padding: 0 12px; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 9px; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-weight: 600; }
   .edgeever-ai-panel button:disabled { opacity: 0.42; }
   .edgeever-ai-error { margin: 0; color: ${theme === "dark" ? "#fda4af" : "#be123c"}; font-size: 13px; line-height: 1.45; }
-  .edgeever-ai-panel-footer { display: grid; flex: 0 0 auto; gap: 9px; padding: 10px 12px max(10px, env(safe-area-inset-bottom)); border-top: 1px solid ${theme === "dark" ? "#334155" : "#e2e8f0"}; background: ${theme === "dark" ? "#111c18" : "#fff"}; }
+  .edgeever-ai-panel-footer { display: grid; flex: 0 0 auto; gap: 9px; padding: 10px 12px max(10px, env(safe-area-inset-bottom)); border-top: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; }
   .edgeever-ai-panel-footer > div { display: flex; gap: 8px; }
   .edgeever-ai-panel-footer > div button { min-width: 0; flex: 1; }
-  .edgeever-ai-panel-footer .is-primary { border-color: #16a06e; background: #16a06e; color: #fff; }
+  .edgeever-ai-panel-footer .is-primary { border-color: #187958; background: #187958; color: #fff; }
   .edgeever-editor-content {
     min-height: 100%;
     max-width: 100%;
@@ -3198,7 +3198,7 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     overflow-wrap: anywhere;
     word-break: break-word;
     font-feature-settings: "chws" 1;
-    caret-color: ${options?.viewer ? "transparent" : "#0f766e"};
+    caret-color: ${options?.viewer ? "transparent" : theme === "dark" ? "#43b88c" : "#187958"};
   }
   .edgeever-viewer-content { -webkit-user-select: text; user-select: text; cursor: text; }
   .edgeever-search-match {
@@ -3218,7 +3218,7 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     font-size: 1rem;
     line-height: var(--editor-body-line-height);
   }
-  .edgeever-editor-content p.is-editor-empty:first-child::before { float: left; height: 0; color: #94a3b8; content: attr(data-placeholder); pointer-events: none; }
+  .edgeever-editor-content p.is-editor-empty:first-child::before { float: left; height: 0; color: ${theme === "dark" ? "#7c766d" : "#9e978b"}; content: attr(data-placeholder); pointer-events: none; }
   .edgeever-editor-content h1,
   .edgeever-editor-content h2,
   .edgeever-editor-content h3,
@@ -3228,40 +3228,40 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     max-width: 100%;
     overflow-wrap: anywhere;
     line-height: 1.3;
-    font-weight: 800;
+    font-weight: 600;
   }
   .edgeever-editor-content h1 { margin: 0.7em 0 0.4em; font-size: 1.6rem; }
   .edgeever-editor-content h2 { margin: 0.85em 0 0.35em; font-size: 1.35rem; }
   .edgeever-editor-content h3 { margin: 0.75em 0 0.3em; font-size: 1.15rem; }
-  .edgeever-editor-content h4 { margin: 0.7em 0 0.28em; font-size: 1.05rem; font-weight: 700; }
-  .edgeever-editor-content h5 { margin: 0.65em 0 0.25em; font-size: 1rem; font-weight: 700; }
-  .edgeever-editor-content h6 { margin: 0.6em 0 0.22em; font-size: 0.95rem; font-weight: 700; }
+  .edgeever-editor-content h4 { margin: 0.7em 0 0.28em; font-size: 1.05rem; font-weight: 600; }
+  .edgeever-editor-content h5 { margin: 0.65em 0 0.25em; font-size: 1rem; font-weight: 600; }
+  .edgeever-editor-content h6 { margin: 0.6em 0 0.22em; font-size: 0.95rem; font-weight: 600; }
   .edgeever-editor-content ul[data-type="taskList"] { margin: 0 0 var(--editor-paragraph-spacing); padding-left: 0; list-style: none; }
   .edgeever-editor-content ul[data-type="taskList"] li[data-checked] { display: flex; align-items: flex-start; gap: 9px; margin: 4px 0; }
   .edgeever-editor-content ul[data-type="taskList"] li[data-checked] > label { display: inline-flex; flex: 0 0 auto; align-items: center; margin-top: 3px; user-select: none; }
-  .edgeever-editor-content ul[data-type="taskList"] li[data-checked] > label input { width: 18px; height: 18px; margin: 0; border-radius: 3px; accent-color: #1a1d21; }
+  .edgeever-editor-content ul[data-type="taskList"] li[data-checked] > label input { width: 18px; height: 18px; margin: 0; border-radius: 3px; accent-color: #187958; }
   .edgeever-editor-content ul[data-type="taskList"] li[data-checked] > div { min-width: 0; flex: 1 1 auto; }
   .edgeever-editor-content ul[data-type="taskList"] li[data-checked] > div > p { margin-bottom: 0; }
-  .edgeever-editor-content ul[data-type="taskList"] li[data-checked="true"] > div > p { color: #94a3b8; text-decoration: line-through; }
+  .edgeever-editor-content ul[data-type="taskList"] li[data-checked="true"] > div > p { color: #9e978b; text-decoration: line-through; }
   .edgeever-editor-content ul[data-type="taskList"] ul[data-type="taskList"] { margin: 4px 0 0; padding-left: 24px; }
-  .edgeever-editor-content blockquote { margin-left: 0; margin-right: 0; max-width: 100%; padding: 6px 12px; border-left: 3px solid ${theme === "dark" ? "#475569" : "#cbd5e1"}; border-radius: 1px 4px 4px 1px; background: ${theme === "dark" ? "rgba(255, 255, 255, 0.05)" : "#f3f5f7"}; color: ${theme === "dark" ? "#f8fafc" : "#3d4450"}; }
-  .edgeever-editor-content pre { max-width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid ${theme === "dark" ? "#334155" : "#e2e8f0"}; padding: 12px 90px 12px 14px; background: ${theme === "dark" ? "#1e293b" : "#f8fafc"}; color: ${theme === "dark" ? "#e2e8f0" : "#0f172a"}; font-size: 0.88rem; box-shadow: 0 1px 2px ${theme === "dark" ? "rgba(0, 0, 0, 0.2)" : "rgba(15, 23, 42, 0.03)"}; }
-  .edgeever-editor-content code { border-radius: 4px; padding: 2px 5px; border: 1px solid ${theme === "dark" ? "rgba(255, 255, 255, 0.12)" : "#e1e5ea"}; background: ${theme === "dark" ? "rgba(255, 255, 255, 0.06)" : "#f3f5f7"}; color: ${theme === "dark" ? "#f8fafc" : "#3d4450"}; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.88em; font-weight: 400; }
+  .edgeever-editor-content blockquote { margin-left: 0; margin-right: 0; max-width: 100%; padding: 6px 12px; border-left: 3px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 1px 4px 4px 1px; background: ${theme === "dark" ? "#2c2a26" : "#f4f1ea"}; color: ${theme === "dark" ? "#dfdbd2" : "#2c2925"}; }
+  .edgeever-editor-content pre { max-width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; padding: 12px 90px 12px 14px; background: ${theme === "dark" ? "#1d1c1a" : "#f9f7f2"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-size: 0.88rem; box-shadow: none; }
+  .edgeever-editor-content code { border-radius: 4px; padding: 2px 5px; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; background: ${theme === "dark" ? "#2c2a26" : "#f4f1ea"}; color: ${theme === "dark" ? "#eae6df" : "#2c2925"}; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.88em; font-weight: 400; }
   .edgeever-editor-content pre code { padding: 0; border: 0; background: transparent; font-size: inherit; font-weight: normal; color: inherit; }
   .edgeever-editor-content .tiptap-mathematics-render[data-type="block-math"] { max-width: 100%; margin: 16px 0; overflow-x: auto; overflow-y: hidden; padding: 4px 0; text-align: center; -webkit-overflow-scrolling: touch; }
   .edgeever-editor-content .inline-math-error, .edgeever-editor-content .block-math-error { color: ${theme === "dark" ? "#fda4af" : "#be123c"}; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   /* External hyperlinks (match Web default ProseMirror). Attachment chips override below. */
   .edgeever-editor-content a {
-    color: ${theme === "dark" ? "#cad4ce" : "#404040"};
+    color: ${theme === "dark" ? "#43b88c" : "#187958"};
     font-weight: 500;
     text-decoration: underline;
-    text-decoration-color: ${theme === "dark" ? "rgba(202, 212, 206, 0.45)" : "rgba(64, 64, 64, 0.45)"};
+    text-decoration-color: ${theme === "dark" ? "rgba(67, 184, 140, 0.45)" : "rgba(24, 121, 88, 0.4)"};
     text-underline-offset: 2px;
     cursor: pointer;
   }
   .edgeever-editor-content a:active {
-    color: ${theme === "dark" ? "#eef3f0" : "#0a0a0a"};
-    text-decoration-color: ${theme === "dark" ? "#eef3f0" : "#0a0a0a"};
+    color: ${theme === "dark" ? "#7cd9b4" : "#125e44"};
+    text-decoration-color: ${theme === "dark" ? "#7cd9b4" : "#125e44"};
   }
   /* Compact attachment chips: still ≥48px touch height, less vertical bulk than 58px. */
   .edgeever-editor-content a.edgeever-attachment-link, .edgeever-editor-content a[href*="/api/v1/resources/"] {
@@ -3272,13 +3272,13 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     align-items: center;
     gap: 8px;
     margin: 6px 0;
-    border: 1px solid ${theme === "dark" ? "#334155" : "#cbd5e1"};
+    border: 1px solid ${theme === "dark" ? "#2e2c28" : "#d4cdbf"};
     border-radius: 10px;
     padding: 7px 10px;
-    background: ${theme === "dark" ? "#172033" : "#f8fafc"};
-    color: ${theme === "dark" ? "#f1f5f9" : "#1e293b"};
+    background: ${theme === "dark" ? "#1d1c1a" : "#f9f7f2"};
+    color: ${theme === "dark" ? "#eae6df" : "#1c1b18"};
     font-size: 0.93rem;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.3;
     text-decoration: none;
     overflow: hidden;
@@ -3291,11 +3291,11 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    background: ${theme === "dark" ? "#134e4a" : "#ecfdf5"};
-    color: ${theme === "dark" ? "#cbd5e1" : "#64748b"};
+    background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"};
+    color: ${theme === "dark" ? "#a8a298" : "#6b665e"};
     content: "FILE";
     font-size: 8px;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.2px;
   }
   .edgeever-editor-content a.edgeever-attachment-kind-image::before { background: ${theme === "dark" ? "#064e3b" : "#ecfdf5"}; color: ${theme === "dark" ? "#6ee7b7" : "#10b981"}; content: "▧"; font-size: 20px; }
@@ -3324,33 +3324,33 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
   .edgeever-editor-content a.edgeever-attachment-kind-certificate::before { background: ${theme === "dark" ? "#713f12" : "#fefce8"}; color: ${theme === "dark" ? "#fde047" : "#ca8a04"}; content: "KEY"; }
   .edgeever-editor-content a.edgeever-attachment-kind-diagram::before { background: ${theme === "dark" ? "#134e4a" : "#f0fdfa"}; color: ${theme === "dark" ? "#5eead4" : "#0d9488"}; content: "DIAG"; }
   .edgeever-editor-content .edgeever-unsupported-content {
-    border: 1px dashed ${theme === "dark" ? "#64748b" : "#94a3b8"};
+    border: 1px dashed ${theme === "dark" ? "#6b665e" : "#9e978b"};
     border-radius: 8px;
-    background: ${theme === "dark" ? "#1e293b" : "#f8fafc"};
-    color: ${theme === "dark" ? "#cbd5e1" : "#475569"};
+    background: ${theme === "dark" ? "#1d1c1a" : "#f9f7f2"};
+    color: ${theme === "dark" ? "#a8a298" : "#57534e"};
     font-size: 12px;
     font-weight: 600;
   }
   ${DETAILS_EDITOR_CSS}
   .edgeever-editor-content .edgeever-unsupported-content--block { display: block; margin: 8px 0; padding: 12px; }
   .edgeever-editor-content .edgeever-unsupported-content--inline { display: inline-block; margin: 0 2px; padding: 2px 6px; }
-  .edgeever-editor-content .edgeever-unsupported-mark { border-bottom: 1px dashed ${theme === "dark" ? "#94a3b8" : "#64748b"}; }
+  .edgeever-editor-content .edgeever-unsupported-mark { border-bottom: 1px dashed ${theme === "dark" ? "#948e84" : "#6b665e"}; }
   .edgeever-editor-content a.edgeever-attachment-link::after, .edgeever-editor-content a[href*="/api/v1/resources/"]::after {
     margin-left: auto;
     flex: 0 0 auto;
-    color: ${theme === "dark" ? "#94a3b8" : "#64748b"};
+    color: ${theme === "dark" ? "#948e84" : "#6b665e"};
     content: attr(data-attachment-meta) "  ⋯";
     font-size: 11px;
     font-weight: 600;
     white-space: nowrap;
   }
   .edgeever-code-block, .edgeever-mermaid-code-block { position: relative; margin: 18px 0; overflow: visible; background: transparent; }
-  .edgeever-code-copy-button { position: absolute; top: 8px; right: 8px; z-index: 1; border: 1px solid ${theme === "dark" ? "#475569" : "#cbded1"}; border-radius: 6px; padding: 5px 8px; background: ${theme === "dark" ? "rgba(30, 41, 59, 0.94)" : "rgba(247, 251, 248, 0.94)"}; color: ${theme === "dark" ? "#cbd5e1" : "#475569"}; font: inherit; font-size: 12px; line-height: 1.35; }
-  .edgeever-code-copy-button:active { border-color: #0f766e; color: ${theme === "dark" ? "#86efac" : "#0f766e"}; }
+  .edgeever-code-copy-button { position: absolute; top: 8px; right: 8px; z-index: 1; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 6px; padding: 5px 8px; background: ${theme === "dark" ? "rgba(34, 33, 30, 0.94)" : "rgba(253, 252, 249, 0.94)"}; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font: inherit; font-size: 12px; line-height: 1.35; }
+  .edgeever-code-copy-button:active { border-color: ${theme === "dark" ? "#43b88c" : "#187958"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; }
   .edgeever-editor-scroll:has(.edgeever-x6-document) { display: flex; flex-direction: column; overflow: hidden; }
-  .edgeever-x6-document, .edgeever-diagram-reader-host { display: flex; flex-direction: column; height: 100%; min-height: 100%; padding: 8px 12px 12px; background: ${theme === "dark" ? "#0f172a" : "#fff"}; }
+  .edgeever-x6-document, .edgeever-diagram-reader-host { display: flex; flex-direction: column; height: 100%; min-height: 100%; padding: 8px 12px 12px; background: ${theme === "dark" ? "#22211e" : "#fdfcf9"}; }
   .edgeever-diagram-reader-controls { flex: 0 0 auto; }
-  .edgeever-x6-diagram { flex: 1 1 auto; width: 100%; height: auto; min-height: 240px; overflow: hidden; border: 1px solid ${theme === "dark" ? "#26382f" : "#e3ece7"}; border-radius: 14px; background: ${theme === "dark" ? DIAGRAM_CANVAS_DARK : DIAGRAM_CANVAS_LIGHT}; touch-action: none; }
+  .edgeever-x6-diagram { flex: 1 1 auto; width: 100%; height: auto; min-height: 240px; overflow: hidden; border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"}; border-radius: 14px; background: ${theme === "dark" ? DIAGRAM_CANVAS_DARK : DIAGRAM_CANVAS_LIGHT}; touch-action: none; }
   .edgeever-x6-diagram .x6-graph-svg { overflow: hidden; }
   .edgeever-x6-diagram .x6-node { cursor: pointer; }
   .edgeever-mermaid-code-block > pre { display: none; margin: 8px 0 0; }
@@ -3360,7 +3360,7 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
   .edgeever-mermaid-svg { display: flex; width: max-content; min-width: 100%; flex: none; justify-content: center; }
   .edgeever-mermaid-svg svg { display: block; max-width: none; max-height: none; flex: none; }
   .edgeever-mermaid-message, .edgeever-mermaid-error { margin: 0; font-size: 14px; line-height: 1.5; text-align: center; }
-  .edgeever-mermaid-message { color: ${theme === "dark" ? "#94a3b8" : "#64748b"}; }
+  .edgeever-mermaid-message { color: ${theme === "dark" ? "#948e84" : "#6b665e"}; }
   .edgeever-mermaid-error { color: ${theme === "dark" ? "#fda4af" : "#be123c"}; }
   .edgeever-editor-content img { display: block; max-width: 100%; height: auto; margin: 14px auto; border-radius: 10px; }
   /* Shared by preview + edit (same LocalTiptapEditor styles).
@@ -3382,20 +3382,20 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     margin-right: 0;
     margin-bottom: 20px;
     margin-left: 0;
-    border: 1px solid ${theme === "dark" ? "#334155" : "#e2e8f0"};
+    border: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"};
     border-radius: 6px;
-    background: ${theme === "dark" ? "#0f172a" : "#fff"};
-    box-shadow: 0 1px 3px ${theme === "dark" ? "rgba(0, 0, 0, 0.2)" : "rgba(15, 23, 42, 0.03)"};
+    background: ${theme === "dark" ? "#22211e" : "#fdfcf9"};
+    box-shadow: none;
     overscroll-behavior-inline: contain;
     scrollbar-width: thin;
-    scrollbar-color: rgba(100, 116, 139, 0.45) transparent;
+    scrollbar-color: rgba(148, 142, 132, 0.45) transparent;
   }
   .edgeever-editor-content .tableWrapper::-webkit-scrollbar {
     height: 6px;
   }
   .edgeever-editor-content .tableWrapper::-webkit-scrollbar-thumb {
     border-radius: 999px;
-    background: rgba(100, 116, 139, 0.4);
+    background: rgba(148, 142, 132, 0.4);
   }
   .edgeever-editor-content table {
     width: 100%;
@@ -3440,8 +3440,8 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     min-width: var(--mobile-table-column-width, 3.5rem);
     max-width: var(--mobile-table-column-width, none);
     border: 0;
-    border-right: 1px solid ${theme === "dark" ? "#334155" : "#e2e8f0"};
-    border-bottom: 1px solid ${theme === "dark" ? "#334155" : "#e2e8f0"};
+    border-right: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"};
+    border-bottom: 1px solid ${theme === "dark" ? "#2e2c28" : "#e6e1d6"};
     padding: 6px 8px;
     text-align: left;
     vertical-align: top;
@@ -3451,19 +3451,19 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
     line-height: 1.4;
     transition: background-color 120ms ease;
   }
-  .edgeever-editor-content th { background: ${theme === "dark" ? "#1e293b" : "#f8fafc"}; color: ${theme === "dark" ? "#f8fafc" : "#0f172a"}; font-size: 0.93rem; font-weight: 600; }
+  .edgeever-editor-content th { background: ${theme === "dark" ? "#1d1c1a" : "#f9f7f2"}; color: ${theme === "dark" ? "#eae6df" : "#1c1b18"}; font-size: 0.93rem; font-weight: 600; }
   .edgeever-editor-content th:last-child, .edgeever-editor-content td:last-child { border-right: 0; }
   .edgeever-editor-content tr:last-child td { border-bottom: 0; }
-  .edgeever-editor-content tbody tr:nth-child(even) td { background: ${theme === "dark" ? "rgba(15, 23, 42, 0.6)" : "#fafafa"}; }
-  .edgeever-editor-content tbody tr:hover td { background: ${theme === "dark" ? "#1e293b" : "#f1f5f9"}; }
+  .edgeever-editor-content tbody tr:nth-child(even) td { background: ${theme === "dark" ? "rgba(255, 255, 255, 0.025)" : "#f9f7f2"}; }
+  .edgeever-editor-content tbody tr:hover td { background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
   .edgeever-editor-content th p, .edgeever-editor-content td p { margin: 0; }
-  .edgeever-editor-content .selectedCell::after { position: absolute; inset: 0; content: ""; pointer-events: none; background: rgba(16, 185, 129, 0.14); }
-  .edgeever-image-upload-placeholder { position: relative; max-width: 100%; min-height: 112px; margin: 14px auto; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#1e293b" : "#f1f5f9"}; }
+  .edgeever-editor-content .selectedCell::after { position: absolute; inset: 0; content: ""; pointer-events: none; background: rgba(24, 121, 88, 0.14); }
+  .edgeever-image-upload-placeholder { position: relative; max-width: 100%; min-height: 112px; margin: 14px auto; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
   .edgeever-image-upload-preview { display: block; width: 100%; max-height: 360px; margin: 0 !important; object-fit: contain; border-radius: 10px; }
-  .edgeever-image-upload-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 10px; background: rgba(15, 23, 42, 0.38); color: #fff; font-size: 14px; font-weight: 600; text-shadow: 0 1px 2px rgba(15, 23, 42, 0.45); }
+  .edgeever-image-upload-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 10px; background: rgba(21, 21, 19, 0.42); color: #fff; font-size: 14px; font-weight: 600; text-shadow: 0 1px 2px rgba(21, 21, 19, 0.45); }
   .edgeever-image-node, .edgeever-image-upload-result { position: relative; display: block; max-width: 100%; margin: 14px auto; line-height: 0; }
-  .edgeever-image-node.is-loading, .edgeever-image-node.is-failed { min-height: 120px; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#1e293b" : "#f1f5f9"}; }
-  .edgeever-image-loading { display: flex; min-height: 120px; align-items: center; justify-content: center; gap: 10px; padding: 16px; color: ${theme === "dark" ? "#94a3b8" : "#64748b"}; font-size: 13px; font-weight: 600; line-height: 1.3; }
+  .edgeever-image-node.is-loading, .edgeever-image-node.is-failed { min-height: 120px; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
+  .edgeever-image-loading { display: flex; min-height: 120px; align-items: center; justify-content: center; gap: 10px; padding: 16px; color: ${theme === "dark" ? "#948e84" : "#6b665e"}; font-size: 13px; font-weight: 600; line-height: 1.3; }
   .edgeever-image-loading[hidden] { display: none; }
   .edgeever-image-loading-label { text-align: center; }
   .edgeever-image-node > img, .edgeever-image-upload-result > img { display: block; width: 100%; margin: 0; border-radius: 10px; }
@@ -3471,19 +3471,19 @@ const getEditorStyles = (theme: "light" | "dark", options?: { viewer?: boolean }
   [data-edgeever-image-gallery] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 8px; margin: 14px 0; }
   [data-edgeever-image-gallery][data-image-gallery-layout="3"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   [data-edgeever-image-gallery][data-image-gallery-layout="1"] { grid-template-columns: minmax(0, 1fr); }
-  [data-edgeever-image-gallery] > .edgeever-image-node, [data-edgeever-image-gallery] > img { width: 100% !important; min-width: 0; height: 100%; min-height: 112px; max-height: 220px; margin: 0 !important; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#1e293b" : "#f1f5f9"}; }
+  [data-edgeever-image-gallery] > .edgeever-image-node, [data-edgeever-image-gallery] > img { width: 100% !important; min-width: 0; height: 100%; min-height: 112px; max-height: 220px; margin: 0 !important; overflow: hidden; border-radius: 10px; background: ${theme === "dark" ? "#2c2a26" : "#ebe6db"}; }
   [data-edgeever-image-gallery] > .edgeever-image-node > img, [data-edgeever-image-gallery] > img { width: 100%; height: 100%; min-height: 112px; max-height: 220px; object-fit: cover; }
   ${NATIVE_IMAGE_GALLERY_CSS}
-  .edgeever-image-node.is-selected > img, .edgeever-image-upload-result.is-selected > img { outline: 2px solid #0f766e; outline-offset: 3px; }
-  .edgeever-image-actions { position: absolute; right: 8px; bottom: 8px; z-index: 3; display: inline-flex; width: 42px; height: 42px; appearance: none; align-items: center; justify-content: center; border: 1px solid ${theme === "dark" ? "#475569" : "#cbd5e1"}; border-radius: 999px; background: ${theme === "dark" ? "rgba(15, 23, 42, 0.9)" : "rgba(255, 255, 255, 0.92)"}; color: ${theme === "dark" ? "#e2e8f0" : "#334155"}; font-size: 24px; font-weight: 700; line-height: 1; box-shadow: 0 3px 12px rgba(15, 23, 42, 0.2); }
+  .edgeever-image-node.is-selected > img, .edgeever-image-upload-result.is-selected > img { outline: 2px solid ${theme === "dark" ? "#43b88c" : "#187958"}; outline-offset: 3px; }
+  .edgeever-image-actions { position: absolute; right: 8px; bottom: 8px; z-index: 3; display: inline-flex; width: 42px; height: 42px; appearance: none; align-items: center; justify-content: center; border: 1px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-radius: 999px; background: ${theme === "dark" ? "rgba(34, 33, 30, 0.92)" : "rgba(253, 252, 249, 0.94)"}; color: ${theme === "dark" ? "#eae6df" : "#2c2925"}; font-size: 24px; font-weight: 700; line-height: 1; box-shadow: 0 3px 12px rgba(21, 21, 19, 0.2); }
   .edgeever-image-actions[hidden] { display: none; }
-  .edgeever-image-size-controls { position: absolute; top: 8px; left: 50%; z-index: 2; display: flex; width: max-content; max-width: calc(100vw - 40px); align-items: center; gap: 3px; transform: translateX(-50%); border: 1px solid ${theme === "dark" ? "#475569" : "#bbf7d0"}; border-radius: 9px; padding: 4px; background: ${theme === "dark" ? "rgba(15, 23, 42, 0.96)" : "rgba(255, 255, 255, 0.96)"}; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2); line-height: 1.15; }
+  .edgeever-image-size-controls { position: absolute; top: 8px; left: 50%; z-index: 2; display: flex; width: max-content; max-width: calc(100vw - 40px); align-items: center; gap: 3px; transform: translateX(-50%); border: 1px solid ${theme === "dark" ? "#2c5a48" : "#b7d8c9"}; border-radius: 9px; padding: 4px; background: ${theme === "dark" ? "rgba(34, 33, 30, 0.96)" : "rgba(253, 252, 249, 0.96)"}; box-shadow: 0 8px 24px rgba(21, 21, 19, 0.18); line-height: 1.15; }
   .edgeever-image-size-controls[hidden] { display: none; }
-  .edgeever-image-size-button { display: inline-flex; min-width: 52px; min-height: 38px; appearance: none; align-items: center; justify-content: center; border: 0; border-radius: 7px; padding: 4px 7px; background: transparent; color: ${theme === "dark" ? "#cbd5e1" : "#475569"}; font: inherit; font-size: 12px; font-weight: 700; }
-  .edgeever-image-size-button.is-active { background: ${theme === "dark" ? "#134e4a" : "#ccfbf1"}; color: ${theme === "dark" ? "#99f6e4" : "#0f766e"}; }
-  .edgeever-image-upload-spinner { width: 18px; height: 18px; border: 2px solid ${theme === "dark" ? "#475569" : "#cbd5e1"}; border-top-color: #0f766e; border-radius: 999px; animation: edgeever-image-upload-spin 0.8s linear infinite; }
+  .edgeever-image-size-button { display: inline-flex; min-width: 52px; min-height: 38px; appearance: none; align-items: center; justify-content: center; border: 0; border-radius: 7px; padding: 4px 7px; background: transparent; color: ${theme === "dark" ? "#a8a298" : "#57534e"}; font: inherit; font-size: 12px; font-weight: 700; }
+  .edgeever-image-size-button.is-active { background: ${theme === "dark" ? "#1b3128" : "#e9f3ee"}; color: ${theme === "dark" ? "#7cd9b4" : "#125e44"}; }
+  .edgeever-image-upload-spinner { width: 18px; height: 18px; border: 2px solid ${theme === "dark" ? "#3d3a34" : "#d4cdbf"}; border-top-color: ${theme === "dark" ? "#43b88c" : "#187958"}; border-radius: 999px; animation: edgeever-image-upload-spin 0.8s linear infinite; }
   @keyframes edgeever-image-upload-spin { to { transform: rotate(360deg); } }
-  .edgeever-editor-content hr { margin: 24px 0; border: 0; border-top: 1px solid #cbd5e1; }
+  .edgeever-editor-content hr { margin: 24px 0; border: 0; border-top: 1px solid ${theme === "dark" ? "#2e2c28" : "#d4cdbf"}; }
   ${PHONE_IMAGE_FILL_CSS}
 `;
 };

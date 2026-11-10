@@ -82,7 +82,7 @@ const makeTitle = title
   ? title + " | " + "EdgeEver"
   : copy.defaultTitle;
 
-const faviconVersion = "edgeever-open-cat-20260809";
+const faviconVersion = "edgeever-pine-bookmark-20261110";
 const localeRedirectScript = `(() => {
   const storageKey = ${JSON.stringify(siteLocaleStorageKey)};
   const localeAttribute = ${JSON.stringify(siteLocaleDataAttribute)};
@@ -188,7 +188,7 @@ const localeRedirectScript = `(() => {
     <link rel="alternate" hreflang="ja" href={jaAlternateURL} />
     <link rel="alternate" hreflang="pl" href={plAlternateURL} />
     <link rel="alternate" hreflang="x-default" href={zhAlternateURL} />
-    <meta name="theme-color" content="#f8fafc" />
+    <meta name="theme-color" content="#f4f1ea" />
     <meta name="generator" content={Astro.generator} />
     {localeRedirect && <script is:inline set:html={localeRedirectScript} />}
 

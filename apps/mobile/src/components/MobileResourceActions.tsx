@@ -8,7 +8,8 @@ import {
   type MobileResourceTarget,
 } from "../lib/mobile-attachments";
 import { useMobileLocale, getMobileCatalog } from "../lib/mobile-locale";
-import { useMobileTheme } from "../lib/mobile-theme";
+import { resolveMobileThemeStyles, useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 
 type MobileResourceActionsProps = {
   canMutate: boolean;
@@ -139,6 +140,8 @@ export const MobileAttachmentCard = ({
   target: MobileAttachmentTarget;
 }) => {
   const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
+  const styles = resolveMobileThemeStyles(baseStyles, resolvedTheme);
   const { resolvedLocale } = useMobileLocale();
   const extension = target.filename.includes(".") ? target.filename.split(".").pop()?.toUpperCase() : "FILE";
   const dark = resolvedTheme === "dark";
@@ -162,7 +165,7 @@ export const MobileAttachmentCard = ({
         style={styles.cardMain}
       >
         <View style={[styles.fileIcon, dark && styles.fileIconDark]}>
-          {busy ? <ActivityIndicator color="#059669" size="small" /> : <FileText color={dark ? "#a7f3d0" : "#047857"} size={20} />}
+          {busy ? <ActivityIndicator color={palette.accent} size="small" /> : <FileText color={palette.accentText} size={20} />}
         </View>
         <View style={styles.cardText}>
           <Text numberOfLines={2} style={[styles.filename, dark && styles.filenameDark]}>{target.filename}</Text>
@@ -176,7 +179,7 @@ export const MobileAttachmentCard = ({
         onPress={onActions}
         style={styles.moreButton}
       >
-        <MoreHorizontal color={dark ? "#94a3b8" : "#64748b"} size={21} />
+        <MoreHorizontal color={palette.inkSecondary} size={21} />
       </Pressable>
     </View>
   );
@@ -191,6 +194,9 @@ export const MobileResourceActions = ({
   onSaveAs,
   target,
 }: MobileResourceActionsProps) => {
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
+  const styles = resolveMobileThemeStyles(baseStyles, resolvedTheme);
   const { resolvedLocale } = useMobileLocale();
   const labels = copy[resolvedLocale];
   const [mode, setMode] = useState<"actions" | "rename">("actions");
@@ -273,27 +279,27 @@ export const MobileResourceActions = ({
               <Text numberOfLines={1} style={styles.sheetSubtitle}>{target.filename}</Text>
             </View>
             <Pressable accessibilityLabel={labels.cancel} accessibilityRole="button" disabled={pending} onPress={onClose} style={styles.closeButton}>
-              <X color="#475569" size={19} />
+              <X color={palette.inkBody} size={19} />
             </Pressable>
           </View>
 
           {mode === "actions" ? (
             <View style={styles.actions}>
               <ResourceActionRow
-                icon={<Share2 color="#0f172a" size={19} />}
+                icon={<Share2 color={palette.ink} size={19} />}
                 label={labels.share}
                 onPress={() => void runSystemUiAction((current) => onDownload(current), labels.failed)}
                 pending={pending}
               />
               <ResourceActionRow
-                icon={<Download color="#0f172a" size={19} />}
+                icon={<Download color={palette.ink} size={19} />}
                 label={labels.download}
                 onPress={() => void runSystemUiAction((current) => onSaveAs(current), labels.downloadFailed)}
                 pending={pending}
               />
-              <ResourceActionRow disabled={!canMutate} icon={<Pencil color={canMutate ? "#0f172a" : "#94a3b8"} size={19} />} label={labels.rename} onPress={() => setMode("rename")} pending={pending} />
+              <ResourceActionRow disabled={!canMutate} icon={<Pencil color={canMutate ? palette.ink : palette.inkPlaceholder} size={19} />} label={labels.rename} onPress={() => setMode("rename")} pending={pending} />
               <View style={styles.divider} />
-              <ResourceActionRow danger disabled={!canMutate} icon={<Trash2 color={canMutate ? "#be123c" : "#94a3b8"} size={19} />} label={labels.delete} onPress={confirmDelete} pending={pending} />
+              <ResourceActionRow danger disabled={!canMutate} icon={<Trash2 color={canMutate ? palette.danger : palette.inkPlaceholder} size={19} />} label={labels.delete} onPress={confirmDelete} pending={pending} />
               {!canMutate ? <Text style={styles.hint}>{labels.syncedOnly}</Text> : null}
             </View>
           ) : (
@@ -343,52 +349,56 @@ const ResourceActionRow = ({
   label: string;
   onPress: () => void;
   pending: boolean;
-}) => (
-  <Pressable
-    accessibilityRole="button"
-    disabled={disabled || pending}
-    onPress={onPress}
-    style={[styles.actionRow, disabled && styles.disabled]}
-  >
-    {icon}
-    <Text style={[styles.actionLabel, danger && styles.dangerText]}>{label}</Text>
-  </Pressable>
-);
+}) => {
+  const { resolvedTheme } = useMobileTheme();
+  const styles = resolveMobileThemeStyles(baseStyles, resolvedTheme);
+  return (
+    <Pressable
+      accessibilityRole="button"
+      disabled={disabled || pending}
+      onPress={onPress}
+      style={[styles.actionRow, disabled && styles.disabled]}
+    >
+      {icon}
+      <Text style={[styles.actionLabel, danger && styles.dangerText]}>{label}</Text>
+    </Pressable>
+  );
+};
 
-const styles = StyleSheet.create({
-  actionLabel: { color: "#0f172a", fontSize: 16, fontWeight: "600" },
+const baseStyles = StyleSheet.create({
+  actionLabel: { color: "#1c1b18", fontSize: 16, fontWeight: "600" },
   actionRow: { alignItems: "center", flexDirection: "row", gap: 14, minHeight: 52, paddingHorizontal: 6 },
   actions: { gap: 2, paddingTop: 8 },
-  backdrop: { backgroundColor: "rgba(15,23,42,0.34)", flex: 1, justifyContent: "flex-end" },
-  card: { alignItems: "center", backgroundColor: "#f8fafc", borderColor: "#cbd5e1", borderRadius: 12, borderWidth: 1, flexDirection: "row", marginVertical: 6, minHeight: 64 },
-  cardDark: { backgroundColor: "#172033", borderColor: "#334155" },
+  backdrop: { backgroundColor: "rgba(21,21,19,0.38)", flex: 1, justifyContent: "flex-end" },
+  card: { alignItems: "center", backgroundColor: "#f9f7f2", borderColor: "#d4cdbf", borderRadius: 12, borderWidth: 1, flexDirection: "row", marginVertical: 6, minHeight: 64 },
+  cardDark: { backgroundColor: "#1d1c1a", borderColor: "#2e2c28" },
   cardMain: { alignItems: "center", flex: 1, flexDirection: "row", gap: 12, minHeight: 62, paddingHorizontal: 12, paddingVertical: 9 },
   cardText: { flex: 1, gap: 3 },
   closeButton: { alignItems: "center", height: 40, justifyContent: "center", width: 40 },
   dangerText: { color: "#be123c" },
   disabled: { opacity: 0.45 },
-  divider: { backgroundColor: "#e2e8f0", height: 1, marginVertical: 4 },
+  divider: { backgroundColor: "#e6e1d6", height: 1, marginVertical: 4 },
   error: { color: "#be123c", fontSize: 13, marginTop: 10 },
-  fileIcon: { alignItems: "center", backgroundColor: "#ecfdf5", borderRadius: 10, height: 42, justifyContent: "center", width: 42 },
-  fileIconDark: { backgroundColor: "#134e4a" },
-  filename: { color: "#1e293b", fontSize: 15, fontWeight: "700" },
-  filenameDark: { color: "#f1f5f9" },
-  fileType: { color: "#64748b", fontSize: 11, fontWeight: "700", letterSpacing: 0.6 },
-  fileTypeDark: { color: "#94a3b8" },
+  fileIcon: { alignItems: "center", backgroundColor: "#e9f3ee", borderRadius: 10, height: 42, justifyContent: "center", width: 42 },
+  fileIconDark: { backgroundColor: "#1b3128" },
+  filename: { color: "#2c2925", fontSize: 15, fontWeight: "600" },
+  filenameDark: { color: "#eae6df" },
+  fileType: { color: "#6b665e", fontSize: 11, fontWeight: "600", letterSpacing: 0.6 },
+  fileTypeDark: { color: "#948e84" },
   formButtons: { flexDirection: "row", gap: 10, justifyContent: "flex-end", marginTop: 14 },
-  handle: { alignSelf: "center", backgroundColor: "#cbd5e1", borderRadius: 999, height: 4, marginBottom: 14, width: 42 },
-  hint: { color: "#64748b", fontSize: 12, lineHeight: 18, marginTop: 4 },
-  input: { borderColor: "#cbd5e1", borderRadius: 9, borderWidth: 1, color: "#0f172a", fontSize: 16, minHeight: 46, paddingHorizontal: 12 },
-  inputLabel: { color: "#475569", fontSize: 13, fontWeight: "600" },
+  handle: { alignSelf: "center", backgroundColor: "#d4cdbf", borderRadius: 999, height: 4, marginBottom: 14, width: 42 },
+  hint: { color: "#6b665e", fontSize: 12, lineHeight: 18, marginTop: 4 },
+  input: { borderColor: "#d4cdbf", borderRadius: 9, borderWidth: 1, color: "#1c1b18", fontSize: 16, minHeight: 46, paddingHorizontal: 12 },
+  inputLabel: { color: "#57534e", fontSize: 13, fontWeight: "600" },
   moreButton: { alignItems: "center", alignSelf: "stretch", justifyContent: "center", minWidth: 48 },
-  primaryButton: { alignItems: "center", backgroundColor: "#059669", borderRadius: 9, justifyContent: "center", minHeight: 42, minWidth: 84, paddingHorizontal: 16 },
-  primaryButtonText: { color: "#fff", fontSize: 14, fontWeight: "700" },
+  primaryButton: { alignItems: "center", backgroundColor: "#187958", borderRadius: 9, justifyContent: "center", minHeight: 42, minWidth: 84, paddingHorizontal: 16 },
+  primaryButtonText: { color: "#ffffff", fontSize: 14, fontWeight: "600" },
   renameForm: { gap: 8, paddingTop: 14 },
-  secondaryButton: { alignItems: "center", borderColor: "#cbd5e1", borderRadius: 9, borderWidth: 1, justifyContent: "center", minHeight: 42, minWidth: 84, paddingHorizontal: 16 },
-  secondaryButtonText: { color: "#475569", fontSize: 14, fontWeight: "700" },
-  sheet: { backgroundColor: "#fff", borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 28, paddingHorizontal: 20, paddingTop: 10 },
+  secondaryButton: { alignItems: "center", borderColor: "#d4cdbf", borderRadius: 9, borderWidth: 1, justifyContent: "center", minHeight: 42, minWidth: 84, paddingHorizontal: 16 },
+  secondaryButtonText: { color: "#57534e", fontSize: 14, fontWeight: "600" },
+  sheet: { backgroundColor: "#fdfcf9", borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 28, paddingHorizontal: 20, paddingTop: 10 },
   sheetHeader: { alignItems: "center", flexDirection: "row", justifyContent: "space-between" },
   sheetHeaderText: { flex: 1, gap: 3 },
-  sheetSubtitle: { color: "#64748b", fontSize: 13 },
-  sheetTitle: { color: "#0f172a", fontSize: 19, fontWeight: "800" },
+  sheetSubtitle: { color: "#6b665e", fontSize: 13 },
+  sheetTitle: { color: "#1c1b18", fontSize: 19, fontWeight: "600" },
 });

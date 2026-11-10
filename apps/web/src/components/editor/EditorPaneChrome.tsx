@@ -39,7 +39,7 @@ export const IconTooltip = ({
 );
 
 export const EmptyEditorHeader = () => (
-  <header className="hidden h-12 shrink-0 items-center justify-end gap-1 border-b border-slate-100 px-5 lg:flex">
+  <header className="hidden h-12 shrink-0 items-center justify-end gap-1 border-b border-[var(--workspace-divider)] px-5 lg:flex">
     <ThemeToggle />
   </header>
 );

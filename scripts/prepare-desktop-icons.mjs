@@ -61,7 +61,7 @@ const writeResizedPng = async (sourceBuffer, size, destination) => {
 };
 
 const TRAY_TEMPLATE_ALPHA_THRESHOLD = 80;
-const TRAY_MARK_CENTER = { x: 627, y: 580 };
+const TRAY_MARK_CENTER = { x: 512, y: 512 };
 // 22pt matches other macOS menu-bar extras. A round stroke adds ink so the
 // folded note keeps up with filled marks like Notion and WeChat without
 // crowding the compact 22pt menu-bar slot.

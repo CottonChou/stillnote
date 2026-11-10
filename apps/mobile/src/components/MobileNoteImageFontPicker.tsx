@@ -59,17 +59,17 @@ export default function MobileNoteImageFontPicker({ selected, theme, chinese, co
   return (
     <>
       <style>{`
-        html, body, #root { margin: 0; height: 100%; background: #fff; }
+        html, body, #root { margin: 0; height: 100%; background: #fdfcf9; }
         * { box-sizing: border-box; }
         .font-list { height: 100dvh; overflow-y: auto; overscroll-behavior: contain; font-family: system-ui, sans-serif; padding: 0 0 12px; }
-        .font-option { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 88px; padding: 14px 12px; border: 0; border-bottom: 1px solid #e2e8f0; background: #fff; text-align: left; color: #0f172a; }
-        .font-option[aria-checked="true"] { background: #ecfdf5; }
-        .font-option:focus-visible { outline: 2px solid #16a06e; outline-offset: -2px; }
+        .font-option { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 88px; padding: 14px 12px; border: 0; border-bottom: 1px solid #eae5da; background: #fdfcf9; text-align: left; color: #1c1b18; }
+        .font-option[aria-checked="true"] { background: #e9f3ee; }
+        .font-option:focus-visible { outline: 2px solid #187958; outline-offset: -2px; }
         .font-option-copy { min-width: 0; }
         .font-name { display: block; font: 600 14px/1.5 system-ui, sans-serif; }
         .font-sample { display: block; margin-top: 6px; font-size: 20px; line-height: 1.5; overflow-wrap: anywhere; }
-        .font-status { display: block; margin-top: 6px; color: #64748b; font: 13px/1.5 system-ui, sans-serif; }
-        .font-check { flex: 0 0 24px; color: #16a06e; font: 700 24px/1 system-ui, sans-serif; }
+        .font-status { display: block; margin-top: 6px; color: #6b665e; font: 13px/1.5 system-ui, sans-serif; }
+        .font-check { flex: 0 0 24px; color: #187958; font: 600 24px/1 system-ui, sans-serif; }
       `}</style>
       <div className="font-list" role="radiogroup" aria-label={copy.title} ref={listRef}>
         {MOBILE_FONT_OPTIONS.map(item => {

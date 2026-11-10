@@ -27,6 +27,8 @@ fi
 
 if [[ -z "${ANDROID_HOME:-}" && -d /opt/homebrew/share/android-commandlinetools ]]; then
   export ANDROID_HOME=/opt/homebrew/share/android-commandlinetools
+elif [[ -z "${ANDROID_HOME:-}" && -d "$HOME/Library/Android/sdk" ]]; then
+  export ANDROID_HOME="$HOME/Library/Android/sdk"
 fi
 export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}"
 export NODE_ENV="${NODE_ENV:-production}"
@@ -53,8 +55,9 @@ run_timed "准备移动端图标" bun run prepare:mobile:icons
 PREBUILD_FINGERPRINT="$({
   shasum \
     apps/mobile/app.json \
+    apps/mobile/assets/adaptive-icon-foreground.svg \
     apps/mobile/assets/adaptive-icon-transparent.svg \
-    apps/web/public/pwa-512x512.png \
+    assets/brand/edgeever-icon.svg \
     patches/expo-sharing@57.0.22.patch \
     bun.lock
 } | shasum | awk '{print $1}')"

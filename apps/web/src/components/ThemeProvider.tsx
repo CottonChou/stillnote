@@ -52,21 +52,21 @@ export interface MermaidThemePalette {
 export const MERMAID_THEME_PALETTES: Record<MermaidThemeName, MermaidThemePalette> = {
   "zinc-light": {
     bg: DIAGRAM_CANVAS_LIGHT,
-    fg: "#27272A",
-    line: "#52525b",
-    accent: "#52525b",
-    muted: "#3f3f46",
+    fg: "#1c1b18",
+    line: "#6b665e",
+    accent: "#6b665e",
+    muted: "#57534e",
     surface: "#ffffff",
-    border: "#d4d4d8",
+    border: "#ddd7ca",
   },
   "zinc-dark": {
-    bg: "#222325",
-    fg: "#e4e5e7",
-    line: "#85898f",
-    accent: "#c4c7cb",
-    muted: "#b9bdc1",
-    surface: "#2d2f32",
-    border: "#46494e",
+    bg: "#22211e",
+    fg: "#eae6df",
+    line: "#948e84",
+    accent: "#c0bab0",
+    muted: "#b5afa5",
+    surface: "#2c2a26",
+    border: "#3d3a34",
   },
   "tokyo-night": { bg: "#1a1b26", fg: "#a9b1d6", line: "#3d59a1", accent: "#7aa2f7", muted: "#7c85ac" },
   "tokyo-night-storm": { bg: "#24283b", fg: "#a9b1d6", line: "#3d59a1", accent: "#7aa2f7", muted: "#8991b8" },
@@ -173,8 +173,8 @@ const MARKDOWN_THEME_STORAGE_KEY = "edgeever.markdown-theme";
 const EDITOR_THEME_STORAGE_KEY = "edgeever.editor-theme";
 const CUSTOM_EDITOR_THEME_STORAGE_KEY = "edgeever.custom-editor-theme";
 const CUSTOM_EDITOR_THEMES_STORAGE_KEY = "edgeever.custom-editor-themes";
-const LIGHT_THEME_COLOR = "#eef1f4";
-const DARK_THEME_COLOR = "#121315";
+const LIGHT_THEME_COLOR = "#f4f1ea";
+const DARK_THEME_COLOR = "#151513";
 const AppearanceThemeContext = createContext<AppearanceThemeContextValue | null>(null);
 const MermaidThemeContext = createContext<MermaidThemeContextValue | null>(null);
 const MarkdownThemeContext = createContext<MarkdownThemeContextValue | null>(null);

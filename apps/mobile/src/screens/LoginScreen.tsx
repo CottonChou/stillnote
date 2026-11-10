@@ -9,17 +9,20 @@ import {
 } from "react-native";
 import { PUBLIC_DEMO_INSTANCE_URL } from "@edgeever/shared";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ActivityIndicator, GitHub, LockKeyhole } from "../components/icons";
+import Svg, { Path, Rect } from "react-native-svg";
+import { ActivityIndicator, GitHub } from "../components/icons";
 import { Pressable, Text, TextInput } from "../components/LocalizedText";
 import { formatMobileLoginError } from "../lib/login-error";
 import { useMobileLocale } from "../lib/mobile-locale";
 import { resolveMobileThemeStyles, useMobileTheme, type MobileResolvedTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import { useSession } from "../lib/session";
 
 const GITHUB_REPOSITORY_URL = "https://github.com/tianma-if/edgeever";
 
 export const LoginScreen = () => {
   const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const { resolvedLocale } = useMobileLocale();
   refreshLoginThemeStyles(resolvedTheme);
   const { signIn } = useSession();
@@ -51,7 +54,7 @@ export const LoginScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Pressable accessibilityLabel="GitHub 仓库" accessibilityRole="link" onPress={() => Linking.openURL(GITHUB_REPOSITORY_URL)} style={styles.githubButton}>
-        <GitHub color="#475569" size={20} />
+        <GitHub color={palette.inkBody} size={20} />
       </Pressable>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.keyboard}>
         <ScrollView
@@ -62,7 +65,19 @@ export const LoginScreen = () => {
           <View style={styles.form}>
             <View style={styles.header}>
               <View style={styles.logo}>
-                <LockKeyhole color="#ffffff" size={22} />
+                <Svg
+                  accessibilityElementsHidden
+                  height={48}
+                  importantForAccessibility="no-hide-descendants"
+                  viewBox="0 0 1024 1024"
+                  width={48}
+                >
+                  <Rect x={244} y={208} width={536} height={608} rx={52} fill="#FDFCF9" />
+                  <Path d="M338 208H454V492L396 444L338 492Z" fill="#07130B" />
+                  <Path d="M338 208H454V250H338Z" fill="#125E44" opacity={0.35} />
+                  <Rect x={338} y={572} width={338} height={46} rx={23} fill="#B7D8C9" />
+                  <Rect x={338} y={672} width={222} height={46} rx={23} fill="#B7D8C9" />
+                </Svg>
               </View>
               <View style={styles.headerText}>
                 <Text style={styles.title}>EdgeEver</Text>
@@ -77,7 +92,7 @@ export const LoginScreen = () => {
                 keyboardType="url"
                 onChangeText={setBaseUrl}
                 placeholder={PUBLIC_DEMO_INSTANCE_URL}
-                placeholderTextColor="#94a3b8"
+                placeholderTextColor={palette.inkPlaceholder}
                 style={styles.input}
                 value={baseUrl}
               />
@@ -99,7 +114,7 @@ export const LoginScreen = () => {
               <TextInput
                 onChangeText={setPassword}
                 placeholder="首次登录密码"
-                placeholderTextColor="#94a3b8"
+                placeholderTextColor={palette.inkPlaceholder}
                 secureTextEntry
                 style={styles.input}
                 value={password}
@@ -129,13 +144,13 @@ export const LoginScreen = () => {
 
 const baseLoginStyles = StyleSheet.create({
   safeArea: {
-    backgroundColor: "#ecfdf5",
+    backgroundColor: "#f4f1ea",
     flex: 1,
   },
   githubButton: {
     alignItems: "center",
-    backgroundColor: "#ffffff",
-    borderColor: "#e2e8f0",
+    backgroundColor: "#fdfcf9",
+    borderColor: "#e6e1d6",
     borderRadius: 999,
     borderWidth: 1,
     height: 42,
@@ -165,26 +180,27 @@ const baseLoginStyles = StyleSheet.create({
   },
   logo: {
     alignItems: "center",
-    backgroundColor: "#10b981",
+    backgroundColor: "#187958",
     borderRadius: 12,
     height: 48,
     justifyContent: "center",
+    overflow: "hidden",
     width: 48,
   },
   title: {
-    color: "#0f172a",
+    color: "#1c1b18",
     fontSize: 22,
-    fontWeight: "800",
+    fontWeight: "600",
   },
   subtitle: {
-    color: "#64748b",
+    color: "#6b665e",
     fontSize: 12,
     marginTop: 3,
   },
   form: {
     alignSelf: "center",
-    backgroundColor: "#ffffff",
-    borderColor: "#a7f3d0",
+    backgroundColor: "#fdfcf9",
+    borderColor: "#e6e1d6",
     borderRadius: 18,
     borderWidth: 1,
     gap: 16,
@@ -196,28 +212,28 @@ const baseLoginStyles = StyleSheet.create({
     gap: 8,
   },
   label: {
-    color: "#334155",
+    color: "#2c2925",
     fontSize: 13,
-    fontWeight: "700",
+    fontWeight: "600",
   },
   input: {
-    backgroundColor: "#ffffff",
-    borderColor: "#e2e8f0",
+    backgroundColor: "#f9f7f2",
+    borderColor: "#d4cdbf",
     borderRadius: 8,
     borderWidth: 1,
-    color: "#0f172a",
+    color: "#1c1b18",
     fontSize: 16,
     minHeight: 48,
     paddingHorizontal: 14,
   },
   error: {
-    color: "#dc2626",
+    color: "#be123c",
     fontSize: 13,
     lineHeight: 18,
   },
   button: {
     alignItems: "center",
-    backgroundColor: "#10b981",
+    backgroundColor: "#187958",
     borderRadius: 10,
     justifyContent: "center",
     minHeight: 50,
@@ -231,7 +247,7 @@ const baseLoginStyles = StyleSheet.create({
   buttonText: {
     color: "#ffffff",
     fontSize: 16,
-    fontWeight: "800",
+    fontWeight: "600",
   },
 });
 

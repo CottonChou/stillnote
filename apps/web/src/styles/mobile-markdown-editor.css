@@ -18,8 +18,8 @@ body,
 
 body {
   margin: 0;
-  background: #fff;
-  color: #0f172a;
+  background: #fdfcf9;
+  color: #1c1b18;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -30,7 +30,7 @@ input {
 
 .mobile-editor-shell {
   min-height: 100dvh;
-  background: #fff;
+  background: #fdfcf9;
 }
 
 .mobile-editor-header {
@@ -42,8 +42,8 @@ input {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  border-bottom: 1px solid #f1f5f9;
-  background: #fff;
+  border-bottom: 1px solid #e6e1d6;
+  background: #fdfcf9;
   padding: max(8px, env(safe-area-inset-top)) 12px 8px;
 }
 
@@ -53,8 +53,8 @@ input {
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: #0f172a;
-  font-weight: 700;
+  color: #1c1b18;
+  font-weight: 600;
   min-height: 36px;
   padding: 7px 12px;
 }
@@ -172,55 +172,56 @@ input {
 }
 
 .mobile-editor-fatal-actions button.primary {
-  border-color: #16a06e;
-  background: #16a06e;
+  border-color: #187958;
+  background: #187958;
   color: #fff;
 }
 
 :root.dark .mobile-editor-fatal {
-  background: #111827;
+  background: #151513;
 }
 
 :root.dark .mobile-editor-fatal-card {
   border-color: #7f1d1d;
-  background: #19222b;
-  color: #f8fafc;
+  background: #22211e;
+  color: #eae6df;
 }
 
 :root.dark .mobile-editor-fatal-card p {
-  color: #94a3b8;
+  color: #a8a298;
 }
 
 :root.dark .mobile-editor-fatal-actions button {
-  border-color: #475569;
-  background: #1e293b;
-  color: #f8fafc;
+  border-color: #3d3a34;
+  background: #2c2a26;
+  color: #eae6df;
 }
 
 :root.dark .mobile-editor-fatal-actions button.primary {
-  border-color: #16a06e;
-  background: #16a06e;
+  border-color: #187958;
+  background: #187958;
 }
 
 .mobile-editor-title,
 .mobile-editor-tags {
   width: 100%;
   border: 0;
-  background: #fff;
-  color: #0f172a;
+  background: #fdfcf9;
+  color: #1c1b18;
   outline: none;
 }
 
 .mobile-editor-title {
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1.2;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
 }
 
 .mobile-editor-tags {
   min-width: 0;
   flex: 1;
-  color: #64748b;
+  color: #6b665e;
   font-size: 15px;
   line-height: 1.5;
   padding: 4px 0;
@@ -244,9 +245,9 @@ input {
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: #64748b;
+  color: #6b665e;
   font-size: 15px;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 1;
   padding: 0 5px 0 0;
 }
@@ -342,39 +343,39 @@ input {
 
 :root.dark body,
 :root.dark .mobile-editor-shell {
-  background: #0f172a;
-  color: #f8fafc;
+  background: #22211e;
+  color: #eae6df;
 }
 
 :root.dark .mobile-editor-header,
 :root.dark .mobile-editor-title,
 :root.dark .mobile-editor-tags,
 :root.dark .mobile-editor-notebook-sheet {
-  background: #1e293b;
-  color: #f8fafc;
+  background: #22211e;
+  color: #eae6df;
 }
 
 :root.dark .mobile-editor-header,
 :root.dark .mobile-editor-tool-row {
-  border-color: #334155;
+  border-color: #2e2c28;
 }
 
 :root.dark .mobile-editor-back,
 :root.dark .mobile-editor-tool-button {
-  color: #cbd5e1;
+  color: #c0bab0;
 }
 
 :root.dark .mobile-editor-status {
-  background: #334155;
-  color: #cbd5e1;
+  background: #2c2a26;
+  color: #c0bab0;
 }
 
 :root.dark .mobile-editor-status.active,
 :root.dark .mobile-editor-tool-button:active,
 :root.dark .mobile-editor-tool-button[aria-pressed="true"] {
-  background: #14532d;
-  border-color: #166534;
-  color: #86efac;
+  background: #1b3128;
+  border-color: #2c5a48;
+  color: #7cd9b4;
 }
 
 :root.dark .mobile-editor-status.error,
@@ -387,11 +388,11 @@ input {
 :root.dark .mobile-editor-notebook-button,
 :root.dark .mobile-editor-tags::placeholder,
 :root.dark .mobile-editor-title::placeholder {
-  color: #94a3b8;
+  color: #948e84;
 }
 
 :root.dark .mobile-editor-sheet-backdrop {
-  background: rgb(2 6 23 / 0.62);
+  background: rgb(14 13 11 / 0.62);
 }
 
 .mobile-editor-notebook-sheet-handle {
@@ -503,18 +504,18 @@ input {
 
 /* External hyperlinks — match desktop default ProseMirror link styling. */
 .edgeever-mobile-tiptap-content a {
-  color: #00751f;
+  color: #125e44;
   font-weight: 500;
   text-decoration: underline;
-  text-decoration-color: rgb(0 117 31 / 0.45);
+  text-decoration-color: rgb(18 94 68 / 0.45);
   text-underline-offset: 2px;
   cursor: pointer;
 }
 
 .edgeever-mobile-tiptap-content a:active,
 .edgeever-mobile-tiptap-content a:hover {
-  color: #16a06e;
-  text-decoration-color: #16a06e;
+  color: #187958;
+  text-decoration-color: #187958;
 }
 
 .edgeever-mobile-tiptap-content a.edgeever-attachment-link,
@@ -756,7 +757,7 @@ html.dark .edgeever-mobile-tiptap-content a:hover {
   padding: 1rem 0.75rem 0.75rem;
   border: 1px solid #e3ece7;
   border-radius: 8px;
-  background: var(--workspace-editor, #f8fafb);
+  background: var(--workspace-editor, #fdfcf9);
   scrollbar-color: rgb(100 116 139 / 0.35) transparent;
 }
 

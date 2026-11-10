@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { LockKeyhole } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { normalizeInstanceUrl } from "@edgeever/shared/public-demo";
+import { getAppAssetPath } from "@/lib/app-page-path";
 import { Button } from "@/components/ui/button";
 import { GitHubRepositoryLink } from "@/components/GitHubRepositoryLink";
 import { Input } from "@/components/ui/input";
@@ -52,9 +53,12 @@ export const LoginScreen = ({ error, instanceUrl: initialInstanceUrl, isSubmitti
 
       <section className="relative w-full max-w-[400px] rounded-2xl border border-slate-200 bg-card/95 p-8 shadow-[0_20px_50px_rgb(0_0_0/0.08)] backdrop-blur-md">
         <div className="mb-8 flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-[0_8px_18px_-8px_rgb(var(--brand-green-rgb)/0.45)]">
-            <LockKeyhole className="h-5.5 w-5.5" />
-          </div>
+          <img
+            src={getAppAssetPath("favicon.svg", import.meta.env.BASE_URL)}
+            alt=""
+            aria-hidden="true"
+            className="h-12 w-12 shrink-0 rounded-xl shadow-[0_8px_18px_-8px_rgb(var(--brand-green-rgb)/0.4)]"
+          />
           <div className="min-w-0">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-slate-900">{t("login.title")}</h1>
             <p className="mt-1 text-xs font-medium tracking-wide text-slate-500">{t("login.subtitle")}</p>

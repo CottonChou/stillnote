@@ -13,7 +13,7 @@ test("keeps proactive AI out of primary navigation", () => {
 test("keeps the desktop create-note control compact with one neutral outline", () => {
   const css = readFileSync(new URL("../styles/globals.css", import.meta.url), "utf8");
 
-  expect(source).toContain('rounded-2xl border border-slate-200/90');
+  expect(source).toContain('rounded-xl border border-[var(--workspace-divider)]');
   expect(source).toContain('className="group flex h-12 max-w-[calc(100%-2.25rem)]');
   expect(source).toContain('className="group relative flex h-12 min-w-9 flex-1');
   expect(source).toContain('before:inset-y-2.5');

@@ -6,6 +6,8 @@ import { Modal, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Alert, Pressable, Text } from "../components/LocalizedText";
 import { useMobileLocale } from "../lib/mobile-locale";
+import { useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import { useSession } from "../lib/session";
 import { formatDate, formatRevisionActor } from "./workspace-utils";
 import { styles } from "./workspace-styles";
@@ -55,6 +57,8 @@ export const RevisionHistoryModal = ({
   onRestored: (memo: MemoDetail) => void | Promise<void>;
 }) => {
   const { client } = useSession();
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const queryClient = useQueryClient();
   const localePreference = useMobileLocale().preference;
   const [selectedRevisionId, setSelectedRevisionId] = useState<string | null>(null);
@@ -126,13 +130,13 @@ export const RevisionHistoryModal = ({
         <View style={styles.managementHeader}>
           <View style={styles.managementHeaderText}>
             <View style={styles.managementTitleRow}>
-              <History color="#059669" size={19} />
+              <History color={palette.accent} size={19} />
               <Text style={styles.managementTitle}>版本历史</Text>
             </View>
             <Text numberOfLines={1} style={styles.managementSubtitle}>{memo?.title?.trim() || DEFAULT_MEMO_TITLE}</Text>
           </View>
           <IconButton accessibilityLabel="关闭" onPress={onClose}>
-            <X color="#0f172a" size={20} />
+            <X color={palette.ink} size={20} />
           </IconButton>
         </View>
 
@@ -144,7 +148,7 @@ export const RevisionHistoryModal = ({
             </View>
             {selectedRevision ? (
               <ActionButton disabled={restoreRevisionMutation.isPending || Boolean(memo?.isDeleted)} label={restoreRevisionMutation.isPending ? "恢复中" : "恢复该版本"} onPress={() => requestRestoreRevision(selectedRevision)}>
-                <RotateCcw color="#0f172a" size={16} />
+                <RotateCcw color={palette.ink} size={16} />
               </ActionButton>
             ) : null}
           </View>
@@ -161,7 +165,7 @@ export const RevisionHistoryModal = ({
                 {revisionsQuery.error instanceof Error ? revisionsQuery.error.message : "请稍后重试"}
               </Text>
               <ActionButton label="重试" onPress={() => void revisionsQuery.refetch()}>
-                <RotateCcw color="#0f172a" size={16} />
+                <RotateCcw color={palette.ink} size={16} />
               </ActionButton>
             </View>
           ) : revisions.length === 0 ? (

@@ -32,6 +32,7 @@ import {
 } from "../components/icons";
 import { useMobileLocale } from "../lib/mobile-locale";
 import { useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import {
   filterCollapsedNotebookOptions,
   filterNotebookOptionsById,
@@ -39,7 +40,6 @@ import {
   getNotebookAncestorIds,
   getNotebookParentIdSet,
   resolveDrawerDrag,
-  type DrawerDragParams,
   type NotebookOption,
 } from "./workspace-utils";
 
@@ -197,6 +197,7 @@ export const NotebookDrawer = ({
   const { translate } = useMobileLocale();
   const { resolvedTheme } = useMobileTheme();
   const isDark = resolvedTheme === "dark";
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const insets = useSafeAreaInsets();
 
   const [searchText, setSearchText] = useState("");
@@ -291,8 +292,8 @@ export const NotebookDrawer = ({
           style={[
             styles.drawer,
             {
-              backgroundColor: isDark ? "#0b1324" : "#ffffff",
-              borderRightColor: isDark ? "#1e293b" : "#e2e8f0",
+              backgroundColor: palette.list,
+              borderRightColor: palette.divider,
               paddingBottom: Math.max(16, insets.bottom),
               paddingTop: Math.max(16, insets.top),
               width: drawerWidth,
@@ -304,7 +305,7 @@ export const NotebookDrawer = ({
           <View style={styles.header}>
             <View style={styles.headerTitleWrap}>
               <View style={[styles.headerIconWrap, isDark && styles.headerIconWrapDark]}>
-                <BookOpen color="#059669" size={18} />
+                <BookOpen color={palette.accent} size={18} />
               </View>
               <View style={styles.headerTexts}>
                 <Text style={[styles.headerTitle, isDark && styles.textDark]}>
@@ -322,26 +323,26 @@ export const NotebookDrawer = ({
               onPress={onClose}
               style={[styles.closeButton, isDark && styles.closeButtonDark]}
             >
-              <X color={isDark ? "#94a3b8" : "#64748b"} size={19} />
+              <X color={palette.inkSecondary} size={19} />
             </Pressable>
           </View>
 
           {/* Search Box */}
           <View style={[styles.searchBox, isDark && styles.searchBoxDark]}>
-            <Search color={isDark ? "#64748b" : "#94a3b8"} size={16} />
+            <Search color={palette.inkMuted} size={16} />
             <TextInput
               accessibilityLabel="搜索笔记本"
               autoCapitalize="none"
               autoCorrect={false}
               onChangeText={setSearchText}
               placeholder="搜索笔记本"
-              placeholderTextColor={isDark ? "#475569" : "#94a3b8"}
+              placeholderTextColor={palette.inkPlaceholder}
               style={[styles.searchInput, isDark && styles.textDark]}
               value={searchText}
             />
             {searchText ? (
               <Pressable hitSlop={6} onPress={() => setSearchText("")}>
-                <X color={isDark ? "#64748b" : "#94a3b8"} size={15} />
+                <X color={palette.inkMuted} size={15} />
               </Pressable>
             ) : null}
           </View>
@@ -365,7 +366,7 @@ export const NotebookDrawer = ({
             >
               <View style={styles.navItemLeft}>
                 <BookOpen
-                  color={activeNotebookId === ALL_NOTES_ID && memoView === "notebook" ? "#059669" : isDark ? "#94a3b8" : "#64748b"}
+                  color={activeNotebookId === ALL_NOTES_ID && memoView === "notebook" ? palette.accent : palette.inkSecondary}
                   size={18}
                 />
                 <Text
@@ -373,7 +374,7 @@ export const NotebookDrawer = ({
                   style={[
                     styles.navItemText,
                     isDark && styles.textDark,
-                    activeNotebookId === ALL_NOTES_ID && memoView === "notebook" && styles.navItemTextActive,
+                    activeNotebookId === ALL_NOTES_ID && memoView === "notebook" && [styles.navItemTextActive, isDark && styles.navItemTextActiveDark],
                   ]}
                 >
                   全部笔记
@@ -386,7 +387,7 @@ export const NotebookDrawer = ({
                   </Text>
                 </View>
               ) : activeNotebookId === ALL_NOTES_ID && memoView === "notebook" ? (
-                <Check color="#059669" size={17} />
+                <Check color={palette.accent} size={17} />
               ) : null}
             </Pressable>
 
@@ -404,7 +405,7 @@ export const NotebookDrawer = ({
                     onPress={toggleAllNotebookBranches}
                     style={styles.actionPill}
                   >
-                    <Text style={styles.actionPillText}>
+                    <Text style={[styles.actionPillText, isDark && styles.navItemTextActiveDark]}>
                       {allNotebookBranchesExpanded ? "收起全部" : "展开全部"}
                     </Text>
                   </Pressable>
@@ -418,9 +419,13 @@ export const NotebookDrawer = ({
                       setCreating((v) => !v);
                       setCreateError("");
                     }}
-                    style={[styles.createToggle, creating && styles.createToggleActive]}
+                    style={[
+                      styles.createToggle,
+                      isDark && styles.createToggleDark,
+                      creating && (isDark ? styles.createToggleActiveDark : styles.createToggleActive),
+                    ]}
                   >
-                    <Plus color="#059669" size={16} />
+                    <Plus color={palette.accent} size={16} />
                   </Pressable>
                 ) : null}
               </View>
@@ -435,7 +440,7 @@ export const NotebookDrawer = ({
                   maxLength={80}
                   onChangeText={setNewNotebookName}
                   placeholder="新笔记本名称"
-                  placeholderTextColor={isDark ? "#475569" : "#94a3b8"}
+                  placeholderTextColor={palette.inkPlaceholder}
                   returnKeyType="done"
                   style={[styles.createInput, isDark && styles.createInputDark]}
                   value={newNotebookName}
@@ -445,9 +450,9 @@ export const NotebookDrawer = ({
                     accessibilityRole="button"
                     accessibilityState={{ selected: newNotebookParentId === null }}
                     onPress={() => setNewNotebookParentId(null)}
-                    style={[styles.parentChoicePill, newNotebookParentId === null && styles.parentChoicePillActive]}
+                    style={[styles.parentChoicePill, isDark && styles.parentChoicePillDark, newNotebookParentId === null && styles.parentChoicePillActive]}
                   >
-                    <Text style={[styles.parentChoiceText, newNotebookParentId === null && styles.parentChoiceTextActive]}>
+                    <Text style={[styles.parentChoiceText, isDark && styles.mutedTextDark, newNotebookParentId === null && styles.parentChoiceTextActive]}>
                       顶层笔记本
                     </Text>
                   </Pressable>
@@ -456,9 +461,9 @@ export const NotebookDrawer = ({
                       accessibilityRole="button"
                       accessibilityState={{ selected: newNotebookParentId === activeNotebookId }}
                       onPress={() => setNewNotebookParentId(activeNotebookId)}
-                      style={[styles.parentChoicePill, newNotebookParentId === activeNotebookId && styles.parentChoicePillActive]}
+                      style={[styles.parentChoicePill, isDark && styles.parentChoicePillDark, newNotebookParentId === activeNotebookId && styles.parentChoicePillActive]}
                     >
-                      <Text numberOfLines={1} style={[styles.parentChoiceText, newNotebookParentId === activeNotebookId && styles.parentChoiceTextActive]}>
+                      <Text numberOfLines={1} style={[styles.parentChoiceText, isDark && styles.mutedTextDark, newNotebookParentId === activeNotebookId && styles.parentChoiceTextActive]}>
                         {translate(`放入「${activeNotebookName}」`)}
                       </Text>
                     </Pressable>
@@ -513,9 +518,9 @@ export const NotebookDrawer = ({
                       style={styles.expandChevron}
                     >
                       {isCollapsed ? (
-                        <ChevronRight color={isDark ? "#64748b" : "#94a3b8"} size={16} />
+                        <ChevronRight color={palette.inkMuted} size={16} />
                       ) : (
-                        <ChevronDown color={isDark ? "#64748b" : "#94a3b8"} size={16} />
+                        <ChevronDown color={palette.inkMuted} size={16} />
                       )}
                     </Pressable>
                   ) : (
@@ -529,7 +534,7 @@ export const NotebookDrawer = ({
                     style={styles.notebookSelectArea}
                   >
                     <Folder
-                      color={isSelected ? "#059669" : isDark ? "#94a3b8" : "#64748b"}
+                      color={isSelected ? palette.accent : palette.inkSecondary}
                       size={17}
                       style={{ marginRight: 8 }}
                     />
@@ -538,21 +543,21 @@ export const NotebookDrawer = ({
                       style={[
                         styles.notebookName,
                         isDark && styles.textDark,
-                        isSelected && styles.navItemTextActive,
+                        isSelected && [styles.navItemTextActive, isDark && styles.navItemTextActiveDark],
                       ]}
                     >
                       {notebook.name}
                     </Text>
                   </Pressable>
 
-                  {isSelected ? <Check color="#059669" size={17} /> : null}
+                  {isSelected ? <Check color={palette.accent} size={17} /> : null}
                 </View>
               );
             })}
 
             {visibleNotebookOptions.length === 0 ? (
               <View style={styles.emptyContainer}>
-                <Folder color={isDark ? "#334155" : "#cbd5e1"} size={32} />
+                <Folder color={palette.inkMuted} size={32} />
                 <Text style={[styles.emptyText, isDark && styles.mutedTextDark]}>
                   没有匹配的笔记本
                 </Text>
@@ -574,7 +579,7 @@ export const NotebookDrawer = ({
             >
               <View style={styles.navItemLeft}>
                 <Trash2
-                  color={memoView === "trash" ? "#ef4444" : isDark ? "#94a3b8" : "#64748b"}
+                  color={memoView === "trash" ? palette.danger : palette.inkSecondary}
                   size={18}
                 />
                 <Text
@@ -582,13 +587,13 @@ export const NotebookDrawer = ({
                   style={[
                     styles.navItemText,
                     isDark && styles.textDark,
-                    memoView === "trash" && { color: "#ef4444", fontWeight: "700" },
+                    memoView === "trash" && { color: palette.danger, fontWeight: "600" },
                   ]}
                 >
                   回收站
                 </Text>
               </View>
-              {memoView === "trash" ? <Check color="#ef4444" size={17} /> : null}
+              {memoView === "trash" ? <Check color={palette.danger} size={17} /> : null}
             </Pressable>
           </ScrollView>
         </Animated.View>
@@ -628,43 +633,43 @@ const styles = StyleSheet.create({
   },
   headerIconWrap: {
     alignItems: "center",
-    backgroundColor: "#ecfdf5",
+    backgroundColor: "#e9f3ee",
     borderRadius: 9,
     height: 34,
     justifyContent: "center",
     width: 34,
   },
   headerIconWrapDark: {
-    backgroundColor: "#064e3b",
+    backgroundColor: "#1b3128",
   },
   headerTexts: {
     flex: 1,
   },
   headerTitle: {
-    color: "#0f172a",
+    color: "#1c1b18",
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: "600",
   },
   headerSubtitle: {
-    color: "#64748b",
+    color: "#6b665e",
     fontSize: 12,
     marginTop: 2,
   },
   closeButton: {
     alignItems: "center",
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "#ebe6db",
     borderRadius: 17,
     height: 34,
     justifyContent: "center",
     width: 34,
   },
   closeButtonDark: {
-    backgroundColor: "#1e293b",
+    backgroundColor: "#2c2a26",
   },
   searchBox: {
     alignItems: "center",
-    backgroundColor: "#f8fafc",
-    borderColor: "#e2e8f0",
+    backgroundColor: "#f4f1ea",
+    borderColor: "#e6e1d6",
     borderRadius: 10,
     borderWidth: 1,
     flexDirection: "row",
@@ -675,11 +680,11 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   searchBoxDark: {
-    backgroundColor: "#0f172a",
-    borderColor: "#1e293b",
+    backgroundColor: "#151513",
+    borderColor: "#2e2c28",
   },
   searchInput: {
-    color: "#0f172a",
+    color: "#1c1b18",
     flex: 1,
     fontSize: 14,
     padding: 0,
@@ -701,10 +706,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   navItemActive: {
-    backgroundColor: "#ecfdf5",
+    backgroundColor: "#e9f3ee",
   },
   navItemActiveDark: {
-    backgroundColor: "#064e3b",
+    backgroundColor: "#1b3128",
   },
   navItemLeft: {
     alignItems: "center",
@@ -713,30 +718,33 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   navItemText: {
-    color: "#334155",
+    color: "#403c37",
     fontSize: 15,
     fontWeight: "500",
   },
   navItemTextActive: {
-    color: "#059669",
-    fontWeight: "700",
+    color: "#187958",
+    fontWeight: "600",
+  },
+  navItemTextActiveDark: {
+    color: "#43b88c",
   },
   badge: {
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "#ebe6db",
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
   },
   badgeDark: {
-    backgroundColor: "#1e293b",
+    backgroundColor: "#2c2a26",
   },
   badgeText: {
-    color: "#64748b",
+    color: "#6b665e",
     fontSize: 12,
     fontWeight: "600",
   },
   badgeTextDark: {
-    color: "#94a3b8",
+    color: "#948e84",
   },
   sectionHeader: {
     alignItems: "center",
@@ -747,9 +755,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   sectionTitle: {
-    color: "#94a3b8",
+    color: "#8a847a",
     fontSize: 12,
-    fontWeight: "700",
+    fontWeight: "600",
     letterSpacing: 0.5,
     textTransform: "uppercase",
   },
@@ -763,24 +771,30 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   actionPillText: {
-    color: "#059669",
+    color: "#187958",
     fontSize: 12,
     fontWeight: "600",
   },
   createToggle: {
     alignItems: "center",
-    backgroundColor: "#ecfdf5",
+    backgroundColor: "#e9f3ee",
     borderRadius: 14,
     height: 26,
     justifyContent: "center",
     width: 26,
   },
+  createToggleDark: {
+    backgroundColor: "#1b3128",
+  },
   createToggleActive: {
-    backgroundColor: "#a7f3d0",
+    backgroundColor: "#b7d8c9",
+  },
+  createToggleActiveDark: {
+    backgroundColor: "#2c5a48",
   },
   createForm: {
-    backgroundColor: "#f8fafc",
-    borderColor: "#e2e8f0",
+    backgroundColor: "#f4f1ea",
+    borderColor: "#e6e1d6",
     borderRadius: 12,
     borderWidth: 1,
     marginHorizontal: 4,
@@ -788,23 +802,23 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   createFormDark: {
-    backgroundColor: "#0f172a",
-    borderColor: "#1e293b",
+    backgroundColor: "#151513",
+    borderColor: "#2e2c28",
   },
   createInput: {
-    backgroundColor: "#ffffff",
-    borderColor: "#cbd5e1",
+    backgroundColor: "#fdfcf9",
+    borderColor: "#d6d0c4",
     borderRadius: 8,
     borderWidth: 1,
-    color: "#0f172a",
+    color: "#1c1b18",
     fontSize: 14,
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
   createInputDark: {
-    backgroundColor: "#1e293b",
-    borderColor: "#334155",
-    color: "#f8fafc",
+    backgroundColor: "#22211e",
+    borderColor: "#38352f",
+    color: "#eae6df",
   },
   parentChoiceRow: {
     flexDirection: "row",
@@ -813,16 +827,19 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   parentChoicePill: {
-    backgroundColor: "#e2e8f0",
+    backgroundColor: "#ebe6db",
     borderRadius: 6,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
+  parentChoicePillDark: {
+    backgroundColor: "#2c2a26",
+  },
   parentChoicePillActive: {
-    backgroundColor: "#059669",
+    backgroundColor: "#187958",
   },
   parentChoiceText: {
-    color: "#475569",
+    color: "#57534e",
     fontSize: 12,
     fontWeight: "500",
   },
@@ -831,13 +848,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   createError: {
-    color: "#dc2626",
+    color: "#be123c",
     fontSize: 12,
     marginTop: 6,
   },
   createSubmitButton: {
     alignItems: "center",
-    backgroundColor: "#059669",
+    backgroundColor: "#187958",
     borderRadius: 8,
     justifyContent: "center",
     marginTop: 10,
@@ -876,7 +893,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   notebookName: {
-    color: "#334155",
+    color: "#403c37",
     flex: 1,
     fontSize: 14,
     fontWeight: "500",
@@ -887,23 +904,23 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
   },
   emptyText: {
-    color: "#94a3b8",
+    color: "#8a847a",
     fontSize: 13,
     marginTop: 8,
   },
   divider: {
-    backgroundColor: "#e2e8f0",
+    backgroundColor: "#e6e1d6",
     height: 1,
     marginHorizontal: 6,
     marginVertical: 12,
   },
   dividerDark: {
-    backgroundColor: "#1e293b",
+    backgroundColor: "#2e2c28",
   },
   textDark: {
-    color: "#f8fafc",
+    color: "#eae6df",
   },
   mutedTextDark: {
-    color: "#94a3b8",
+    color: "#948e84",
   },
 });

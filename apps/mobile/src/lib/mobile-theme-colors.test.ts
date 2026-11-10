@@ -21,4 +21,17 @@ describe("mobile dark theme colors", () => {
       card: { backgroundColor: "#0f172a", borderColor: "#334155", color: "#f8fafc" },
     });
   });
+
+  test("maps Editorial Flow paper surfaces and ink tokens into warm charcoal dark mode", () => {
+    const styles = {
+      paper: { backgroundColor: "#fdfcf9", borderColor: "#e6e1d6", color: "#1c1b18" },
+      stream: { backgroundColor: "#f9f7f2", borderBottomColor: "#eae5da", color: "#57534e" },
+      accent: { backgroundColor: "#e9f3ee", borderColor: "#b7d8c9", color: "#125e44" },
+    };
+    expect(resolveMobileThemeStyles(styles, "dark")).toEqual({
+      paper: { backgroundColor: "#22211e", borderColor: "#2e2c28", color: "#eae6df" },
+      stream: { backgroundColor: "#1d1c1a", borderBottomColor: "#2e2c28", color: "#a8a298" },
+      accent: { backgroundColor: "#1b3128", borderColor: "#2c5a48", color: "#7cd9b4" },
+    });
+  });
 });

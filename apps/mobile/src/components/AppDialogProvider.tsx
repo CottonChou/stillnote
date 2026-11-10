@@ -6,9 +6,11 @@ import { Pressable, Text } from "./LocalizedText";
 import { registerAppDialogPresenter, type AppDialogButton, type AppDialogRequest } from "./app-dialog-controller";
 import { translateCurrentMobileText } from "../lib/mobile-locale";
 import { resolveMobileThemeStyles, useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 
 export const AppDialogProvider = ({ children }: { children: ReactNode }) => {
   const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => resolveMobileThemeStyles(baseStyles, resolvedTheme), [resolvedTheme]);
   const [request, setRequest] = useState<AppDialogRequest | null>(null);
@@ -68,7 +70,7 @@ export const AppDialogProvider = ({ children }: { children: ReactNode }) => {
               onPress={() => dismiss(Boolean(cancelButton))}
               style={styles.closeButton}
             >
-              <X color="#64748b" size={18} />
+              <X color={palette.inkSecondary} size={18} />
             </Pressable>
             <View style={styles.header}>
               <View style={[
@@ -76,8 +78,8 @@ export const AppDialogProvider = ({ children }: { children: ReactNode }) => {
                 destructive ? styles.iconCircleDanger : primary ? styles.iconCirclePrimary : styles.iconCircleNeutral,
               ]}>
                 {destructive
-                  ? <AlertTriangle color="#be123c" size={20} />
-                  : <ShieldCheck color={primary ? "#047857" : "#64748b"} size={20} />}
+                  ? <AlertTriangle color={palette.danger} size={20} />
+                  : <ShieldCheck color={primary ? palette.accentText : palette.inkSecondary} size={20} />}
               </View>
               <View style={styles.copy}>
                 <Text accessibilityRole="header" style={styles.title}>{request?.title ?? ""}</Text>
@@ -88,7 +90,7 @@ export const AppDialogProvider = ({ children }: { children: ReactNode }) => {
               {[...buttons].reverse().map((button, index) => {
                 const isDestructive = button.style === "destructive";
                 const isCancel = button.style === "cancel";
-                const iconColor = isCancel ? "#0f172a" : "#ffffff";
+                const iconColor = isCancel ? palette.ink : "#ffffff";
                 return (
                   <Pressable
                     accessibilityRole="button"
@@ -124,28 +126,28 @@ export const AppDialogProvider = ({ children }: { children: ReactNode }) => {
 const baseStyles = StyleSheet.create({
   backdrop: {
     alignItems: "center",
-    backgroundColor: "rgba(15, 23, 42, 0.42)",
+    backgroundColor: "rgba(21, 21, 19, 0.44)",
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 16,
   },
   dialog: {
-    backgroundColor: "#ffffff",
-    borderColor: "#e2e8f0",
+    backgroundColor: "#fdfcf9",
+    borderColor: "#e6e1d6",
     borderRadius: 12,
     borderWidth: 1,
     elevation: 16,
     maxWidth: 448,
     overflow: "hidden",
-    shadowColor: "#0f172a",
+    shadowColor: "#1c1b18",
     shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.22,
+    shadowOpacity: 0.16,
     shadowRadius: 24,
     width: "100%",
   },
   header: {
     alignItems: "flex-start",
-    borderBottomColor: "#e2e8f0",
+    borderBottomColor: "#eae5da",
     borderBottomWidth: 1,
     flexDirection: "row",
     gap: 16,
@@ -176,30 +178,30 @@ const baseStyles = StyleSheet.create({
     backgroundColor: "#fff1f2",
   },
   iconCircleNeutral: {
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "#ebe6db",
   },
   iconCirclePrimary: {
-    backgroundColor: "#ecfdf5",
+    backgroundColor: "#e9f3ee",
   },
   copy: {
     flex: 1,
     minWidth: 0,
   },
   title: {
-    color: "#0f172a",
+    color: "#1c1b18",
     fontSize: 16,
-    fontWeight: "700",
+    fontWeight: "600",
     lineHeight: 22,
   },
   description: {
-    color: "#64748b",
+    color: "#6b665e",
     fontSize: 14,
     lineHeight: 20,
     marginTop: 4,
   },
   footer: {
-    backgroundColor: "#f8fafc",
-    borderTopColor: "#f1f5f9",
+    backgroundColor: "#f9f7f2",
+    borderTopColor: "#eae5da",
     borderTopWidth: 1,
     gap: 8,
     paddingHorizontal: 20,
@@ -216,20 +218,20 @@ const baseStyles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   buttonPrimary: {
-    backgroundColor: "#0f172a",
-    borderColor: "#0f172a",
+    backgroundColor: "#187958",
+    borderColor: "#187958",
   },
   buttonDanger: {
     backgroundColor: "#e11d48",
     borderColor: "#e11d48",
   },
   buttonOutline: {
-    backgroundColor: "#ffffff",
-    borderColor: "#cbd5e1",
+    backgroundColor: "#fdfcf9",
+    borderColor: "#d4cdbf",
   },
   buttonText: {
     fontSize: 14,
-    fontWeight: "700",
+    fontWeight: "600",
   },
   buttonTextPrimary: {
     color: "#ffffff",
@@ -238,6 +240,6 @@ const baseStyles = StyleSheet.create({
     color: "#ffffff",
   },
   buttonTextOutline: {
-    color: "#0f172a",
+    color: "#1c1b18",
   },
 });

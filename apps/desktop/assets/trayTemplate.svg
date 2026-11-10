@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="EdgeEver">
-  <g transform="translate(512 512) scale(1) translate(-627 -580)">
-    <path fill="#000000" stroke="#000000" stroke-width="36" stroke-linejoin="round" paint-order="stroke fill" fill-rule="evenodd" d="M500 151 788 358q39 28 39 74v277q0 48-35 66L526 881q-18 9-37-1L226 751q-32-19-32-57V438q0-37 32-58l226-184q24-19 48-45Zm-182 211v286l54-46 57 48V362H318Zm140 230v42h322v-42H458Zm0 86v42h322v-42H458Zm0 86v42h286v-42H458Z" />
+  <g transform="translate(512 512) scale(1) translate(-512 -512)">
+    <path fill="#000000" stroke="#000000" stroke-width="36" stroke-linejoin="round" paint-order="stroke fill" fill-rule="evenodd" d="M292 192 H334 V496 L410 426 L486 496 V192 H732 A56 56 0 0 1 788 248 V776 A56 56 0 0 1 732 832 H292 A56 56 0 0 1 236 776 V248 A56 56 0 0 1 292 192 Z M326 576 A44 44 0 0 0 326 664 H690 A44 44 0 0 0 690 576 Z M326 704 A36 36 0 0 0 326 776 H574 A36 36 0 0 0 574 704 Z" />
   </g>
 </svg>

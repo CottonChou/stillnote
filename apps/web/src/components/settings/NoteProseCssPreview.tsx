@@ -6,12 +6,12 @@ import { NOTE_PROSE_CSS_PREVIEW_DARK_CLASS, previewNoteProseCss } from "@/lib/cs
 const previewBaseCss = `
 :host { display: block; }
 .edgeever-editor {
-  background: #f8fafb;
-  color: #27272a;
+  background: #fdfcf9;
+  color: #1c1b18;
 }
 .${NOTE_PROSE_CSS_PREVIEW_DARK_CLASS} .edgeever-editor {
-  background: #222325;
-  color: #dedede;
+  background: #22211e;
+  color: #eae6df;
 }
 .ProseMirror {
   margin: 0;
@@ -36,11 +36,11 @@ const previewBaseCss = `
 .ProseMirror blockquote {
   margin: 0;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
-  background: #f3f5f7;
+  border-radius: 6px;
+  background: #f4f1ea;
 }
 .${NOTE_PROSE_CSS_PREVIEW_DARK_CLASS} .ProseMirror blockquote {
-  background: #2a2e2c;
+  background: #2c2a26;
 }
 `;
 

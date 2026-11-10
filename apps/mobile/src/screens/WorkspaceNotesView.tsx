@@ -10,6 +10,7 @@ import { Pressable, Text, TextInput } from "../components/LocalizedText";
 import type { MobileBootstrapProgress } from "../lib/local-mirror";
 import { useMobileLocale, getMobileCatalog } from "../lib/mobile-locale";
 import { useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import type { MobileMemoListDensity } from "../lib/preferences";
 import { formatMemoPreviewDate, resolveCardSwipe } from "./workspace-utils";
 import { styles } from "./workspace-styles";
@@ -92,6 +93,7 @@ export const NotesView = ({
   selectedMemoIds: Set<string>;
 }) => {
   const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const { translate } = useMobileLocale();
   const searchActive = searchText.trim().length > 0;
   const filterActive = memoFilterMode !== "all" || Boolean(selectedTag);
@@ -118,7 +120,7 @@ export const NotesView = ({
         {selectionMode ? (
           <View style={styles.mobileSelectionHeader}>
             <Pressable accessibilityLabel="取消选择" accessibilityRole="button" onPress={onClearSelection} style={styles.mobileSelectionClose}>
-              <X color="#64748b" size={19} />
+              <X color={palette.inkSecondary} size={19} />
             </Pressable>
             <Text style={styles.mobileSelectionTitle}>{selectedMemoIds.size > 0 ? translate(`已选择 ${selectedMemoIds.size} 条`) : "选择笔记"}</Text>
             <View style={styles.iconButtonPlaceholder} />
@@ -132,50 +134,50 @@ export const NotesView = ({
             style={styles.mobileNotebookTitleButton}
           >
             {memoView === "trash" || selectedTag ? (
-              <ChevronLeft color="#475569" size={18} />
+              <ChevronLeft color={palette.inkBody} size={18} />
             ) : (
-              <Menu color="#059669" size={19} style={{ marginRight: 2 }} />
+              <Menu color={palette.accent} size={19} style={{ marginRight: 2 }} />
             )}
             <Text numberOfLines={1} style={styles.mobileNotebookTitle}>
               {memoView === "trash" ? "回收站" : selectedTag ? `#${selectedTag}` : activeNotebook?.name ?? "全部笔记"}
             </Text>
-            {memoView === "notebook" && !selectedTag ? <ChevronDown color="#64748b" size={16} /> : null}
+            {memoView === "notebook" && !selectedTag ? <ChevronDown color={palette.inkSecondary} size={16} /> : null}
           </Pressable>
           <Pressable accessibilityLabel={selectionMode ? "批量操作" : "列表选项"} accessibilityRole="button" onPress={onOpenActions} style={styles.mobileMoreButton}>
-            <MoreHorizontal color="#475569" size={20} />
+            <MoreHorizontal color={palette.inkBody} size={20} />
           </Pressable>
         </View>
 
         <>
           <View style={styles.mobileSearchRow}>
               <View style={[styles.mobileSearchButton, searchActive && styles.mobileSearchButtonActive, searchActive && resolvedTheme === "dark" && styles.mobileSearchButtonActiveDark]}>
-                <Search color={searchActive && resolvedTheme === "dark" ? "rgb(5, 150, 105)" : searchActive ? "#059669" : "#64748b"} size={17} />
+                <Search color={searchActive ? palette.accent : palette.inkSecondary} size={17} />
                 <TextInput
                   accessibilityLabel="搜索笔记"
                   autoCapitalize="none"
                   autoCorrect={false}
                   onChangeText={onSearchTextChange}
                   placeholder="搜索笔记"
-                  placeholderTextColor="#94a3b8"
+                  placeholderTextColor={palette.inkPlaceholder}
                   returnKeyType="search"
                   style={[styles.mobileSearchInput, searchActive && resolvedTheme === "dark" && styles.mobileSearchInputActiveDark]}
                   value={searchText}
                 />
                 {searchText ? (
                   <Pressable accessibilityLabel="清空搜索" accessibilityRole="button" onPress={() => onSearchTextChange("")} style={styles.mobileSearchClearButton}>
-                    <X color={resolvedTheme === "dark" ? "rgb(100, 116, 139)" : "#64748b"} size={14} />
+                    <X color={palette.inkSecondary} size={14} />
                   </Pressable>
                 ) : null}
               </View>
               <MobileFilterButton
                 active={memoFilterMode === "pinned"}
-                icon={<Sparkles color={memoFilterMode === "pinned" ? "#ffffff" : "#475569"} size={18} />}
+                icon={<Sparkles color={memoFilterMode === "pinned" ? "#ffffff" : palette.inkBody} size={18} />}
                 label="置顶"
                 onPress={() => onFilterModeChange(toggleMobileMemoFilterMode(memoFilterMode, "pinned"))}
               />
               <MobileFilterButton
                 active={Boolean(selectedTag)}
-                icon={<Tag color={selectedTag ? "#ffffff" : "#475569"} size={18} />}
+                icon={<Tag color={selectedTag ? "#ffffff" : palette.inkBody} size={18} />}
                 label={selectedTag ? `#${selectedTag}` : "按标签筛选"}
                 onPress={onOpenTagFilter}
               />
@@ -286,6 +288,8 @@ const MemoList = ({
   selectionMode?: boolean;
   selectedMemoIds?: Set<string>;
 }) => {
+  const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const { translate } = useMobileLocale();
   const { width } = useWindowDimensions();
   const columnCount = width >= 1000 ? 3 : width >= 600 ? 2 : 1;
@@ -306,7 +310,7 @@ const MemoList = ({
     return (
       <View accessibilityLabel={loadingTitle} accessibilityLiveRegion="polite" style={styles.memoListStateWrap}>
         <View style={styles.memoListLoadingCard}>
-          <ActivityIndicator color="#059669" size="large" />
+          <ActivityIndicator color={palette.accent} size="large" />
           <Text style={styles.memoListLoadingTitle}>{loadingTitle}</Text>
           <Text style={styles.memoListLoadingDescription}>{loadingDescription}</Text>
           {totalCount > 0 ? (
@@ -348,7 +352,7 @@ const MemoList = ({
       onEndReached={onLoadMore}
       onEndReachedThreshold={0.35}
       removeClippedSubviews={Platform.OS === "android"}
-      refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} tintColor="#0f172a" />}
+      refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} tintColor={palette.ink} />}
       style={styles.memoList}
       renderItem={({ item }) => (
         <View style={columnCount === 1 ? undefined : columnCount === 2 ? styles.memoGridCellHalf : styles.memoGridCellThird}>
@@ -381,7 +385,7 @@ const MemoList = ({
                     style={isSecondary ? styles.emptyActionSecondaryButton : styles.emptyActionButton}
                   >
                     {isSecondary
-                      ? <LayoutTemplate color="#0f172a" size={16} />
+                      ? <LayoutTemplate color={palette.ink} size={16} />
                       : <Plus color="#ffffff" size={18} />}
                     <Text style={isSecondary ? styles.emptyActionSecondaryButtonText : styles.emptyActionButtonText}>
                       {action.label}
@@ -395,7 +399,7 @@ const MemoList = ({
       }
       ListHeaderComponent={hasInitialSyncProgress ? (
           <View accessibilityLiveRegion="polite" style={styles.memoSyncBanner}>
-            <ActivityIndicator color="#059669" size="small" />
+            <ActivityIndicator color={palette.accent} size="small" />
             <View style={styles.memoSyncBannerContent}>
               <Text style={styles.memoSyncBannerTitle}>{progressTitle}</Text>
               <Text style={styles.memoSyncBannerDescription}>{progressDescription}</Text>
@@ -420,7 +424,7 @@ const MemoList = ({
             ) : null}
           </View>
         ) : null}
-      ListFooterComponent={isLoadingMore ? <ActivityIndicator color="#0f172a" style={styles.listLoadingFooter} /> : null}
+      ListFooterComponent={isLoadingMore ? <ActivityIndicator color={palette.ink} style={styles.listLoadingFooter} /> : null}
       updateCellsBatchingPeriod={32}
       windowSize={7}
     />

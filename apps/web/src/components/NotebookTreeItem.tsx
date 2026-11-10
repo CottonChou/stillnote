@@ -193,7 +193,7 @@ export const NotebookTreeItem = ({
                 ? cn("notebook-inverted-row text-white", selected && "notebook-inverted-row-selected")
                 : selected
                 ? "edgeever-workspace-selection font-medium text-slate-950"
-                : "text-slate-700 hover:bg-slate-50",
+                : "text-slate-700 hover:bg-workspace-hover",
               dropPosition === "inside" && "ring-2 ring-slate-300",
               dropPosition === "inside" && hasChildren && !open && "bg-slate-100"
             )}

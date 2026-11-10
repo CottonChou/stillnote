@@ -54,7 +54,7 @@ describe("note prose", () => {
       return (values[1] + 0.05) / (values[0] + 0.05);
     };
     for (const [id, colors] of Object.entries(NOTE_PROSE_PALETTES)) {
-      for (const background of ["#FFFFFF", "#F8FAFB"]) {
+      for (const background of ["#FFFFFF", "#FDFCF9"]) {
         // Bright emphasis is intentional; links and code retain normal-text AA.
         const minimumAccentContrast = id === "teal" ? 2.5 : id === "clay" ? 3 : 4.5;
         expect(contrast(colors.accent, background)).toBeGreaterThanOrEqual(minimumAccentContrast);
@@ -62,7 +62,7 @@ describe("note prose", () => {
           expect(contrast(foreground, background)).toBeGreaterThanOrEqual(4.5);
         }
       }
-      for (const background of ["#222325", "#333638"]) {
+      for (const background of ["#22211E", "#2C2A26"]) {
         expect(contrast(NOTE_PROSE_DARK_ACCENTS[id], background)).toBeGreaterThanOrEqual(4.5);
       }
       const variables = noteProseCssVariables(resolveNoteProse({ palette: id }));

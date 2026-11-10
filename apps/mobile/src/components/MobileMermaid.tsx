@@ -142,14 +142,14 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 10,
     padding: 12,
-    color: "#64748b",
-    backgroundColor: "#f8fafc",
+    color: "#6b665e",
+    backgroundColor: "#f9f7f2",
     fontSize: 14,
     lineHeight: 20,
   },
   messageDark: {
-    color: "#cbd5e1",
-    backgroundColor: "#1e293b",
+    color: "#a8a298",
+    backgroundColor: "#1d1c1a",
   },
   renderer: {
     position: "absolute",

@@ -64,6 +64,7 @@ import { beginEditorStartup, markStartup } from "../lib/startup-performance";
 import MobileWebClipCapture from "../components/MobileWebClipCapture";
 import { MobileCreateChoiceModal, MobileTemplatePickerModal } from "../components/MobileTemplatePicker";
 import { useMobileTheme } from "../lib/mobile-theme";
+import { getMobileEditorialPalette } from "../lib/mobile-theme-colors";
 import { useMobileUpdateAvailable } from "../lib/mobile-update";
 import { type MobileCreateMemoSeed } from "../lib/mobile-templates";
 import {
@@ -99,7 +100,6 @@ import { SettingsView, type MobileLocaleMode } from "./WorkspaceSettingsView";
 import { MemoDetailModal } from "./WorkspaceMemoDetail";
 import {
   MoveSelectionModal,
-  NotebookPickerModal,
   TagPickerModal,
 } from "./WorkspacePickers";
 import { RevisionHistoryModal } from "./WorkspaceRevisionHistory";
@@ -138,6 +138,7 @@ export const WorkspaceScreen = ({
   onIncomingShareHandled?: () => void;
 }) => {
   const { resolvedTheme } = useMobileTheme();
+  const palette = getMobileEditorialPalette(resolvedTheme);
   const { preference: localePreference, resolvedLocale, setPreference: setLocalePreference, translate } = useMobileLocale();
   const hasUpdate = useMobileUpdateAvailable();
   refreshWorkspaceThemeStyles(resolvedTheme);
@@ -1528,7 +1529,7 @@ export const WorkspaceScreen = ({
       <Modal animationType="fade" statusBarTranslucent transparent visible={isImportingShare}>
         <View style={styles.shareImportBackdrop}>
           <View style={styles.shareImportCard}>
-            <ActivityIndicator color="#059669" size="large" />
+            <ActivityIndicator color={palette.accent} size="large" />
             <Text style={styles.shareImportTitle}>正在剪藏文章</Text>
             <Text style={styles.shareImportDescription}>正在提取标题、正文和图片链接…</Text>
           </View>
@@ -1647,7 +1648,7 @@ export const WorkspaceScreen = ({
           onPress={() => openCreateMemo()}
           style={[styles.bottomCreateButton, !canCreateMemo && styles.bottomCreateButtonDisabled]}
         >
-          <Plus color={canCreateMemo ? "#ffffff" : "#e2e8f0"} size={28} />
+          <Plus color={canCreateMemo ? palette.fabIcon : palette.inkMuted} size={28} />
         </Pressable>
         <BottomNavItem
           active={activeView === "settings"}
