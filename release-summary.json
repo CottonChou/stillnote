@@ -1,23 +1,17 @@
 {
-  "version": "2.17.0",
+  "version": "2.17.1",
   "changes": {
     "en-US": [
-      "Rebrand the workspace, desktop, mobile, iOS, extension, and site packages to StillNote with Editorial Flow UI and pine bookmark branding.",
-      "Speed up Android synchronization by loading notebook trees and note titles first with on-demand note content loading and manual single-notebook sync.",
-      "Redesign the Android notebook drawer with DrawerLayout swipe gestures and add an Android double-back exit confirmation guard.",
-      "Move the desktop/web note Share action into the More menu, add a Close Note button to the note header, and point desktop/APK update checks to CottonChou/stillnote releases."
+      "Fix desktop connection failures (network_unreachable) against legacy EdgeEver-deployed instances by bridging CORS headers strictly for the configured StillNote instance origin.",
+      "Allow both stillnote-app://app and legacy edgeever-app://app origins (plus legacy import context header) on the API server for seamless cross-version upgrades."
     ],
     "zh-CN": [
-      "将工作区、桌面端、移动端、iOS、扩展与站点全量切换为 StillNote 品牌，并统一 Editorial Flow UI 与松绿书签图标。",
-      "重构 Android 端同步机制为笔记本与笔记标题优先、正文按需延迟加载，并新增手动同步单本或全部笔记本能力。",
-      "基于 DrawerLayout 重构 Android 左侧笔记本抽屉手势交互，并增加返回键二次确认防误退保护。",
-      "将桌面端与 Web 端笔记右上角的分享收拢至“更多”菜单、增加关闭当前笔记按钮，并将 macOS/APK 更新检查源指向 CottonChou/stillnote。"
+      "修复 StillNote 桌面端连接未升级的旧版后端实例时因 CORS 协议名切换（stillnote-app://app）导致报 network_unreachable 的问题，严格按用户配置的实例源桥接响应头。",
+      "后端 API 同时兼容 stillnote-app://app 与旧版 edgeever-app://app 请求源及导入请求头，保障跨版本平滑升级连接。"
     ],
     "ja": [
-      "ワークスペース・デスクトップ・モバイル・iOS・拡張機能・サイト全体を StillNote ブランドと松緑アイコンに刷新しました。",
-      "Android の同期をノートブック・見出し優先＆本文オンデマンド読込に最適化し、単一／全ノートブックの手動同期を追加しました。",
-      "DrawerLayout によるスムーズなノートブックドロワー操作と Android の戻るキー二重押し終了確認を追加しました。",
-      "ノートヘッダーの共有操作を「…」メニューに整理して閉じるボタンを追加し、更新チェック先を CottonChou/stillnote に設定しました。"
+      "StillNote デスクトップから未更新の旧バージョンサーバーへ接続する際の CORS オリジン差異による network_unreachable エラーを設定済みインスタンス限定で解消しました。",
+      "API サーバーでも stillnote-app://app と旧 edgeever-app://app の両方のオリジンおよびヘッダーを許可し、バージョン間の互換性を強化しました。"
     ]
   }
 }

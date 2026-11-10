@@ -1,6 +1,6 @@
 {
   "name": "@stillnote/desktop",
-  "version": "2.17.0",
+  "version": "2.17.1",
   "desktopName": "StillNote",
   "private": true,
   "description": "Native StillNote desktop client",
