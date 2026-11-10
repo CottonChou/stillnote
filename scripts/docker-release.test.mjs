@@ -223,8 +223,7 @@ describe("Docker release contract", () => {
       "name: Build Tencent TCR image through CNB",
     );
     expect(mirrorWorkflow).not.toContain("workflow_run:");
-    expect(mirrorWorkflow).toContain("release:");
-    expect(mirrorWorkflow).toContain("types:\n      - published");
+    expect(mirrorWorkflow).not.toContain("types:\n      - published");
     expect(mirrorWorkflow).toContain("workflow_dispatch:");
     expect(mirrorWorkflow).toContain("secrets.CNB_TCR_BUILD_PUSH_TOKEN");
     expect(mirrorWorkflow).toContain("https://cnb.cool/CottonChou/stillnote");

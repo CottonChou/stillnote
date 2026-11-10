@@ -1,9 +1,6 @@
 name: Deploy personal StillNote
 
 on:
-  release:
-    types:
-      - published
   workflow_dispatch:
 
 permissions:

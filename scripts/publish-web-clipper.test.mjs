@@ -486,10 +486,10 @@ describe("web clipper store command", () => {
     expect(upload.body.get("channel")).toBe("listed");
   });
 
-  test("keeps store submission on the official repository workflow", () => {
+  test("keeps store submission on manual repository dispatch", () => {
     expect(workflow).toContain("github.repository == 'CottonChou/stillnote'");
     expect(workflow).toContain("workflow_dispatch:");
-    expect(workflow).toContain("- published");
+    expect(workflow).not.toContain("- published");
     expect(workflow).toContain("!github.event.release.prerelease");
     expect(workflow).toContain("!github.event.release.draft");
     expect(workflow).toContain("ref: ${{ github.event.release.tag_name || inputs.release_tag || github.sha }}");

@@ -1,9 +1,6 @@
 name: Build Tencent TCR image through CNB
 
 on:
-  release:
-    types:
-      - published
   workflow_dispatch:
     inputs:
       source_ref:

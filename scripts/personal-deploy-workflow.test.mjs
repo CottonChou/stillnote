@@ -7,8 +7,8 @@ const workflow = readFileSync(
 );
 
 describe("personal Cloudflare deployment workflow", () => {
-  test("deploys only the official repository on formal Release publication", () => {
-    expect(workflow).toContain("release:\n    types:\n      - published");
+  test("deploys only on manual dispatch for the configured repository", () => {
+    expect(workflow).not.toContain("types:\n      - published");
     expect(workflow).toContain("workflow_dispatch:");
     expect(workflow).toContain("if: github.repository == 'CottonChou/stillnote'");
     expect(workflow).toContain("ref: ${{ steps.release.outputs.tag }}");

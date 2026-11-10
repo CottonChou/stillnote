@@ -7,20 +7,6 @@ on:
         description: "Upload the signed arm64 APK to this existing Draft GitHub Release"
         required: true
         type: string
-  release:
-    types: [published]
-  push:
-    branches:
-      - main
-    paths:
-      - "apps/mobile/**"
-      - "packages/client/**"
-      - "packages/shared/**"
-      - "bun.lock"
-      - ".github/workflows/mobile-build.yml"
-      - "scripts/build-android-local.sh"
-      - "scripts/verify-android-apk-signature.mjs"
-      - "scripts/download-play-universal-apk.mjs"
 
 permissions:
   actions: read
@@ -159,24 +145,6 @@ jobs:
           test -n "$apk_path"
           test -n "$ANDROID_PLAY_APP_SIGNER_SHA256"
           node scripts/verify-android-apk-signature.mjs "$apk_path"
-
-  restore-invalid-published-release:
-    needs: release-plan
-    if: >-
-      ${{
-        always() &&
-        github.repository == 'CottonChou/stillnote' &&
-        github.event_name == 'release' &&
-        needs.release-plan.result == 'failure'
-      }}
-    name: Restore invalid Android Release to Draft
-    runs-on: ubuntu-latest
-    steps:
-      - name: Restore Draft state
-        env:
-          CURRENT_TAG: ${{ github.event.release.tag_name }}
-          GH_TOKEN: ${{ github.token }}
-        run: gh release edit "$CURRENT_TAG" --repo "$GITHUB_REPOSITORY" --draft=true
 
   reuse-release-apk:
     needs: release-plan

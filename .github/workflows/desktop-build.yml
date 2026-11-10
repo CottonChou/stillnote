@@ -7,8 +7,6 @@ on:
         description: "Prepare macOS, Windows, and Linux assets on this existing Draft Release (optional)"
         required: false
         type: string
-  release:
-    types: [published]
 
 permissions:
   actions: read

@@ -1,16 +1,6 @@
 name: Deploy StillNote Site
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "apps/site/**"
-      - "README.md"
-      - "docs/**"
-      - "package.json"
-      - "bun.lock"
-      - ".github/workflows/deploy-site.yml"
   workflow_dispatch:
 
 permissions:

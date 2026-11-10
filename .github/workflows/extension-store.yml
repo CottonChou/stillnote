@@ -1,9 +1,6 @@
 name: Submit Web Clipper
 
 on:
-  release:
-    types:
-      - published
   workflow_dispatch:
     inputs:
       release_tag:

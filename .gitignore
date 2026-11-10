@@ -19,6 +19,7 @@ apps/extension/web-ext-artifacts/
 # Built store packages. Listing screenshots and promo tiles in this folder stay tracked.
 apps/extension/store-assets/*.zip
 release/desktop/
+release/mobile/
 coverage/
 playwright-report/
 test-results/

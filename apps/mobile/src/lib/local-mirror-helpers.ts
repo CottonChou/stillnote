@@ -1,4 +1,4 @@
-import type { MemoDetail, MemoSummary } from "@edgeever/shared";
+import type { MemoDetail, MemoSummary } from "@stillnote/shared";
 
 export type StoredMemoSummaryRow = {
   summary_json: string | null;
