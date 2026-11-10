@@ -98,7 +98,7 @@ export const ImageGallery = Node.create({
   },
 
   parseHTML() {
-    return [{ tag: "div[data-stillnote-image-gallery]" }];
+    return [{ tag: "div[data-stillnote-image-gallery]" }, { tag: "div[data-edgeever-image-gallery]" }];
   },
 
   renderHTML({ node, HTMLAttributes }) {

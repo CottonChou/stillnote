@@ -65,7 +65,10 @@ export const PdfAttachment = Node.create({
   },
 
   parseHTML() {
-    return [{ tag: 'span[data-type="stillnote-pdf-attachment"]' }];
+    return [
+      { tag: 'span[data-type="stillnote-pdf-attachment"]' },
+      { tag: 'span[data-type="edgeever-pdf-attachment"]' },
+    ];
   },
 
   renderHTML({ HTMLAttributes }) {

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "sourceHash": "72d6230fa408b1216f29bf508d352480ddf06310a51edf3c12253bd90ff4376b",
+  "sourceHash": "c5c24d53a0e505cfdce97e615df5dc0917a0032635bb4c92b03cb96639226743",
   "painterHash": "8186cecd49cfbcbf8b4e5627b9e85432e22bed753853460b58a4bb4cc3df1fa0",
   "width": 480,
   "height": 640,
@@ -472,13 +472,13 @@
       "recommended": true,
       "zh": {
         "file": "seal.zh.webp",
-        "sha256": "a988a84ede7e2beda62df7edd9c6d5f6ce1d1663c4f420a98c9e3f25983b4ef5",
-        "renderHash": "40fe86701965c90af68e3f29bb605b48d92dee4548ac02dce806114da45b476c"
+        "sha256": "26fb771a9e6d313f80916fe140c4198f1fed2be3ab52862d007317e7bfc4725b",
+        "renderHash": "8a97846b2d5e5fb5e0b19bc9caa2f045da3c617909489258ac60d36e20b465dc"
       },
       "en": {
         "file": "seal.en.webp",
-        "sha256": "91fa051cb03e3c298e4edb2b9c3aaaf5b4c8bde8d7570b17920fa8874e1baf9f",
-        "renderHash": "916d18c087686854fea6a530a3409ff8a53cbe0eafa34cbb0e9c090722ae306a"
+        "sha256": "1bed93af578dab2351589f3e0d354143a11781e30e177b1739ddd675090745ae",
+        "renderHash": "7aa30d3658efdc3597125521015d6b4c5a9da0b72a224128279dbd347f375938"
       }
     },
     {

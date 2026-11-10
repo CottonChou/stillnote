@@ -3,6 +3,8 @@ import {
   JsonBackupResourceMetadataSchema,
   RestoreJsonMemosSchema,
   RestoreJsonNotebooksSchema,
+  upgradeLegacyEdgeEverDoc,
+  upgradeLegacyEdgeEverMarkdown,
   type JsonBackupMemo,
   type JsonBackupNotebook,
   type JsonBackupResource,
@@ -96,7 +98,7 @@ const MAX_LEGACY_RESTORE_BYTES = 100 * 1024 * 1024;
 const parseRevisionDoc = (json: string): TiptapDoc => {
   try {
     const value = JSON.parse(json);
-    return value && typeof value === "object" ? value as TiptapDoc : emptyDoc();
+    return value && typeof value === "object" ? upgradeLegacyEdgeEverDoc(value as TiptapDoc) : emptyDoc();
   } catch {
     return emptyDoc();
   }
@@ -109,7 +111,7 @@ export const mapJsonBackupRevision = (row: BackupRevisionRow): JsonBackupRevisio
   title: row.title,
   tags: parseJsonArray(row.tags_json),
   contentJson: parseRevisionDoc(row.content_json),
-  contentMarkdown: row.content_markdown,
+  contentMarkdown: upgradeLegacyEdgeEverMarkdown(row.content_markdown),
   contentText: row.content_text,
   contentHash: row.content_hash,
   createdBy: row.created_by,

@@ -1,17 +1,20 @@
 {
-  "version": "2.17.1",
+  "version": "2.18.0",
   "changes": {
     "en-US": [
-      "Fix desktop connection failures (network_unreachable) against legacy EdgeEver-deployed instances by bridging CORS headers strictly for the configured StillNote instance origin.",
-      "Allow both stillnote-app://app and legacy edgeever-app://app origins (plus legacy import context header) on the API server for seamless cross-version upgrades."
+      "Add desktop collapse and expand controls (with keyboard shortcut Cmd/Ctrl+Shift+\\) for the note list column, plus restore buttons across editor headers.",
+      "Normalize multi-image gallery notes and structured content to StillNote formats via database migration and read-time compatibility so multi-image notes render reliably.",
+      "Adjust macOS desktop application icon framing and drop shadow to match native Dock app icon proportions."
     ],
     "zh-CN": [
-      "修复 StillNote 桌面端连接未升级的旧版后端实例时因 CORS 协议名切换（stillnote-app://app）导致报 network_unreachable 的问题，严格按用户配置的实例源桥接响应头。",
-      "后端 API 同时兼容 stillnote-app://app 与旧版 edgeever-app://app 请求源及导入请求头，保障跨版本平滑升级连接。"
+      "为桌面端新增笔记列表折叠与展开功能（支持快捷键 ⌘/Ctrl+Shift+\\，并在各编辑器顶部与空状态页提供一键展开入口）。",
+      "将历史多图画廊与结构化笔记数据统一迁移为 StillNote 格式，修复小红书等多图笔记无法渲染的问题。",
+      "优化 macOS 桌面端应用图标留白与阴影比例，使其在 Dock 栏中与其他应用尺寸保持一致。"
     ],
     "ja": [
-      "StillNote デスクトップから未更新の旧バージョンサーバーへ接続する際の CORS オリジン差異による network_unreachable エラーを設定済みインスタンス限定で解消しました。",
-      "API サーバーでも stillnote-app://app と旧 edgeever-app://app の両方のオリジンおよびヘッダーを許可し、バージョン間の互換性を強化しました。"
+      "デスクトップ版にノート一覧の折りたたみ・展開機能（ショートカット Cmd/Ctrl+Shift+\\ およびエディタヘッダーからの再展開ボタン）を追加しました。",
+      "複数画像ギャラリーや構造化ノートのデータを StillNote 形式へ統一マイグレーションし、複数画像ノートが正しく表示されない問題を修正しました。",
+      "macOS デスクトップ版のアプリアイコンの余白とシャドウを調整し、Dock 上で他アプリと同じサイズ感になるようにしました。"
     ]
   }
 }

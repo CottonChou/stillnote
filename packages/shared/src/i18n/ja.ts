@@ -2297,6 +2297,7 @@ export const ja = {
       toggleEditorMode: { label: "エディタモードを切り替え" },
       toggleOutline: { label: "ドキュメントアウトラインの表示/非表示" },
       toggleSidebar: { label: "サイドバーの表示/非表示" },
+      toggleMemoList: { label: "ノート一覧の表示/非表示" },
     },
   },
   quickSwitcher: {
@@ -2356,6 +2357,8 @@ export const ja = {
     more: "その他",
   },
   memoList: {
+    collapseList: "ノート一覧を閉じる",
+    expandList: "ノート一覧を開く",
     selectionCount: "{{count}} 件選択中",
     selectMemo: "ノートを選択",
     selectedListNone: "現在の一覧の選択を解除",

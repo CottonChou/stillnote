@@ -21,6 +21,7 @@ import { RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import * as m from "motion/react-m";
 import { MemoListPane, MemoSelectionActionBar } from "./MemoListPane";
+import { MEMO_LIST_PANE_ID, WorkspaceMemoListContext } from "./WorkspaceMemoListContext";
 import { MobileBottomNav, MobileNotebookPicker } from "./WorkspaceMobileChrome";
 import { QuickMemoSwitcher } from "./QuickMemoSwitcher";
 import { AppConfirmDialog, MemoDeleteConfirmDialog, NotebookNameDialog } from "./dialogs/ConfirmDialogs";
@@ -78,6 +79,7 @@ import {
   getShortcutActionForEvent,
   formatShortcutBinding,
   canToggleNotebookSidebar,
+  canToggleMemoList,
   getNotebookDropSortOrder,
   getNotebookMoveOptions,
   getMemoIdsNeedingMove,
@@ -521,6 +523,7 @@ export const WorkspaceApp = ({
   const {
     desktopFocusMode,
     imageCompressionEnabled,
+    memoListCollapsed,
     memoListWidth,
     notebookSidebarCollapsed,
     notebookSidebarWidth,
@@ -528,6 +531,7 @@ export const WorkspaceApp = ({
     resetNotebookSidebarWidth,
     setDesktopFocusMode,
     setImageCompressionEnabled,
+    setMemoListCollapsed,
     setMemoListWidth,
     setNotebookSidebarCollapsed,
     setNotebookSidebarWidth,
@@ -1664,6 +1668,9 @@ export const WorkspaceApp = ({
   const desktopNotebookSidebarCollapsed = Boolean(isDesktop && notebookSidebarCollapsed);
   const desktopFocusModeActive = Boolean(
     isDesktop && desktopFocusMode && rightView === "editor" && selectedMemo && !memoSelectionModeActive
+  );
+  const desktopMemoListCollapsed = Boolean(
+    isDesktop && !desktopFocusModeActive && rightView === "editor" && memoListCollapsed
   );
   const selectionMoveNotebookOptions = useMemo(() => getNotebookMoveOptions(notebooks), [notebooks]);
   const selectedMemosInCurrentList = useMemo(
@@ -3133,9 +3140,25 @@ export const WorkspaceApp = ({
         return;
       }
 
+      if (action === "toggleMemoList") {
+        event.preventDefault();
+        if (
+          event.repeat
+          || event.isComposing
+          || !canToggleMemoList({ isDesktop, focusModeActive: desktopFocusModeActive, rightView })
+        ) {
+          return;
+        }
+        setMemoListCollapsed(!memoListCollapsed);
+        return;
+      }
+
       if (action === "focusSearch") {
         event.preventDefault();
         if (getSearchShortcutScope(selectedMemoId) === "memo-list") {
+          if (desktopMemoListCollapsed) {
+            setMemoListCollapsed(false);
+          }
           clearMemoSelection();
           handleMobileSearch();
           return;
@@ -3205,6 +3228,9 @@ export const WorkspaceApp = ({
     shortcutSettings,
     isDesktop,
     desktopFocusModeActive,
+    desktopMemoListCollapsed,
+    memoListCollapsed,
+    setMemoListCollapsed,
     notebookSidebarCollapsed,
     setNotebookSidebarCollapsed,
     emptyTrashConfirmationOpen,
@@ -3407,19 +3433,28 @@ export const WorkspaceApp = ({
         </div>
       )}
       <div className="min-w-0 flex-1">
+        <WorkspaceMemoListContext.Provider
+          value={{
+            collapsed: desktopMemoListCollapsed,
+            onExpand: () => setMemoListCollapsed(false),
+            shortcutLabel: formatShortcutBinding(shortcutSettings.toggleMemoList),
+          }}
+        >
         <main
           className={cn(
             "stillnote-workspace-grid grid h-[100dvh] min-h-0 grid-cols-[minmax(0,1fr)]",
             desktopFocusModeActive
               ? "stillnote-workspace-grid--focus"
               : rightView === "editor"
-                ? "stillnote-workspace-grid--editor"
+                ? desktopMemoListCollapsed
+                  ? "stillnote-workspace-grid--memo-list-collapsed"
+                  : "stillnote-workspace-grid--editor"
                 : "stillnote-workspace-grid--single-right",
             !desktopFocusModeActive && desktopNotebookSidebarCollapsed && "stillnote-workspace-grid--sidebar-collapsed"
           )}
           style={{
             "--memo-list-width": `${editorPaneWidths.list}px`,
-            "--notebook-sidebar-expanded-width": `${isDesktop && rightView === "editor" ? editorPaneWidths.sidebar : notebookSidebarWidth}px`,
+            "--notebook-sidebar-expanded-width": `${isDesktop && rightView === "editor" && !desktopMemoListCollapsed ? editorPaneWidths.sidebar : notebookSidebarWidth}px`,
           } as CSSProperties}
         >
           <aside
@@ -3501,8 +3536,8 @@ export const WorkspaceApp = ({
                 role="separator"
                 aria-orientation="vertical"
                 aria-valuemin={MIN_NOTEBOOK_SIDEBAR_WIDTH_PX}
-                aria-valuemax={rightView === "editor" ? getEditorPaneWidths(viewportWidth, MAX_NOTEBOOK_SIDEBAR_WIDTH_PX, memoListWidth).sidebar : MAX_NOTEBOOK_SIDEBAR_WIDTH_PX}
-                aria-valuenow={rightView === "editor" ? editorPaneWidths.sidebar : notebookSidebarWidth}
+                aria-valuemax={rightView === "editor" && !desktopMemoListCollapsed ? getEditorPaneWidths(viewportWidth, MAX_NOTEBOOK_SIDEBAR_WIDTH_PX, memoListWidth).sidebar : MAX_NOTEBOOK_SIDEBAR_WIDTH_PX}
+                aria-valuenow={rightView === "editor" && !desktopMemoListCollapsed ? editorPaneWidths.sidebar : notebookSidebarWidth}
                 aria-label={t("workspaceDialogs.resizeNotebookSidebar")}
                 tabIndex={0}
                 onDoubleClick={resetNotebookSidebarWidth}
@@ -3513,12 +3548,15 @@ export const WorkspaceApp = ({
           </aside>
 
           <section
+            id={MEMO_LIST_PANE_ID}
             className={cn(
               "stillnote-workspace-memo-list relative min-w-0 overflow-hidden border-r",
               desktopFocusModeActive
                 ? "hidden"
                 : rightView === "editor"
-                  ? (visibleActivePane === "memos" ? "block lg:block" : "hidden lg:block")
+                  ? desktopMemoListCollapsed
+                    ? (visibleActivePane === "memos" ? "block lg:hidden" : "hidden lg:hidden")
+                    : (visibleActivePane === "memos" ? "block lg:block" : "hidden lg:block")
                   : (visibleActivePane === "memos" ? "block lg:hidden" : "hidden lg:hidden")
             )}
           >
@@ -3675,21 +3713,26 @@ export const WorkspaceApp = ({
               setDesktopSortOpen={setDesktopSortOpen}
               desktopActionsOpen={desktopActionsOpen}
               setDesktopActionsOpen={setDesktopActionsOpen}
+              collapsed={desktopMemoListCollapsed}
+              onToggleCollapsed={() => setMemoListCollapsed(!memoListCollapsed)}
+              collapseShortcutLabel={formatShortcutBinding(shortcutSettings.toggleMemoList)}
             />
-            <div
-              className="absolute inset-y-0 right-[-3px] z-20 hidden w-1.5 cursor-col-resize transition hover:bg-slate-300/70 focus-visible:bg-slate-400/80 focus-visible:outline-none lg:block"
-              role="separator"
-              aria-orientation="vertical"
-              aria-valuemin={editorPaneWidths.minimum}
-              aria-valuemax={editorPaneWidths.maximum}
-              aria-valuenow={editorPaneWidths.list}
-              aria-label={t("workspaceDialogs.resizeMemoList")}
-              tabIndex={0}
-              title={t("workspaceDialogs.resizeMemoListHint")}
-              onDoubleClick={handleResetMemoListWidth}
-              onKeyDown={handleMemoListResizeKeyDown}
-              onPointerDown={handleMemoListResizePointerDown}
-            />
+            {!desktopMemoListCollapsed && (
+              <div
+                className="absolute inset-y-0 right-[-3px] z-20 hidden w-1.5 cursor-col-resize transition hover:bg-slate-300/70 focus-visible:bg-slate-400/80 focus-visible:outline-none lg:block"
+                role="separator"
+                aria-orientation="vertical"
+                aria-valuemin={editorPaneWidths.minimum}
+                aria-valuemax={editorPaneWidths.maximum}
+                aria-valuenow={editorPaneWidths.list}
+                aria-label={t("workspaceDialogs.resizeMemoList")}
+                tabIndex={0}
+                title={t("workspaceDialogs.resizeMemoListHint")}
+                onDoubleClick={handleResetMemoListWidth}
+                onKeyDown={handleMemoListResizeKeyDown}
+                onPointerDown={handleMemoListResizePointerDown}
+              />
+            )}
           </section>
 
           <section className={cn("stillnote-workspace-editor min-h-0 min-w-0 lg:block", visibleActivePane === "editor" ? "block" : "hidden", showMobileSettingsNav && "pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0")}>
@@ -4026,6 +4069,7 @@ export const WorkspaceApp = ({
             )}
           </section>
         </main>
+        </WorkspaceMemoListContext.Provider>
       </div>
 
       <QuickMemoSwitcher

@@ -26,7 +26,8 @@ export type ShortcutAction =
   | "toggleReadingProtection"
   | "toggleEditorMode"
   | "toggleOutline"
-  | "toggleSidebar";
+  | "toggleSidebar"
+  | "toggleMemoList";
 export type ShortcutBinding = {
   key: string;
   // Defaults and shortcuts saved before Control and Command were stored apart.
@@ -153,6 +154,7 @@ export const EDITOR_CONTENT_ALIGNMENT_STORAGE_KEY = "stillnote.editorContentAlig
 export const EDITOR_TOOLBAR_EXPANDED_STORAGE_KEY = "stillnote.editorToolbarExpanded";
 export const EDITOR_PHONE_PREVIEW_STORAGE_KEY = "stillnote.editor.phonePreviewOpen";
 export const EDITOR_PHONE_PREVIEW_FOLLOW_STORAGE_KEY = "stillnote.editor.phonePreviewFollow";
+export const MEMO_LIST_COLLAPSED_STORAGE_KEY = "stillnote.memoListCollapsed";
 export const MEMO_LIST_DENSITY_STORAGE_KEY = "stillnote.memoListDensity";
 export const MEMO_LIST_WIDTH_STORAGE_KEY = "stillnote.memoListWidth";
 export const MEMO_SORT_STORAGE_KEY = "stillnote.memoSort";
@@ -213,6 +215,7 @@ export const getShortcutActionOptions = (
   { value: "toggleEditorMode", label: t("shortcuts.actions.toggleEditorMode.label") },
   { value: "toggleOutline", label: t("shortcuts.actions.toggleOutline.label") },
   { value: "toggleSidebar", label: t("shortcuts.actions.toggleSidebar.label") },
+  { value: "toggleMemoList", label: t("shortcuts.actions.toggleMemoList.label") },
 ];
 
 export const DEFAULT_SHORTCUT_SETTINGS: ShortcutSettings = {
@@ -230,6 +233,7 @@ export const DEFAULT_SHORTCUT_SETTINGS: ShortcutSettings = {
   toggleEditorMode: { key: "/", ctrlOrMeta: true, shift: false, alt: false },
   toggleOutline: { key: "1", ctrlOrMeta: true, shift: true, alt: false },
   toggleSidebar: { key: "\\", ctrlOrMeta: true, shift: false, alt: false },
+  toggleMemoList: { key: "\\", ctrlOrMeta: true, shift: true, alt: false },
 };
 
 const LEGACY_READING_PROTECTION_SHORTCUT: ShortcutBinding = {
@@ -258,6 +262,7 @@ const SHORTCUT_ACTION_VALUES: ShortcutAction[] = [
   "toggleEditorMode",
   "toggleOutline",
   "toggleSidebar",
+  "toggleMemoList",
 ];
 
 export const isDefaultMemoTitle = (title: string | null | undefined) => title?.trim() === DEFAULT_MEMO_TITLE;
@@ -337,6 +342,22 @@ export const readNotebookSidebarCollapsedPreference = () => {
 export const writeNotebookSidebarCollapsedPreference = (collapsed: boolean) => {
   try {
     window.localStorage.setItem(NOTEBOOK_SIDEBAR_COLLAPSED_STORAGE_KEY, collapsed ? "true" : "false");
+  } catch {
+    // Local storage can be unavailable in private or restricted browser contexts.
+  }
+};
+
+export const readMemoListCollapsedPreference = () => {
+  try {
+    return window.localStorage.getItem(MEMO_LIST_COLLAPSED_STORAGE_KEY) === "true";
+  } catch {
+    return false;
+  }
+};
+
+export const writeMemoListCollapsedPreference = (collapsed: boolean) => {
+  try {
+    window.localStorage.setItem(MEMO_LIST_COLLAPSED_STORAGE_KEY, collapsed ? "true" : "false");
   } catch {
     // Local storage can be unavailable in private or restricted browser contexts.
   }
@@ -754,6 +775,13 @@ export const canToggleNotebookSidebar = ({ isDesktop, focusModeActive }: {
   isDesktop: boolean;
   focusModeActive: boolean;
 }) => isDesktop && !focusModeActive;
+
+// Only toggle the memo list when the editor workspace view is visible.
+export const canToggleMemoList = ({ isDesktop, focusModeActive, rightView }: {
+  isDesktop: boolean;
+  focusModeActive: boolean;
+  rightView: string;
+}) => isDesktop && !focusModeActive && rightView === "editor";
 
 export const getShortcutActionForEvent = (
   event: ShortcutKeyEvent,

@@ -48,9 +48,12 @@ import {
   Pencil,
   Copy,
   CopyPlus,
+  ChevronsLeft,
 } from "lucide-react";
 import { WeChatIcon } from "./WeChatIcon";
+import { MEMO_LIST_PANE_ID } from "./WorkspaceMemoListContext";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -419,11 +422,17 @@ export const MemoListPane = ({
   isError,
   onRetry,
   multiSelectKeyDown,
+  collapsed = false,
+  onToggleCollapsed,
+  collapseShortcutLabel,
 }: {
   isLoading: boolean;
   isRefreshing: boolean;
   isError: boolean;
   multiSelectKeyDown: boolean;
+  collapsed?: boolean;
+  onToggleCollapsed?: () => void;
+  collapseShortcutLabel?: string;
   notebooks: Notebook[];
   notebook: Notebook | null;
   selectedTag: string | null;
@@ -1185,25 +1194,48 @@ export const MemoListPane = ({
           </div>
         )}
 
-        <div className="mb-3 hidden min-w-0 lg:flex items-start gap-1">
-          {(view === "trash" || selectedTag) && (
-            <Button
-              className="-ml-2 mt-0.5 shrink-0"
-              size="icon"
-              variant="ghost"
-              title={t("notebookPane.backToList")}
-              aria-label={t("notebookPane.backToList")}
-              onClick={view === "trash" ? onBackFromTrash : onClearTag}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-          )}
-          <div className="min-w-0">
-            <div className={`truncate ${WORKSPACE_PAGE_TITLE_CLASSNAME}`}>{listTitle}</div>
-            <div className="mt-0.5 truncate text-xs text-slate-500">
-              {listContextLabel} · {listCountLabel}
+        <div className="mb-3 hidden min-w-0 items-start justify-between gap-2 lg:flex">
+          <div className="flex min-w-0 items-start gap-1">
+            {(view === "trash" || selectedTag) && (
+              <Button
+                className="-ml-2 mt-0.5 shrink-0"
+                size="icon"
+                variant="ghost"
+                title={t("notebookPane.backToList")}
+                aria-label={t("notebookPane.backToList")}
+                onClick={view === "trash" ? onBackFromTrash : onClearTag}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            )}
+            <div className="min-w-0">
+              <div className={`truncate ${WORKSPACE_PAGE_TITLE_CLASSNAME}`}>{listTitle}</div>
+              <div className="mt-0.5 truncate text-xs text-slate-500">
+                {listContextLabel} · {listCountLabel}
+              </div>
             </div>
           </div>
+          {onToggleCollapsed ? (
+            <TooltipProvider delayDuration={0} skipDelayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
+                    aria-label={t("memoList.collapseList")}
+                    aria-expanded={!collapsed}
+                    aria-controls={MEMO_LIST_PANE_ID}
+                    onClick={onToggleCollapsed}
+                  >
+                    <ChevronsLeft className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  {collapseShortcutLabel ? `${t("memoList.collapseList")} (${collapseShortcutLabel})` : t("memoList.collapseList")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : null}
         </div>
 
         <div className={cn("items-center gap-2", mobileSearchActive ? "hidden lg:flex" : "flex")}>

@@ -24,7 +24,7 @@ export const EmptyExternalLink = Node.create({
   },
 
   parseHTML() {
-    return [{ tag: "a[data-stillnote-empty-link]" }];
+    return [{ tag: "a[data-stillnote-empty-link]" }, { tag: "a[data-edgeever-empty-link]" }];
   },
 
   renderHTML({ HTMLAttributes }) {

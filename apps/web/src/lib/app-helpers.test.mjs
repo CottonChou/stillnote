@@ -14,6 +14,7 @@ import {
   EDITOR_TOOLBAR_EXPANDED_STORAGE_KEY,
   EDITOR_PHONE_PREVIEW_STORAGE_KEY,
   EDITOR_PHONE_PREVIEW_FOLLOW_STORAGE_KEY,
+  MEMO_LIST_COLLAPSED_STORAGE_KEY,
   MEMO_LIST_WIDTH_STORAGE_KEY,
   DEFAULT_MEMO_LIST_WIDTH_PX,
   MIN_MEMO_LIST_WIDTH_PX,
@@ -33,6 +34,7 @@ import {
   shortcutBindingFromKeyboardEvent,
   shortcutBindingsEqual,
   canToggleNotebookSidebar,
+  canToggleMemoList,
   clampMemoListWidth,
   clampNotebookSidebarWidth,
   getNotebookSortComparator,
@@ -44,6 +46,7 @@ import {
   readDesktopReadingProtectionPreference,
   readNotebookSidebarCollapsedPreference,
   readNotebookSidebarWidthPreference,
+  readMemoListCollapsedPreference,
   readMemoListWidthPreference,
   readEditorOutlineCollapsedPreference,
   readEditorToolbarExpandedPreference,
@@ -58,6 +61,7 @@ import {
   writeDesktopReadingProtectionPreference,
   writeNotebookSidebarCollapsedPreference,
   writeNotebookSidebarWidthPreference,
+  writeMemoListCollapsedPreference,
   writeMemoListWidthPreference,
   writeEditorOutlineCollapsedPreference,
   writeEditorToolbarExpandedPreference,
@@ -184,6 +188,21 @@ describe("notebook sidebar collapsed preference", () => {
 
     expect(readNotebookSidebarCollapsedPreference()).toBe(false);
     expect(() => writeNotebookSidebarCollapsedPreference(true)).not.toThrow();
+  });
+});
+
+describe("memo list collapsed preference", () => {
+  test("defaults to expanded and persists explicit collapsed values", () => {
+    const values = installLocalStorage();
+    expect(readMemoListCollapsedPreference()).toBe(false);
+
+    values.set(MEMO_LIST_COLLAPSED_STORAGE_KEY, "true");
+    expect(readMemoListCollapsedPreference()).toBe(true);
+
+    writeMemoListCollapsedPreference(false);
+    expect(values.get(MEMO_LIST_COLLAPSED_STORAGE_KEY)).toBe("false");
+    writeMemoListCollapsedPreference(true);
+    expect(values.get(MEMO_LIST_COLLAPSED_STORAGE_KEY)).toBe("true");
   });
 });
 
@@ -849,6 +868,21 @@ describe("workspace shortcut preferences", () => {
     // The workspace checks the same flag that hides the sidebar in its layout.
     const workspaceSource = readFileSync(new URL("../components/WorkspaceApp.tsx", import.meta.url), "utf8");
     expect(workspaceSource).toContain("canToggleNotebookSidebar({ isDesktop, focusModeActive: desktopFocusModeActive })");
+  });
+
+  test("toggles the memo list only in desktop editor view outside focus mode", () => {
+    expect(DEFAULT_SHORTCUT_SETTINGS.toggleMemoList).toEqual({
+      key: "\\",
+      ctrlOrMeta: true,
+      shift: true,
+      alt: false,
+    });
+    expect(canToggleMemoList({ isDesktop: true, focusModeActive: false, rightView: "editor" })).toBe(true);
+    expect(canToggleMemoList({ isDesktop: true, focusModeActive: true, rightView: "editor" })).toBe(false);
+    expect(canToggleMemoList({ isDesktop: true, focusModeActive: false, rightView: "settings" })).toBe(false);
+    expect(canToggleMemoList({ isDesktop: false, focusModeActive: false, rightView: "editor" })).toBe(false);
+    const workspaceSource = readFileSync(new URL("../components/WorkspaceApp.tsx", import.meta.url), "utf8");
+    expect(workspaceSource).toContain("canToggleMemoList({ isDesktop, focusModeActive: desktopFocusModeActive, rightView })");
   });
 });
 

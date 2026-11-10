@@ -15,7 +15,7 @@ export const resolveFileDisplayMode = (value: unknown): FileDisplayMode =>
 
 const MARKDOWN_LINK_PATTERN = /^\[((?:\\.|[^[\]\\])+)\]\(([^\s)]+)(?:\s+"[^"]*")?\)/;
 const ATTACHMENT_LABEL_PATTERN = /^\s*(?:附件[：:]|Attachment:)\s*/i;
-const RESOURCE_URL_PATTERN = /(?:\/api\/v1\/resources\/|stillnote-(?:resource|staged):\/\/)/i;
+const RESOURCE_URL_PATTERN = /(?:\/api\/v1\/resources\/|(?:stillnote|edgeever)-(?:resource|staged):\/\/)/i;
 
 export const isFileAttachmentLink = (label: string, url: string) => {
   if (resolveAttachmentKind(null, getAttachmentFilenameFromLabel(label)) === "pdf" || resolveAttachmentKind(null, url) === "pdf") {
@@ -75,7 +75,10 @@ export const FileAttachment = Node.create({
   },
 
   parseHTML() {
-    return [{ tag: 'span[data-type="stillnote-file-attachment"]' }];
+    return [
+      { tag: 'span[data-type="stillnote-file-attachment"]' },
+      { tag: 'span[data-type="edgeever-file-attachment"]' },
+    ];
   },
 
   renderHTML({ HTMLAttributes }) {

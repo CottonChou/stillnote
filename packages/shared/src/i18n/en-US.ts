@@ -2308,6 +2308,7 @@ export const enUS = {
       toggleEditorMode: { label: "Switch editor mode" },
       toggleOutline: { label: "Show/hide document outline" },
       toggleSidebar: { label: "Show/hide sidebar" },
+      toggleMemoList: { label: "Show/hide note list" },
     },
   },
   quickSwitcher: {
@@ -2367,6 +2368,8 @@ export const enUS = {
     more: "More",
   },
   memoList: {
+    collapseList: "Collapse note list",
+    expandList: "Expand note list",
     selectionCount: "{{count}} selected",
     selectMemo: "Select notes",
     selectedListNone: "Deselect current list",

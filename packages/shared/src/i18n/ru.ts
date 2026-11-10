@@ -2308,6 +2308,7 @@ export const ru = {
       toggleEditorMode: { label: "Переключить режим редактора" },
       toggleOutline: { label: "Показать/скрыть структуру документа" },
       toggleSidebar: { label: "Показать или скрыть боковую панель" },
+      toggleMemoList: { label: "Показать/скрыть список заметок" },
     },
   },
   quickSwitcher: {
@@ -2367,6 +2368,8 @@ export const ru = {
     more: "Ещё",
   },
   memoList: {
+    collapseList: "Свернуть список заметок",
+    expandList: "Развернуть список заметок",
     selectionCount: "Выбрано: {{count}}",
     selectMemo: "Выбрать заметки",
     selectedListNone: "Снять выбор со списка",

@@ -41,6 +41,7 @@ import {
 import { AiSidebar, readAiSidebarOpen, writeAiSidebarOpen } from "@/components/ai-sidebar/AiSidebar";
 import { AiSidebarErrorBoundary } from "@/components/ai-sidebar/AiSidebarErrorBoundary";
 import { IconTooltip } from "@/components/editor/EditorPaneChrome";
+import { MemoListExpandButton } from "@/components/WorkspaceMemoListContext";
 import { MemoTitleInput } from "@/components/MemoTitleInput";
 import { TableFormDialog } from "@/components/dialogs/TableFormDialog";
 import { Button } from "@/components/ui/button";
@@ -847,6 +848,7 @@ export const TableEditorPane = ({
     <div className="relative flex h-full min-h-0 min-w-0 bg-card">
     <div className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col">
       <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 px-3 py-2">
+        <MemoListExpandButton className="shrink-0" />
         <Tooltip>
           <TooltipTrigger asChild>
             <Button type="button" variant="ghost" size="icon" className="lg:hidden" aria-label={t("structuredTable.back")} onClick={onBackToList}>

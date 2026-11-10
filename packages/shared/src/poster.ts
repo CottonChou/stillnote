@@ -294,14 +294,14 @@ export const resizePosterDocument = (
   });
 };
 export const hasPosterDocumentMarker = (markdown: string | null | undefined) =>
-  Boolean(markdown?.includes(`<!-- ${MARKER}:`));
+  Boolean(markdown?.includes(`<!-- ${MARKER}:`) || markdown?.includes("<!-- edgeever-poster-v1:"));
 export const stripPosterDocumentMarker = (markdown: string) =>
-  markdown.replace(/<!--\s*stillnote-poster-v1:[\s\S]*?-->/g, "").trim();
+  markdown.replace(/<!--\s*(?:stillnote|edgeever)-poster-v1:[\s\S]*?-->/g, "").trim();
 export const parsePosterDocument = (
   markdown: string | null | undefined,
 ): PosterDocument | null => {
   const encoded = markdown?.match(
-    /<!--\s*stillnote-poster-v1:([A-Za-z0-9_-]+)\s*-->/,
+    /<!--\s*(?:stillnote|edgeever)-poster-v1:([A-Za-z0-9_-]+)\s*-->/,
   )?.[1];
   if (!encoded || encoded.length > 2_000_000) return null;
   try {

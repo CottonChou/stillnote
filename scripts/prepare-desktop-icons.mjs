@@ -17,9 +17,19 @@ import sharp from "sharp";
 import { assertMacIcnsComplete } from "./desktop-icns.mjs";
 
 const projectRoot = resolve(fileURLToPath(new URL(".", import.meta.url)), "..");
-const sourcePng = join(projectRoot, "apps/web/public/pwa-512x512.png");
+const sourcePng = join(projectRoot, "assets/brand/stillnote-icon.png");
 const brandMarkPath = join(projectRoot, "assets/brand/stillnote-mark.svg");
 const assetsDir = join(projectRoot, "apps/desktop/assets");
+
+// Apple macOS App Icon Grid places the rounded-square tile at 824x824 inside
+// a 1024x1024 canvas (100px margin per side) with a subtle downward shadow.
+// Keeping edge-to-edge 1024x1024 makes the Dock tile ~24% wider/taller than native apps.
+export const DESKTOP_ICON_CANVAS_SIZE = 1024;
+export const DESKTOP_ICON_TILE_SIZE = 824;
+export const DESKTOP_ICON_INSET = (DESKTOP_ICON_CANVAS_SIZE - DESKTOP_ICON_TILE_SIZE) / 2;
+const DESKTOP_ICON_SHADOW_OFFSET_Y = 12;
+const DESKTOP_ICON_SHADOW_SIGMA = 12;
+const DESKTOP_ICON_SHADOW_OPACITY = 0.24;
 
 /** iconutil expects these exact basenames inside a .iconset directory. */
 const ICONSET_FILES = [
@@ -58,6 +68,71 @@ const writeResizedPng = async (sourceBuffer, size, destination) => {
     })
     .png({ compressionLevel: 9 })
     .toFile(destination);
+};
+
+export const buildDesktopIconMaster = async (sourceBuffer) => {
+  const tileBuffer = await sharp(sourceBuffer)
+    .resize(DESKTOP_ICON_TILE_SIZE, DESKTOP_ICON_TILE_SIZE, {
+      fit: "contain",
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+      kernel: sharp.kernel.lanczos3,
+    })
+    .ensureAlpha()
+    .png()
+    .toBuffer();
+
+  const { data: tileRaw, info } = await sharp(tileBuffer)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  const shadowRaw = Buffer.alloc(tileRaw.length);
+  for (let offset = 0; offset < tileRaw.length; offset += 4) {
+    shadowRaw[offset] = 0;
+    shadowRaw[offset + 1] = 0;
+    shadowRaw[offset + 2] = 0;
+    shadowRaw[offset + 3] = Math.round(tileRaw[offset + 3] * DESKTOP_ICON_SHADOW_OPACITY);
+  }
+
+  const shadowTileBuffer = await sharp(shadowRaw, {
+    raw: { width: info.width, height: info.height, channels: 4 },
+  })
+    .png()
+    .toBuffer();
+
+  const unblurredShadowCanvas = await sharp({
+    create: {
+      width: DESKTOP_ICON_CANVAS_SIZE,
+      height: DESKTOP_ICON_CANVAS_SIZE,
+      channels: 4,
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    },
+  })
+    .composite([
+      {
+        input: shadowTileBuffer,
+        left: DESKTOP_ICON_INSET,
+        top: DESKTOP_ICON_INSET + DESKTOP_ICON_SHADOW_OFFSET_Y,
+      },
+    ])
+    .png()
+    .toBuffer();
+
+  // Sharp applies .blur() before .composite() in a single pipeline, so blur in a second pass.
+  const shadowCanvas = await sharp(unblurredShadowCanvas)
+    .blur(DESKTOP_ICON_SHADOW_SIGMA)
+    .png()
+    .toBuffer();
+
+  return sharp(shadowCanvas)
+    .composite([
+      {
+        input: tileBuffer,
+        left: DESKTOP_ICON_INSET,
+        top: DESKTOP_ICON_INSET,
+      },
+    ])
+    .png({ compressionLevel: 9 })
+    .toBuffer();
 };
 
 const TRAY_TEMPLATE_ALPHA_THRESHOLD = 80;
@@ -128,9 +203,10 @@ export const prepareDesktopIcons = async ({
   await mkdir(assetsDirectory, { recursive: true });
   await prepareTrayIcons({ assetsDirectory });
   const sourceBuffer = await readFile(sourcePath);
+  const masterBuffer = await buildDesktopIconMaster(sourceBuffer);
 
   // Master PNG used by electron-builder on Windows/Linux and as a Dock fallback.
-  await writeResizedPng(sourceBuffer, 1024, join(assetsDirectory, "icon.png"));
+  await writeFile(join(assetsDirectory, "icon.png"), masterBuffer);
 
   if (!requireIconutil) {
     console.log("[prepare-desktop-icons] skipped iconutil on non-macOS; master PNG written.");
@@ -143,7 +219,11 @@ export const prepareDesktopIcons = async ({
 
   try {
     for (const { name, size } of ICONSET_FILES) {
-      await writeResizedPng(sourceBuffer, size, join(iconsetDir, name));
+      if (size === DESKTOP_ICON_CANVAS_SIZE) {
+        await writeFile(join(iconsetDir, name), masterBuffer);
+      } else {
+        await writeResizedPng(masterBuffer, size, join(iconsetDir, name));
+      }
     }
 
     const icnsPath = join(assetsDirectory, "icon.icns");
@@ -152,7 +232,7 @@ export const prepareDesktopIcons = async ({
     assertMacIcnsComplete(icnsData, icnsPath);
 
     console.log(`[prepare-desktop-icons] wrote ${icnsPath} (${icnsData.length} bytes)`);
-    console.log(`[prepare-desktop-icons] wrote ${join(assetsDirectory, "icon.png")} (1024×1024 master)`);
+    console.log(`[prepare-desktop-icons] wrote ${join(assetsDirectory, "icon.png")} (${DESKTOP_ICON_CANVAS_SIZE}×${DESKTOP_ICON_CANVAS_SIZE} master, ${DESKTOP_ICON_TILE_SIZE}×${DESKTOP_ICON_TILE_SIZE} Dock tile)`);
     return { icnsPath, pngPath: join(assetsDirectory, "icon.png") };
   } finally {
     await rm(workRoot, { recursive: true, force: true });

@@ -45,7 +45,7 @@ export const normalizePluginEmbedAttributes = (value: unknown): PluginEmbedAttri
 export const pluginEmbedToMarkdown = (attributes: PluginEmbedAttributes) =>
   `\`\`\`${PLUGIN_EMBED_MARKDOWN_LANGUAGE}\n${JSON.stringify(attributes)}\n\`\`\``;
 
-const FENCE_PATTERN = /^```stillnote-plugin-embed[ \t]*\n([^\n]+)\n```(?:\n|$)/;
+const FENCE_PATTERN = /^```(?:stillnote|edgeever)-plugin-embed[ \t]*\n([^\n]+)\n```(?:\n|$)/;
 
 export const PluginEmbed = Node.create({
   name: PLUGIN_EMBED_NODE_TYPE,
@@ -67,7 +67,10 @@ export const PluginEmbed = Node.create({
   },
 
   parseHTML() {
-    return [{ tag: 'figure[data-type="stillnote-plugin-embed"]' }];
+    return [
+      { tag: 'figure[data-type="stillnote-plugin-embed"]' },
+      { tag: 'figure[data-type="edgeever-plugin-embed"]' },
+    ];
   },
 
   renderHTML({ HTMLAttributes }) {

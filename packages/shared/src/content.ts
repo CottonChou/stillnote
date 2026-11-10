@@ -18,6 +18,7 @@ import { NEW_IMAGE_WIDTH_PERCENT, parseImageWidth } from "./image-display";
 import { IMAGE_GALLERY_NODE_TYPE, groupConsecutiveImagesIntoGalleries, normalizeImageGalleries, prepareImageListsForMarkdown } from "./image-gallery";
 import { EMPTY_EXTERNAL_LINK_NODE_TYPE } from "./empty-external-link";
 import { FRONT_MATTER_LANGUAGE, createFrontMatterNode, getFrontMatterSource, splitMarkdownFrontMatter } from "./front-matter";
+import { upgradeLegacyEdgeEverDoc, upgradeLegacyEdgeEverMarkdown } from "./legacy-content";
 import { splitMarkdownParseChunks } from "./markdown-block-start";
 import { createStillNoteMarked } from "./markdown-options";
 
@@ -78,6 +79,12 @@ export type TiptapDoc = {
   type: "doc";
   content: TiptapNode[];
 };
+
+export {
+  upgradeLegacyEdgeEverDoc,
+  upgradeLegacyEdgeEverMarkdown,
+  upgradeLegacyEdgeEverResourceUrl,
+} from "./legacy-content";
 
 export { DEFAULT_MEMO_TITLE, getMemoDisplayTitle } from "./memo-title";
 
@@ -152,7 +159,7 @@ const parseMarkdownBody = (markdown: string): TiptapNode[] => {
 };
 
 export const markdownToDoc = (markdown: string): TiptapDoc => {
-  const normalized = markdown.replace(/\r\n?/g, "\n");
+  const normalized = upgradeLegacyEdgeEverMarkdown(markdown.replace(/\r\n?/g, "\n"));
   if (!normalized) {
     return emptyDoc();
   }
@@ -201,14 +208,16 @@ export const resolveMemoContentDoc = (
   contentJson: TiptapDoc | null | undefined,
   contentMarkdown: string | null | undefined
 ): TiptapDoc => {
-  const currentDoc = contentJson && Array.isArray(contentJson.content)
+  const normalizedJson = upgradeLegacyEdgeEverDoc(contentJson);
+  const normalizedMarkdown = upgradeLegacyEdgeEverMarkdown(contentMarkdown);
+  const currentDoc = normalizedJson && Array.isArray(normalizedJson.content)
     ? upgradeMathCodeFences(normalizeImageGalleries(
-        upgradeStandaloneFileLinks(upgradeStandalonePdfLinks(upgradeLegacyAttachmentLinks(contentJson))),
+        upgradeStandaloneFileLinks(upgradeStandalonePdfLinks(upgradeLegacyAttachmentLinks(normalizedJson))),
       ))
     : emptyDoc();
   if (getFrontMatterSource(currentDoc) !== null) return currentDoc;
   if (
-    !contentMarkdown?.trim() ||
+    !normalizedMarkdown?.trim() ||
     docContainsNodeType(currentDoc, "table") ||
     docContainsNodeType(currentDoc, "taskList") ||
     docContainsNodeType(currentDoc, "stillnoteThemeBlock") ||
@@ -225,7 +234,7 @@ export const resolveMemoContentDoc = (
     return currentDoc;
   }
 
-  const markdownDoc = markdownToDoc(contentMarkdown);
+  const markdownDoc = markdownToDoc(normalizedMarkdown);
   const properties = getFrontMatterSource(markdownDoc);
   if (properties !== null) {
     return !docToText(currentDoc) ? markdownDoc : { ...currentDoc, content: [createFrontMatterNode(properties), ...currentDoc.content] };

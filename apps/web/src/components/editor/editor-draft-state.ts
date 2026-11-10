@@ -2,6 +2,8 @@ import {
   docToMarkdown,
   normalizeImageGalleries,
   resolveMemoContentDoc,
+  upgradeLegacyEdgeEverDoc,
+  upgradeLegacyEdgeEverMarkdown,
   type MemoDetail,
   type TiptapDoc,
 } from "@stillnote/shared";
@@ -66,7 +68,7 @@ export const isLocalDraftEquivalentToMemo = (memo: MemoDetail, draft: LocalDraft
   const memoContent = resolveMemoContentDoc(memo.contentJson, memo.contentMarkdown);
   return draft.title === getEditableMemoTitle(memo.title) &&
     stringArraysEqual(parseTagsText(draft.tagsText), memo.tags) &&
-    docToMarkdown(normalizeImageGalleries(draft.contentJson)) === docToMarkdown(memoContent);
+    docToMarkdown(normalizeImageGalleries(upgradeLegacyEdgeEverDoc(draft.contentJson))) === docToMarkdown(memoContent);
 };
 
 /**
@@ -103,19 +105,20 @@ export const resolveEditorDraftState = ({
       ? queuedPayload.tags.join(", ")
       : memo.tags.join(", ");
   const sourceContentJson = useDraft && draft
-    ? draft.contentJson
+    ? upgradeLegacyEdgeEverDoc(draft.contentJson)
     : useQueuedPayload && queuedPayload
-      ? queuedPayload.contentJson
+      ? upgradeLegacyEdgeEverDoc(queuedPayload.contentJson)
       : resolveMemoContentDoc(memo.contentJson, memo.contentMarkdown);
   const contentJson = normalizeImageGalleries(sourceContentJson);
+  const normalizedMemoJson = memo.contentJson ? upgradeLegacyEdgeEverDoc(memo.contentJson) : null;
   const repairedSavedContent = source === "memo" && Boolean(
-    memo.contentJson && normalizeImageGalleries(memo.contentJson) !== memo.contentJson,
+    normalizedMemoJson && normalizeImageGalleries(normalizedMemoJson) !== normalizedMemoJson,
   );
   const storedMarkdown = source === "draft"
     ? null
     : source === "queue"
-      ? (typeof queuedPayload?.contentMarkdown === "string" ? queuedPayload.contentMarkdown : null)
-      : (typeof memo.contentMarkdown === "string" ? memo.contentMarkdown : null);
+      ? (typeof queuedPayload?.contentMarkdown === "string" ? upgradeLegacyEdgeEverMarkdown(queuedPayload.contentMarkdown) : null)
+      : (typeof memo.contentMarkdown === "string" ? upgradeLegacyEdgeEverMarkdown(memo.contentMarkdown) : null);
   // Prefer the stored source so Markdown-mode extra blank lines survive
   // hydration. JSON→Markdown collapses `\n\n\n` into a single paragraph break.
   const contentMarkdown = storedMarkdown || docToMarkdown(contentJson);

@@ -15,6 +15,7 @@ import {
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { MemoListExpandButton } from "@/components/WorkspaceMemoListContext";
 import { cn } from "@/lib/utils";
 import type { getNotebookMoveOptions } from "@/lib/app-helpers";
 import type { ResourceMenuTarget } from "./useEditorResourceActions";
@@ -39,7 +40,10 @@ export const IconTooltip = ({
 );
 
 export const EmptyEditorHeader = () => (
-  <header className="hidden h-12 shrink-0 items-center justify-end gap-1 border-b border-[var(--workspace-divider)] px-5 lg:flex">
+  <header className="hidden h-12 shrink-0 items-center justify-between gap-1 border-b border-[var(--workspace-divider)] px-5 lg:flex">
+    <div className="flex items-center">
+      <MemoListExpandButton className="-ml-2" />
+    </div>
     <ThemeToggle />
   </header>
 );

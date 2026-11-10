@@ -70,7 +70,8 @@ export type TableSummaryPreview = {
 };
 
 const TABLE_MARKER = "stillnote-table-v1";
-const TABLE_COMMENT = new RegExp(`<!--\\s*${TABLE_MARKER}:([\\s\\S]*?)\\s*-->`);
+const LEGACY_TABLE_MARKER = "edgeever-table-v1";
+const TABLE_COMMENT = new RegExp(`<!--\\s*(?:${TABLE_MARKER}|${LEGACY_TABLE_MARKER}):([\\s\\S]*?)\\s*-->`);
 const FIELD_NAME_LIMIT = 80;
 const OPTION_LIMIT = 40;
 const CELL_TEXT_LIMIT = 2000;

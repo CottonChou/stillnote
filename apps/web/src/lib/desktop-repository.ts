@@ -7,7 +7,14 @@ import type {
   DesktopRpcParams,
   DesktopRpcResponses,
 } from "@stillnote/shared";
-import { docToMarkdown, docToText, markdownToDoc, type MemoDetail } from "@stillnote/shared";
+import {
+  docToMarkdown,
+  docToText,
+  markdownToDoc,
+  upgradeLegacyEdgeEverDoc,
+  upgradeLegacyEdgeEverMarkdown,
+  type MemoDetail,
+} from "@stillnote/shared";
 import { localizeDefaultMemoTemplate } from "@stillnote/shared/memo-template-seeds";
 import type { StillNoteRepository } from "@/lib/repository";
 import { api, getConfiguredDesktopApiBaseUrl } from "@/lib/api";
@@ -32,8 +39,8 @@ const resolveResourceUrls = <T extends { resources: Array<{ url: string }> }>(re
 
 const toDisplayMemo = (memo: MemoDetail): MemoDetail => ({
   ...memo,
-  contentJson: mapTiptapResourceUrls(memo.contentJson, toDesktopResourceUrl),
-  contentMarkdown: mapMarkdownResourceUrls(memo.contentMarkdown, toDesktopResourceUrl) ?? "",
+  contentJson: mapTiptapResourceUrls(upgradeLegacyEdgeEverDoc(memo.contentJson), toDesktopResourceUrl),
+  contentMarkdown: mapMarkdownResourceUrls(upgradeLegacyEdgeEverMarkdown(memo.contentMarkdown), toDesktopResourceUrl) ?? "",
 });
 
 const liveStagedIdsForMemo = async (memoId: string) => {

@@ -2308,6 +2308,7 @@ export const zhCN = {
       toggleEditorMode: { label: "切换编辑模式" },
       toggleOutline: { label: "显示/隐藏文档大纲" },
       toggleSidebar: { label: "显示/隐藏侧边栏" },
+      toggleMemoList: { label: "显示/隐藏笔记列表" },
     },
   },
   quickSwitcher: {
@@ -2367,6 +2368,8 @@ export const zhCN = {
     more: "更多",
   },
   memoList: {
+    collapseList: "收起笔记列表",
+    expandList: "展开笔记列表",
     selectionCount: "已选择 {{count}} 条",
     selectMemo: "选择笔记",
     selectedListNone: "全不选当前列表",

@@ -40,6 +40,7 @@ import { WeChatCopyProgress } from "@/components/WeChatCopyProgress";
 import { MemoEditorHeaderActions } from "@/components/MemoEditorHeaderActions";
 import { MemoEditorMetadataRow } from "@/components/MemoEditorMetadataRow";
 import { MemoEditorFocusModeButton, MemoEditorTopRowLeading } from "@/components/MemoEditorTopRowLeading";
+import { EmptyMemoListRestoreAction } from "@/components/WorkspaceMemoListContext";
 import { MemoEditorToolbarDivider } from "@/components/MemoEditorToolbarChrome";
 import {
   MEMO_EDITOR_METADATA_ROW_CLASS_NAME,
@@ -3784,6 +3785,7 @@ const RichEditorPane = ({
           <div>
             <Sparkles className="mx-auto mb-3 h-8 w-8 text-slate-300 animate-pulse" />
             <div className="text-sm font-medium text-slate-400">{t("editor.emptySelection")}</div>
+            <EmptyMemoListRestoreAction />
           </div>
         </div>
       </div>

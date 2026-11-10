@@ -6,12 +6,14 @@ import {
   clampNotebookSidebarWidth,
   readDesktopFocusModePreference,
   readImageCompressionPreference,
+  readMemoListCollapsedPreference,
   readMemoListWidthPreference,
   readNotebookSidebarCollapsedPreference,
   readNotebookSidebarWidthPreference,
   readShortcutSettingsPreference,
   writeDesktopFocusModePreference,
   writeImageCompressionPreference,
+  writeMemoListCollapsedPreference,
   writeMemoListWidthPreference,
   writeNotebookSidebarCollapsedPreference,
   writeNotebookSidebarWidthPreference,
@@ -24,6 +26,7 @@ export const useWorkspacePreferences = () => {
   const [desktopFocusMode, setDesktopFocusModeState] = useState(readDesktopFocusModePreference);
   const [notebookSidebarCollapsed, setNotebookSidebarCollapsedState] = useState(readNotebookSidebarCollapsedPreference);
   const [notebookSidebarWidth, setNotebookSidebarWidthState] = useState(readNotebookSidebarWidthPreference);
+  const [memoListCollapsed, setMemoListCollapsedState] = useState(readMemoListCollapsedPreference);
   const [shortcutSettings, setShortcutSettings] = useState<ShortcutSettings>(readShortcutSettingsPreference);
   const [memoListWidth, setMemoListWidthState] = useState(readMemoListWidthPreference);
 
@@ -38,6 +41,11 @@ export const useWorkspacePreferences = () => {
   const setNotebookSidebarCollapsed = useCallback((collapsed: boolean) => {
     setNotebookSidebarCollapsedState(collapsed);
     writeNotebookSidebarCollapsedPreference(collapsed);
+  }, []);
+
+  const setMemoListCollapsed = useCallback((collapsed: boolean) => {
+    setMemoListCollapsedState(collapsed);
+    writeMemoListCollapsedPreference(collapsed);
   }, []);
 
   const setMemoListWidth = useCallback((width: number) => {
@@ -63,12 +71,14 @@ export const useWorkspacePreferences = () => {
   return {
     desktopFocusMode,
     imageCompressionEnabled,
+    memoListCollapsed,
     memoListWidth,
     notebookSidebarCollapsed,
     notebookSidebarWidth,
     resetMemoListWidth,
     resetNotebookSidebarWidth,
     setDesktopFocusMode,
+    setMemoListCollapsed,
     setNotebookSidebarCollapsed,
     setImageCompressionEnabled,
     setMemoListWidth,

@@ -785,7 +785,8 @@ html[data-stillnote-extension-theme] .stillnote-memo-divider {
       minmax(0, 1fr);
   }
 
-  .stillnote-workspace-grid--single-right {
+  .stillnote-workspace-grid--single-right,
+  .stillnote-workspace-grid--memo-list-collapsed {
     grid-template-columns: var(--notebook-sidebar-width) minmax(0, 1fr);
   }
 

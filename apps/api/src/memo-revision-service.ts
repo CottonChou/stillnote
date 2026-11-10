@@ -4,6 +4,7 @@ import {
   docToMarkdown,
   docToText,
   emptyDoc,
+  upgradeLegacyEdgeEverDoc,
   type MemoDetail,
   type MemoRevision,
   type TiptapDoc,
@@ -60,7 +61,7 @@ type MemoRevisionDependencies = {
 const parseDoc = (json: string): TiptapDoc => {
   try {
     const value = JSON.parse(json);
-    return value && typeof value === "object" ? value as TiptapDoc : emptyDoc();
+    return value && typeof value === "object" ? upgradeLegacyEdgeEverDoc(value as TiptapDoc) : emptyDoc();
   } catch {
     return emptyDoc();
   }

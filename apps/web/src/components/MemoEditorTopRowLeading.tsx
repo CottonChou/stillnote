@@ -3,6 +3,7 @@ import { Maximize2, Minimize2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconTooltip } from "@/components/editor/EditorPaneChrome";
 import { Button } from "@/components/ui/button";
+import { MemoListExpandButton } from "@/components/WorkspaceMemoListContext";
 import { cn } from "@/lib/utils";
 
 export const MemoEditorFocusModeButton = ({
@@ -43,6 +44,7 @@ export const MemoEditorTopRowLeading = ({
   titleInput?: ReactNode;
 }) => (
   <div data-editor-top-row-leading className={cn("flex min-w-0 basis-full items-center gap-2 text-sm sm:flex-1", className)}>
+    <MemoListExpandButton className="-ml-2 shrink-0" />
     {mobileBackButton}
     {titleInput && <div data-editor-title-slot className="min-w-0 flex-1">{titleInput}</div>}
   </div>

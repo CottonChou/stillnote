@@ -2297,6 +2297,7 @@ export const pl = {
       toggleEditorMode: { label: "Przełącz tryb edytora" },
       toggleOutline: { label: "Pokaż/ukryj konspekt dokumentu" },
       toggleSidebar: { label: "Pokaż/ukryj pasek boczny" },
+      toggleMemoList: { label: "Pokaż/ukryj listę notatek" },
     },
   },
   quickSwitcher: {
@@ -2356,6 +2357,8 @@ export const pl = {
     more: "Więcej",
   },
   memoList: {
+    collapseList: "Zwiń listę notatek",
+    expandList: "Rozwiń listę notatek",
     selectionCount: "Zaznaczone: {{count}}",
     selectMemo: "Zaznacz notatki",
     selectedListNone: "Odznacz bieżącą listę",
