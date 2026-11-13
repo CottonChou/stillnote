@@ -153,13 +153,12 @@ const DEMO_RESET_COOLDOWN_MS = 60 * 1000;
 const DEFAULT_R2_BUCKET_NAME = "stillnote-resources";
 const app = new Hono<AppEnv>();
 
-// Packaged desktop uses stillnote-app://app (plus legacy edgeever-app://app); file:// sent Origin "null".
+// Packaged desktop uses stillnote-app://app; file:// sent Origin "null".
 const API_CORS_ORIGINS = [
   "http://127.0.0.1:5173",
   "http://localhost:5173",
   "null",
   "stillnote-app://app",
-  "edgeever-app://app",
 ];
 
 app.use(
@@ -170,7 +169,6 @@ app.use(
       "Content-Type",
       "Authorization",
       "x-stillnote-import-context",
-      "x-edgeever-import-context",
     ],
     allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,

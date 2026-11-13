@@ -16,7 +16,6 @@ final class LiveLocalAPITests: XCTestCase {
             ".env.local",
             "../../.env.wrangler.generated.local",
             "../../../.env.wrangler.generated.local",
-            "/Users/tianma/Developer/Projects/stillnote/.env.wrangler.generated.local",
         ]
         for path in candidates {
             guard let text = try? String(contentsOfFile: path, encoding: .utf8) else { continue }

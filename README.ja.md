@@ -1,9 +1,9 @@
 <div align="center">
   <h1>
-    <img src="assets/brand/stillnote-icon.svg" alt="StillNote のロゴ" width="56" align="absmiddle" /> StillNote · Editorial Flow Edition
+    <img src="assets/brand/stillnote-icon.svg" alt="StillNote のロゴ" width="56" align="absmiddle" /> StillNote
   </h1>
   <p>
-    <b>オープンソースの個人向け AI ネイティブ知識ベース・3 ペインワークスペース（<a href="https://github.com/CottonChou/stillnote">CottonChou/stillnote</a>、v2.17.0）— Editorial Flow UI、松緑ブックマークアイコン、メタデータ優先のオンデマンドノート同期、モバイルジェスチャー操作を搭載。Cloudflare 無料枠または Docker で運用可能。</b>
+    <b>オープンソースの個人向け AI ネイティブ知識ベース・3 ペインワークスペース — Editorial Flow UI、松緑ブックマークアイコン、メタデータ優先のオンデマンドノート同期、モバイルジェスチャー操作を搭載。Cloudflare 無料枠または Docker で運用可能。</b>
   </p>
   <p>
     <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="https://img.shields.io/github/v/release/CottonChou/stillnote?include_prereleases&color=187958&label=Release" alt="最新リリース" /></a>
@@ -37,7 +37,7 @@
 
 - **Editorial Flow リーディングファースト UI**：Web、macOS デスクトップ、Expo / React Native モバイルアプリ全体で、暖かみのあるコットン紙基調（`#f4f1ea` / `#f9f7f2` / `#fdfcf9`）、落ち着いたチャコールダーク（`#151513` / `#1d1c1a` / `#22211e`）、アクセントの Editorial Pine（`#187958` / `#43b88c`）を採用。Electron ウィンドウの背景色も `nativeTheme` と同期し（[index.mjs](apps/desktop/src/main/index.mjs)）、ヘッダーの共有操作を「...」メニューへ整理して閉じるボタンを追加しました。
 - **Editorial Pine ブックマーク・フォリオアイコン**：macOS（1024px `icon.icns` および 1x/2x メニューバー用モノクロ `trayTemplate`）、Android（`#187958` アダプティブアイコン＆スプラッシュ）、iOS アセットスロット、Web/PWA、Astro 公式サイト、ブラウザ拡張機能、ログイン画面まで一貫して刷新。
-- **モバイルジェスチャーとオンデマンドノート同期**（詳細は [`docs/FORK_CUSTOMIZATIONS.md`](docs/FORK_CUSTOMIZATIONS.md)）：
+- **モバイルジェスチャーとオンデマンドノート同期**（詳細は [`docs/mobile-features.md`](docs/mobile-features.md)）：
   - **DrawerLayout によるスムーズな開閉と誤終了防止**：`react-native-drawer-layout` でスワイプ閉じを安定化し、Android 戻る操作の 2 度押し終了確認を追加（`WorkspaceDrawer.tsx`）。
   - **メタデータ優先同期とノートブック単位同期**：同期時はまずノートブック階層とノート見出しを取得し、本文は開いた際にオンデマンド読込。手動のノートブック単位同期にも対応。
   - **カード左スワイプでスター／削除**：1 回のスワイプで楽観的スター切替とゴミ箱確認付き削除を実行（`WorkspaceNotesView.tsx`）。
@@ -48,9 +48,9 @@
 <a id="downloads"></a>
 ## 📦 クライアントダウンロード（MAC / Android APK）
 
-### StillNote リリース（`CottonChou/stillnote`）
+### 公式リリース
 
-**Editorial Flow UI** と **新ブランドアイコン** を収録した macOS / Android パッケージは [CottonChou/stillnote Releases](https://github.com/CottonChou/stillnote/releases/latest) から入手できます：
+すべての対応プラットフォーム向けビルドは [StillNote Releases](https://github.com/CottonChou/stillnote/releases/latest) から入手できます：
 
 | プラットフォーム | アーキテクチャ | 形式 | 備考 |
 | :--- | :--- | :--- | :--- |
@@ -146,29 +146,3 @@ bun run build:android:apk:local    # 本番署名済み Android arm64 APK をビ
 - **リポジトリ**: [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) · [Issues](https://github.com/CottonChou/stillnote/issues) · [Telegram](https://t.me/+wwUx1BYLrIdiZjY1)
 - **ブランドとリリース**: 本リポジトリの StillNote ソースコードとリリースは [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) にて管理されています。
 - **免責事項**: 独立したオープンソースソフトウェアであり、Evernote Corporation とは無関係です。セルフホストされたデータの管理責任は各運用者に帰属します。
-
-## コントリビューター
-
-<!-- readme-contributors:start -->
-<p align="left">
-  <a href="https://github.com/tianma-if"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/5895871?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@tianma-if" /></a>
-  <a href="https://github.com/dkoryto"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/2572180?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@dkoryto" /></a>
-  <a href="https://github.com/sivdead"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/27731043?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@sivdead" /></a>
-  <a href="https://github.com/thorufur"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/55167?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@thorufur" /></a>
-  <a href="https://github.com/yulei666"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/7358439?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@yulei666" /></a>
-  <a href="https://github.com/arsaboo"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/18319734?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@arsaboo" /></a>
-  <a href="https://github.com/alyyasser"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/16476111?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@alyyasser" /></a>
-  <a href="https://github.com/MadlyFX"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/4896705?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@MadlyFX" /></a>
-  <a href="https://github.com/claude"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/81847?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@claude" /></a>
-  <a href="https://github.com/Crowszzz"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/75199133?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Crowszzz" /></a>
-  <a href="https://github.com/Shunamxiao"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/92215296?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Shunamxiao" /></a>
-  <a href="https://github.com/nzhdotme"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/9588882?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@nzhdotme" /></a>
-  <a href="https://github.com/mookim-eth"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/97934198?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@mookim-eth" /></a>
-  <a href="https://github.com/imgdown"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/348032096?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@imgdown" /></a>
-  <a href="https://github.com/X77seven"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/171017641?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@X77seven" /></a>
-  <a href="https://github.com/Sergmay911"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/304439776?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Sergmay911" /></a>
-  <a href="https://github.com/0xfelixli"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/81979996?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@0xfelixli" /></a>
-  <a href="https://github.com/Z-DDV"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/122068983?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Z-DDV" /></a>
-  <a href="https://github.com/CottonChou"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/17818375?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@CottonChou" /></a>
-</p>
-<!-- readme-contributors:end -->

@@ -1,9 +1,9 @@
 <div align="center">
   <h1>
-    <img src="assets/brand/stillnote-icon.svg" alt="Logo StillNote" width="56" align="absmiddle" /> StillNote · Editorial Flow Edition
+    <img src="assets/brand/stillnote-icon.svg" alt="Logo StillNote" width="56" align="absmiddle" /> StillNote
   </h1>
   <p>
-    <b>Otwartoźródłowa osobista baza wiedzy AI i trzypanelowy edytor notatek (<a href="https://github.com/CottonChou/stillnote">CottonChou/stillnote</a>, v2.17.0) — z interfejsem Editorial Flow, ikoną sosnowej zakładki, leniwą synchronizacją notatników i płynnymi gestami mobilnymi. Bezpłatnie na Cloudflare lub przez Docker.</b>
+    <b>Otwartoźródłowa osobista baza wiedzy AI i trzypanelowy edytor notatek — z interfejsem Editorial Flow, ikoną sosnowej zakładki, leniwą synchronizacją notatników i płynnymi gestami mobilnymi. Bezpłatnie na Cloudflare lub przez Docker.</b>
   </p>
   <p>
     <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="https://img.shields.io/github/v/release/CottonChou/stillnote?include_prereleases&color=187958&label=Release" alt="Najnowsze wydanie" /></a>
@@ -37,7 +37,7 @@ Edycja dopracowuje czytelność przy długim pisaniu, spójność wizualną, erg
 
 - **Interfejs Editorial Flow**: Aplikacja Web, klient desktopowy macOS oraz klient mobilny Expo / React Native korzystają ze stonowanej palety ciepłego papieru (`#f4f1ea` / `#f9f7f2` / `#fdfcf9`), trybu ciemnego Charcoal (`#151513` / `#1d1c1a` / `#22211e`) i akcentów sosnowej zieleni (`#187958` / `#43b88c`). Nagłówek notatki grupuje udostępnianie w menu `...` obok przycisku zamknięcia notatki.
 - **Nowa ikona Editorial Pine Bookmark Folio**: Jednolity zestaw zasobów dla macOS (`icon.icns` i ikony zasobnika `trayTemplate`), Androida (`#187958` ikona adaptacyjna i ekran startowy), iOS, Web/PWA, witryny Astro oraz rozszerzeń przeglądarki.
-- **Płynne gesty mobilne i synchronizacja na żądanie** *(szczegóły w [`docs/FORK_CUSTOMIZATIONS.md`](docs/FORK_CUSTOMIZATIONS.md))*:
+- **Płynne gesty mobilne i synchronizacja na żądanie** *(szczegóły w [`docs/mobile-features.md`](docs/mobile-features.md))*:
   - **Płynna szuflada DrawerLayout i ochrona przed przypadkowym wyjściem**: Przesuwanie w prawo/lewo bez błędnego zamykania aplikacji na Androidzie (`WorkspaceDrawer.tsx`).
   - **Leniwa synchronizacja z metadanymi i ręczne odświeżanie notatnika**: Najpierw pobierane są notatniki i tytuły, a treść doczytuje się po otwarciu notatki (`Sync Notebook`).
   - **Szybkie akcje na karcie w lewo**: Oznaczanie gwiazdką lub przenoszenie do Kosza jednym gestem (`WorkspaceNotesView.tsx`).
@@ -48,9 +48,9 @@ Edycja dopracowuje czytelność przy długim pisaniu, spójność wizualną, erg
 <a id="downloads"></a>
 ## 📦 Pobieranie (macOS DMG i Android APK)
 
-### Wydania StillNote (`CottonChou/stillnote`)
+### Oficjalne wydania
 
-Gotowe pakiety z interfejsem **Editorial Flow**, **nową ikoną** i **ulepszeniami synchronizacji/gestów mobilnych** są publikowane w [CottonChou/stillnote Releases](https://github.com/CottonChou/stillnote/releases/latest):
+Gotowe pakiety na wszystkie platformy są publikowane w [StillNote Releases](https://github.com/CottonChou/stillnote/releases/latest):
 
 | Platforma | Architektura | Format | Uwagi |
 | :--- | :--- | :--- | :--- |
@@ -143,29 +143,3 @@ bun run build:android:apk:local    # Zbuduj podpisany APK Android arm64
 - **Repozytorium**: [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) · [Issues](https://github.com/CottonChou/stillnote/issues) · [Telegram](https://t.me/+wwUx1BYLrIdiZjY1)
 - **Marka i wydania**: Kod źródłowy oraz wydania StillNote dla tej edycji są utrzymywane w [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote).
 - **Zastrzeżenie**: Niezależne oprogramowanie open-source niezwiązane z Evernote Corporation. Operatorzy instancji odpowiadają za przechowywane treści.
-
-## Współtwórcy
-
-<!-- readme-contributors:start -->
-<p align="left">
-  <a href="https://github.com/tianma-if"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/5895871?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@tianma-if" /></a>
-  <a href="https://github.com/dkoryto"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/2572180?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@dkoryto" /></a>
-  <a href="https://github.com/sivdead"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/27731043?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@sivdead" /></a>
-  <a href="https://github.com/thorufur"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/55167?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@thorufur" /></a>
-  <a href="https://github.com/yulei666"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/7358439?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@yulei666" /></a>
-  <a href="https://github.com/arsaboo"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/18319734?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@arsaboo" /></a>
-  <a href="https://github.com/alyyasser"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/16476111?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@alyyasser" /></a>
-  <a href="https://github.com/MadlyFX"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/4896705?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@MadlyFX" /></a>
-  <a href="https://github.com/claude"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/81847?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@claude" /></a>
-  <a href="https://github.com/Crowszzz"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/75199133?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Crowszzz" /></a>
-  <a href="https://github.com/Shunamxiao"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/92215296?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Shunamxiao" /></a>
-  <a href="https://github.com/nzhdotme"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/9588882?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@nzhdotme" /></a>
-  <a href="https://github.com/mookim-eth"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/97934198?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@mookim-eth" /></a>
-  <a href="https://github.com/imgdown"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/348032096?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@imgdown" /></a>
-  <a href="https://github.com/X77seven"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/171017641?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@X77seven" /></a>
-  <a href="https://github.com/Sergmay911"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/304439776?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Sergmay911" /></a>
-  <a href="https://github.com/0xfelixli"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/81979996?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@0xfelixli" /></a>
-  <a href="https://github.com/Z-DDV"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/122068983?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Z-DDV" /></a>
-  <a href="https://github.com/CottonChou"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/17818375?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@CottonChou" /></a>
-</p>
-<!-- readme-contributors:end -->

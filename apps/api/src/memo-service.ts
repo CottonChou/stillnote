@@ -16,8 +16,6 @@ import {
   listTableAttachmentResourceIds,
   normalizeTags,
   parseTableDocument,
-  upgradeLegacyEdgeEverDoc,
-  upgradeLegacyEdgeEverMarkdown,
   type MemoDetail,
   type MemoEditSession,
   type MemoSummary,
@@ -96,7 +94,7 @@ type MemoImportSourceRow = {
 export const mapMemoDetail = (row: MemoDetailRow): MemoDetail => ({
   ...mapMemoSummary(row),
   contentJson: parseDoc(row.content_json),
-  contentMarkdown: upgradeLegacyEdgeEverMarkdown(row.content_markdown),
+  contentMarkdown: row.content_markdown,
   contentText: row.content_text,
   contentHash: row.content_hash,
   sourceMemoIds: parseJsonArray(row.source_memo_ids),
@@ -1480,7 +1478,7 @@ export const updateMemoRecord = async (
 const parseDoc = (json: string): TiptapDoc => {
   try {
     const value = JSON.parse(json);
-    return value && typeof value === "object" ? upgradeLegacyEdgeEverDoc(value as TiptapDoc) : emptyDoc();
+    return value && typeof value === "object" ? value as TiptapDoc : emptyDoc();
   } catch {
     return emptyDoc();
   }

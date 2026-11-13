@@ -11,8 +11,6 @@ import {
   docToMarkdown,
   docToText,
   markdownToDoc,
-  upgradeLegacyEdgeEverDoc,
-  upgradeLegacyEdgeEverMarkdown,
   type MemoDetail,
 } from "@stillnote/shared";
 import { localizeDefaultMemoTemplate } from "@stillnote/shared/memo-template-seeds";
@@ -39,8 +37,8 @@ const resolveResourceUrls = <T extends { resources: Array<{ url: string }> }>(re
 
 const toDisplayMemo = (memo: MemoDetail): MemoDetail => ({
   ...memo,
-  contentJson: mapTiptapResourceUrls(upgradeLegacyEdgeEverDoc(memo.contentJson), toDesktopResourceUrl),
-  contentMarkdown: mapMarkdownResourceUrls(upgradeLegacyEdgeEverMarkdown(memo.contentMarkdown), toDesktopResourceUrl) ?? "",
+  contentJson: mapTiptapResourceUrls(memo.contentJson, toDesktopResourceUrl),
+  contentMarkdown: mapMarkdownResourceUrls(memo.contentMarkdown, toDesktopResourceUrl) ?? "",
 });
 
 const liveStagedIdsForMemo = async (memoId: string) => {

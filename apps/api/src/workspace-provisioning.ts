@@ -5,7 +5,6 @@ import {
 import {
   DEFAULT_NOTEBOOK_SEEDS,
   WELCOME_MEMO_ID,
-  WELCOME_MEMO_LEGACY_SEED_TITLE,
   WELCOME_MEMO_REPAIRED_CONTENT_HASH,
   WELCOME_MEMO_SEED_CONTENT_HASH,
   WELCOME_MEMO_SEED_TITLE,
@@ -157,7 +156,7 @@ export const createWorkspaceSeedLocalizationStatements = async (
       AND EXISTS (
         SELECT 1 FROM memos
         WHERE id = ? AND workspace_id = ? AND is_deleted = 0
-          AND title IN (?, ?) AND updated_by = 'system'
+          AND title = ? AND updated_by = 'system'
       )
       AND EXISTS (
         SELECT 1 FROM memo_contents
@@ -168,7 +167,6 @@ export const createWorkspaceSeedLocalizationStatements = async (
       WELCOME_MEMO_ID,
       workspaceId,
       WELCOME_MEMO_SEED_TITLE,
-      WELCOME_MEMO_LEGACY_SEED_TITLE,
       WELCOME_MEMO_ID,
       ...states.flat(),
     ],

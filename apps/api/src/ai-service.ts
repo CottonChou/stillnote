@@ -204,14 +204,15 @@ export const getAiSettings = async (
 ): Promise<AiSettings> => {
   const [providersResult, modelsResult, defaultModelId] = await Promise.all([
     db.prepare(
-      `${selectProviderSql} WHERE workspace_id = ? ORDER BY created_at ASC, id ASC`,
+      // rowid breaks created_at ties in insertion order; the random id cannot.
+      `${selectProviderSql} WHERE workspace_id = ? ORDER BY created_at ASC, rowid ASC`,
     ).bind(workspaceId).all<AiProviderConfigRow>(),
     db.prepare(
       `${selectModelSql}
        WHERE provider_config_id IN (
          SELECT id FROM ai_provider_configs WHERE workspace_id = ?
        )
-       ORDER BY created_at ASC, id ASC`,
+       ORDER BY created_at ASC, rowid ASC`,
     ).bind(workspaceId).all<AiModelConfigRow>(),
     getDefaultAiModelId(db, workspaceId),
   ]);
@@ -347,14 +348,15 @@ export const getAiTranscriptionSettings = async (
 ): Promise<AiTranscriptionSettings> => {
   const [providersResult, modelsResult, defaultModelId] = await Promise.all([
     db.prepare(
-      `${selectTranscriptionProviderSql} WHERE workspace_id = ? ORDER BY created_at ASC, id ASC`,
+      // rowid breaks created_at ties in insertion order; the random id cannot.
+      `${selectTranscriptionProviderSql} WHERE workspace_id = ? ORDER BY created_at ASC, rowid ASC`,
     ).bind(workspaceId).all<AiTranscriptionProviderRow>(),
     db.prepare(
       `${selectTranscriptionModelSql}
        WHERE provider_id IN (
          SELECT id FROM ai_transcription_providers WHERE workspace_id = ?
        )
-       ORDER BY created_at ASC, id ASC`,
+       ORDER BY created_at ASC, rowid ASC`,
     ).bind(workspaceId).all<AiTranscriptionModelRow>(),
     getDefaultAiTranscriptionModelId(db, workspaceId),
   ]);

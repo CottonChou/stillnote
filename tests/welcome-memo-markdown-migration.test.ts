@@ -6,8 +6,8 @@ import { Database } from "bun:sqlite";
 import { afterEach, describe, expect, test } from "bun:test";
 import {
   buildWelcomeMemoContent,
-  WELCOME_MEMO_LEGACY_SEED_TITLE,
   WELCOME_MEMO_REPAIRED_CONTENT_HASH,
+  WELCOME_MEMO_SEED_TITLE,
   WELCOME_MEMO_STILLNOTE_CONTENT_HASH,
 } from "../packages/shared/src/default-workspace-seeds";
 import { createSelfHostedStorageAdapter } from "../apps/api/src/self-hosted-storage-adapter";
@@ -139,7 +139,7 @@ describe("welcome Markdown repair", () => {
   test("preserves other notes containing the exact same content", () => {
     const db = legacy();
     db.exec(`INSERT INTO memos (id, notebook_id, title, created_by, updated_by)
-      VALUES ('memo_user', 'nb_inbox', '${WELCOME_MEMO_LEGACY_SEED_TITLE}', 'system', 'system');
+      VALUES ('memo_user', 'nb_inbox', '${WELCOME_MEMO_SEED_TITLE}', 'system', 'system');
       INSERT INTO memo_contents (memo_id, content_json, content_markdown, content_text, content_hash)
       SELECT 'memo_user', content_json, content_markdown, content_text, content_hash
       FROM memo_contents WHERE memo_id = 'memo_welcome'`);

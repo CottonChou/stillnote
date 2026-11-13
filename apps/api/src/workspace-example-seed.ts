@@ -5,7 +5,6 @@ import {
   normalizeTags,
 } from "@stillnote/shared";
 import {
-  WELCOME_MEMO_LEGACY_SEED_TITLE,
   WELCOME_MEMO_REPAIRED_CONTENT_HASH,
   WELCOME_MEMO_SEED_CONTENT_HASH,
   WELCOME_MEMO_STILLNOTE_CONTENT_HASH,
@@ -64,7 +63,6 @@ const knownWelcomeContentHashes = async () => {
 };
 
 const knownWelcomeTitles = new Set([
-  WELCOME_MEMO_LEGACY_SEED_TITLE,
   ...(Object.keys(WELCOME_MEMO_TRANSLATIONS) as SupportedLocale[])
     .map((locale) => WELCOME_MEMO_TRANSLATIONS[locale].title),
 ]);

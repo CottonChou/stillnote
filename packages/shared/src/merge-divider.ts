@@ -24,7 +24,7 @@ export const MergeDivider = Node.create({
   draggable: true,
 
   parseHTML() {
-    return [{ tag: "hr[data-stillnote-merge-divider]" }, { tag: "hr[data-edgeever-merge-divider]" }];
+    return [{ tag: "hr[data-stillnote-merge-divider]" }];
   },
 
   renderHTML({ HTMLAttributes }) {

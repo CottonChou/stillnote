@@ -1,6 +1,6 @@
 PRAGMA foreign_keys = ON;
 
--- Allow the renamed StillNote publisher while keeping legacy rows valid.
+-- Normalize any legacy publisher value to StillNote while rebuilding the table.
 CREATE TABLE workspace_extensions_next (
   workspace_id TEXT NOT NULL,
   extension_id TEXT NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE workspace_extensions_next (
   manifest_url TEXT NOT NULL CHECK (length(trim(manifest_url)) > 0 AND length(manifest_url) <= 2000),
   repository_url TEXT CHECK (repository_url IS NULL OR (length(trim(repository_url)) > 0 AND length(repository_url) <= 500)),
   release_tag TEXT CHECK (release_tag IS NULL OR (length(trim(release_tag)) > 0 AND length(release_tag) <= 80)),
-  publisher TEXT CHECK (publisher IS NULL OR publisher IN ('stillnote', 'edgeever')),
+  publisher TEXT CHECK (publisher IS NULL OR publisher = 'stillnote'),
   installed_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   deleted_at TEXT,
@@ -26,7 +26,7 @@ INSERT INTO workspace_extensions_next
 SELECT
   workspace_id, extension_id, extension_type, version, enabled, source_kind, verified,
   manifest_url, repository_url, release_tag,
-  CASE WHEN publisher = 'edgeever' THEN 'stillnote' ELSE publisher END,
+  CASE WHEN publisher IS NULL THEN NULL ELSE 'stillnote' END,
   installed_at, updated_at, deleted_at
 FROM workspace_extensions;
 
@@ -44,7 +44,7 @@ SET title = '欢迎来到 StillNote',
     updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
 WHERE id = 'memo_welcome'
   AND workspace_id = 'ws_default'
-  AND title = ('欢迎来到 ' || 'Edge' || 'Ever')
+  AND title = '欢迎来到 StillNote'
   AND created_by = 'system'
   AND updated_by = 'system'
   AND is_deleted = 0
@@ -53,7 +53,7 @@ WHERE id = 'memo_welcome'
     SELECT 1 FROM memo_contents
     WHERE memo_id = 'memo_welcome'
       AND revision = 1
-      AND content_hash = '30fae5a337f8b9709505c5ab00ee921410b78632c14f4b7577c88aea0f9fc390'
+      AND content_hash = '253da40ec4cad527bfe05080c78c55b9275b352705d40755946f999c402314c3'
   );
 
 UPDATE memo_contents
@@ -65,7 +65,7 @@ SET content_json = '{"type":"doc","content":[{"type":"heading","attrs":{"level":
     updated_at = (SELECT updated_at FROM memos WHERE id = 'memo_welcome')
 WHERE memo_id = 'memo_welcome'
   AND revision = 1
-  AND content_hash = '30fae5a337f8b9709505c5ab00ee921410b78632c14f4b7577c88aea0f9fc390'
+  AND content_hash = '253da40ec4cad527bfe05080c78c55b9275b352705d40755946f999c402314c3'
   AND NOT EXISTS (SELECT 1 FROM memo_revisions WHERE memo_id = 'memo_welcome')
   AND EXISTS (
     SELECT 1 FROM memos

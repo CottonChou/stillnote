@@ -11,7 +11,7 @@ CREATE TABLE workspace_extensions (
   manifest_url TEXT NOT NULL CHECK (length(trim(manifest_url)) > 0 AND length(manifest_url) <= 2000),
   repository_url TEXT CHECK (repository_url IS NULL OR (length(trim(repository_url)) > 0 AND length(repository_url) <= 500)),
   release_tag TEXT CHECK (release_tag IS NULL OR (length(trim(release_tag)) > 0 AND length(release_tag) <= 80)),
-  publisher TEXT CHECK (publisher IS NULL OR publisher = 'edgeever'),
+  publisher TEXT CHECK (publisher IS NULL OR publisher = 'stillnote'),
   installed_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   deleted_at TEXT,

@@ -970,14 +970,14 @@ describe("real desktop-app exports", () => {
     expect(await executeNoteImport(options)).toMatchObject({ completed: 1, failed: 0, resources: 5 });
     const [state] = await session.index.page("result");
     const { memo } = await client.getMemo(state.memo.id);
-    expect(memo).toMatchObject({ title: "EdgeEver QA · 正文与附件 🌿", tags: ["edgeever-import-qa", "迁移验收"], createdAt: "2026-10-31T03:38:38.000Z", updatedAt: "2026-10-31T03:41:05.000Z" });
+    expect(memo).toMatchObject({ title: "StillNote QA · 正文与附件 🌿", tags: ["stillnote-import-qa", "迁移验收"], createdAt: "2026-10-31T03:38:38.000Z", updatedAt: "2026-10-31T03:41:05.000Z" });
     expect(memo.contentMarkdown).toMatch(/^- +\[ \] 尚未完成的导入检查/m);
     expect(memo.contentMarkdown).toMatch(/^- +\[x\] 已经完成的格式准备/m);
     expect(memo.contentMarkdown.startsWith("## 真实 ENEX 导出验收")).toBe(true);
-    expect(memo.contentMarkdown).toContain("```\nconst message = 'ENEX & EdgeEver';\n```");
+    expect(memo.contentMarkdown).toContain("```\nconst message = 'ENEX & StillNote';\n```");
     expect(memo.contentMarkdown).toContain("| 项目");
     expect(memo.contentMarkdown).toContain("保留原字节");
-    expect(memo.contentMarkdown).toContain("https://example.com/edgeever?q=100%25#section");
+    expect(memo.contentMarkdown).toContain("https://example.com/stillnote?q=100%25#section");
     const structure = { pdfs: [], files: [], tableRows: 0 };
     const emphasis = { bold: [], italic: [] };
     const visit = node => {
@@ -1046,7 +1046,7 @@ describe("real desktop-app exports", () => {
     const chain = [];
     let folder = folders.find(item => item.id === picture.notebookId);
     while (folder) { chain.unshift(folder.name); folder = folders.find(item => item.id === folder.parentId); }
-    expect(chain).toEqual(format === "obsidian" ? [...(directory ? [] : ["Obsidian Vault"]), "研究", "项目 A"] : ["EdgeEver 导入验收", "研究", "项目 A"]);
+    expect(chain).toEqual(format === "obsidian" ? [...(directory ? [] : ["Obsidian Vault"]), "研究", "项目 A"] : ["StillNote 导入验收", "研究", "项目 A"]);
     const resources = db.query(`SELECT id,filename FROM resources WHERE is_deleted=0 AND memo_id IN (${imported.map(() => "?").join(",")})`).all(...imported.map(note => note.id));
     expect(resources).toHaveLength(6);
     for (const resource of resources) {

@@ -1,4 +1,4 @@
-import { LEGACY_EDGEEVER_ZIP_FORMAT, STILLNOTE_ZIP_FORMAT, STILLNOTE_ZIP_FORMAT_VERSION, JsonBackupManifestSchema, JsonBackupAiPromptSchema, JsonBackupMemoSchema, JsonBackupNotebookSchema, type JsonBackupManifest, type JsonBackupAiPrompt, type JsonBackupMemo, type JsonBackupNotebook, type JsonBackupResource, type JsonBackupRevision } from "./backup";
+import { STILLNOTE_ZIP_FORMAT, STILLNOTE_ZIP_FORMAT_VERSION, JsonBackupManifestSchema, JsonBackupAiPromptSchema, JsonBackupMemoSchema, JsonBackupNotebookSchema, type JsonBackupManifest, type JsonBackupAiPrompt, type JsonBackupMemo, type JsonBackupNotebook, type JsonBackupResource, type JsonBackupRevision } from "./backup";
 import type { MemoDetail, Notebook, Resource } from "./types";
 import { Reader, ZipReader, ZipWriter, Uint8ArrayReader, type CreateReadableOptions } from "@zip.js/zip.js/index-native.js";
 import { buildNoteMarkdown, buildNotebookExportPaths, getExportResourceExtension, replaceExportResourceUrl, sanitizeExportPathSegment, uniqueExportName } from "./backup-markdown";
@@ -359,19 +359,6 @@ const sortNotebooksForRestore = (notebooks: JsonBackupNotebook[]) => {
   return [...notebooks].sort((left, right) => depth(left) - depth(right));
 };
 
-const normalizeBackupManifest = (manifestRecord: Record<string, unknown>): Record<string, unknown> => {
-  if (manifestRecord.format !== LEGACY_EDGEEVER_ZIP_FORMAT) {
-    return manifestRecord;
-  }
-  return {
-    ...manifestRecord,
-    format: STILLNOTE_ZIP_FORMAT,
-    ...(manifestRecord.stillnoteVersion === undefined && typeof manifestRecord.edgeeverVersion === "string"
-      ? { stillnoteVersion: manifestRecord.edgeeverVersion }
-      : {}),
-  };
-};
-
 export const parseStillNoteZip = async (
   blob: Blob,
   onProgress?: (percentage: number) => void,
@@ -382,8 +369,7 @@ export const parseStillNoteZip = async (
   if (!manifestValue || typeof manifestValue !== "object") {
     throw new StillNoteZipImportError("invalidManifest");
   }
-  // Accept legacy EdgeEver JSON backup ZIPs seamlessly during cross-brand restores.
-  const manifestRecord = normalizeBackupManifest(manifestValue as Record<string, unknown>);
+  const manifestRecord = manifestValue as Record<string, unknown>;
   if (manifestRecord.format !== STILLNOTE_ZIP_FORMAT) {
     throw new StillNoteZipImportError("unsupportedFormat");
   }

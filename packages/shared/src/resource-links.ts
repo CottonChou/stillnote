@@ -14,7 +14,7 @@ export const resourceLinkToMarkdown = (label: string, url: string): string => re
 });
 
 export const getResourceIdFromUrl = (href: string): string | null => {
-  if (href.startsWith("stillnote-resource://") || href.startsWith("edgeever-resource://")) {
+  if (href.startsWith("stillnote-resource://")) {
     try {
       const parsed = new URL(href);
       const resourceId = decodeURIComponent(parsed.pathname.replace(/^\//, ""));

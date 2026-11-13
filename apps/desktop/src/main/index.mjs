@@ -85,7 +85,6 @@ import {
   DESKTOP_APP_SCHEME,
   createDesktopAppProtocolHandler,
 } from "./app-protocol.mjs";
-import { createInstanceCorsBridge } from "./instance-cors.mjs";
 import {
   RENDERER_STORAGE_MIGRATION_MARKER,
   migrateRendererStorageOrigin,
@@ -1868,9 +1867,6 @@ const startApplication = async () => {
   }).catch((error) => { void writeDiagnostic("windows.taskbar-shortcuts-unavailable", { message: error.message }); });
   await writeFile(crashMarkerPath(), new Date().toISOString());
   session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => callback(false));
-  createInstanceCorsBridge({ getConfiguredApiBaseUrl: () => configuredApiBaseUrl }).attachToSession(
-    session.defaultSession
-  );
   registerDesktopAppProtocol();
   registerResourceProtocol();
   await preparePackagedRendererOrigin();

@@ -137,8 +137,7 @@ export type DiagramDocument = {
 };
 
 const DIAGRAM_MARKER = "stillnote-diagram-v1";
-const LEGACY_DIAGRAM_MARKER = "edgeever-diagram-v1";
-const DIAGRAM_COMMENT = new RegExp(`<!--\\s*(?:${DIAGRAM_MARKER}|${LEGACY_DIAGRAM_MARKER}):([\\s\\S]*?)\\s*-->`);
+const DIAGRAM_COMMENT = new RegExp(`<!--\\s*${DIAGRAM_MARKER}:([\\s\\S]*?)\\s*-->`);
 
 // Keep the persisted envelope portable across browsers, Node/Bun, and React
 // Native's Hermes runtime. Hermes does not guarantee the browser globals used

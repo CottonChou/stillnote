@@ -65,11 +65,11 @@ export const WELCOME_MEMO_ID = "memo_welcome";
  * they identify a welcome note nobody has touched.
  */
 export const WELCOME_MEMO_SEED_TITLE = "欢迎来到 StillNote";
-export const WELCOME_MEMO_LEGACY_SEED_TITLE = ["欢迎来到 ", "Edge", "Ever"].join("");
-export const WELCOME_MEMO_SEED_CONTENT_HASH = "4edcf7092f86c561210d4eb788e96f28ec5c045f93952c82f5f57e1902f548bd";
+export const WELCOME_MEMO_SEED_CONTENT_HASH = "b1b22286934622a324d61729cfa50b75bf45f8be22da97aede4ae62e0a8863bd";
 // Migration 0071 repairs the original seed's literal backslash-n and advances it to revision 1.
-export const WELCOME_MEMO_REPAIRED_CONTENT_HASH = "30fae5a337f8b9709505c5ab00ee921410b78632c14f4b7577c88aea0f9fc390";
-// Migration 0088 rebrands the untouched Chinese welcome note to StillNote and advances it to revision 2.
+// The repaired text already matches the final welcome note, so its hash equals the final one.
+export const WELCOME_MEMO_REPAIRED_CONTENT_HASH = "253da40ec4cad527bfe05080c78c55b9275b352705d40755946f999c402314c3";
+// Migration 0088 finalizes the untouched Chinese welcome note and advances it to revision 2.
 export const WELCOME_MEMO_STILLNOTE_CONTENT_HASH = "253da40ec4cad527bfe05080c78c55b9275b352705d40755946f999c402314c3";
 
 export type WelcomeMemoTranslation = {

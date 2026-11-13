@@ -6,7 +6,7 @@ export const isDesktopResourceRuntime = () => Boolean(typeof window !== "undefin
 const RESOURCE_PATH_PATTERN = /\/api\/v1\/resources\/([^/]+)\/blob(?:$|[?#])/;
 
 const getResourceId = (url: string) => {
-  if (url.startsWith("stillnote-resource://") || url.startsWith("edgeever-resource://")) {
+  if (url.startsWith("stillnote-resource://")) {
     const parsed = new URL(url);
     return decodeURIComponent(parsed.pathname.replace(/^\//, ""));
   }
@@ -23,13 +23,9 @@ const getResourceId = (url: string) => {
 
 export const toDesktopResourceUrl = (url: string) => {
   if (!isDesktopResourceRuntime()) {
-    if (url.startsWith("edgeever-resource://") || url.startsWith("edgeever-staged://")) {
-      return url.replace(/^edgeever-/, "stillnote-");
-    }
     return url;
   }
   if (url.startsWith("stillnote-resource://") || url.startsWith("stillnote-staged://")) return url;
-  if (url.startsWith("edgeever-staged://")) return url.replace(/^edgeever-/, "stillnote-");
   const resourceId = getResourceId(url);
   return resourceId ? `stillnote-resource://resource/${encodeURIComponent(resourceId)}` : url;
 };
@@ -46,7 +42,7 @@ export const toDesktopResourceDownloadUrl = (url: string, filename: string) => {
 };
 
 export const toApiResourceUrl = (url: string) => {
-  if (!url.startsWith("stillnote-resource://") && !url.startsWith("edgeever-resource://")) return url;
+  if (!url.startsWith("stillnote-resource://")) return url;
   const resourceId = getResourceId(url);
   return resourceId ? `/api/v1/resources/${encodeURIComponent(resourceId)}/blob` : url;
 };
@@ -67,7 +63,7 @@ export const mapTiptapResourceUrls = (doc: TiptapDoc, mapper: (url: string) => s
 };
 
 export const mapMarkdownResourceUrls = (markdown: string | undefined, mapper: (url: string) => string) =>
-  markdown?.replace(/(?:(?:stillnote|edgeever)-resource:\/\/resource\/[^\s)"']+|\/api\/v1\/resources\/[^\s)"']+\/blob)/g, mapper) ?? markdown;
+  markdown?.replace(/(?:stillnote-resource:\/\/resource\/[^\s)"']+|\/api\/v1\/resources\/[^\s)"']+\/blob)/g, mapper) ?? markdown;
 
 export const stageDesktopResource = async (memoId: string, file: File) => {
   if (!isDesktopResourceRuntime()) return null;

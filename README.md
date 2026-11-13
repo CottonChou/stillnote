@@ -1,9 +1,9 @@
 <div align="center">
   <h1>
-    <img src="assets/brand/stillnote-icon.svg" alt="StillNote Logo" width="56" align="absmiddle" /> StillNote · Editorial Flow Edition
+    <img src="assets/brand/stillnote-icon.svg" alt="StillNote Logo" width="56" align="absmiddle" /> StillNote
   </h1>
   <p>
-    <b>An open-source personal knowledge base &amp; three-pane notes workspace (<a href="https://github.com/CottonChou/stillnote">CottonChou/stillnote</a>, v2.17.0) — featuring Editorial Flow UI, Editorial Pine branding, metadata-first mobile notebook sync, and fluid touch gestures. Free on Cloudflare or self-hosted via Docker.</b>
+    <b>An open-source personal knowledge base &amp; three-pane notes workspace — featuring Editorial Flow UI, Editorial Pine branding, metadata-first mobile notebook sync, and fluid touch gestures. Free on Cloudflare or self-hosted via Docker.</b>
   </p>
   <p>
     <a href="https://github.com/CottonChou/stillnote/releases/latest"><img src="https://img.shields.io/github/v/release/CottonChou/stillnote?include_prereleases&color=187958&label=Release" alt="Latest Release" /></a>
@@ -37,7 +37,7 @@ Beyond core note-taking, migration, and AI agent capabilities, StillNote refines
 
 - **Editorial Flow Reading-First UI**: Web, macOS desktop, and Expo / React Native mobile clients adopt a warm cotton paper palette (`#f4f1ea` / `#f9f7f2` / `#fdfcf9`), charcoal dark mode (`#151513` / `#1d1c1a` / `#22211e`), and editorial pine accents (`#187958` / `#43b88c`). Desktop `BrowserWindow` startup backgrounds sync with `nativeTheme` (`apps/desktop/src/main/index.mjs`) to eliminate cold-start flash, and the note header places Share cleanly in the `...` menu alongside a one-click Close Note button.
 - **Editorial Pine Bookmark Folio Icon**: Unified across macOS (`icon.icns` + 1x/2x `trayTemplate` menu bar glyphs), Android (`#187958` adaptive icon &amp; splash screen), iOS asset slots, Web/PWA manifests, Astro site favicons, browser extensions, and login screens.
-- **Fluid Mobile Touch Gestures &amp; Fast Notebook Sync** *(detailed in [`docs/FORK_CUSTOMIZATIONS.md`](docs/FORK_CUSTOMIZATIONS.md))*:
+- **Fluid Mobile Touch Gestures &amp; Fast Notebook Sync** *(detailed in [`docs/mobile-features.md`](docs/mobile-features.md))*:
   - **DrawerLayout Swipe Navigation**: Smooth gesture-driven notebook drawer with instant search, inline folder creation, single/all notebook sync (`Sync Notebook`), and Android back-gesture safety (`WorkspaceDrawer.tsx`).
   - **Metadata-First Lazy Sync**: Pulls lightweight notebook &amp; note metadata first and loads full note contents on demand for fast synchronization.
   - **Swipe Left Card Actions**: Swipe any note card left for one-tap **Star / Unstar** or **Delete** with Trash confirmation guard (`WorkspaceNotesView.tsx`).
@@ -48,9 +48,9 @@ Beyond core note-taking, migration, and AI agent capabilities, StillNote refines
 <a id="downloads"></a>
 ## 📦 Downloads (macOS DMG &amp; Android APK)
 
-### StillNote Releases (`CottonChou/stillnote`)
+### Official Releases
 
-Pre-built binaries with the **Editorial Flow UI**, **Pine Bookmark Icon**, and **mobile gesture &amp; sync enhancements** are published under [CottonChou/stillnote Releases](https://github.com/CottonChou/stillnote/releases/latest):
+Pre-built binaries across all supported platforms are published under [StillNote Releases](https://github.com/CottonChou/stillnote/releases/latest):
 
 | Platform | Architecture | Format | Notes |
 | :--- | :--- | :--- | :--- |
@@ -211,29 +211,3 @@ scripts           Icon generation, desktop/Android packaging & release utilities
 - **Repository**: [CottonChou/stillnote](https://github.com/CottonChou/stillnote) · [Issues](https://github.com/CottonChou/stillnote/issues) · [Telegram Group](https://t.me/+wwUx1BYLrIdiZjY1)
 - **Brand &amp; Releases**: StillNote source code and releases for this edition are maintained at [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote).
 - **Disclaimer**: StillNote is independent open-source software unrelated to Evernote Corporation or its affiliates. Self-hosted users and instance operators bear sole responsibility for stored data.
-
-## Contributors
-
-<!-- readme-contributors:start -->
-<p align="left">
-  <a href="https://github.com/tianma-if"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/5895871?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@tianma-if" /></a>
-  <a href="https://github.com/dkoryto"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/2572180?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@dkoryto" /></a>
-  <a href="https://github.com/sivdead"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/27731043?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@sivdead" /></a>
-  <a href="https://github.com/thorufur"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/55167?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@thorufur" /></a>
-  <a href="https://github.com/yulei666"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/7358439?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@yulei666" /></a>
-  <a href="https://github.com/arsaboo"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/18319734?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@arsaboo" /></a>
-  <a href="https://github.com/alyyasser"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/16476111?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@alyyasser" /></a>
-  <a href="https://github.com/MadlyFX"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/4896705?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@MadlyFX" /></a>
-  <a href="https://github.com/claude"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/81847?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@claude" /></a>
-  <a href="https://github.com/Crowszzz"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/75199133?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Crowszzz" /></a>
-  <a href="https://github.com/Shunamxiao"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/92215296?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Shunamxiao" /></a>
-  <a href="https://github.com/nzhdotme"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/9588882?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@nzhdotme" /></a>
-  <a href="https://github.com/mookim-eth"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/97934198?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@mookim-eth" /></a>
-  <a href="https://github.com/imgdown"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/348032096?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@imgdown" /></a>
-  <a href="https://github.com/X77seven"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/171017641?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@X77seven" /></a>
-  <a href="https://github.com/Sergmay911"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/304439776?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Sergmay911" /></a>
-  <a href="https://github.com/0xfelixli"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/81979996?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@0xfelixli" /></a>
-  <a href="https://github.com/Z-DDV"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/122068983?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@Z-DDV" /></a>
-  <a href="https://github.com/CottonChou"><img src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/17818375?v=4&h=96&w=96&fit=cover&mask=circle&maxage=7d" width="48" height="48" alt="@CottonChou" /></a>
-</p>
-<!-- readme-contributors:end -->

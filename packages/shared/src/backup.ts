@@ -8,7 +8,6 @@ import {
 import type { AiPromptTemplate, MemoDetail, Notebook, Resource } from "./types";
 
 export const STILLNOTE_ZIP_FORMAT = "stillnote-zip";
-export const LEGACY_EDGEEVER_ZIP_FORMAT = "edgeever-zip";
 export const STILLNOTE_ZIP_FORMAT_VERSION = 2;
 
 export type JsonBackupManifest = {

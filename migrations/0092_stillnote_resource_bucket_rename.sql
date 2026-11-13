@@ -1,10 +1,4 @@
--- Migrate resource bucket metadata from legacy edgeever-resources to stillnote-resources.
+-- Legacy resource bucket metadata rename statements were removed. StillNote no
+-- longer migrates documents created before the StillNote branding; this
+-- migration stays as a no-op so applied databases keep their recorded history.
 PRAGMA foreign_keys = ON;
-
-UPDATE resources
-SET bucket_name = 'stillnote-resources'
-WHERE bucket_name = 'edgeever-resources';
-
-UPDATE resource_uploads
-SET bucket_name = 'stillnote-resources'
-WHERE bucket_name = 'edgeever-resources';

@@ -35,8 +35,9 @@ CREATE UNIQUE INDEX idx_workspace_single_owner
 INSERT INTO workspaces (id, name, is_personal)
 VALUES ('ws_default', 'Personal workspace', 1);
 
--- Existing EdgeEver instances were single-user. Their first enabled user owns
--- the legacy workspace; if no user exists yet, the login bootstrap claims it.
+-- Existing single-user instances own one shared workspace. Their first enabled
+-- user owns the legacy workspace; if no user exists yet, the login bootstrap
+-- claims it.
 INSERT OR IGNORE INTO workspace_members (workspace_id, user_id, role)
 SELECT 'ws_default', id, 'owner'
 FROM users

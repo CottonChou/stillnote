@@ -26,10 +26,8 @@ const {
 } = await import("./desktop-resources.ts");
 
 describe("desktop resource URLs", () => {
-  test("maps remote and legacy resource URLs to the native cache protocol", () => {
+  test("maps remote resource URLs to the native cache protocol", () => {
     expect(toDesktopResourceUrl("/api/v1/resources/resource-1/blob")).toBe("stillnote-resource://resource/resource-1");
-    expect(toDesktopResourceUrl("edgeever-resource://resource/resource-2")).toBe("stillnote-resource://resource/resource-2");
-    expect(toDesktopResourceUrl("edgeever-staged://stage-2")).toBe("stillnote-staged://stage-2");
     expect(toDesktopResourceUrl("https://cdn.example.com/image.png")).toBe("https://cdn.example.com/image.png");
   });
 
@@ -48,7 +46,6 @@ describe("desktop resource URLs", () => {
 
   test("restores portable API URLs before a memo is saved", () => {
     expect(toApiResourceUrl("stillnote-resource://resource/resource-1")).toBe("/api/v1/resources/resource-1/blob");
-    expect(toApiResourceUrl("edgeever-resource://resource/resource-2")).toBe("/api/v1/resources/resource-2/blob");
     const mapped = mapTiptapResourceUrls({
       type: "doc",
       content: [{ type: "image", attrs: { src: "stillnote-resource://resource/resource-1" } }],

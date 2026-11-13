@@ -18,7 +18,6 @@ import { NEW_IMAGE_WIDTH_PERCENT, parseImageWidth } from "./image-display";
 import { IMAGE_GALLERY_NODE_TYPE, groupConsecutiveImagesIntoGalleries, normalizeImageGalleries, prepareImageListsForMarkdown } from "./image-gallery";
 import { EMPTY_EXTERNAL_LINK_NODE_TYPE } from "./empty-external-link";
 import { FRONT_MATTER_LANGUAGE, createFrontMatterNode, getFrontMatterSource, splitMarkdownFrontMatter } from "./front-matter";
-import { upgradeLegacyEdgeEverDoc, upgradeLegacyEdgeEverMarkdown } from "./legacy-content";
 import { splitMarkdownParseChunks } from "./markdown-block-start";
 import { createStillNoteMarked } from "./markdown-options";
 
@@ -79,12 +78,6 @@ export type TiptapDoc = {
   type: "doc";
   content: TiptapNode[];
 };
-
-export {
-  upgradeLegacyEdgeEverDoc,
-  upgradeLegacyEdgeEverMarkdown,
-  upgradeLegacyEdgeEverResourceUrl,
-} from "./legacy-content";
 
 export { DEFAULT_MEMO_TITLE, getMemoDisplayTitle } from "./memo-title";
 
@@ -159,7 +152,7 @@ const parseMarkdownBody = (markdown: string): TiptapNode[] => {
 };
 
 export const markdownToDoc = (markdown: string): TiptapDoc => {
-  const normalized = upgradeLegacyEdgeEverMarkdown(markdown.replace(/\r\n?/g, "\n"));
+  const normalized = markdown.replace(/\r\n?/g, "\n");
   if (!normalized) {
     return emptyDoc();
   }
@@ -208,8 +201,8 @@ export const resolveMemoContentDoc = (
   contentJson: TiptapDoc | null | undefined,
   contentMarkdown: string | null | undefined
 ): TiptapDoc => {
-  const normalizedJson = upgradeLegacyEdgeEverDoc(contentJson);
-  const normalizedMarkdown = upgradeLegacyEdgeEverMarkdown(contentMarkdown);
+  const normalizedJson = contentJson;
+  const normalizedMarkdown = contentMarkdown;
   const currentDoc = normalizedJson && Array.isArray(normalizedJson.content)
     ? upgradeMathCodeFences(normalizeImageGalleries(
         upgradeStandaloneFileLinks(upgradeStandalonePdfLinks(upgradeLegacyAttachmentLinks(normalizedJson))),

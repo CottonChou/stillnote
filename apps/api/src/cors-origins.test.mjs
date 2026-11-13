@@ -47,14 +47,6 @@ describe("API CORS origins", () => {
     }
   });
 
-  test("allows the legacy EdgeEver desktop renderer origin on credentialed API requests", async () => {
-    const response = await corsRequest("edgeever-app://app");
-
-    expect(response.status).toBe(200);
-    expect(response.headers.get("access-control-allow-origin")).toBe("edgeever-app://app");
-    expect(response.headers.get("access-control-allow-credentials")).toBe("true");
-  });
-
   test("does not reflect arbitrary website origins", async () => {
     const response = await corsRequest("https://evil.example");
 

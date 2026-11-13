@@ -20,8 +20,6 @@ import {
   assertWindowsUpdateSigningKey,
   signWindowsUpdateManifest,
 } from "./sign-windows-update-manifest.mjs";
-import { syncReadmeContributors } from "./sync-readme-contributors.mjs";
-
 const DEFAULT_REPOSITORY = "CottonChou/stillnote";
 const VERSION_BUMPS = new Set(["patch", "minor", "major"]);
 const POLL_INTERVAL_MS = 10_000;
@@ -49,7 +47,6 @@ export const RELEASE_VALIDATIONS = [
       "scripts/check-native-release-assets.test.mjs",
       "scripts/windows-update-metadata.test.mjs",
       "scripts/release.test.mjs",
-      "scripts/sync-readme-contributors.test.mjs",
       "scripts/validate-store-delivery.test.mjs",
       "scripts/store-delivery.test.mjs",
       "scripts/xcode-cloud-control.test.mjs",
@@ -599,8 +596,6 @@ export const updateIosProjectMarketingVersion = (contents, nextVersion) => {
 };
 
 const updateReleaseVersions = ({
-  repository = DEFAULT_REPOSITORY,
-  contributors = [],
   nextVersion,
   desktopRebuild,
   mobileRebuild,
@@ -619,21 +614,6 @@ const updateReleaseVersions = ({
     changesZh,
     localizedChanges,
   }));
-
-  try {
-    const { updatedFiles } = syncReadmeContributors({
-      repository,
-      extraLogins: contributors,
-    });
-    if (updatedFiles.length > 0) {
-      changedPaths.push(...updatedFiles);
-      console.log(`[release] synced README contributors (${updatedFiles.join(", ")})`);
-    }
-  } catch (error) {
-    console.warn(
-      `[release] skipping README contributor sync: ${error instanceof Error ? error.message : String(error)}`,
-    );
-  }
 
   if (desktopRebuild) {
     const desktopPackage = readJson("apps/desktop/package.json");
@@ -1611,8 +1591,6 @@ const releaseMain = async (options) => {
     console.log(`[release] created Issue #${issueNumber}: ${issueUrl}`);
 
     const versionPaths = updateReleaseVersions({
-      repository: options.repository,
-      contributors: options.contributors,
       nextVersion: releaseVersion,
       desktopRebuild: desktopPlan.rebuild,
       mobileRebuild: mobilePlan.rebuild,
