@@ -208,6 +208,6 @@ scripts           Icon generation, desktop/Android packaging & release utilities
 
 ## Community, Brand &amp; Legal
 
-- **Repository**: [CottonChou/stillnote](https://github.com/CottonChou/stillnote) · [Issues](https://github.com/CottonChou/stillnote/issues) · [Telegram Group](https://t.me/+wwUx1BYLrIdiZjY1)
+- **Repository**: [CottonChou/stillnote](https://github.com/CottonChou/stillnote) · [Issues](https://github.com/CottonChou/stillnote/issues)
 - **Brand &amp; Releases**: StillNote source code and releases for this edition are maintained at [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote).
 - **Disclaimer**: StillNote is independent open-source software unrelated to Evernote Corporation or its affiliates. Self-hosted users and instance operators bear sole responsibility for stored data.

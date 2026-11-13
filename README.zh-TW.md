@@ -168,11 +168,5 @@ bun run build:android:apk:local    # 本機打包簽章 Android arm64 APK
 ## 社群、品牌與免責聲明
 
 - **專案儲存庫與問題回報**：[`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) · [GitHub Issues](https://github.com/CottonChou/stillnote/issues)
-- **微信交流群**：掃描 QR Code 或新增微信 `m1245207870`（備註「StillNote 進群」）
-
-<p align="center">
-  <img src="assets/wechat-group-qr.jpg" alt="微信聯絡人 QR Code" width="220" />
-</p>
-
 - **品牌與發行**：本版本的 StillNote 原始碼與用戶端發行檔均維護於 [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote)。
 - **免責聲明**：StillNote 為獨立開源軟體，與 Evernote® 無商業關聯；自託管內容由執行個體營運者自行負責。

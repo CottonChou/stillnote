@@ -140,6 +140,6 @@ bun run build:android:apk:local    # Zbuduj podpisany APK Android arm64
 
 ## Społeczność, marka i zastrzeżenia
 
-- **Repozytorium**: [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) · [Issues](https://github.com/CottonChou/stillnote/issues) · [Telegram](https://t.me/+wwUx1BYLrIdiZjY1)
+- **Repozytorium**: [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) · [Issues](https://github.com/CottonChou/stillnote/issues)
 - **Marka i wydania**: Kod źródłowy oraz wydania StillNote dla tej edycji są utrzymywane w [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote).
 - **Zastrzeżenie**: Niezależne oprogramowanie open-source niezwiązane z Evernote Corporation. Operatorzy instancji odpowiadają za przechowywane treści.

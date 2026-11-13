@@ -143,6 +143,6 @@ bun run build:android:apk:local    # 本番署名済み Android arm64 APK をビ
 
 ## コミュニティ・ブランド・免責
 
-- **リポジトリ**: [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) · [Issues](https://github.com/CottonChou/stillnote/issues) · [Telegram](https://t.me/+wwUx1BYLrIdiZjY1)
+- **リポジトリ**: [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) · [Issues](https://github.com/CottonChou/stillnote/issues)
 - **ブランドとリリース**: 本リポジトリの StillNote ソースコードとリリースは [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) にて管理されています。
 - **免責事項**: 独立したオープンソースソフトウェアであり、Evernote Corporation とは無関係です。セルフホストされたデータの管理責任は各運用者に帰属します。

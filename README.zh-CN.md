@@ -207,11 +207,5 @@ scripts                 品牌图标生成、macOS / Android 打包与校验脚�
 ## 社区、品牌与免责声明
 
 - **项目仓库与反馈**：[`CottonChou/stillnote`](https://github.com/CottonChou/stillnote) · [GitHub Issues](https://github.com/CottonChou/stillnote/issues)
-- **微信交流群**：扫描二维码或添加微信 `m1245207870`（备注“StillNote 进群”）
-
-<p align="center">
-  <img src="assets/wechat-group-qr.jpg" alt="微信联系人二维码" width="220" />
-</p>
-
 - **品牌与发行声明**：StillNote 源码与客户端安装包均维护于 [`CottonChou/stillnote`](https://github.com/CottonChou/stillnote)。
 - **免责声明**：StillNote 为完全独立的开源软件，与 Evernote® 及其关联公司无任何隶属或合作关系；自托管实例的数据与合规责任由运营者自行承担。
