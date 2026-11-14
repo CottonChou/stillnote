@@ -42,7 +42,7 @@ export const MemoEditorHeaderActions = ({
       <DropdownMenu>
         <IconTooltip label={t("editor.more")}><DropdownMenuTrigger asChild>
           <Button
-            className={moreButtonClassName}
+            className={cn("h-8 w-8 text-slate-500 hover:text-slate-950 transition-colors", moreButtonClassName)}
             size="icon"
             variant="ghost"
             aria-label={t("editor.moreAria")}
@@ -52,7 +52,7 @@ export const MemoEditorHeaderActions = ({
         </DropdownMenuTrigger></IconTooltip>
         <DropdownMenuContent
           align="end"
-          className={cn("border border-slate-200 bg-card py-1 shadow-md", moreMenuClassName)}
+          className={cn("border border-[var(--workspace-divider)] bg-card/95 py-1.5 shadow-lg backdrop-blur-md rounded-lg", moreMenuClassName)}
         >
           {textNoteMenuItems}
           {onSearch ? (

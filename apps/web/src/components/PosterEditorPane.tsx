@@ -1474,7 +1474,7 @@ export default function PosterEditorPane({
   return (
     <div className="relative flex h-full min-h-0 min-w-0 bg-card" data-poster-workbench>
     <div ref={workbenchHost} className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col">
-      <header className="shrink-0 border-b border-slate-200 bg-card">
+      <header className="shrink-0 border-b border-[var(--workspace-divider)] bg-card">
         <div className={MEMO_EDITOR_TOP_ROW_CLASS_NAME}>
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 px-4 sm:flex-nowrap">
             <MemoEditorTopRowLeading

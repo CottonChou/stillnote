@@ -292,7 +292,6 @@ const MobileSelectionActionButton = ({
     className="flex h-12 flex-col items-center justify-center gap-1 rounded-md text-xs font-medium text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/70 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:text-slate-300 disabled:opacity-100 disabled:hover:bg-transparent"
     type="button"
     disabled={disabled}
-    title={title}
     aria-label={title}
     onClick={onClick}
   >
@@ -1070,7 +1069,6 @@ export const MemoListPane = ({
             <button
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
               type="button"
-              title={t("memoList.clearSelection")}
               aria-label={t("memoList.clearSelection")}
               onClick={onClearSelection}
             >
@@ -1083,7 +1081,6 @@ export const MemoListPane = ({
             <button
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
               type="button"
-              title={t("memoList.cancelSearch")}
               aria-label={t("memoList.cancelSearch")}
               onClick={onCancelMobileSearch}
             >
@@ -1131,7 +1128,6 @@ export const MemoListPane = ({
                 <button
                   className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
                   type="button"
-                  title={t("memoList.clearSearch")}
                   aria-label={t("memoList.clearSearch")}
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={handleClearSearch}
@@ -1157,7 +1153,6 @@ export const MemoListPane = ({
                 <button
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
                   type="button"
-                  title={t("notebookPane.backToList")}
                   aria-label={t("notebookPane.backToList")}
                   onClick={view === "trash" ? onBackFromTrash : onClearTag}
                 >
@@ -1167,7 +1162,6 @@ export const MemoListPane = ({
               <button
                 className="flex min-w-0 items-center gap-1 rounded-md px-1 py-1 text-left transition hover:bg-slate-100 lg:hidden"
                 type="button"
-                title={t("memoList.switchNotebook")}
                 aria-label={t("memoList.switchNotebook")}
                 onClick={onOpenNotebookPicker}
               >
@@ -1178,7 +1172,6 @@ export const MemoListPane = ({
             <button
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
               type="button"
-              title={selectionMode ? t("memoList.bulkActions") : t("memoList.listOptions")}
               aria-label={selectionMode ? t("memoList.bulkActions") : t("memoList.listOptions")}
               aria-expanded={selectionMode ? mobileMoreOpen : mobileListActionsOpen}
               onClick={() => {
@@ -1272,16 +1265,22 @@ export const MemoListPane = ({
               placeholder={t("memoList.searchPlaceholder")}
             />
             {search && (
-              <button
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-card hover:text-slate-700"
-                type="button"
-                title={t("memoList.clearSearch")}
-                aria-label={t("memoList.clearSearch")}
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={handleClearSearch}
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
+              <TooltipProvider delayDuration={0} skipDelayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-card hover:text-slate-700"
+                      type="button"
+                      aria-label={t("memoList.clearSearch")}
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={handleClearSearch}
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">{t("memoList.clearSearch")}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
           <DropdownMenu>
@@ -1409,7 +1408,6 @@ export const MemoListPane = ({
                     : "border-slate-200 bg-card text-slate-500 hover:bg-slate-50 hover:text-slate-800"
                 )}
                 type="button"
-                title={filterMode === option.value ? t("memoList.toggleOffFilter", { label: option.label }) : option.label}
                 aria-label={filterMode === option.value ? t("memoList.toggleOffFilter", { label: option.label }) : option.label}
                 aria-pressed={filterMode === option.value}
                 onClick={() => handleFilterModeChange(toggleMobileMemoFilterMode(filterMode, option.value))}
@@ -1474,11 +1472,14 @@ export const MemoListPane = ({
             </Button>
           </div>
         ) : memos.length === 0 ? (
-          <div className="rounded-md border border-dashed border-slate-300 bg-card px-4 py-9 text-center">
+          <div className="mx-auto my-6 max-w-sm rounded-xl border border-[var(--workspace-divider)] bg-[var(--workspace-editor)]/40 p-6 text-center shadow-xs backdrop-blur-xs">
+            <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-slate-100/80 text-slate-400">
+              <FileIcon className="h-5 w-5 stroke-[1.5]" />
+            </div>
             <div className="text-sm font-semibold text-slate-800">
               {memos.length === 0 ? (view === "trash" ? t("memoList.trashEmptyTitle") : t("memoList.emptyTitle")) : t("memoList.noFilteredTitle")}
             </div>
-            <div className="mx-auto mt-2 max-w-[260px] text-xs leading-5 text-slate-500">
+            <div className="mx-auto mt-1.5 max-w-[260px] text-xs leading-relaxed text-slate-500">
               {memos.length === 0
                 ? view === "trash"
                   ? t("memoList.trashEmptyDescription")
@@ -1486,7 +1487,7 @@ export const MemoListPane = ({
                 : t("memoList.noFilteredDescription")}
             </div>
             {memos.length === 0 && canCreateMemo && view !== "trash" && (
-              <Button className="mt-4 justify-center" size="sm" variant="solid" onClick={() => onCreateMemo()} disabled={isCreating}>
+              <Button className="mt-4 justify-center shadow-xs" size="sm" variant="solid" onClick={() => onCreateMemo()} disabled={isCreating}>
                 <FilePlus2 className="h-4 w-4" />
                 {t("memoList.newMemo")}
               </Button>

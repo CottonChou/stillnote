@@ -2,6 +2,7 @@ import { Node, mergeAttributes } from "@tiptap/core";
 import { NodeViewContent, NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
 import { Lightbulb, MessageCircle, PanelTop, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const THEME_BLOCK_KINDS = ["intro", "key-point", "callout", "chapter"] as const;
 export type ThemeBlockKind = (typeof THEME_BLOCK_KINDS)[number];
@@ -29,16 +30,24 @@ const ThemeBlockView = ({ node, deleteNode, selected }: NodeViewProps) => {
           <Icon aria-hidden="true" className="h-3.5 w-3.5" />
           {t(`editorToolbar.themeBlocks.${kind}`)}
         </span>
-        <button
-          type="button"
-          className="stillnote-theme-block__delete"
-          aria-label={t("editorToolbar.deleteThemeBlock")}
-          title={t("editorToolbar.deleteThemeBlock")}
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={deleteNode}
-        >
-          <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
-        </button>
+        <TooltipProvider delayDuration={0} skipDelayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                className="stillnote-theme-block__delete"
+                aria-label={t("editorToolbar.deleteThemeBlock")}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={deleteNode}
+              >
+                <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              {t("editorToolbar.deleteThemeBlock")}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       <NodeViewContent className="stillnote-theme-block__content" />
     </NodeViewWrapper>

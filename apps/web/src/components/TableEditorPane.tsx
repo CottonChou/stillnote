@@ -847,7 +847,7 @@ export const TableEditorPane = ({
   return (
     <div className="relative flex h-full min-h-0 min-w-0 bg-card">
     <div className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col">
-      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 px-3 py-2">
+      <div className="flex flex-wrap items-center gap-2 border-b border-[var(--workspace-divider)] px-3 py-2">
         <MemoListExpandButton className="shrink-0" />
         <Tooltip>
           <TooltipTrigger asChild>

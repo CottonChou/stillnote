@@ -765,7 +765,7 @@ function InfographicEditorSession({
     }}
   >
     <div className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col">
-    <header className="shrink-0 border-b border-slate-200 bg-card">
+    <header className="shrink-0 border-b border-[var(--workspace-divider)] bg-card">
       <div className={cn(MEMO_EDITOR_TOP_ROW_CLASS_NAME, "border-b-0")}>
         <div ref={setHeaderTitleSlot} className="min-w-0 w-full" style={titleStatusClearancePx > 0 ? { paddingRight: titleStatusClearancePx } : undefined}>
           <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 px-4 sm:flex-nowrap">

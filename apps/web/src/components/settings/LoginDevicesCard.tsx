@@ -3,6 +3,7 @@ import { Check, Laptop, MonitorSmartphone, Pencil, Smartphone, Tablet, Trash2, X
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   SETTINGS_CARD_HEADER_CLASSNAME,
@@ -167,7 +168,20 @@ export const LoginDevicesCard = ({ authRequired, isLoggingOut, onLogout }: Login
                           </span>
                         ) : null}
                       </div>
-                      <p className="mt-0.5 truncate text-xs text-slate-500" title={session.userAgent ?? undefined}>{details}</p>
+                      {session.userAgent ? (
+                        <TooltipProvider delayDuration={300} skipDelayDuration={0}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <p className="mt-0.5 truncate text-xs text-slate-500 cursor-help">{details}</p>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" className="max-w-xs break-all text-xs">
+                              {session.userAgent}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        <p className="mt-0.5 truncate text-xs text-slate-500">{details}</p>
+                      )}
                       {location ? <p className="mt-0.5 truncate text-xs text-slate-500">{t("loginDevices.location", { location })}</p> : null}
                       <p className="mt-1 text-xs text-slate-500">
                         {t("loginDevices.lastSeen", { time: formatSessionTime(session.lastSeenAt, locale) })}

@@ -294,7 +294,7 @@ export const DiagramToolbar = ({
   const resolvedTheme = themeCatalog === "flowchart" ? resolveFlowchartTheme(theme) : resolveDiagramTheme(theme);
   const themeLabel = t(`diagram.theme${resolvedTheme.charAt(0).toUpperCase()}${resolvedTheme.slice(1)}` as "diagram.themeBrand");
   return (
-    <MemoEditorToolbarRow className="shrink-0 border-b border-slate-200 bg-card" role="toolbar" aria-label={t("diagram.toolbar")}>
+    <MemoEditorToolbarRow className="shrink-0 border-b border-[var(--workspace-divider)] bg-card" role="toolbar" aria-label={t("diagram.toolbar")}>
       {outlineView ? (
         <Tooltip>
           <TooltipTrigger asChild>

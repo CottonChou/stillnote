@@ -137,7 +137,6 @@ export const MobileEditorToolbar = ({
             className="mobile-editor-tool-button"
             type="button"
             aria-label={label}
-            title={label}
             aria-pressed={activeStates[id]}
             disabled={disabled
               || (id === "undo" && !undoAvailable)

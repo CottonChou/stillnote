@@ -239,7 +239,6 @@ export const MobileNotebookPicker = ({
               <button
                 className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-card hover:text-slate-700"
                 type="button"
-                title={t("mobileNotebookPicker.clearSearch")}
                 aria-label={t("mobileNotebookPicker.clearSearch")}
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => setNotebookSearch("")}

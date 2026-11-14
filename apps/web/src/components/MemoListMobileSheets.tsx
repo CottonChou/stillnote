@@ -321,7 +321,7 @@ export const MobileSelectionMoreSheet = ({
         className="flex h-12 w-full items-center gap-3 border-b border-slate-100 px-4 text-left text-sm font-medium text-slate-800 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-slate-300 disabled:opacity-100 disabled:hover:bg-transparent"
         type="button"
         disabled={!canToggleVisibleSelection}
-        title={selectionToggleTitle}
+        aria-label={selectionToggleTitle}
         onClick={onToggleVisibleSelection}
       >
         <CheckSquare className="h-4 w-4" />
@@ -331,7 +331,7 @@ export const MobileSelectionMoreSheet = ({
         className="flex h-12 w-full items-center gap-3 border-b border-slate-100 px-4 text-left text-sm font-medium text-slate-800 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-slate-300 disabled:opacity-100 disabled:hover:bg-transparent"
         type="button"
         disabled={!canMerge}
-        title={mergeTitle}
+        aria-label={mergeTitle}
         onClick={onMerge}
       >
         <Merge className="h-4 w-4" />
@@ -341,7 +341,7 @@ export const MobileSelectionMoreSheet = ({
         className="flex h-12 w-full items-center gap-3 border-b border-slate-100 px-4 text-left text-sm font-medium text-slate-800 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-slate-300 disabled:opacity-100 disabled:hover:bg-transparent"
         type="button"
         disabled={!canPin}
-        title={pinTitle}
+        aria-label={pinTitle}
         onClick={onPin}
       >
         <Star className="h-4 w-4" />
@@ -367,7 +367,6 @@ export const MobileSelectionMoreSheet = ({
       <button
         className="flex h-12 w-full items-center gap-3 px-4 text-left text-sm font-medium text-slate-800 transition hover:bg-slate-50"
         type="button"
-        title={t("mobileSheets.clearSelection")}
         aria-label={t("mobileSheets.clearSelection")}
         onClick={onClearSelection}
       >

@@ -84,7 +84,8 @@ export const MemoCard = ({
   const longPressTimerRef = useRef<number | null>(null);
   const longPressPointRef = useRef<{ x: number; y: number } | null>(null);
   const [modifierHoverActive, setModifierHoverActive] = useState(false);
-  const memoTitle = memo.title?.trim() && !isDefaultMemoTitle(memo.title) ? memo.title.trim() : t("common.untitledMemo");
+  const isUntitled = !memo.title?.trim() || isDefaultMemoTitle(memo.title);
+  const memoTitle = !isUntitled && memo.title ? memo.title.trim() : t("common.untitledMemo");
   const memoExcerpt = memo.excerpt.trim() || t("memoCard.emptyMemo");
   const diagramLabel = memo.diagramKind
     ? t(`diagram.${memo.diagramKind === "mind-map" ? "mindMap" : memo.diagramKind}`)
@@ -390,11 +391,11 @@ export const MemoCard = ({
         >
           <div className={cn("mb-1.5 flex min-w-0 items-center gap-1.5 text-[15px] font-semibold tracking-[-0.015em] leading-snug text-slate-950", listDensity === "compact" && "mb-0.5 text-[14px]")}>
             {memo.isPinned && <Star className="h-3.5 w-3.5 shrink-0 fill-amber-400 text-amber-500" />}
-            <span className="min-w-0 truncate">{memoTitle}</span>
+            <span className={cn("min-w-0 truncate", isUntitled && "font-normal italic text-slate-400")}>{memoTitle}</span>
           </div>
           {diagramLabel ? (
             <div className="space-y-1.5">
-              <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
+              <div className="inline-flex items-center gap-1.5 rounded border border-[var(--workspace-divider)]/80 bg-slate-50/70 px-1.5 py-0.5 text-xs text-slate-600">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className="inline-flex shrink-0 items-center text-slate-500">
@@ -403,26 +404,32 @@ export const MemoCard = ({
                   </TooltipTrigger>
                   <TooltipContent>{diagramLabel}</TooltipContent>
                 </Tooltip>
+                <span className="font-medium">{diagramLabel}</span>
                 {memo.diagramPreview ? (
-                  <span>{t("diagram.listCounts", { nodes: memo.diagramPreview.nodeCount, edges: memo.diagramPreview.edgeCount })}</span>
-                ) : (
-                  <span>{diagramLabel}</span>
-                )}
+                  <span className="text-slate-400">· {t("diagram.listCounts", { nodes: memo.diagramPreview.nodeCount, edges: memo.diagramPreview.edgeCount })}</span>
+                ) : null}
               </div>
               {listDensity !== "compact" && memo.diagramPreview?.labels.length ? (
-                <div className="line-clamp-2 text-xs leading-relaxed text-slate-600">{memo.diagramPreview.labels.join(" · ")}</div>
+                <div className="line-clamp-2 text-xs leading-relaxed text-slate-500">{memo.diagramPreview.labels.join(" · ")}</div>
               ) : null}
             </div>
           ) : memo.poster ? (
-            <div className="flex items-center gap-1.5 text-xs text-slate-500"><FileText className="h-3.5 w-3.5" aria-hidden="true" /><span>{t("poster.name")}</span></div>
+            <div className="flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-1 rounded border border-[var(--workspace-divider)]/80 bg-slate-50/70 px-1.5 py-0.5 text-xs text-slate-600">
+                <FileText className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" />
+                <span className="font-medium">{t("poster.name")}</span>
+              </span>
+            </div>
           ) : memo.infographic ? (
-            <div className="flex items-center text-xs text-slate-500">
-              <PieChart className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              <span className="sr-only">{t("infographic.name")}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-1 rounded border border-[var(--workspace-divider)]/80 bg-slate-50/70 px-1.5 py-0.5 text-xs text-slate-600">
+                <PieChart className="h-3.5 w-3.5 shrink-0 text-slate-500" aria-hidden="true" />
+                <span className="font-medium">{t("infographic.name")}</span>
+              </span>
             </div>
           ) : tableLabel ? (
             <div className="space-y-1.5">
-              <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
+              <div className="inline-flex items-center gap-1.5 rounded border border-[var(--workspace-divider)]/80 bg-slate-50/70 px-1.5 py-0.5 text-xs text-slate-600">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className="inline-flex shrink-0 items-center text-slate-500">
@@ -431,20 +438,19 @@ export const MemoCard = ({
                   </TooltipTrigger>
                   <TooltipContent>{tableLabel}</TooltipContent>
                 </Tooltip>
+                <span className="font-medium">{tableLabel}</span>
                 {memo.tablePreview ? (
-                  <span>{t("structuredTable.listCounts", { records: memo.tablePreview.recordCount, fields: memo.tablePreview.fieldCount })}</span>
-                ) : (
-                  <span>{tableLabel}</span>
-                )}
+                  <span className="text-slate-400">· {t("structuredTable.listCounts", { records: memo.tablePreview.recordCount, fields: memo.tablePreview.fieldCount })}</span>
+                ) : null}
               </div>
               {listDensity !== "compact" && memo.tablePreview?.fieldNames.length ? (
-                <div className="line-clamp-2 text-xs leading-relaxed text-slate-600">{memo.tablePreview.fieldNames.join(" · ")}</div>
+                <div className="line-clamp-2 text-xs leading-relaxed text-slate-500">{memo.tablePreview.fieldNames.join(" · ")}</div>
               ) : null}
             </div>
           ) : (
             <div
               className={cn(
-                "line-clamp-2 min-h-10 text-xs leading-relaxed text-slate-600",
+                "line-clamp-2 min-h-10 text-xs leading-relaxed text-slate-500",
                 listDensity === "compact" && "line-clamp-1 min-h-0"
               )}
             >
@@ -452,7 +458,7 @@ export const MemoCard = ({
             </div>
           )}
           <div className={cn("mt-3 flex flex-wrap items-center gap-1.5", listDensity === "compact" && "mt-1.5")}>
-            <time className="text-xs font-normal tabular-nums text-slate-500" dateTime={listTimestamp.value}>
+            <time className="text-xs font-normal tabular-nums text-slate-400" dateTime={listTimestamp.value}>
               {listTimestamp.field === "createdAt"
                 ? t("memoCard.createdAt", { time: listTimestampLabel })
                 : listTimestampLabel}
@@ -460,7 +466,7 @@ export const MemoCard = ({
             {memo.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="rounded border border-[var(--workspace-divider)] px-1.5 py-0.5 text-xs leading-none tracking-tight text-slate-500"
+                className="rounded-md border border-[var(--workspace-divider)]/70 bg-card/60 px-1.5 py-0.5 text-[11px] leading-none tracking-tight text-slate-500"
               >
                 #{tag}
               </span>

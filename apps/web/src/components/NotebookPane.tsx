@@ -772,17 +772,29 @@ export const NotebookPane = ({
       </header>
 
       <TooltipProvider delayDuration={0} skipDelayDuration={0}>
-        <nav className="grid shrink-0 grid-cols-2 gap-0.5 border-b border-[var(--workspace-divider)] px-2 py-1.5 sm:grid-cols-3 lg:grid-cols-5" aria-label={t("notebookPane.secondaryEntries")}>
-          <SidebarShortcutButton icon={<Tag className="h-4 w-4" />} label={t("mobileSheets.tags")} onClick={onOpenTags} />
-          <SidebarShortcutButton icon={<Paperclip className="h-4 w-4" />} label={t("mobileSheets.assets")} onClick={onOpenAssets} />
-          {showTemplateEntry && <SidebarShortcutButton icon={<LayoutTemplate className="h-4 w-4" />} label={t("nav.templates")} onClick={onOpenTemplates} />}
-          <PluginToolbarMenu
-            host={pluginHost}
-            onManage={onOpenPluginManager}
-            align="start"
-            className="h-9 w-full rounded-md px-0 text-slate-600 hover:bg-slate-50 hover:text-slate-950"
-          />
-          <SidebarTrashShortcut active={view === "trash"} onOpenTrash={onOpenTrash} onEmptyTrash={onEmptyTrash} />
+        <nav className="flex shrink-0 items-center justify-between gap-1 border-b border-[var(--workspace-divider)] px-2 py-1.5" aria-label={t("notebookPane.secondaryEntries")}>
+          <div className="min-w-0 flex-1">
+            <SidebarShortcutButton icon={<Tag className="h-4 w-4" />} label={t("mobileSheets.tags")} onClick={onOpenTags} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <SidebarShortcutButton icon={<Paperclip className="h-4 w-4" />} label={t("mobileSheets.assets")} onClick={onOpenAssets} />
+          </div>
+          {showTemplateEntry && (
+            <div className="min-w-0 flex-1">
+              <SidebarShortcutButton icon={<LayoutTemplate className="h-4 w-4" />} label={t("nav.templates")} onClick={onOpenTemplates} />
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <PluginToolbarMenu
+              host={pluginHost}
+              onManage={onOpenPluginManager}
+              align="start"
+              className="h-9 w-full rounded-md px-0 text-slate-600 hover:bg-slate-50 hover:text-slate-950"
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <SidebarTrashShortcut active={view === "trash"} onOpenTrash={onOpenTrash} onEmptyTrash={onEmptyTrash} />
+          </div>
         </nav>
       </TooltipProvider>
 
@@ -808,7 +820,7 @@ export const NotebookPane = ({
             onClick={() => onCreateMemo()}
             disabled={!canCreateMemo || isCreatingMemo}
           >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white transition-transform duration-150 group-hover:scale-[1.03] group-focus-visible:ring-2 group-focus-visible:ring-slate-900/20 group-focus-visible:ring-offset-2">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform duration-150 group-hover:scale-[1.03] group-focus-visible:ring-2 group-focus-visible:ring-slate-900/20 group-focus-visible:ring-offset-2">
               <Plus className="h-4 w-4" />
             </span>
             <span className="whitespace-nowrap text-sm font-semibold text-slate-950">{t("notebookPane.newMemo")}</span>
@@ -883,15 +895,23 @@ export const NotebookPane = ({
             toggleLabel={t(notebookSectionCollapsed ? "notebookPane.expandNotebooks" : "notebookPane.collapseNotebooks")}
           />
           <div className="flex items-center gap-1 opacity-100 transition-opacity duration-200 lg:opacity-0 lg:group-hover:opacity-100 lg:group-focus-within:opacity-100">
-            <button
-              className="flex h-6 w-6 items-center justify-center rounded-md text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/70"
-              type="button"
-              title={t("notebookPane.newNotebook")}
-              aria-label={t("notebookPane.newNotebook")}
-              onClick={handleCreateRootNotebook}
-            >
-              <BookPlus className="h-3.5 w-3.5" />
-            </button>
+            <TooltipProvider delayDuration={0} skipDelayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    className="flex h-6 w-6 items-center justify-center rounded-md text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/70"
+                    type="button"
+                    aria-label={t("notebookPane.newNotebook")}
+                    onClick={handleCreateRootNotebook}
+                  >
+                    <BookPlus className="h-3.5 w-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  {t("notebookPane.newNotebook")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <DropdownMenu>
               <TooltipProvider delayDuration={0} skipDelayDuration={0}>
                 <Tooltip>
