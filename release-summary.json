@@ -1,20 +1,17 @@
 {
-  "version": "2.18.0",
+  "version": "2.18.1",
   "changes": {
     "en-US": [
-      "Add desktop collapse and expand controls (with keyboard shortcut Cmd/Ctrl+Shift+\\) for the note list column, plus restore buttons across editor headers.",
-      "Normalize multi-image gallery notes and structured content to StillNote formats via database migration and read-time compatibility so multi-image notes render reliably.",
-      "Adjust macOS desktop application icon framing and drop shadow to match native Dock app icon proportions."
+      "Polish workspace navigation, note card typography hierarchy, empty states, and global tooltip accessibility.",
+      "Unify canvas dividers and primary action accent tokens for a cohesive editorial experience across light and dark modes."
     ],
     "zh-CN": [
-      "为桌面端新增笔记列表折叠与展开功能（支持快捷键 ⌘/Ctrl+Shift+\\，并在各编辑器顶部与空状态页提供一键展开入口）。",
-      "将历史多图画廊与结构化笔记数据统一迁移为 StillNote 格式，修复小红书等多图笔记无法渲染的问题。",
-      "优化 macOS 桌面端应用图标留白与阴影比例，使其在 Dock 栏中与其他应用尺寸保持一致。"
+      "优化工作区导航栏、卡片排版、空状态与全局 Tooltip 无障碍体验。",
+      "收敛全站画布分割线与主操作品牌强调色，暗黑与明亮模式表现更纯粹统一。"
     ],
     "ja": [
-      "デスクトップ版にノート一覧の折りたたみ・展開機能（ショートカット Cmd/Ctrl+Shift+\\ およびエディタヘッダーからの再展開ボタン）を追加しました。",
-      "複数画像ギャラリーや構造化ノートのデータを StillNote 形式へ統一マイグレーションし、複数画像ノートが正しく表示されない問題を修正しました。",
-      "macOS デスクトップ版のアプリアイコンの余白とシャドウを調整し、Dock 上で他アプリと同じサイズ感になるようにしました。"
+      "ワークスペースナビゲーション、ノートカードの階層構造、空状態、およびツールチップのアクセシビリティを改善しました。",
+      "キャンバスの区切り線とプライマリアクションのアクセンカラーを統一し、ライト・ダークモードの両方でより洗练された外観にしました。"
     ]
   }
 }
