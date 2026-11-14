@@ -37,7 +37,7 @@ test("keeps the desktop sync status bar and sidebar chrome compact without shrin
   expect(source).toContain('className="px-3 pt-1.5"');
   expect(source).toContain('className="hidden shrink-0 px-3 pb-2 pt-2 lg:block"');
   expect(source).toContain('className="group flex h-12 max-w-[calc(100%-2.25rem)]');
-  expect(source).toContain("mb-1 hidden h-8 w-full items-center justify-start gap-2");
+  expect(source).not.toContain('t("templates.useTemplate")');
   expect(source).toContain('className="mb-1 space-y-1"');
   expect(source).not.toContain("mb-3 hidden h-8 w-full");
   expect(source).not.toContain('className="mb-3 space-y-1"');
@@ -61,7 +61,7 @@ test("lists diagram note types in the create menu without beta badges", () => {
 
 describe("NotebookPane sidebar collapse", () => {
   test("places a desktop-only collapse control in the footer and keeps an expand control when collapsed", () => {
-    const expandedFooter = source.split('pwa.sidebarDownloadsTitle')[1]?.split(") : (")[0] ?? source;
+    const expandedFooter = source.split('stillnote-workspace-sidebar-footer')[1]?.split(") : (")[0] ?? source;
     const profileRow = expandedFooter.split('aria-label={t("notebookPane.profile")}')[1]?.split("</div>")[0];
 
     expect(source).toContain("SidebarCollapseButton");
@@ -134,36 +134,12 @@ describe("NotebookPane tree expansion persistence", () => {
   });
 });
 
-describe("NotebookPane client downloads", () => {
-  test("keeps macOS, Windows, and Linux downloads visible in the desktop runtime", () => {
-    expect(source).toContain('t("pwa.sidebarMac") || "macOS"');
-    expect(source).toContain('t("pwa.sidebarWindows") || "Windows"');
-    expect(source).toContain('t("pwa.sidebarLinux") || "Linux"');
-    expect(source).not.toContain("!window.stillnoteDesktop?.isAvailable");
-  });
-
-  test("labels Windows and Linux by package format instead of a preview badge", () => {
-    const downloads = source.split('pwa.sidebarDownloadsTitle')[1]?.split("</DropdownMenu>")[0];
-
-    expect(downloads).toContain(">AppImage</span>");
-    expect(downloads).toContain(">EXE</span>");
-    expect(downloads).toContain('t("pwa.sidebarLinuxAvailability")');
-    expect(downloads).toContain('t("pwa.sidebarWindowsAvailability")');
-    expect(downloads).toContain("<Tooltip>");
-    expect(downloads).not.toContain("sidebarLinuxBadge");
-    expect(downloads).not.toContain("sidebarWindowsBadge");
-    expect(downloads).not.toContain('|| "Preview"');
-    expect(downloads).not.toContain("bg-amber-50");
-  });
-
-  test("renders platform icons inline so desktop protocols do not break them", () => {
-    expect(source).toContain("<BrandIcon path={APPLE_ICON_PATH}");
-    expect(source).toContain("<BrandIcon path={WINDOWS_ICON_PATH}");
-    expect(source).toContain('<BrandIcon path={LINUX_ICON_PATH} className="h-4 w-4"');
-    expect(source).toContain("<GooglePlayIcon />");
-    expect(source).toContain("<AppStoreIcon />");
-    expect(source).toContain("<ChromeIcon />");
-    expect(source).not.toContain('src="/icons/platforms/');
+describe("NotebookPane sidebar cleanliness", () => {
+  test("removes redundant template button and download client menu from the sidebar", () => {
+    expect(source).not.toContain('t("templates.useTemplate")');
+    expect(source).not.toContain('pwa.sidebarDownloads');
+    expect(source).not.toContain('pwa.sidebarDownloadsTitle');
+    expect(source).not.toContain("<BrandIcon");
   });
 });
 
