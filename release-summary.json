@@ -1,17 +1,17 @@
 {
-  "version": "2.18.1",
+  "version": "2.18.2",
   "changes": {
     "en-US": [
-      "Polish workspace navigation, note card typography hierarchy, empty states, and global tooltip accessibility.",
-      "Unify canvas dividers and primary action accent tokens for a cohesive editorial experience across light and dark modes."
+      "Improve Android local-first persistence, gesture responsiveness, list virtualization, and date formatting performance.",
+      "Optimize Mac desktop and Web performance with on-demand editor dialog code-splitting, card render memoization, and throttled background polling."
     ],
     "zh-CN": [
-      "优化工作区导航栏、卡片排版、空状态与全局 Tooltip 无障碍体验。",
-      "收敛全站画布分割线与主操作品牌强调色，暗黑与明亮模式表现更纯粹统一。"
+      "重构 Android 端本地优先持久化与即时保存，优化左滑手势、长列表裁剪与日期格式化性能，修复深色模式按钮与分割线样式。",
+      "优化 Mac 桌面端与 Web 性能：重型弹窗按需代码分包（编辑器首包体积缩减 42%）、卡片精准增量渲染与 macOS 后台轮询能耗优化。"
     ],
     "ja": [
-      "ワークスペースナビゲーション、ノートカードの階層構造、空状態、およびツールチップのアクセシビリティを改善しました。",
-      "キャンバスの区切り線とプライマリアクションのアクセンカラーを統一し、ライト・ダークモードの両方でより洗练された外観にしました。"
+      "Androidのローカルファースト永続化、スワイプジェスチャー、リスト仮想化、および日付フォーマットのパフォーマンスを改善しました。",
+      "MacデスクトップおよびWeb向けにエディタダイアログの遅延読み込み、メモカードの再描画最適化、およびバックグラウンド処理の省電力化を実施しました。"
     ]
   }
 }
