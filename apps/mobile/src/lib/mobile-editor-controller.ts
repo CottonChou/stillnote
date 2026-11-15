@@ -8,7 +8,7 @@ type FlushResolverRef = MutableRefObject<(() => void) | null>;
 export const flushMobileEditor = async (
   editorRef: EditorRef,
   resolverRef: FlushResolverRef,
-  timeoutMs = 1000,
+  timeoutMs = 300,
 ) => {
   if (!editorRef.current) return;
 

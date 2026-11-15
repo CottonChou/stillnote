@@ -502,7 +502,7 @@ export const WorkspaceScreen = ({
     ]);
   };
 
-  const handleMemoPress = (memoId: string) => {
+  const handleMemoPress = useCallback((memoId: string) => {
     if (selectionMode) {
       toggleSelectedMemo(memoId);
       return;
@@ -510,7 +510,12 @@ export const WorkspaceScreen = ({
 
     setImageShareFromList(false);
     setSelectedMemoId(memoId);
-  };
+  }, [selectionMode, toggleSelectedMemo]);
+
+  const handleMemoLongPress = useCallback((memo: MemoSummary) => {
+    Vibration.vibrate(8);
+    selectSingleMemo(memo.id);
+  }, [selectSingleMemo]);
 
   const showAllNotes = () => {
     setActiveView("notes");
@@ -944,38 +949,16 @@ export const WorkspaceScreen = ({
     ]);
   };
 
-  const updateMemoMutation = useMutation({
-    mutationFn: async ({ memo, payload }: { memo: MemoDetail; payload: MobileMemoUpdatePayload }) => {
-      if (!client) {
-        throw new Error("Client is not ready");
-      }
-
-      const editSessionResponse = payload.contentMarkdown !== undefined
-        ? await client.createMemoEditSession(memo.id)
-        : null;
-      const response = await client.updateMemo(memo.id, {
-        expectedRevision: memo.revision,
-        ...(editSessionResponse
-          ? {
-              expectedContentHash: memo.contentHash,
-              editSessionId: editSessionResponse.editSession.id,
-            }
-          : {}),
-        ...payload,
-      });
-
-      return response.memo;
-    },
-    onSuccess: async (memo) => {
-      await invalidateWorkspace();
-      queryClient.setQueryData(["mobile", "memo", memoView, memo.id], { memo });
-    },
-  });
-
   const localUpdateMemoMutation = useMutation({
     mutationFn: async ({ memo, payload }: { memo: MemoDetail; payload: MobileMemoUpdatePayload }) => {
       const syncBaseMemo = await resolveLocalMemo(dataScope, memo.id) ?? memo;
       const optimisticMemo = createOptimisticMemo(syncBaseMemo, payload);
+
+      // 1. Immediately persist to local SQLite and React Query cache (<10ms)
+      await upsertLocalMemo(dataScope, optimisticMemo);
+      applyOptimisticMemoToCache(queryClient, memo, optimisticMemo);
+
+      // 2. Queue for durable background synchronization
       const queuePayload = {
         memoId: syncBaseMemo.id,
         expectedRevision: syncBaseMemo.revision,
@@ -986,67 +969,17 @@ export const WorkspaceScreen = ({
         tags: optimisticMemo.tags,
       };
 
-      // Online-first: push immediately when the instance is reachable so common
-      // edits never sit in "待同步". Fall back to the durable outbox only when
-      // the network or server cannot accept the write right now.
-      if (client && !syncBaseMemo.id.startsWith("local:")) {
-        try {
-          const editSessionResponse = payload.contentMarkdown !== undefined
-            ? await client.createMemoEditSession(syncBaseMemo.id)
-            : null;
-
-          if (
-            editSessionResponse
-            && (
-              editSessionResponse.editSession.baseRevision !== syncBaseMemo.revision
-              || editSessionResponse.editSession.baseContentHash !== syncBaseMemo.contentHash
-            )
-          ) {
-            throw new ApiRequestError("Note changed before the offline draft could sync.", 409, "revision_conflict");
-          }
-
-          const response = await client.updateMemo(syncBaseMemo.id, {
-            expectedRevision: syncBaseMemo.revision,
-            ...(editSessionResponse
-              ? {
-                  expectedContentHash: syncBaseMemo.contentHash,
-                  editSessionId: editSessionResponse.editSession.id,
-                }
-              : {}),
-            ...payload,
-          });
-
-          await clearMobileMemoUpdateQueueItem(syncQueueScope, syncBaseMemo.id);
-          await refreshSyncQueueItems();
-          return response.memo;
-        } catch (error) {
-          const message = getMobileSyncErrorMessage(error);
-
-          if (isMobileSyncConflictError(error)) {
-            await queueMobileMemoUpdate(syncQueueScope, queuePayload);
-            await markMobileMemoUpdateConflict(syncQueueScope, syncBaseMemo.id, message);
-            await refreshSyncQueueItems();
-            return optimisticMemo;
-          }
-
-          await queueMobileMemoUpdate(syncQueueScope, queuePayload);
-          if (!shouldQueueMobileMemoSaveError(error)) {
-            await markMobileMemoUpdateError(syncQueueScope, syncBaseMemo.id, message);
-          }
-          await refreshSyncQueueItems();
-          // Durable local save succeeded; outbox will retry. Do not fail the editor.
-          return optimisticMemo;
-        }
-      }
-
       await queueMobileMemoUpdate(syncQueueScope, queuePayload);
       await refreshSyncQueueItems();
+
+      // 3. Trigger immediate background synchronization to Cloudflare without blocking the UI
+      void runForcedSync();
+
       return optimisticMemo;
     },
     onSuccess: async (memo, variables) => {
       await upsertLocalMemo(dataScope, memo);
       applyOptimisticMemoToCache(queryClient, variables.memo, memo);
-      void runForcedSync();
     },
   });
 
@@ -1473,10 +1406,7 @@ export const WorkspaceScreen = ({
               onDeleteMemo={handleDeleteSingleMemoSummary}
               onTogglePinMemo={handleTogglePinMemo}
               onMemoPress={handleMemoPress}
-              onMemoLongPress={(memo) => {
-                Vibration.vibrate(8);
-                selectSingleMemo(memo.id);
-              }}
+              onMemoLongPress={handleMemoLongPress}
               onLoadMore={() => {
                 const query = searchActive ? searchQuery : memosQuery;
                 if (query.hasNextPage && !query.isFetchingNextPage) {
@@ -1526,7 +1456,7 @@ export const WorkspaceScreen = ({
         isDeleting={deleteMemoMutation.isPending}
         isLoading={memoDetailQuery.isLoading}
         isRestoring={restoreMemoMutation.isPending}
-        isSaving={updateMemoMutation.isPending || localUpdateMemoMutation.isPending}
+        isSaving={localUpdateMemoMutation.isPending}
         isSharing={shareMemoMutation.isPending}
         memo={selectedMemo}
         memos={visibleMemos}
@@ -1736,7 +1666,11 @@ export const WorkspaceScreen = ({
             setCreateChoiceOpen(true);
           }}
           onPress={() => openCreateMemo()}
-          style={[styles.bottomCreateButton, !canCreateMemo && styles.bottomCreateButtonDisabled]}
+          style={[
+            styles.bottomCreateButton,
+            { backgroundColor: palette.fab, borderColor: palette.paper },
+            !canCreateMemo && styles.bottomCreateButtonDisabled,
+          ]}
         >
           <Plus color={canCreateMemo ? palette.fabIcon : palette.inkMuted} size={28} />
         </Pressable>

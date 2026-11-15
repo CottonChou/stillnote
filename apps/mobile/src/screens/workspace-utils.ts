@@ -129,26 +129,55 @@ export const formatDate = (value: string, localePreference: MobileLocalePreferen
     minute: "2-digit",
   }).format(new Date(value));
 
+const timeFormatters = new Map<string, Intl.DateTimeFormat>();
+const dateFormatters = new Map<string, Intl.DateTimeFormat>();
+const detailFormatters = new Map<string, Intl.DateTimeFormat>();
+
+let cachedDayBoundaryTimestamp = 0;
+let cachedTodayTimestamp = 0;
+let cachedYesterdayTimestamp = 0;
+
+const getDayBoundaries = () => {
+  const nowMs = Date.now();
+  if (nowMs - cachedDayBoundaryTimestamp > 10_000) {
+    const now = new Date(nowMs);
+    cachedTodayTimestamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    cachedYesterdayTimestamp = cachedTodayTimestamp - 24 * 60 * 60 * 1000;
+    cachedDayBoundaryTimestamp = nowMs;
+  }
+  return { today: cachedTodayTimestamp, yesterday: cachedYesterdayTimestamp };
+};
+
 export const formatMemoPreviewDate = (value: string, localePreference: MobileLocalePreference = "system") => {
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
+  const time = date.getTime();
+  if (Number.isNaN(time)) {
     return "";
   }
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const { today, yesterday } = getDayBoundaries();
   const memoDay = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
   const locale = getResolvedMobileLocale(localePreference);
   if (memoDay === today) {
-    return new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" }).format(date);
+    let formatter = timeFormatters.get(locale);
+    if (!formatter) {
+      formatter = new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" });
+      timeFormatters.set(locale, formatter);
+    }
+    return formatter.format(date);
   }
-  if (memoDay === today - 24 * 60 * 60 * 1000) {
+  if (memoDay === yesterday) {
     if (locale === "ja") return "昨日";
     if (locale === "pl") return "Wczoraj";
     if (locale === "ru") return "Вчера";
     if (locale === "en-US") return "Yesterday";
     return "昨天";
   }
-  return new Intl.DateTimeFormat(locale, { year: "numeric", month: "numeric", day: "numeric" }).format(date);
+  let formatter = dateFormatters.get(locale);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(locale, { year: "numeric", month: "numeric", day: "numeric" });
+    dateFormatters.set(locale, formatter);
+  }
+  return formatter.format(date);
 };
 
 export const formatMemoDetailDate = (value: string, locale: string) => {
@@ -156,13 +185,18 @@ export const formatMemoDetailDate = (value: string, locale: string) => {
   if (Number.isNaN(date.getTime())) {
     return "";
   }
-  return new Intl.DateTimeFormat(locale, {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
+  let formatter = detailFormatters.get(locale);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(locale, {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    detailFormatters.set(locale, formatter);
+  }
+  return formatter.format(date);
 };
 
 export const sortMemoSummaries = (memos: MemoSummary[], sortMode: unknown) =>

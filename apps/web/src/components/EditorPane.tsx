@@ -103,9 +103,28 @@ const MarkdownSourceEditor = lazy(() =>
   })),
 );
 import { sanitizeAndScopeCss } from "@/lib/css-sandbox";
-import { RevisionHistoryDialog } from "./dialogs/RevisionHistoryDialog";
+import { memoShareQueryKey } from "@/lib/share-query-key";
 import { ExternalLinkDialog } from "./dialogs/ExternalLinkDialog";
-import { MathFormulaDialog } from "./dialogs/MathFormulaDialog";
+const RevisionHistoryDialog = lazy(() =>
+  import("./dialogs/RevisionHistoryDialog").then((module) => ({
+    default: module.RevisionHistoryDialog,
+  }))
+);
+const MathFormulaDialog = lazy(() =>
+  import("./dialogs/MathFormulaDialog").then((module) => ({
+    default: module.MathFormulaDialog,
+  }))
+);
+const ShareMemoDialog = lazy(() =>
+  import("./dialogs/ShareMemoDialog").then((module) => ({
+    default: module.ShareMemoDialog,
+  }))
+);
+const ShareNoteImageDialog = lazy(() =>
+  import("./dialogs/ShareNoteImageDialog").then((module) => ({
+    default: module.ShareNoteImageDialog,
+  }))
+);
 import { SpeechProviderReachabilityError } from "@/lib/speech-transcription-error";
 import {
   applyMathFormula,
@@ -114,8 +133,6 @@ import {
   selectedTextAsLatex,
   type MathFormulaDraft,
 } from "./editor/math-formula";
-import { memoShareQueryKey, ShareMemoDialog } from "./dialogs/ShareMemoDialog";
-import { ShareNoteImageDialog } from "./dialogs/ShareNoteImageDialog";
 import { AiSidebar, readAiSidebarOpen, readAiSidebarWidth, writeAiSidebarOpen } from "./ai-sidebar/AiSidebar";
 import { AiSidebarErrorBoundary } from "./ai-sidebar/AiSidebarErrorBoundary";
 import { api } from "@/lib/api";
@@ -4006,36 +4023,40 @@ const RichEditorPane = ({
         onApply={applyExternalLink}
         onRemove={removeExternalLink}
       />
-      <MathFormulaDialog
-        open={mathFormulaOpen}
-        draft={mathFormulaDraft}
-        onOpenChange={setMathFormulaOpen}
-        onApply={(draft) => {
-          if (!isEditorReady(editor) || effectiveReadOnly) return;
-          const stored = mathFormulaDraftRef.current;
-          applyMathFormula(editor, {
-            ...draft,
-            from: stored?.from ?? draft.from,
-            to: stored?.to ?? draft.to,
-            pos: stored?.pos ?? draft.pos,
-          });
-          // Keep the selection the insert left after the formula; focusing
-          // `from` put the caret back in front of it, so typing went there.
-          editor.chain().focus(null, { scrollIntoView: true }).run();
-        }}
-        onRemove={
-          mathFormulaDraft && typeof mathFormulaDraft.pos === "number"
-            ? () => {
+      {mathFormulaOpen && (
+        <Suspense fallback={null}>
+          <MathFormulaDialog
+            open={mathFormulaOpen}
+            draft={mathFormulaDraft}
+            onOpenChange={setMathFormulaOpen}
+            onApply={(draft) => {
               if (!isEditorReady(editor) || effectiveReadOnly) return;
               const stored = mathFormulaDraftRef.current;
-              const pos = stored?.pos ?? mathFormulaDraft.pos;
-              if (typeof pos !== "number") return;
-              deleteMathFormula(editor, { kind: stored?.kind ?? mathFormulaDraft.kind, pos });
-              editor.chain().focus(pos, { scrollIntoView: true }).run();
+              applyMathFormula(editor, {
+                ...draft,
+                from: stored?.from ?? draft.from,
+                to: stored?.to ?? draft.to,
+                pos: stored?.pos ?? draft.pos,
+              });
+              // Keep the selection the insert left after the formula; focusing
+              // `from` put the caret back in front of it, so typing went there.
+              editor.chain().focus(null, { scrollIntoView: true }).run();
+            }}
+            onRemove={
+              mathFormulaDraft && typeof mathFormulaDraft.pos === "number"
+                ? () => {
+                  if (!isEditorReady(editor) || effectiveReadOnly) return;
+                  const stored = mathFormulaDraftRef.current;
+                  const pos = stored?.pos ?? mathFormulaDraft.pos;
+                  if (typeof pos !== "number") return;
+                  deleteMathFormula(editor, { kind: stored?.kind ?? mathFormulaDraft.kind, pos });
+                  editor.chain().focus(pos, { scrollIntoView: true }).run();
+                }
+                : undefined
             }
-            : undefined
-        }
-      />
+          />
+        </Suspense>
+      )}
       {noteLinkPickerOpen && (
         <EditorNoteLinkPicker
           query={noteLinkQuery}
@@ -4833,34 +4854,42 @@ const RichEditorPane = ({
       )}
 
       {historyOpen && (
-        <RevisionHistoryDialog
-          currentMarkdown={
-            useMobilePlainTextEditor
-              ? getMobilePlainTextValue()
-              : isEditorReady(editor)
-                ? docToMarkdown(editor.getJSON() as TiptapDoc)
-                : memo.contentMarkdown
-          }
-          memo={memo}
-          repository={repository}
-          onClose={() => setHistoryOpen(false)}
-          onRestored={async (restoredMemo) => {
-            await localDb.drafts.delete(restoredMemo.id);
-            setHasUnsavedChanges(false);
-            await onSaved(restoredMemo);
-            setHistoryOpen(false);
-          }}
-        />
+        <Suspense fallback={null}>
+          <RevisionHistoryDialog
+            currentMarkdown={
+              useMobilePlainTextEditor
+                ? getMobilePlainTextValue()
+                : isEditorReady(editor)
+                  ? docToMarkdown(editor.getJSON() as TiptapDoc)
+                  : memo.contentMarkdown
+            }
+            memo={memo}
+            repository={repository}
+            onClose={() => setHistoryOpen(false)}
+            onRestored={async (restoredMemo) => {
+              await localDb.drafts.delete(restoredMemo.id);
+              setHasUnsavedChanges(false);
+              await onSaved(restoredMemo);
+              setHistoryOpen(false);
+            }}
+          />
+        </Suspense>
       )}
 
-      <ShareMemoDialog memoId={memo.id} open={shareOpen} onOpenChange={setShareOpen} />
+      {shareOpen && (
+        <Suspense fallback={null}>
+          <ShareMemoDialog memoId={memo.id} open={shareOpen} onOpenChange={setShareOpen} />
+        </Suspense>
+      )}
 
-      {imageShareSource && (
-        <ShareNoteImageDialog
-          open={imageShareOpen}
-          source={imageShareSource}
-          onOpenChange={setImageShareOpen}
-        />
+      {imageShareSource && imageShareOpen && (
+        <Suspense fallback={null}>
+          <ShareNoteImageDialog
+            open={imageShareOpen}
+            source={imageShareSource}
+            onOpenChange={setImageShareOpen}
+          />
+        </Suspense>
       )}
       </div>
       <AiSidebarErrorBoundary open={aiAssistantOpen} onOpenChange={setAiSidebarOpen}>

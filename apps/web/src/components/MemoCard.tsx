@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, type DragEvent, type MouseEvent, type PointerEvent as ReactPointerEvent, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import { memo, useRef, useState, useEffect, type DragEvent, type MouseEvent, type PointerEvent as ReactPointerEvent, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { FileText, Component, GitFork, PieChart, Table2, Workflow, Star, Check, MoreHorizontal, RotateCcw, Trash2 } from "lucide-react";
 import { getMemoListTimestamp, type MemoSummary } from "@stillnote/shared";
@@ -12,6 +12,24 @@ const MEMO_LONG_PRESS_MOVE_TOLERANCE_PX = 14;
 
 const isDesktopViewport = () => window.matchMedia("(min-width: 1024px)").matches;
 
+const timeFormatters = new Map<string, Intl.DateTimeFormat>();
+const dateFormatters = new Map<string, Intl.DateTimeFormat>();
+
+let cachedDayBoundaryTimestamp = 0;
+let cachedTodayTimestamp = 0;
+let cachedYesterdayTimestamp = 0;
+
+const getDayBoundaries = () => {
+  const nowMs = Date.now();
+  if (nowMs - cachedDayBoundaryTimestamp > 10_000) {
+    const now = new Date(nowMs);
+    cachedTodayTimestamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    cachedYesterdayTimestamp = cachedTodayTimestamp - 24 * 60 * 60 * 1000;
+    cachedDayBoundaryTimestamp = nowMs;
+  }
+  return { today: cachedTodayTimestamp, yesterday: cachedYesterdayTimestamp };
+};
+
 const formatMemoPreviewDate = (value: string, locale: string, yesterdayLabel: string) => {
   const date = new Date(value);
 
@@ -19,26 +37,35 @@ const formatMemoPreviewDate = (value: string, locale: string, yesterdayLabel: st
     return "";
   }
 
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const { today, yesterday } = getDayBoundaries();
   const memoDay = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
 
   if (memoDay === today) {
-    return new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" }).format(date);
+    let formatter = timeFormatters.get(locale);
+    if (!formatter) {
+      formatter = new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" });
+      timeFormatters.set(locale, formatter);
+    }
+    return formatter.format(date);
   }
 
-  if (memoDay === today - 24 * 60 * 60 * 1000) {
+  if (memoDay === yesterday) {
     return yesterdayLabel;
   }
 
-  return new Intl.DateTimeFormat(locale, {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-  }).format(date);
+  let formatter = dateFormatters.get(locale);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(locale, {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    });
+    dateFormatters.set(locale, formatter);
+  }
+  return formatter.format(date);
 };
 
-export const MemoCard = ({
+const MemoCardComponent = ({
   memo,
   selected,
   checked,
@@ -523,3 +550,22 @@ export const MemoCard = ({
     </article>
   );
 };
+
+export const MemoCard = memo(MemoCardComponent, (prev, next) =>
+  prev.memo.id === next.memo.id &&
+  prev.memo.updatedAt === next.memo.updatedAt &&
+  prev.memo.title === next.memo.title &&
+  prev.memo.excerpt === next.memo.excerpt &&
+  prev.memo.isPinned === next.memo.isPinned &&
+  prev.memo.tags.join(",") === next.memo.tags.join(",") &&
+  prev.memo.diagramKind === next.memo.diagramKind &&
+  prev.memo.structuredTable === next.memo.structuredTable &&
+  prev.selected === next.selected &&
+  prev.checked === next.checked &&
+  prev.isLast === next.isLast &&
+  prev.isTrashView === next.isTrashView &&
+  prev.selectionMode === next.selectionMode &&
+  prev.listDensity === next.listDensity &&
+  prev.sortMode === next.sortMode &&
+  prev.multiSelectKeyDown === next.multiSelectKeyDown
+);

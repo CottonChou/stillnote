@@ -62,3 +62,6 @@ release-artifacts/
 
 # Local official-release extraction used for build verification.
 work/
+
+# Local documents / test imports
+trading_articles/

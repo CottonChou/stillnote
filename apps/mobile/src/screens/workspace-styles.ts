@@ -1,9 +1,14 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { MEMO_CONTENT_STYLE } from "@stillnote/shared";
 import { MOBILE_UI_METRICS } from "@stillnote/shared/mobile-ui";
 import { resolveMobileThemeStyles, type MobileResolvedTheme } from "../lib/mobile-theme";
 
 const DETAIL_CONTENT_HORIZONTAL_PADDING = 16;
+
+const APP_FONT_FAMILY = Platform.select({
+  ios: "Avenir Next",
+  default: undefined,
+});
 
 const baseWorkspaceStyles = StyleSheet.create({
   safeArea: {
@@ -88,8 +93,8 @@ const baseWorkspaceStyles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   settingsMenuRowBorder: {
-    borderTopColor: "#f4f1ea",
-    borderTopWidth: 1,
+    borderTopColor: "#e6e1d6",
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
   settingsMenuLabel: {
     alignItems: "center",
@@ -191,8 +196,8 @@ const baseWorkspaceStyles = StyleSheet.create({
     borderLeftWidth: 0,
     borderRadius: 0,
     borderRightWidth: 0,
-    borderTopColor: "#f4f1ea",
-    borderTopWidth: 1,
+    borderTopColor: "#e6e1d6",
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
   settingsGroupHeader: {
     alignItems: "center",
@@ -206,8 +211,8 @@ const baseWorkspaceStyles = StyleSheet.create({
     fontWeight: "600",
   },
   settingsContentRow: {
-    borderTopColor: "#f4f1ea",
-    borderTopWidth: 1,
+    borderTopColor: "#e6e1d6",
+    borderTopWidth: StyleSheet.hairlineWidth,
     gap: 10,
     minHeight: 64,
     padding: 16,
@@ -260,8 +265,8 @@ const baseWorkspaceStyles = StyleSheet.create({
     transform: [{ rotate: "180deg" }],
   },
   settingsAccordionContent: {
-    borderTopColor: "#f4f1ea",
-    borderTopWidth: 1,
+    borderTopColor: "#e6e1d6",
+    borderTopWidth: StyleSheet.hairlineWidth,
     gap: 10,
     padding: 16,
   },
@@ -393,8 +398,10 @@ const baseWorkspaceStyles = StyleSheet.create({
   mobileNotebookTitle: {
     color: "#1c1b18",
     flexShrink: 1,
+    fontFamily: APP_FONT_FAMILY,
     fontSize: 17,
     fontWeight: "700",
+    letterSpacing: -0.2,
   },
   mobileMoreButton: {
     alignItems: "center",
@@ -753,6 +760,7 @@ const baseWorkspaceStyles = StyleSheet.create({
     paddingVertical: 34,
   },
   memoCardWrapper: {
+    backgroundColor: "#f9f7f2",
     borderRadius: 0,
     marginBottom: 0,
     overflow: "hidden",
@@ -794,13 +802,14 @@ const baseWorkspaceStyles = StyleSheet.create({
     alignItems: "stretch",
     backgroundColor: "#f9f7f2",
     borderBottomColor: "#eae5da",
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderRadius: 0,
     borderWidth: 0,
     flexDirection: "row",
     minHeight: 112,
     overflow: "hidden",
     width: "100%",
+    zIndex: 1,
   },
   memoCardCompact: {
     marginBottom: 0,
@@ -850,6 +859,7 @@ const baseWorkspaceStyles = StyleSheet.create({
   memoTitle: {
     color: "#1c1b18",
     flex: 1,
+    fontFamily: APP_FONT_FAMILY,
     fontSize: 16,
     fontWeight: "600",
     letterSpacing: -0.2,
@@ -880,6 +890,7 @@ const baseWorkspaceStyles = StyleSheet.create({
   memoDate: {
     color: "#6b665e",
     fontSize: 12,
+    fontVariant: ["tabular-nums"],
     fontWeight: "400",
   },
   tag: {
@@ -1212,8 +1223,8 @@ const baseWorkspaceStyles = StyleSheet.create({
   createMemoHeader: {
     alignItems: "center",
     backgroundColor: "#fdfcf9",
-    borderBottomColor: "#f4f1ea",
-    borderBottomWidth: 1,
+    borderBottomColor: "#e6e1d6",
+    borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: "row",
     gap: 8,
     justifyContent: "space-between",
@@ -1527,8 +1538,8 @@ const baseWorkspaceStyles = StyleSheet.create({
     maxHeight: "76%",
   },
   moveSelectionSearch: {
-    borderBottomColor: "#f4f1ea",
-    borderBottomWidth: 1,
+    borderBottomColor: "#e6e1d6",
+    borderBottomWidth: StyleSheet.hairlineWidth,
     padding: 12,
   },
   moveSelectionList: {
@@ -2048,16 +2059,16 @@ const baseWorkspaceStyles = StyleSheet.create({
   },
   detailEditFab: {
     alignItems: "center",
-    backgroundColor: "#1c1b18",
+    backgroundColor: "#187958",
     borderRadius: 24,
-    elevation: 4,
+    elevation: 6,
     height: 48,
     justifyContent: "center",
     position: "absolute",
     right: 16,
-    shadowColor: "#1c1b18",
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.16,
+    shadowOpacity: 0.2,
     shadowRadius: 8,
     width: 48,
   },
@@ -2359,17 +2370,20 @@ const baseWorkspaceStyles = StyleSheet.create({
     borderColor: "#fdfcf9",
     borderRadius: MOBILE_UI_METRICS.floatingCreateButtonSize / 2,
     borderWidth: 4,
+    elevation: 6,
     height: MOBILE_UI_METRICS.floatingCreateButtonSize,
     justifyContent: "center",
     marginTop: -MOBILE_UI_METRICS.floatingCreateButtonLift,
-    shadowColor: "#1c1b18",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.16,
-    shadowRadius: 12,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
     width: MOBILE_UI_METRICS.floatingCreateButtonSize,
   },
   bottomCreateButtonDisabled: {
-    backgroundColor: "#d4cdbf",
+    backgroundColor: "#9e978b",
+    elevation: 0,
+    opacity: 0.6,
     shadowOpacity: 0,
   },
   selectionBar: {

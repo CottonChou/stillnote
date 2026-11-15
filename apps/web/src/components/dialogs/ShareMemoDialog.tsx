@@ -22,7 +22,8 @@ export const getPublicShareUrl = (token: string) => {
   return `${baseUrl.replace(/\/$/, "")}/share/${encodeURIComponent(token)}`;
 };
 
-export const memoShareQueryKey = (memoId: string) => ["memo-share", memoId] as const;
+import { memoShareQueryKey } from "@/lib/share-query-key";
+export { memoShareQueryKey };
 
 export const ShareMemoDialog = ({
   memoId,

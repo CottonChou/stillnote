@@ -143,6 +143,7 @@ export const useMobileRichEditor = ({
   const [dirty, setDirty] = useState(Boolean(restoredDraft));
   const [autosaveGeneration, setAutosaveGeneration] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resourceTarget, setResourceTarget] = useState<MobileResourceTarget | null>(null);
@@ -301,6 +302,7 @@ export const useMobileRichEditor = ({
       return savedMemo;
     } catch (saveError) {
       closingRef.current = false;
+      setClosing(false);
       setError(saveError instanceof Error ? saveError.message : "保存失败");
       return null;
     } finally {
@@ -308,7 +310,11 @@ export const useMobileRichEditor = ({
       setSaving(false);
       // A back/done tap during autosave is remembered and finished here.
       if (closingRef.current && !closeInFlightRef.current) {
-        void requestCloseRef.current();
+        if (!dirtyRef.current) {
+          onCloseRef.current();
+        } else {
+          void requestCloseRef.current();
+        }
       }
     }
   };
@@ -333,6 +339,7 @@ export const useMobileRichEditor = ({
       return;
     }
     closingRef.current = true;
+    setClosing(true);
     if (action === "defer") {
       return;
     }
@@ -344,6 +351,7 @@ export const useMobileRichEditor = ({
     try {
       await flushEditor();
       if (!closingRef.current) {
+        setClosing(false);
         return;
       }
       const savedMemo = await save();
@@ -354,6 +362,7 @@ export const useMobileRichEditor = ({
       // Keep the close queued when another save is still in flight.
       if (!savedMemo && !savingRef.current) {
         closingRef.current = false;
+        setClosing(false);
       }
     } finally {
       closeInFlightRef.current = false;
@@ -484,6 +493,7 @@ export const useMobileRichEditor = ({
   return {
     aiPromptsJson,
     cancelSelectionAi,
+    closing,
     contentMarkdown: contentMarkdownRef.current,
     deleteResource,
     dirty,

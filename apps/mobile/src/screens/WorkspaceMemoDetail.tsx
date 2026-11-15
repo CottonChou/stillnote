@@ -1265,19 +1265,29 @@ export const MemoDetailModal = ({
         >
         {isEditing ? (
           <View style={styles.createMemoHeader}>
-            <Pressable accessibilityLabel="返回" accessibilityRole="button" disabled={editor.uploading} onPress={() => void editor.requestClose()} style={styles.createMemoBackButton}>
-              <ChevronLeft color={editor.uploading ? palette.inkPlaceholder : palette.ink} size={30} />
+            <Pressable
+              accessibilityLabel="返回"
+              accessibilityRole="button"
+              disabled={editor.uploading || editor.saving || editor.closing}
+              onPress={() => void editor.requestClose()}
+              style={styles.createMemoBackButton}
+            >
+              <ChevronLeft color={editor.uploading || editor.saving || editor.closing ? palette.inkPlaceholder : palette.ink} size={30} />
             </Pressable>
             <View style={styles.createMemoHeaderActions}>
               <Text numberOfLines={1} style={[styles.createMemoStatus, styles.richEditorHeaderStatus, editor.saveEmphasized && styles.createMemoStatusActive, editor.error && styles.richEditorStatusError]}>{editor.saveLabel}</Text>
               <Pressable
                 accessibilityLabel="完成编辑"
                 accessibilityRole="button"
-                disabled={editor.uploading || !editor.ready}
+                disabled={editor.uploading || editor.saving || editor.closing || !editor.ready}
                 onPress={() => void editor.requestClose()}
-                style={[styles.createMemoDoneButton, (editor.uploading || !editor.ready) && styles.createMemoDoneButtonDisabled]}
+                style={[styles.createMemoDoneButton, (editor.uploading || editor.saving || editor.closing || !editor.ready) && styles.createMemoDoneButtonDisabled]}
               >
-                <Text style={[styles.createMemoDoneText, (editor.uploading || !editor.ready) && styles.createMemoDoneTextDisabled]}>完成</Text>
+                {editor.saving || editor.closing ? (
+                  <ActivityIndicator color="#ffffff" size="small" />
+                ) : (
+                  <Text style={[styles.createMemoDoneText, (editor.uploading || !editor.ready) && styles.createMemoDoneTextDisabled]}>完成</Text>
+                )}
               </Pressable>
             </View>
           </View>
@@ -1662,7 +1672,7 @@ export const MemoDetailModal = ({
               beginEditorStartup();
               onRichEdit(memo, "body");
             }}
-            style={[styles.detailEditFab, { bottom: editFabBottom }]}
+            style={[styles.detailEditFab, { backgroundColor: palette.fab, bottom: editFabBottom }]}
           >
             <Pencil color={palette.fabIcon} size={20} />
           </Pressable>

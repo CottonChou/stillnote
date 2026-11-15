@@ -4,7 +4,6 @@ import { prepareNoteImageAssets } from "@stillnote/shared/note-image-fonts";
 import { noteImageAssetUrls } from "./note-image-asset-urls";
 import "katex/dist/katex.min.css";
 import { attachMobileReaderScroll } from "../lib/mobile-reader-scroll";
-import { Graph } from "@antv/x6";
 import Image from "@tiptap/extension-image";
 import CodeBlock from "@tiptap/extension-code-block";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -469,7 +468,7 @@ const MermaidRenderRuntime = (props: MermaidRendererProps) => {
   return null;
 };
 
-Graph.registerConnector(MIND_MAP_CONNECTOR_NAME, mindMapConnector, true);
+let x6ConnectorRegistered = false;
 
 const ReadOnlyX6Diagram = ({
   diagram,
@@ -486,42 +485,77 @@ const ReadOnlyX6Diagram = ({
     const container = containerRef.current;
     if (!container) return;
     const parent = container.parentElement;
-    const measureWidth = () => {
-      if (!parent) return Math.max(1, container.clientWidth);
-      const style = getComputedStyle(parent);
-      const containerStyle = getComputedStyle(container);
-      const horizontalPadding = Number.parseFloat(style.paddingLeft || "0")
-        + Number.parseFloat(style.paddingRight || "0");
-      const horizontalMargin = Number.parseFloat(containerStyle.marginLeft || "0")
-        + Number.parseFloat(containerStyle.marginRight || "0");
-      return Math.max(1, parent.clientWidth - horizontalPadding - horizontalMargin);
-    };
-    const cells = diagramDocumentToX6Cells(diagram, theme);
-    const graph = new Graph({
-      container,
-      // The empty mount node can report 0 before X6 assigns its own inline size.
-      // Measure the stable parent instead so the graph never locks itself to 1px.
-      width: measureWidth(),
-      height: Math.max(1, container.clientHeight),
-      background: { color: cells.canvas },
-      grid: false,
-      interacting: false,
-      panning: { enabled: true },
-      mousewheel: { enabled: true, minScale: 0.1, maxScale: 2.5 },
-    });
-    graph.addNodes(cells.nodes);
-    graph.addEdges(cells.edges);
+    let cancelled = false;
+    let cleanup: (() => void) | undefined;
 
-    const reader = attachDiagramReader(graph, container, { ...diagram, nodes: diagram.nodes.map((node, index) => ({ ...node, width: cells.nodes[index].width, height: cells.nodes[index].height })) }, locale, theme === "dark");
-    const fit = () => reader.resize(measureWidth(), Math.max(1, container.clientHeight));
-    const frame = window.requestAnimationFrame(fit);
-    const observer = new ResizeObserver(fit);
-    observer.observe(parent ?? container);
+    void (async () => {
+      try {
+        const { Graph } = await import("@antv/x6");
+        if (cancelled) return;
+        if (!x6ConnectorRegistered) {
+          Graph.registerConnector(MIND_MAP_CONNECTOR_NAME, mindMapConnector, true);
+          x6ConnectorRegistered = true;
+        }
+
+        const measureWidth = () => {
+          if (!parent) return Math.max(1, container.clientWidth);
+          const style = getComputedStyle(parent);
+          const containerStyle = getComputedStyle(container);
+          const horizontalPadding = Number.parseFloat(style.paddingLeft || "0")
+            + Number.parseFloat(style.paddingRight || "0");
+          const horizontalMargin = Number.parseFloat(containerStyle.marginLeft || "0")
+            + Number.parseFloat(containerStyle.marginRight || "0");
+          return Math.max(1, parent.clientWidth - horizontalPadding - horizontalMargin);
+        };
+        const cells = diagramDocumentToX6Cells(diagram, theme);
+        const graph = new Graph({
+          container,
+          // The empty mount node can report 0 before X6 assigns its own inline size.
+          // Measure the stable parent instead so the graph never locks itself to 1px.
+          width: measureWidth(),
+          height: Math.max(1, container.clientHeight),
+          background: { color: cells.canvas },
+          grid: false,
+          interacting: false,
+          panning: { enabled: true },
+          mousewheel: { enabled: true, minScale: 0.1, maxScale: 2.5 },
+        });
+        graph.addNodes(cells.nodes);
+        graph.addEdges(cells.edges);
+
+        const reader = attachDiagramReader(
+          graph,
+          container,
+          {
+            ...diagram,
+            nodes: diagram.nodes.map((node, index) => ({
+              ...node,
+              width: cells.nodes[index].width,
+              height: cells.nodes[index].height,
+            })),
+          },
+          locale,
+          theme === "dark"
+        );
+        const fit = () => reader.resize(measureWidth(), Math.max(1, container.clientHeight));
+        const frame = window.requestAnimationFrame(fit);
+        const observer = new ResizeObserver(fit);
+        observer.observe(parent ?? container);
+
+        cleanup = () => {
+          window.cancelAnimationFrame(frame);
+          observer.disconnect();
+          reader.dispose();
+          graph.dispose();
+        };
+      } catch {
+        // Silently ignore or handle dynamic import failure
+      }
+    })();
+
     return () => {
-      window.cancelAnimationFrame(frame);
-      observer.disconnect();
-      reader.dispose();
-      graph.dispose();
+      cancelled = true;
+      cleanup?.();
     };
   }, [diagram, theme, locale]);
 

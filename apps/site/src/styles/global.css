@@ -5,9 +5,16 @@
 
 @theme {
   --font-sans:
-    Bricolage Grotesque Variable, Inter Variable, Inter, ui-sans-serif,
-    system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol', 'Noto Color Emoji';
+    "Avenir Next", Avenir, "Segoe UI", -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Helvetica Neue", Inter Variable, Inter, ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --font-mono:
+    ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+
+  --font-rounded:
+    ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
 
   --color-brand: var(--stillnote-brand);
   --color-brand-hover: var(--stillnote-brand-hover);
@@ -15,6 +22,34 @@
   --color-brand-soft: var(--stillnote-brand-soft);
   --color-brand-border: var(--stillnote-brand-border);
   --color-brand-text: var(--stillnote-brand-text);
+}
+
+body {
+  font-family: var(--font-sans);
+  letter-spacing: -0.012em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:is(h1, h2, h3) {
+  letter-spacing: -0.025em;
+  text-spacing-trim: trim-both;
+}
+
+@utility font-sf {
+  letter-spacing: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+}
+
+@utility font-sf-rounded {
+  font-family: var(--font-rounded);
+  font-variant-numeric: tabular-nums;
+}
+
+@utility font-sf-mono {
+  letter-spacing: 0;
+  font-family: var(--font-mono);
 }
 
 @utility glow-brand {

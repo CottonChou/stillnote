@@ -2532,11 +2532,14 @@ const startApplication = async () => {
   while (pendingShareFiles.length > 0) void wechatShare().importLocalFile(pendingShareFiles.shift());
   if (process.platform === "darwin" && app.isPackaged) {
     void wechatShare().importPending();
-    setInterval(() => { void wechatShare().importPending(); }, 2_000).unref();
+    setInterval(() => { void wechatShare().importPending(); }, 20_000).unref();
   }
   app.on("activate", () => {
     if (!showWindow(mainWindow)) void createWindow();
     void checkForDesktopUpdate("activate");
+    if (process.platform === "darwin" && app.isPackaged) {
+      void wechatShare().importPending();
+    }
   });
 };
 
