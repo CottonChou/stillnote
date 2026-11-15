@@ -750,52 +750,58 @@ export const CreateMemoModal = ({
         </View>
       </View>
 
-      <View style={styles.createMemoMain}>
-        <TextInput
-          autoCorrect
-          accessibilityLabel="笔记标题"
-          onChangeText={(value) => {
-            setTitle(value);
-            markDirty();
-          }}
-          placeholder={DEFAULT_MEMO_TITLE}
-          placeholderTextColor={createPalette.inkPlaceholder}
-          style={styles.createMemoTitleInput}
-          value={title}
-        />
-
-        <View style={styles.createMemoMetaRow}>
-          <Pressable accessibilityLabel="所在笔记本" accessibilityRole="button" onPress={() => setNotebookPickerOpen(true)} style={styles.createMemoNotebookButton}>
-            <Text numberOfLines={1} style={styles.createMemoNotebookText}>{selectedNotebookName}</Text>
-            <ChevronDown color={createPalette.inkSecondary} size={14} />
-          </Pressable>
-          <Pressable accessibilityLabel="选择笔记标签" accessibilityRole="button" onPress={() => setTagPickerOpen(true)} style={styles.createMemoTagsButton}>
-            <Text numberOfLines={1} style={[styles.createMemoTagsInput, !tagsText && styles.createMemoTagsPlaceholder]}>
-              {tagsText || "添加标签"}
-            </Text>
-            <ChevronDown color={createPalette.inkPlaceholder} size={14} />
-          </Pressable>
-          <SmartTagButton
-            client={client}
-            contentMarkdown={contentMarkdown}
-            onChange={(nextTags) => {
-              setTagsText(nextTags.join(", "));
+      <KeyboardAvoidingView
+        behavior="height"
+        enabled={Platform.OS === "android"}
+        style={styles.richEditorKeyboardAvoiding}
+      >
+        <View style={styles.createMemoMain}>
+          <TextInput
+            autoCorrect
+            accessibilityLabel="笔记标题"
+            onChangeText={(value) => {
+              setTitle(value);
               markDirty();
             }}
-            selectedTags={parseTags(tagsText)}
-            title={title}
+            placeholder={DEFAULT_MEMO_TITLE}
+            placeholderTextColor={createPalette.inkPlaceholder}
+            style={styles.createMemoTitleInput}
+            value={title}
           />
-        </View>
 
-        <View style={styles.createMemoEditorFrame}>
-          {editorElement}
-          {!editorReady ? <MobileEditorStartupOverlay onRetry={retryEditorStartup} timedOut={editorStartup.timedOut} /> : null}
-        </View>
+          <View style={styles.createMemoMetaRow}>
+            <Pressable accessibilityLabel="所在笔记本" accessibilityRole="button" onPress={() => setNotebookPickerOpen(true)} style={styles.createMemoNotebookButton}>
+              <Text numberOfLines={1} style={styles.createMemoNotebookText}>{selectedNotebookName}</Text>
+              <ChevronDown color={createPalette.inkSecondary} size={14} />
+            </Pressable>
+            <Pressable accessibilityLabel="选择笔记标签" accessibilityRole="button" onPress={() => setTagPickerOpen(true)} style={styles.createMemoTagsButton}>
+              <Text numberOfLines={1} style={[styles.createMemoTagsInput, !tagsText && styles.createMemoTagsPlaceholder]}>
+                {tagsText || "添加标签"}
+              </Text>
+              <ChevronDown color={createPalette.inkPlaceholder} size={14} />
+            </Pressable>
+            <SmartTagButton
+              client={client}
+              contentMarkdown={contentMarkdown}
+              onChange={(nextTags) => {
+                setTagsText(nextTags.join(", "));
+                markDirty();
+              }}
+              selectedTags={parseTags(tagsText)}
+              title={title}
+            />
+          </View>
 
-        {createMutation.error ? (
-          <Text style={styles.errorText}>{createMutation.error instanceof Error ? createMutation.error.message : "创建失败"}</Text>
-        ) : null}
-      </View>
+          <View style={styles.createMemoEditorFrame}>
+            {editorElement}
+            {!editorReady ? <MobileEditorStartupOverlay onRetry={retryEditorStartup} timedOut={editorStartup.timedOut} /> : null}
+          </View>
+
+          {createMutation.error ? (
+            <Text style={styles.errorText}>{createMutation.error instanceof Error ? createMutation.error.message : "创建失败"}</Text>
+          ) : null}
+        </View>
+      </KeyboardAvoidingView>
       <NotebookPickerModal
         activeNotebookId={targetNotebookId}
         includeAllNotes={false}

@@ -1265,13 +1265,7 @@ export const MemoDetailModal = ({
         >
         {isEditing ? (
           <View style={styles.createMemoHeader}>
-            <Pressable
-              accessibilityLabel="返回"
-              accessibilityRole="button"
-              disabled={editor.uploading || editor.saving || editor.closing}
-              onPress={() => void editor.requestClose()}
-              style={styles.createMemoBackButton}
-            >
+            <Pressable accessibilityLabel="返回" accessibilityRole="button" disabled={editor.uploading} onPress={() => void editor.requestClose()} style={styles.createMemoBackButton}>
               <ChevronLeft color={editor.uploading || editor.saving || editor.closing ? palette.inkPlaceholder : palette.ink} size={30} />
             </Pressable>
             <View style={styles.createMemoHeaderActions}>
