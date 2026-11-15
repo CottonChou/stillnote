@@ -67,7 +67,7 @@ PREVIOUS_FINGERPRINT="$(test -f "$PREBUILD_STAMP" && cat "$PREBUILD_STAMP" || tr
 if [[ ! -x "$ANDROID_DIR/gradlew" || "$PREBUILD_FINGERPRINT" != "$PREVIOUS_FINGERPRINT" ]]; then
   echo "更新 Android 原生工程（保留已有编译缓存）..."
   cd "$MOBILE_DIR"
-  run_timed "生成 Android 原生工程" bunx expo prebuild --platform android
+  run_timed "生成 Android 原生工程" bunx expo prebuild --platform android --no-install
   printf '%s' "$PREBUILD_FINGERPRINT" > "$PREBUILD_STAMP"
 else
   echo "跳过 Android prebuild：原生配置未变化。"

@@ -5,6 +5,13 @@ import { fileURLToPath } from "node:url";
 
 export const STILLNOTE_ANDROID_SIGNER_SHA256 =
   "cb93b7637da06a3910b910d9ef7a8843fb08c8a59bc137656f8fa30cd8df8965";
+export const STILLNOTE_ANDROID_RELEASE_SIGNER_SHA256 =
+  "3dafae510cf3fbaaf640374172a29f67d49aeb8072bc54299e94d3345e57860a";
+
+export const DEFAULT_ALLOWED_ANDROID_SIGNERS = [
+  STILLNOTE_ANDROID_SIGNER_SHA256,
+  STILLNOTE_ANDROID_RELEASE_SIGNER_SHA256,
+];
 
 const normalizeFingerprint = (value) =>
   value.toLowerCase().replace(/[^0-9a-f]/g, "");
@@ -13,7 +20,7 @@ export const parseAllowedAndroidSignerDigests = (value = "") => {
   const configured = value.split(",").map(normalizeFingerprint).filter(Boolean);
   const digests = configured.length > 0
     ? configured
-    : [STILLNOTE_ANDROID_SIGNER_SHA256];
+    : DEFAULT_ALLOWED_ANDROID_SIGNERS;
   if (digests.some((digest) => digest.length !== 64)) {
     throw new Error("Every allowed Android signer must be a SHA-256 fingerprint.");
   }

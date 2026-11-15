@@ -16,7 +16,13 @@ export const DesktopUpdateNotice = () => {
     retry: 1,
   });
   const installMutation = useMutation({
-    mutationFn: () => bridge!.installUpdate(),
+    mutationFn: async () => {
+      const result = (await bridge!.installUpdate()) as { started?: boolean } | null | undefined;
+      if (result && result.started === false) {
+        throw new Error("Update installation could not be started");
+      }
+      return result;
+    },
   });
 
   useEffect(() => {

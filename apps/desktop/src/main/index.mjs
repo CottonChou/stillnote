@@ -42,7 +42,8 @@ import { writeFileClipboard, writeImageClipboard, writeRichClipboard, writeTextC
 import { registerClipboardReadIpc } from "./clipboard-read.mjs";
 import { captureRegionScreenToNote, captureScreenToNote, createScreenshotCaptureGuard, screenshotImportIpcPayload, writeScreenshotTempPath } from "./screenshot-capture.mjs";
 import { cancelScreenshotRegionSelection, openScreenshotRegionSelector } from "./screenshot-region.mjs";
-import { LocalDataResetError, scheduleMacLocalDataReset } from "./local-data-reset.mjs";
+import { LocalDataResetError, macApplicationBundlePath, scheduleMacLocalDataReset } from "./local-data-reset.mjs";
+import { applyMacInPlaceUpdate, findDownloadedMacUpdateZip } from "./mac-app-updater.mjs";
 import { buildDesktopDiagnosticIssueUrl, normalizeDesktopDiagnostic } from "./desktop-diagnostics.mjs";
 import { readDesktopDeviceModel } from "./desktop-device-model.mjs";
 import { createRendererStartupGuard } from "./renderer-startup-guard.mjs";
@@ -156,6 +157,7 @@ let updateDownloadInFlight = null;
 let updateCheckTimer = null;
 let lastUpdateCheckAt = 0;
 let downloadedUpdateVersion = null;
+let downloadedUpdatePath = null;
 let promptedUpdateVersion = null;
 let trustedWindowsUpdate = null;
 let windowsDownloadedUpdateVerified = false;
@@ -1240,7 +1242,7 @@ const publishDesktopUpdateStatus = () => {
   mainWindow.webContents.send("desktop:update-status-changed", desktopUpdateStatus());
 };
 
-const installDownloadedUpdate = () => {
+const installDownloadedUpdate = async () => {
   if (
     updateState !== "downloaded" ||
     (process.platform === "win32" && !windowsDownloadedUpdateVerified)
@@ -1248,6 +1250,30 @@ const installDownloadedUpdate = () => {
   // The normal window close handler hides the app. Mark this as a real quit
   // before electron-updater closes windows so installation can proceed.
   isQuitting = true;
+
+  if (process.platform === "darwin") {
+    try {
+      const targetApp = macApplicationBundlePath(process.execPath);
+      if (!isMountedInstallerPath(targetApp)) {
+        const zipPath = downloadedUpdatePath || findDownloadedMacUpdateZip({
+          cacheDirectory: app.getPath("cache"),
+          version: downloadedUpdateVersion,
+        });
+        if (zipPath && existsSync(zipPath)) {
+          await applyMacInPlaceUpdate({
+            zipPath,
+            executablePath: process.execPath,
+            parentPid: process.pid,
+          });
+          app.quit();
+          return { started: true };
+        }
+      }
+    } catch (error) {
+      void writeDiagnostic("update.mac-in-place-failed", { message: error.message });
+    }
+  }
+
   // Keep Windows updates silent and reuse the registered installation directory.
   autoUpdater.quitAndInstall(process.platform === "win32", true);
   return { started: true };
@@ -1259,6 +1285,7 @@ const trackDesktopUpdateDownload = (downloadPromise, reason) => {
       updateState = "idle";
       updateProgress = null;
       downloadedUpdateVersion = null;
+      downloadedUpdatePath = null;
       windowsDownloadedUpdateVerified = false;
       refreshTrayMenu();
       recordUpdateError(error, "download");
@@ -1436,6 +1463,7 @@ const configureAutoUpdater = () => {
       updateProgress = null;
       updateError = null;
       downloadedUpdateVersion = info?.version || downloadedUpdateVersion;
+      downloadedUpdatePath = info?.downloadedFile || null;
       refreshTrayMenu();
       publishDesktopUpdateStatus();
       await writeDiagnostic("update.downloaded", { version: downloadedUpdateVersion });
@@ -1456,6 +1484,7 @@ const configureAutoUpdater = () => {
       updateState = "idle";
       updateProgress = null;
       downloadedUpdateVersion = null;
+      downloadedUpdatePath = null;
       windowsDownloadedUpdateVerified = false;
       refreshTrayMenu();
       recordUpdateError(error, "verify-windows-package");
@@ -1465,10 +1494,23 @@ const configureAutoUpdater = () => {
   });
   autoUpdater.on("error", (error) => {
     isQuitting = false;
+    const isMacShipItSignatureMismatch = process.platform === "darwin" &&
+      updateState === "downloaded" &&
+      typeof error?.message === "string" &&
+      (error.message.includes("did not pass validation") || error.message.includes("未能满足指定的代码要求"));
+
+    if (isMacShipItSignatureMismatch) {
+      void writeDiagnostic("update.mac-shipit-signature-bypassed", { message: error.message });
+      refreshTrayMenu();
+      publishDesktopUpdateStatus();
+      return;
+    }
+
     if (updateState !== "downloaded") {
       updateState = "idle";
       updateProgress = null;
       downloadedUpdateVersion = null;
+      downloadedUpdatePath = null;
       windowsDownloadedUpdateVerified = false;
     }
     refreshTrayMenu();
