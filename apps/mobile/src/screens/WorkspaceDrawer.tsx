@@ -18,6 +18,7 @@ import {
   ChevronDown,
   ChevronRight,
   Folder,
+  Paperclip,
   Plus,
   RefreshCw,
   Search,
@@ -43,12 +44,14 @@ export interface NotebookDrawerLayoutProps {
   activeNotebookId: string;
   children: ReactNode;
   drawerWidth: number;
+  isAssetsActive?: boolean;
   isOpen: boolean;
   memoView: MemoView;
   notebooks: Notebook[];
   onClose: () => void;
   onCreateNotebook?: (name: string, parentId: string | null) => Promise<string>;
   onOpen: () => void;
+  onOpenAssets?: () => void;
   onSelectAllNotes: () => void;
   onSelectNotebook: (notebookId: string) => void;
   onSelectTrash: () => void;
@@ -65,12 +68,14 @@ export const NotebookDrawerLayout = ({
   activeNotebookId,
   children,
   drawerWidth,
+  isAssetsActive = false,
   isOpen,
   memoView,
   notebooks,
   onClose,
   onCreateNotebook,
   onOpen,
+  onOpenAssets,
   onSelectAllNotes,
   onSelectNotebook,
   onSelectTrash,
@@ -98,11 +103,13 @@ export const NotebookDrawerLayout = ({
     () => (
       <NotebookDrawerContent
         activeNotebookId={activeNotebookId}
+        isAssetsActive={isAssetsActive}
         isOpen={isOpen}
         memoView={memoView}
         notebooks={notebooks}
         onClose={onClose}
         onCreateNotebook={onCreateNotebook}
+        onOpenAssets={onOpenAssets}
         onSelectAllNotes={onSelectAllNotes}
         onSelectNotebook={onSelectNotebook}
         onSelectTrash={onSelectTrash}
@@ -113,11 +120,13 @@ export const NotebookDrawerLayout = ({
     ),
     [
       activeNotebookId,
+      isAssetsActive,
       isOpen,
       memoView,
       notebooks,
       onClose,
       onCreateNotebook,
+      onOpenAssets,
       onSelectAllNotes,
       onSelectNotebook,
       onSelectTrash,
@@ -158,11 +167,13 @@ export const NotebookDrawerLayout = ({
 
 const NotebookDrawerContent = ({
   activeNotebookId,
+  isAssetsActive = false,
   isOpen,
   memoView,
   notebooks,
   onClose,
   onCreateNotebook,
+  onOpenAssets,
   onSelectAllNotes,
   onSelectNotebook,
   onSelectTrash,
@@ -568,6 +579,40 @@ const NotebookDrawerContent = ({
 
             {/* Divider */}
             <View style={[styles.divider, isDark && styles.dividerDark]} />
+
+            {/* Assets Row */}
+            {onOpenAssets ? (
+              <Pressable
+                accessibilityLabel={isAssetsActive ? "当前：附件管理" : "切换到附件管理"}
+                accessibilityRole="button"
+                onPress={() => {
+                  onClose();
+                  onOpenAssets();
+                }}
+                style={[
+                  styles.navItem,
+                  isAssetsActive && (isDark ? styles.navItemActiveDark : styles.navItemActive),
+                ]}
+              >
+                <View style={styles.navItemLeft}>
+                  <Paperclip
+                    color={isAssetsActive ? palette.accent : palette.inkSecondary}
+                    size={18}
+                  />
+                  <Text
+                    numberOfLines={1}
+                    style={[
+                      styles.navItemText,
+                      isDark && styles.textDark,
+                      isAssetsActive && [styles.navItemTextActive, isDark && styles.navItemTextActiveDark],
+                    ]}
+                  >
+                    附件管理
+                  </Text>
+                </View>
+                {isAssetsActive ? <Check color={palette.accent} size={17} /> : null}
+              </Pressable>
+            ) : null}
 
             {/* Trash Row */}
             <Pressable

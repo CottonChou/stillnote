@@ -227,7 +227,7 @@ const MOBILE_THEME_OPTIONS = NOTE_IMAGE_THEME_OPTIONS.map((id) => ({
 }));
 
 
-const AuthenticatedResourceImage = ({
+export const AuthenticatedResourceImage = ({
   alt,
   fitAspect = false,
   href,

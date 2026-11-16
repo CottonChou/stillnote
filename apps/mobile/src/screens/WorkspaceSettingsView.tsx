@@ -5,7 +5,7 @@ import type { InstanceHealth } from "@stillnote/client";
 import { buildGitHubFeedbackUrl, formatClientDisplaySize, isClientAheadOfInstance, toDevicePixelScreenSize, type AuthUser } from "@stillnote/shared";
 import { useQuery } from "@tanstack/react-query";
 import { BackHandler, Dimensions, Linking, Modal, PixelRatio, Platform, ScrollView, Switch, View } from "react-native";
-import { Activity, ActivityIndicator, Check, ChevronDown, ChevronLeft, ChevronRight, Cloud, Copy, ExternalLink, Image as ImageIcon, Info, LogOut, MessageSquare, MonitorSmartphone, Moon, RefreshCw, ShieldCheck, SlidersHorizontal, Sun, UserRound } from "../components/icons";
+import { Activity, ActivityIndicator, Check, ChevronDown, ChevronLeft, ChevronRight, Cloud, Copy, ExternalLink, Image as ImageIcon, Info, LogOut, MessageSquare, MonitorSmartphone, Moon, Paperclip, RefreshCw, ShieldCheck, SlidersHorizontal, Sun, UserRound } from "../components/icons";
 import { Pressable, Text } from "../components/LocalizedText";
 import { useMobileLocale, getMobileCatalog, type MobileLocale } from "../lib/mobile-locale";
 import { useMobileTheme } from "../lib/mobile-theme";
@@ -92,6 +92,7 @@ export const SettingsView = ({
   onClose,
   onImageCompressionChange,
   onLocalePreferenceChange,
+  onOpenAssets,
   onShowDescendantNotesChange,
   onSignOut,
   showDescendantNotes,
@@ -103,6 +104,7 @@ export const SettingsView = ({
   onClose: () => void;
   onImageCompressionChange: (enabled: boolean) => void;
   onLocalePreferenceChange: (locale: MobileLocaleMode) => void;
+  onOpenAssets?: () => void;
   onShowDescendantNotesChange: (enabled: boolean) => void;
   onSignOut: () => void;
   showDescendantNotes: boolean;
@@ -305,6 +307,20 @@ export const SettingsView = ({
                   <ChevronRight color={palette.inkPlaceholder} size={17} />
                 </Pressable>
               ))}
+              {onOpenAssets ? (
+                <Pressable accessibilityRole="button" onPress={onOpenAssets} style={[styles.settingsMenuRow, styles.settingsMenuRowBorder]}>
+                  <View style={styles.settingsMenuLabel}>
+                    <View style={styles.settingsMenuIcon}>
+                      <Paperclip color={palette.accent} size={17} />
+                    </View>
+                    <View style={styles.settingsFeedbackCopy}>
+                      <Text style={styles.settingsMenuText}>{translate("附件管理")}</Text>
+                      <Text style={styles.settingsFeedbackDescription}>查看和管理笔记中的所有图片与文件</Text>
+                    </View>
+                  </View>
+                  <ChevronRight color={palette.inkPlaceholder} size={17} />
+                </Pressable>
+              ) : null}
             </View>
             <View style={styles.settingsMenu}>
               <Pressable

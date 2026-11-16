@@ -103,6 +103,7 @@ import { NotesView } from "./WorkspaceNotesView";
 import { NotebookDrawerLayout } from "./WorkspaceDrawer";
 import { SettingsView, type MobileLocaleMode } from "./WorkspaceSettingsView";
 import { MemoDetailModal } from "./WorkspaceMemoDetail";
+import { WorkspaceAssetsView } from "./WorkspaceAssetsView";
 import {
   MoveSelectionModal,
   TagPickerModal,
@@ -122,7 +123,7 @@ import {
 } from "../lib/mobile-attachments";
 
 const ALL_NOTES_ID = "all";
-type MobileView = "notes" | "settings";
+type MobileView = "notes" | "settings" | "assets";
 type MemoView = "notebook" | "trash";
 type RichEditingSession = {
   draft: MobileMemoDraft | null;
@@ -561,6 +562,16 @@ export const WorkspaceScreen = ({
       setMemoView("notebook");
       setActiveNotebookId(ALL_NOTES_ID);
     }
+  };
+
+  const openAssets = () => {
+    setSearchText("");
+    clearSelection();
+    setActiveView("assets");
+  };
+
+  const closeAssets = () => {
+    setActiveView("notes");
   };
 
   const closeDetail = () => {
@@ -1402,6 +1413,8 @@ export const WorkspaceScreen = ({
         setActiveNotebookId(notebookId);
         closeDrawer();
       }}
+      isAssetsActive={activeView === "assets"}
+      onOpenAssets={openAssets}
       onSelectTrash={() => {
         showTrash();
         closeDrawer();
@@ -1476,10 +1489,24 @@ export const WorkspaceScreen = ({
           onLocalePreferenceChange={handleLocalePreferenceChange}
           imageCompressionEnabled={imageCompressionEnabled}
           onImageCompressionChange={handleImageCompressionChange}
+          onOpenAssets={openAssets}
           showDescendantNotes={showDescendantNotes ?? true}
           showDescendantNotesSaveFailed={showDescendantNotesSaveFailed}
           onShowDescendantNotesChange={(enabled) => void handleShowDescendantNotesChange(enabled)}
           onSignOut={signOut}
+        />
+      ) : null}
+
+      {activeView === "assets" ? (
+        <WorkspaceAssetsView
+          onClose={closeAssets}
+          onSelectMemo={(memoId) => {
+            setActiveView("notes");
+            if (memoView === "trash") {
+              setMemoView("notebook");
+            }
+            setSelectedMemoId(memoId);
+          }}
         />
       ) : null}
 
@@ -1618,6 +1645,7 @@ export const WorkspaceScreen = ({
           enterSelectionMode();
         }}
         onMemoListDensityChange={handleMemoListDensityChange}
+        onOpenAssets={openAssets}
         onOpenTagFilter={() => {
           setNotesActionsOpen(false);
           setTagFilterPickerOpen(true);

@@ -1,4 +1,4 @@
-import { DEFAULT_MEMO_TITLE, type MemoSummary, type Notebook } from "@stillnote/shared";
+import { DEFAULT_MEMO_TITLE, resolveAttachmentKind, type MemoSummary, type Notebook } from "@stillnote/shared";
 import { resolveSupportedLocale } from "@stillnote/shared/i18n/locales";
 import type { MobileLocalePreference } from "../lib/preferences";
 
@@ -322,4 +322,69 @@ export const resolveAndroidRootBackAction = ({
     return "allow-exit";
   }
   return "prompt-exit";
+};
+
+export type AssetFilterType = "all" | "image" | "document" | "other";
+
+const DOCUMENT_KINDS = new Set([
+  "pdf",
+  "document",
+  "spreadsheet",
+  "presentation",
+  "text",
+  "code",
+  "script",
+  "archive",
+  "book",
+]);
+
+export const isDocumentResource = (resource: { kind: string; mimeType: string | null; filename: string | null }): boolean => {
+  if (resource.kind === "image") return false;
+  const kind = resolveAttachmentKind(resource.mimeType, resource.filename);
+  return DOCUMENT_KINDS.has(kind);
+};
+
+export const filterAssetResources = <T extends { kind: string; mimeType: string | null; filename: string | null; memoTitle?: string | null; memoExcerpt?: string | null }>(
+  resources: T[],
+  filterType: AssetFilterType,
+  searchQuery: string
+): T[] => {
+  const query = searchQuery.trim().toLowerCase();
+  return resources.filter((resource) => {
+    if (filterType === "image" && resource.kind !== "image") return false;
+    if (filterType === "document" && (resource.kind === "image" || !isDocumentResource(resource))) return false;
+    if (filterType === "other" && (resource.kind === "image" || isDocumentResource(resource))) return false;
+
+    if (query) {
+      const nameMatch = (resource.filename || "").toLowerCase().includes(query);
+      const titleMatch = (resource.memoTitle || "").toLowerCase().includes(query);
+      const excerptMatch = (resource.memoExcerpt || "").toLowerCase().includes(query);
+      return nameMatch || titleMatch || excerptMatch;
+    }
+
+    return true;
+  });
+};
+
+export const calculateAssetCategoryCounts = <T extends { kind: string; mimeType: string | null; filename: string | null }>(
+  resources: T[]
+) => {
+  let images = 0;
+  let documents = 0;
+  let other = 0;
+  for (const r of resources) {
+    if (r.kind === "image") {
+      images++;
+    } else if (isDocumentResource(r)) {
+      documents++;
+    } else {
+      other++;
+    }
+  }
+  return {
+    all: resources.length,
+    image: images,
+    document: documents,
+    other,
+  };
 };

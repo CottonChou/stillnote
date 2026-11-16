@@ -50,6 +50,7 @@ export * from "./diagram-architecture-style";
 export * from "./diagram-mindmap-style";
 export * from "./diagram-view";
 export * from "./file-attachment";
+export * from "./format-bytes";
 export * from "./note-image-card";
 export * from "./pdf-attachment";
 export * from "./types";

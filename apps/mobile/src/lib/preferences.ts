@@ -8,14 +8,24 @@ import {
 } from "@stillnote/shared";
 
 const MEMO_LIST_DENSITY_KEY = "stillnote.mobile.memoListDensity";
+const ASSETS_LAYOUT_MODE_KEY = "stillnote.mobile.assetsLayoutMode";
 const IMAGE_COMPRESSION_KEY = "stillnote.mobile.imageCompressionEnabled";
 const SHOW_DESCENDANT_NOTES_KEY = "stillnote.mobile.showDescendantNotes";
 const LOCALE_PREFERENCE_KEY = "stillnote.mobile.localePreference";
 const THEME_PREFERENCE_KEY = "stillnote.mobile.themePreference";
 
 export type MobileMemoListDensity = "preview" | "compact";
+export type MobileAssetsLayoutMode = "grid" | "list";
 export type MobileLocalePreference = "system" | "zh-CN" | "en-US" | "ja" | "pl" | "ru";
 export type MobileThemePreference = "system" | "light" | "dark";
+
+export const readMobileAssetsLayoutMode = async (): Promise<MobileAssetsLayoutMode> => {
+  const value = await AsyncStorage.getItem(ASSETS_LAYOUT_MODE_KEY);
+  return value === "list" ? "list" : "grid";
+};
+
+export const writeMobileAssetsLayoutMode = (mode: MobileAssetsLayoutMode) =>
+  AsyncStorage.setItem(ASSETS_LAYOUT_MODE_KEY, mode);
 
 export const readMobileMemoListDensity = async (): Promise<MobileMemoListDensity> => {
   const value = await AsyncStorage.getItem(MEMO_LIST_DENSITY_KEY);

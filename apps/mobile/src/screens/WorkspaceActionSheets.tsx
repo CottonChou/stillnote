@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { MemoSortMode } from "@stillnote/client";
 import { Modal, ScrollView, View } from "react-native";
-import { ActivityIndicator, Check, CheckSquare, FileText, Folder, Image, List, MoreVertical, RefreshCw, Share2, Sparkles, Tag, Trash2, X } from "../components/icons";
+import { ActivityIndicator, Check, CheckSquare, FileText, Folder, Image, List, MoreVertical, Paperclip, RefreshCw, Share2, Sparkles, Tag, Trash2, X } from "../components/icons";
 import { Pressable, Text } from "../components/LocalizedText";
 import type { MobileMemoListDensity } from "../lib/preferences";
 import { useMobileTheme } from "../lib/mobile-theme";
@@ -81,6 +81,7 @@ export const NotesActionsModal = ({
   onClose,
   onEnterSelection,
   onMemoListDensityChange,
+  onOpenAssets,
   onOpenTagFilter,
   onSortModeChange,
   onSyncNotebook,
@@ -98,6 +99,7 @@ export const NotesActionsModal = ({
   onClose: () => void;
   onEnterSelection: () => void;
   onMemoListDensityChange: (density: MobileMemoListDensity) => void;
+  onOpenAssets?: () => void;
   onOpenTagFilter: () => void;
   onSortModeChange: (sortMode: MemoSortMode) => void;
   onSyncNotebook?: () => void;
@@ -147,6 +149,17 @@ export const NotesActionsModal = ({
                 label="按标签筛选"
                 onPress={onOpenTagFilter}
               />
+              {onOpenAssets ? (
+                <ActionSheetItem
+                  compact
+                  icon={<Paperclip color={palette.ink} size={18} />}
+                  label="附件管理"
+                  onPress={() => {
+                    onClose();
+                    onOpenAssets();
+                  }}
+                />
+              ) : null}
               <View style={styles.listActionDivider} />
             </>
           ) : null}
