@@ -304,4 +304,45 @@ describe("consecutive shares while the create editor stays open", () => {
     run();
     expect(saves).toBe(1);
   });
+
+  test("opens create note editor populated with shared plain text", () => {
+    let nextEditorOpened = false;
+    let seed: { title?: string; contentMarkdown?: string } | null = null;
+    let handled = 0;
+    const textPayload = [{ value: "## 选中的会议纪要\n1. 事项一\n2. 事项二", mimeType: "text/plain", shareType: "text" }];
+    const context = {
+      createOpen: false,
+      incomingShareIsResolving: false,
+      incomingShareError: null,
+      incomingSharePayloads: textPayload,
+      incomingShareUrl: null,
+      incomingShareText: textPayload[0]!.value,
+      sharedImages: [],
+      notebooks: [{}],
+      notebooksQuery: { isSuccess: true },
+      processedShareUrlRef: { current: null },
+      incomingShareTaskRef: { current: null },
+      beginEditorStartup: () => {},
+      setSelectedMemoId: () => {},
+      setIncomingClipDraft: () => {},
+      setIncomingShareImages: () => {},
+      setCreateSeed: (value: { title?: string; contentMarkdown?: string }) => { seed = value; },
+      setActiveView: () => {},
+      setMemoView: () => {},
+      setCreateOpen: (value: boolean) => { nextEditorOpened = value; },
+      translate: (value: string) => value,
+      extractTitleFromSharedText: (text: string) => text.split("\n")[0]!.replace(/^#+\s*/, ""),
+      onIncomingShareHandledRef: { current: () => { handled++; } },
+    };
+    const run = () => new Function(...Object.keys(context), effectBody)(...Object.values(context));
+    run();
+    expect(nextEditorOpened).toBe(true);
+    expect(seed).toEqual({
+      contentMarkdown: "## 选中的会议纪要\n1. 事项一\n2. 事项二",
+      tagsText: "",
+      title: "选中的会议纪要",
+    });
+    expect(handled).toBe(1);
+    expect(context.processedShareUrlRef.current).toBe("text:## 选中的会议纪要\n1. 事项一\n2. 事项二");
+  });
 });

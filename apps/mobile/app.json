@@ -33,7 +33,20 @@
       "adaptiveIcon": {
         "backgroundColor": "#187958",
         "foregroundImage": "./assets/adaptive-icon-transparent.png"
-      }
+      },
+      "intentFilters": [
+        {
+          "action": "PROCESS_TEXT",
+          "category": [
+            "DEFAULT"
+          ],
+          "data": [
+            {
+              "mimeType": "text/plain"
+            }
+          ]
+        }
+      ]
     },
     "plugins": [
       "expo-router",

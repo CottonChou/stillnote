@@ -1,4 +1,5 @@
 diff --git a/android/src/main/java/expo/modules/sharing/ShareIntoUtils.kt b/android/src/main/java/expo/modules/sharing/ShareIntoUtils.kt
+index 041daea0d22677acefbcf01fc953706ba4a948c6..ac7fd071492242b656b6539f3da1911aaf49153e 100644
 --- a/android/src/main/java/expo/modules/sharing/ShareIntoUtils.kt
 +++ b/android/src/main/java/expo/modules/sharing/ShareIntoUtils.kt
 @@ -1,14 +1,21 @@
@@ -23,7 +24,7 @@ diff --git a/android/src/main/java/expo/modules/sharing/ShareIntoUtils.kt b/andr
  
  // Emits intent received event to JS. This is because the `SEND` and `SEND_MULTIPLE` intents
  // have no uri and do not inform the navigation libraries of a native intent.
-@@ -32,24 +39,102 @@
+@@ -32,22 +39,112 @@ internal fun getShareIntentUri(context: Context): Uri? {
  // Emits intent received event to JS. This is because the `SEND` and `SEND_MULTIPLE` intents
  // do not navigation libraries of a native intent. This aligns the behaviour with ios.
  internal fun emitShareIntentReceived(reactActivity: ReactActivity, originalIntent: Intent) {
@@ -45,9 +46,7 @@ diff --git a/android/src/main/java/expo/modules/sharing/ShareIntoUtils.kt b/andr
 +    deviceEventManagerModule.emitNewIntentReceived(uri)
 +  }
 +}
- 
--  getShareIntentUri(reactActivity)?.let { uri ->
--    deviceEventManagerModule?.emitNewIntentReceived(uri)
++
 +internal fun materializeShareIntent(context: Context, source: Intent): Intent {
 +  val uris = getShareIntentUris(source)
 +  if (uris.isEmpty()) {
@@ -56,7 +55,7 @@ diff --git a/android/src/main/java/expo/modules/sharing/ShareIntoUtils.kt b/andr
 +        source.clipData?.let { clipData = it }
 +      }
 +    }
-   }
++  }
 +
 +  val copied = mutableListOf<File>()
 +  try {
@@ -77,12 +76,21 @@ diff --git a/android/src/main/java/expo/modules/sharing/ShareIntoUtils.kt b/andr
 +    copied.forEach { it.delete() }
 +    throw error
 +  }
- }
++}
  
+-  getShareIntentUri(reactActivity)?.let { uri ->
+-    deviceEventManagerModule?.emitNewIntentReceived(uri)
 +private fun baseShareIntent(source: Intent): Intent {
-+  return Intent(source.action).apply {
-+    type = source.type
-+    source.getCharSequenceExtra(Intent.EXTRA_TEXT)?.let { putExtra(Intent.EXTRA_TEXT, it) }
++  val text = source.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
++    ?: source.getCharSequenceExtra(Intent.EXTRA_TEXT)
++  val action = if (source.action == Intent.ACTION_PROCESS_TEXT) {
++    Intent.ACTION_SEND
++  } else {
++    source.action
++  }
++  return Intent(action).apply {
++    type = source.type ?: "text/plain"
++    text?.let { putExtra(Intent.EXTRA_TEXT, it) }
 +  }
 +}
 +
@@ -100,21 +108,27 @@ diff --git a/android/src/main/java/expo/modules/sharing/ShareIntoUtils.kt b/andr
 +  if (file.length() == 0L) {
 +    file.delete()
 +    throw FileNotFoundException(uri.toString())
-+  }
+   }
 +  return file
-+}
-+
+ }
+ 
  internal fun isShareIntent(intent: Intent): Boolean {
    val allowedShareActions =
-     listOf("android.intent.action.SEND", "android.intent.action.SEND_MULTIPLE")
+-    listOf("android.intent.action.SEND", "android.intent.action.SEND_MULTIPLE")
++    listOf(
++      "android.intent.action.SEND",
++      "android.intent.action.SEND_MULTIPLE",
++      "android.intent.action.PROCESS_TEXT"
++    )
  
 -  return intent.type != null && allowedShareActions.contains(intent.action)
 +  // Android can recreate a task with its original SEND intent. That is a
 +  // history launch, not a new share, even after the JS process has been killed.
 +  return intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0 &&
-+    intent.type != null && allowedShareActions.contains(intent.action)
- }
- 
++    (intent.type != null || intent.action == "android.intent.action.PROCESS_TEXT") &&
++    allowedShareActions.contains(intent.action)
++}
++
 +internal fun getShareIntentUris(intent: Intent): List<Uri> {
 +  val streams = when (intent.action) {
 +    Intent.ACTION_SEND -> listOfNotNull(intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))
@@ -127,12 +141,10 @@ diff --git a/android/src/main/java/expo/modules/sharing/ShareIntoUtils.kt b/andr
 +
 +  val clipData = intent.clipData ?: return emptyList()
 +  return (0 until clipData.itemCount).mapNotNull { index -> clipData.getItemAt(index).uri }
-+}
-+
+ }
+ 
  internal inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(name: String): T? {
-   return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-     getParcelableExtra(name, T::class.java)
-@@ -70,3 +155,48 @@
+@@ -70,3 +167,48 @@ internal inline fun <reified T : Parcelable> Intent.getParcelableArrayListExtraC
  
  internal val URL.lastPathComponent: String
    get() = path.removeSuffix("/").substringAfterLast('/')
@@ -182,9 +194,10 @@ diff --git a/android/src/main/java/expo/modules/sharing/ShareIntoUtils.kt b/andr
 +  context.startActivity(launch)
 +}
 diff --git a/android/src/main/java/expo/modules/sharing/SharingModule.kt b/android/src/main/java/expo/modules/sharing/SharingModule.kt
+index 69ccba68e28af71a262c01bd54a202a7bd985909..bb3ecdc2ed389d5fdb29564517c01e8348ffe8f9 100644
 --- a/android/src/main/java/expo/modules/sharing/SharingModule.kt
 +++ b/android/src/main/java/expo/modules/sharing/SharingModule.kt
-@@ -75,6 +75,17 @@
+@@ -75,6 +75,17 @@ class SharingModule : Module() {
  
      Function("clearSharedPayloads") {
        SharingSingleton.intent = null
@@ -202,10 +215,43 @@ diff --git a/android/src/main/java/expo/modules/sharing/SharingModule.kt b/andro
      }
  
      OnActivityResult { _, (requestCode) ->
+diff --git a/android/src/main/java/expo/modules/sharing/SharingReactActivityLifecycleListener.kt b/android/src/main/java/expo/modules/sharing/SharingReactActivityLifecycleListener.kt
+index 905790a6bd0cd3325ddaab7189fcf333157c1921..4c2fe15b05c3818c8ead15cba2afd63901d298f4 100644
+--- a/android/src/main/java/expo/modules/sharing/SharingReactActivityLifecycleListener.kt
++++ b/android/src/main/java/expo/modules/sharing/SharingReactActivityLifecycleListener.kt
+@@ -20,7 +20,12 @@ class SharingReactActivityLifecycleListener(activityContext: Context) :
+ 
+   override fun onCreate(activity: Activity?, misavedInstanceState: Bundle?) {
+     if (activity?.intent != null && isShareIntent(activity.intent)) {
+-      SharingSingleton.intent = Intent(activity.intent)
++      val prepared = try {
++        materializeShareIntent(activity, activity.intent)
++      } catch (_: Exception) {
++        unreadableShareIntent(activity.intent)
++      }
++      SharingSingleton.intent = prepared
+ 
+       getShareIntentUri(activity)?.let { uri ->
+         // Navigation handlers will ignore the intent data if the action is different than ACTION_VIEW
+@@ -36,7 +41,12 @@ class SharingReactActivityLifecycleListener(activityContext: Context) :
+   override fun onNewIntent(intent: Intent?): Boolean {
+     val reactActivity = activityContext.get() ?: return false
+     if (intent != null && isShareIntent(intent)) {
+-      emitShareIntentReceived(reactActivity, intent)
++      val prepared = try {
++        materializeShareIntent(reactActivity, intent)
++      } catch (_: Exception) {
++        unreadableShareIntent(intent)
++      }
++      emitShareIntentReceived(reactActivity, prepared)
+       return false
+     }
+ 
 diff --git a/android/src/main/java/expo/modules/sharing/dataParsers/ResolvingShareIntentDataParser.kt b/android/src/main/java/expo/modules/sharing/dataParsers/ResolvingShareIntentDataParser.kt
+index 5f4d9423acc2999c1f1209181c95c37138155b5d..61de15b31b50a3874d71b79847106433e53ec5cd 100644
 --- a/android/src/main/java/expo/modules/sharing/dataParsers/ResolvingShareIntentDataParser.kt
 +++ b/android/src/main/java/expo/modules/sharing/dataParsers/ResolvingShareIntentDataParser.kt
-@@ -6,9 +6,11 @@
+@@ -6,9 +6,11 @@ import android.content.Context
  import android.net.Uri
  import android.provider.OpenableColumns
  import java.io.File
@@ -217,7 +263,7 @@ diff --git a/android/src/main/java/expo/modules/sharing/dataParsers/ResolvingSha
  import kotlin.text.indexOf
  import kotlin.text.substring
  
-@@ -25,21 +27,22 @@
+@@ -25,21 +27,23 @@ class ResolvingShareIntentDataParser {
      }
  
      private fun handleSendAction(context: Context, intent: Intent, type: String): List<ResolvedSharePayload> {
@@ -242,13 +288,14 @@ diff --git a/android/src/main/java/expo/modules/sharing/dataParsers/ResolvingSha
  
      private fun extractTextPayload(intent: Intent): List<ResolvedSharePayload> {
 -      val text = intent.getStringExtra(Intent.EXTRA_TEXT) ?: return emptyList()
-+      val text = intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString()
++      val text = intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString()
++        ?: intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString()
 +        ?: intent.clipData?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.text?.toString()
 +        ?: return emptyList()
  
        if (android.util.Patterns.WEB_URL.matcher(text).matches()) {
          return listOf(resolveUrlContext(text))
-@@ -58,19 +61,27 @@
+@@ -58,19 +62,27 @@ class ResolvingShareIntentDataParser {
        val contentResolver = context.contentResolver
        val fileName = getFileName(contentResolver, uri) ?: "unknown"
        val fileSize = getFileSize(contentResolver, uri)
@@ -281,9 +328,10 @@ diff --git a/android/src/main/java/expo/modules/sharing/dataParsers/ResolvingSha
  
        return ResolvedSharePayload().apply {
 diff --git a/android/src/main/java/expo/modules/sharing/dataParsers/SimpleShareIntentDataParser.kt b/android/src/main/java/expo/modules/sharing/dataParsers/SimpleShareIntentDataParser.kt
+index 8dd50e8f04022d183884a57e4d61a7e1711b9e49..0c5a65726fea850388bd9f7d2887e6ebf10833cf 100644
 --- a/android/src/main/java/expo/modules/sharing/dataParsers/SimpleShareIntentDataParser.kt
 +++ b/android/src/main/java/expo/modules/sharing/dataParsers/SimpleShareIntentDataParser.kt
-@@ -17,8 +17,13 @@
+@@ -17,8 +17,14 @@ internal class SimpleShareIntentDataParser {
      }
  
      private fun handleSendAction(context: Context, intent: Intent, type: String): List<SharePayload> {
@@ -293,13 +341,14 @@ diff --git a/android/src/main/java/expo/modules/sharing/dataParsers/SimpleShareI
 +      return if (uri != null) {
 +        listOf(createUriPayload(context, uri, type))
 +      } else if (type == "text/plain") {
-+        val text = intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString()
++        val text = intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString()
++          ?: intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString()
 +          ?: intent.clipData?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.text?.toString()
 +          ?: return emptyList()
          val isUrl = android.util.Patterns.WEB_URL.matcher(text).matches()
  
          listOf(
-@@ -28,19 +33,17 @@
+@@ -28,19 +34,17 @@ internal class SimpleShareIntentDataParser {
              mimeType = "text/plain"
            }
          )
@@ -325,6 +374,7 @@ diff --git a/android/src/main/java/expo/modules/sharing/dataParsers/SimpleShareI
          value = uri.toString()
          shareType = ShareType.fromMimeType(specificType)
 diff --git a/build/useIncomingShare.js b/build/useIncomingShare.js
+index c35924ad787824facb61ed764bb99f982148d408..7dd96d455bcc3727c3ee37e551448b0385b30eb8 100644
 --- a/build/useIncomingShare.js
 +++ b/build/useIncomingShare.js
 @@ -1,6 +1,6 @@
@@ -336,7 +386,7 @@ diff --git a/build/useIncomingShare.js b/build/useIncomingShare.js
  function sharePayloadsAreEqual(a, b) {
      if (a.length !== b.length) {
          return false;
-@@ -30,6 +30,16 @@
+@@ -30,6 +30,16 @@ export function useIncomingShare() {
      const [isResolving, setIsResolving] = useState(false);
      const [error, setError] = useState(null);
      const currentSharedDataRef = useRef([]);
@@ -353,7 +403,7 @@ diff --git a/build/useIncomingShare.js b/build/useIncomingShare.js
      const refreshSharePayloads = useCallback(async () => {
          try {
              const newSharedData = getSharedPayloads();
-@@ -37,21 +47,30 @@
+@@ -37,21 +47,30 @@ export function useIncomingShare() {
              if (sharePayloadsAreEqual(newSharedData, currentSharedDataRef.current)) {
                  return;
              }
@@ -386,7 +436,7 @@ diff --git a/build/useIncomingShare.js b/build/useIncomingShare.js
                  }
              }
          }
-@@ -66,7 +85,20 @@
+@@ -66,7 +85,20 @@ export function useIncomingShare() {
                  refreshSharePayloads();
              }
          });
@@ -408,9 +458,10 @@ diff --git a/build/useIncomingShare.js b/build/useIncomingShare.js
          };
      }, [refreshSharePayloads]);
 diff --git a/plugin/build/android/withAndroidIntentFilters.js b/plugin/build/android/withAndroidIntentFilters.js
+index 9e8fc9fc19338367b3600f9ddfad58f1f4fc8069..311040c6810273212b663ec3a0e682f8238cf30f 100644
 --- a/plugin/build/android/withAndroidIntentFilters.js
 +++ b/plugin/build/android/withAndroidIntentFilters.js
-@@ -5,6 +5,8 @@
+@@ -5,6 +5,8 @@ exports.setAndroidIntentFilters = setAndroidIntentFilters;
  exports.default = renderIntentFilters;
  const config_plugins_1 = require("@expo/config-plugins");
  const SHARING_GENERATED_TAG = 'expo-sharing-intent-filters';
@@ -419,7 +470,7 @@ diff --git a/plugin/build/android/withAndroidIntentFilters.js b/plugin/build/and
  const withAndroidIntentFilters = (config, { intentFilters }) => {
      return (0, config_plugins_1.withAndroidManifest)(config, (config) => {
          setAndroidIntentFilters(config, intentFilters);
-@@ -13,17 +15,31 @@
+@@ -13,17 +15,33 @@ const withAndroidIntentFilters = (config, { intentFilters }) => {
  };
  exports.withAndroidIntentFilters = withAndroidIntentFilters;
  function setAndroidIntentFilters(config, intentFilters) {
@@ -447,11 +498,13 @@ diff --git a/plugin/build/android/withAndroidIntentFilters.js b/plugin/build/and
 +        $: {
 +            'android:name': SHARE_RECEIVER_ACTIVITY,
 +            'android:exported': 'true',
++            'android:label': '@string/app_name',
++            'android:icon': '@mipmap/ic_launcher',
 +            'android:excludeFromRecents': 'true',
 +            'android:launchMode': 'standard',
 +            'android:noHistory': 'true',
 +            'android:taskAffinity': '',
-+            'android:theme': '@android:style/Theme.NoDisplay',
++            'android:theme': '@android:style/Theme.Translucent.NoTitleBar',
 +        },
 +        'intent-filter': renderIntentFilters(intentFilters),
 +    });
@@ -459,9 +512,10 @@ diff --git a/plugin/build/android/withAndroidIntentFilters.js b/plugin/build/and
  }
  function renderIntentFilters(intentFilters) {
 diff --git a/plugin/src/android/withAndroidIntentFilters.ts b/plugin/src/android/withAndroidIntentFilters.ts
+index 2b77feb6a1bd4f934ae2ae1f4532b35fbde971fb..3ff7c799e8bbc27545d46bb1cc21149ff67c9b1e 100644
 --- a/plugin/src/android/withAndroidIntentFilters.ts
 +++ b/plugin/src/android/withAndroidIntentFilters.ts
-@@ -10,6 +10,7 @@
+@@ -10,6 +10,7 @@ import { AndroidIntentFiltersData } from '@expo/config-types';
  import { SingleIntentFilter, MultiIntentFilter, IntentFilter } from '../sharingPlugin.types';
  
  const SHARING_GENERATED_TAG = 'expo-sharing-intent-filters';
@@ -469,7 +523,7 @@ diff --git a/plugin/src/android/withAndroidIntentFilters.ts b/plugin/src/android
  type WithAndroidIntentFiltersOptions = {
    intentFilters: IntentFilter[];
  };
-@@ -28,22 +29,37 @@
+@@ -28,22 +29,39 @@ export function setAndroidIntentFilters(
    config: ExportedConfigWithProps<AndroidManifest>,
    intentFilters: IntentFilter[]
  ): ExportedConfigWithProps<AndroidManifest> {
@@ -506,11 +560,13 @@ diff --git a/plugin/src/android/withAndroidIntentFilters.ts b/plugin/src/android
 +    $: {
 +      'android:name': SHARE_RECEIVER_ACTIVITY,
 +      'android:exported': 'true',
++      'android:label': '@string/app_name',
++      'android:icon': '@mipmap/ic_launcher',
 +      'android:excludeFromRecents': 'true',
 +      'android:launchMode': 'standard',
 +      'android:noHistory': 'true',
 +      'android:taskAffinity': '',
-+      'android:theme': '@android:style/Theme.NoDisplay',
++      'android:theme': '@android:style/Theme.Translucent.NoTitleBar',
 +    },
 +    'intent-filter': renderIntentFilters(intentFilters),
 +  });
@@ -518,6 +574,7 @@ diff --git a/plugin/src/android/withAndroidIntentFilters.ts b/plugin/src/android
    return config;
  }
 diff --git a/src/useIncomingShare.ts b/src/useIncomingShare.ts
+index b5431e64382d9576c720d54343a3f5521cefca8b..5a14f32578c8f2bdd53b861cc31f9cd39c046555 100644
 --- a/src/useIncomingShare.ts
 +++ b/src/useIncomingShare.ts
 @@ -1,8 +1,8 @@
@@ -531,7 +588,7 @@ diff --git a/src/useIncomingShare.ts b/src/useIncomingShare.ts
  import type { ResolvedSharePayload, SharePayload, UseIncomingShareResult } from './Sharing.types';
  
  function sharePayloadsAreEqual(a: SharePayload[], b: SharePayload[]): boolean {
-@@ -42,6 +42,17 @@
+@@ -42,6 +42,17 @@ export function useIncomingShare(): UseIncomingShareResult {
    const [error, setError] = useState<Error | null>(null);
    const currentSharedDataRef = useRef<SharePayload[]>([]);
  
@@ -549,7 +606,7 @@ diff --git a/src/useIncomingShare.ts b/src/useIncomingShare.ts
    const refreshSharePayloads = useCallback(async () => {
      try {
        const newSharedData: SharePayload[] = getSharedPayloads();
-@@ -51,22 +62,28 @@
+@@ -51,22 +62,28 @@ export function useIncomingShare(): UseIncomingShareResult {
          return;
        }
  
@@ -580,7 +637,7 @@ diff --git a/src/useIncomingShare.ts b/src/useIncomingShare.ts
          }
        }
      } catch (e) {
-@@ -83,7 +100,20 @@
+@@ -83,7 +100,20 @@ export function useIncomingShare(): UseIncomingShareResult {
        }
      });
  

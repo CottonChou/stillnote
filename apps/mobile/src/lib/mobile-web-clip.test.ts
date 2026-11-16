@@ -3,7 +3,9 @@ import {
   buildMobileWebClipDraft,
   buildMobileWebClipDraftFromRenderedPage,
   extractPageTitle,
+  extractTitleFromSharedText,
   getSharedImages,
+  getSharedPlainText,
   getSharedWebUrl,
   htmlToMarkdown,
   isWeChatArticleUrl,
@@ -34,6 +36,20 @@ describe("mobile web clip", () => {
     ])).toBe("https://mp.weixin.qq.com/s/abc123");
     expect(isWeChatArticleUrl("https://mp.weixin.qq.com/s/abc123")).toBe(true);
     expect(isWeChatArticleUrl("http://mp.weixin.qq.com/s/abc123")).toBe(false);
+  });
+
+  test("extracts plain text and generates a concise title", () => {
+    expect(getSharedPlainText([
+      { shareType: "text", value: "  ## 会议纪要\n关于下周发布的各项准备工作  " },
+    ])).toBe("## 会议纪要\n关于下周发布的各项准备工作");
+
+    expect(getSharedPlainText([
+      { contentType: "image", mimeType: "image/png", value: "file:///test.png" },
+      { shareType: "text", value: "灵感备忘" },
+    ])).toBe("灵感备忘");
+
+    expect(extractTitleFromSharedText("## 会议纪要\n关于下周发布的各项准备工作")).toBe("会议纪要");
+    expect(extractTitleFromSharedText("一段没有任何换行但是特别长特别长特别长的文字摘录内容用于测试标题截断逻辑")).toBe("一段没有任何换行但是特别长特别长特别长的文字摘录内容用于测试…");
   });
 
   test("extracts title regardless of meta attribute order", () => {

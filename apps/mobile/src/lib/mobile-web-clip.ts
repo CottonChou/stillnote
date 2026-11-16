@@ -136,6 +136,30 @@ export const getSharedWebUrl = (payloads: MobileSharedPayload[]) => {
   return null;
 };
 
+export const getSharedPlainText = (payloads: MobileSharedPayload[]): string | null => {
+  for (const payload of payloads) {
+    const mimeType = payload.contentMimeType?.trim() || payload.mimeType?.trim() || "";
+    const isImage = payload.contentType === "image" || payload.shareType === "image" || mimeType.startsWith("image/");
+    if (isImage) {
+      continue;
+    }
+    const value = payload.value?.trim() ?? "";
+    if (value) {
+      return value;
+    }
+  }
+  return null;
+};
+
+export const extractTitleFromSharedText = (text: string): string => {
+  const firstLine = text.split(/\r?\n/).find((line) => line.trim().length > 0)?.trim() ?? "";
+  const cleaned = firstLine.replace(/^[#*\-—\s>]+/, "").trim();
+  if (!cleaned) {
+    return "";
+  }
+  return cleaned.length > 30 ? `${cleaned.slice(0, 30)}…` : cleaned;
+};
+
 export const getSharedImages = (payloads: MobileSharedPayload[]): MobileSharedImage[] =>
   payloads.flatMap((payload, index) => {
     const mimeType = payload.contentMimeType?.trim() || payload.mimeType?.trim() || "";

@@ -72,7 +72,9 @@ import { type MobileCreateMemoSeed } from "../lib/mobile-templates";
 import {
   buildMobileWebClipDraft,
   buildMobileWebClipDraftFromRenderedPage,
+  extractTitleFromSharedText,
   getSharedImages,
+  getSharedPlainText,
   getSharedWebUrl,
   isWeChatArticleUrl,
   type MobileRenderedWebPage,
@@ -222,6 +224,7 @@ export const WorkspaceScreen = ({
   onIncomingShareHandledRef.current = onIncomingShareHandled;
   const debouncedSearchText = useDebouncedValue(searchText.trim(), 250);
   const incomingShareUrl = useMemo(() => getSharedWebUrl(incomingSharePayloads), [incomingSharePayloads]);
+  const incomingShareText = useMemo(() => getSharedPlainText(incomingSharePayloads), [incomingSharePayloads]);
   const sharedImages = useMemo(() => getSharedImages(incomingSharePayloads), [incomingSharePayloads]);
   const handleMemoIdRemapped = useCallback((temporaryId: string, memo: MemoDetail) => {
     setSelectedMemoId((current) => current === temporaryId ? memo.id : current);
@@ -721,7 +724,7 @@ export const WorkspaceScreen = ({
     // Keep the new payload pending until that editor has saved and unmounted.
     const pendingShareKey = sharedImages.length > 0
       ? `images:${sharedImages.map((image) => image.uri).join("|")}`
-      : incomingShareUrl;
+      : incomingShareUrl || (incomingShareText ? `text:${incomingShareText.slice(0, 50)}` : null);
     if (createOpen && pendingShareKey && processedShareUrlRef.current !== pendingShareKey && notebooks.length > 0) {
       setFinishCreateForIncomingShare(true);
       return;
@@ -760,11 +763,42 @@ export const WorkspaceScreen = ({
 
     const sourceUrl = incomingShareUrl;
     if (!sourceUrl) {
+      if (incomingShareText) {
+        const shareKey = `text:${incomingShareText.slice(0, 50)}`;
+        if (processedShareUrlRef.current === shareKey) {
+          return;
+        }
+        if (notebooks.length === 0) {
+          if (notebooksQuery.isSuccess) {
+            processedShareUrlRef.current = shareKey;
+            Alert.alert("无法保存文本", "请先在 StillNote 中创建一个笔记本。");
+            onIncomingShareHandledRef.current?.();
+          }
+          return;
+        }
+
+        processedShareUrlRef.current = shareKey;
+        beginEditorStartup();
+        setSelectedMemoId(null);
+        setIncomingClipDraft(null);
+        setIncomingShareImages([]);
+        setCreateSeed({
+          contentMarkdown: incomingShareText,
+          tagsText: "",
+          title: extractTitleFromSharedText(incomingShareText) || translate("分享的文本"),
+        });
+        setActiveView("notes");
+        setMemoView("notebook");
+        setCreateOpen(true);
+        onIncomingShareHandledRef.current?.();
+        return;
+      }
+
       if (incomingSharePayloads.length > 0 && processedShareUrlRef.current !== "invalid-share") {
         processedShareUrlRef.current = "invalid-share";
         Alert.alert(
           "无法读取分享内容",
-          incomingShareError?.message || "分享内容里没有可识别的网页链接或图片。",
+          incomingShareError?.message || "分享内容里没有可识别的文本、网页链接或图片。",
         );
         onIncomingShareHandledRef.current?.();
         return;
@@ -819,6 +853,7 @@ export const WorkspaceScreen = ({
     incomingShareError,
     incomingShareIsResolving,
     incomingSharePayloads.length,
+    incomingShareText,
     incomingShareUrl,
     notebooks.length,
     notebooksQuery.isSuccess,
