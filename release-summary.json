@@ -1,17 +1,20 @@
 {
-  "version": "2.18.2",
+  "version": "2.18.3",
   "changes": {
     "en-US": [
-      "Improve Android local-first persistence, gesture responsiveness, list virtualization, and date formatting performance.",
-      "Optimize Mac desktop and Web performance with on-demand editor dialog code-splitting, card render memoization, and throttled background polling."
+      "Add mobile attachment and asset manager view with zoomable preview and search.",
+      "Support plain text incoming shares, ColorOS content portal, and PROCESS_TEXT action on Android.",
+      "Implement macOS in-place update fallback for desktop client."
     ],
     "zh-CN": [
-      "重构 Android 端本地优先持久化与即时保存，优化左滑手势、长列表裁剪与日期格式化性能，修复深色模式按钮与分割线样式。",
-      "优化 Mac 桌面端与 Web 性能：重型弹窗按需代码分包（编辑器首包体积缩减 42%）、卡片精准增量渲染与 macOS 后台轮询能耗优化。"
+      "移动端新增附件与资源管理视图，支持缩放预览、分类筛选与搜索。",
+      "Android 端支持纯文本系统分享、OPPO ColorOS 内容传送门与划词菜单写入。",
+      "实现 Mac 桌面端原地更新容错兜底机制。"
     ],
     "ja": [
-      "Androidのローカルファースト永続化、スワイプジェスチャー、リスト仮想化、および日付フォーマットのパフォーマンスを改善しました。",
-      "MacデスクトップおよびWeb向けにエディタダイアログの遅延読み込み、メモカードの再描画最適化、およびバックグラウンド処理の省電力化を実施しました。"
+      "モバイル版にピンチズームプレビューと検索を備えた添付ファイル・アセット管理ビューを追加。",
+      "Androidでプレーンテキスト共有、ColorOSコンテンツポータル、PROCESS_TEXTアクションに対応。",
+      "デスクトップ版Mac向けにインプレースアップデートのフォールバックを実装。"
     ]
   }
 }

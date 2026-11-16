@@ -3,7 +3,7 @@
     "name": "StillNote",
     "slug": "stillnote",
     "scheme": "stillnote",
-    "version": "2.18.2",
+    "version": "2.18.3",
     "runtimeVersion": {
       "policy": "appVersion"
     },
@@ -29,7 +29,7 @@
     },
     "android": {
       "package": "org.stillnote.mobile",
-      "versionCode": 256,
+      "versionCode": 257,
       "adaptiveIcon": {
         "backgroundColor": "#187958",
         "foregroundImage": "./assets/adaptive-icon-transparent.png"
