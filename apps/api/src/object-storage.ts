@@ -151,7 +151,19 @@ const toWorkerS3Config = async (
   };
 };
 
+const MAX_OBJECT_STORE_DELETE_BATCH = 500;
+
 export const resolveObjectStorage = async (env: ObjectStorageEnvironment, configId?: string | null) => {
+  // Fast path: most instances store blobs in the built-in R2 bucket. Avoid an
+  // extra D1 lookup on object_storage_configs for every blob read/delete.
+  if (configId === BUILTIN_STORAGE_CONFIG_ID) {
+    return {
+      configId: BUILTIN_STORAGE_CONFIG_ID,
+      bucketName: env.STILLNOTE_R2_BUCKET_NAME?.trim() || "stillnote-resources",
+      store: env.storage.resources,
+    };
+  }
+
   const row = configId
     ? await getObjectStorageConfig(env.storage.db, configId)
     : await getActiveObjectStorageConfig(env.storage.db);
@@ -187,6 +199,8 @@ export const deleteStoredObjects = async (
 
   for (const [configId, objectKeys] of groups) {
     const { store } = await resolveObjectStorage(env, configId);
-    await store.delete(objectKeys);
+    for (let offset = 0; offset < objectKeys.length; offset += MAX_OBJECT_STORE_DELETE_BATCH) {
+      await store.delete(objectKeys.slice(offset, offset + MAX_OBJECT_STORE_DELETE_BATCH));
+    }
   }
 };

@@ -35,6 +35,7 @@ const createSyncIntegrationFixture = () => {
     CREATE TABLE notebooks (
       id TEXT PRIMARY KEY, workspace_id TEXT NOT NULL, parent_id TEXT, name TEXT NOT NULL,
       slug TEXT, icon TEXT, color TEXT, text_color TEXT, color_target TEXT NOT NULL DEFAULT 'icon', is_bold INTEGER NOT NULL DEFAULT 0, icon_inverted INTEGER NOT NULL DEFAULT 0, row_inverted INTEGER NOT NULL DEFAULT 0, sort_order INTEGER NOT NULL DEFAULT 0,
+      memo_count INTEGER NOT NULL DEFAULT 0, last_memo_updated_at TEXT,
       is_deleted INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL, updated_at TEXT NOT NULL
     );
     CREATE TABLE memos (
@@ -144,6 +145,7 @@ describe("sync route contracts", () => {
       CREATE TABLE notebooks (
         id TEXT PRIMARY KEY, workspace_id TEXT NOT NULL, parent_id TEXT, name TEXT NOT NULL,
         slug TEXT, icon TEXT, color TEXT, text_color TEXT, color_target TEXT NOT NULL DEFAULT 'icon', is_bold INTEGER NOT NULL DEFAULT 0, icon_inverted INTEGER NOT NULL DEFAULT 0, row_inverted INTEGER NOT NULL DEFAULT 0, sort_order INTEGER NOT NULL DEFAULT 0,
+        memo_count INTEGER NOT NULL DEFAULT 0, last_memo_updated_at TEXT,
         is_deleted INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL, updated_at TEXT NOT NULL
       );
       CREATE TABLE memos (

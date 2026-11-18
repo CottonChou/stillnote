@@ -22,7 +22,7 @@ import {
   type MemoUpdateInput,
   type TiptapDoc,
 } from "@stillnote/shared";
-import { auditStatement } from "./audit";
+import { auditStatement, pruneExpiredAuditEventsStatement } from "./audit";
 import type { AppContext, AuditActor, AuthContext, Bindings } from "./api-context";
 import { AppError } from "./app-error";
 import { clampNumber, createId, isoNow, parseJsonArray } from "./entity-utils";
@@ -37,6 +37,7 @@ import {
 } from "./memo-list-service";
 import {
   deleteMemoSearchDocumentsStatement,
+  normalizeSearchDocumentContent,
   upsertMemoSearchDocumentStatement,
 } from "./memo-search-index";
 import {
@@ -249,9 +250,10 @@ export const searchMemoSummaries = async (
              SELECT m.id, 100.0
              FROM memos m
              INNER JOIN memo_contents c ON c.memo_id = m.id
-             WHERE m.title LIKE ? ESCAPE '\\'
-                OR c.content_text LIKE ? ESCAPE '\\'
-                OR m.tags_json LIKE ? ESCAPE '\\'
+             WHERE (m.title LIKE ? ESCAPE '\\'
+                 OR c.content_text LIKE ? ESCAPE '\\'
+                 OR m.tags_json LIKE ? ESCAPE '\\')
+               AND ${filters.join(" AND ")}
            ),
            search_matches AS (
              SELECT memo_id, MIN(rank) AS rank
@@ -268,7 +270,7 @@ export const searchMemoSummaries = async (
            ORDER BY s.rank ASC, m.is_pinned DESC, m.updated_at DESC
            LIMIT ?`
         )
-        .bind(ftsQuery, likeQuery, likeQuery, likeQuery, ...binds, limit)
+        .bind(ftsQuery, likeQuery, likeQuery, likeQuery, ...binds, ...binds, limit)
         .all<MemoSummaryRow>();
 
       return rows.results.map(mapMemoSummary);
@@ -507,8 +509,14 @@ export const deleteMemosRecord = async (
       db.prepare(`DELETE FROM memos WHERE workspace_id = ? AND is_deleted = 1 AND id IN (${placeholders})`).bind(workspaceId, ...uniqueMemoIds)
     );
 
-    for (const memoId of uniqueMemoIds) {
-      statements.push(auditStatement(db, actor.actorType, actor.actorId, "memo.delete_permanent", "memo", memoId, {}));
+    if (uniqueMemoIds.length === 1) {
+      statements.push(auditStatement(db, actor.actorType, actor.actorId, "memo.delete_permanent", "memo", uniqueMemoIds[0], {}));
+    } else {
+      statements.push(auditStatement(db, actor.actorType, actor.actorId, "memo.delete_permanent", "memo", uniqueMemoIds[0], {
+        batch: true,
+        count: uniqueMemoIds.length,
+        memoIds: uniqueMemoIds,
+      }));
     }
   } else {
     statements.push(
@@ -530,8 +538,14 @@ export const deleteMemosRecord = async (
       deleteMemoSearchDocumentsStatement(db, uniqueMemoIds)
     );
 
-    for (const memoId of uniqueMemoIds) {
-      statements.push(auditStatement(db, actor.actorType, actor.actorId, "memo.delete", "memo", memoId, {}));
+    if (uniqueMemoIds.length === 1) {
+      statements.push(auditStatement(db, actor.actorType, actor.actorId, "memo.delete", "memo", uniqueMemoIds[0], {}));
+    } else {
+      statements.push(auditStatement(db, actor.actorType, actor.actorId, "memo.delete", "memo", uniqueMemoIds[0], {
+        batch: true,
+        count: uniqueMemoIds.length,
+        memoIds: uniqueMemoIds,
+      }));
     }
   }
 
@@ -688,48 +702,78 @@ export const restoreMemoRecord = async (
   return memo;
 };
 
+const DEFAULT_EMPTY_TRASH_LIMIT = 200;
+const MAX_EMPTY_TRASH_LIMIT = 500;
+// Keep IN-clause bound parameters safely below Cloudflare D1's 100-parameter ceiling.
+const EMPTY_TRASH_DB_CHUNK_SIZE = 90;
+
+export type EmptyTrashResult = {
+  deleted: number;
+  hasMore: boolean;
+};
+
 export const emptyTrashMemosRecord = async (
   env: Bindings,
   workspaceId: string,
-  actor: { actorType: "user" | "agent"; actorId: string | null }
-) => {
+  actor: { actorType: "user" | "agent"; actorId: string | null },
+  options?: { limit?: number },
+): Promise<EmptyTrashResult> => {
   const db = env.storage.db;
-  const countRow = await db
+  const limit = clampNumber(options?.limit ?? DEFAULT_EMPTY_TRASH_LIMIT, 1, MAX_EMPTY_TRASH_LIMIT);
+  const candidateRows = await db
     .prepare(
-      `SELECT COUNT(*) AS count
+      `SELECT id
        FROM memos
-       WHERE workspace_id = ? AND is_deleted = 1`
+       WHERE workspace_id = ? AND is_deleted = 1
+       ORDER BY deleted_at ASC, id ASC
+       LIMIT ?`
     )
-    .bind(workspaceId).first<{ count: number }>();
-  const deleted = countRow?.count ?? 0;
+    .bind(workspaceId, limit + 1)
+    .all<{ id: string }>();
+
+  const hasMore = candidateRows.results.length > limit;
+  const memoIds = candidateRows.results.slice(0, limit).map((row) => row.id);
+  const deleted = memoIds.length;
 
   if (deleted === 0) {
-    return 0;
+    return { deleted: 0, hasMore: false };
   }
 
-  const resourceRows = await db
-    .prepare(
-      `SELECT r.object_key, r.storage_config_id
-       FROM resources r
-       INNER JOIN memos m ON m.id = r.memo_id
-       WHERE m.workspace_id = ? AND m.is_deleted = 1`
-    )
-    .bind(workspaceId).all<{ object_key: string; storage_config_id: string }>();
+  for (let offset = 0; offset < memoIds.length; offset += EMPTY_TRASH_DB_CHUNK_SIZE) {
+    const chunk = memoIds.slice(offset, offset + EMPTY_TRASH_DB_CHUNK_SIZE);
+    const placeholders = chunk.map(() => "?").join(", ");
+    const resourceRows = await db
+      .prepare(
+        `SELECT object_key, storage_config_id
+         FROM resources
+         WHERE memo_id IN (${placeholders})`
+      )
+      .bind(...chunk)
+      .all<{ object_key: string; storage_config_id: string }>();
 
-  if (resourceRows.results.length > 0) {
-    await deleteStoredObjects(env, resourceRows.results);
+    if (resourceRows.results.length > 0) {
+      await deleteStoredObjects(env, resourceRows.results);
+    }
+
+    const statements: PreparedStatementAdapter[] = [
+      db.prepare(`UPDATE resources SET original_memo_id = NULL WHERE original_memo_id IN (${placeholders})`).bind(...chunk),
+      db.prepare(`DELETE FROM resources WHERE memo_id IN (${placeholders})`).bind(...chunk),
+      db.prepare(`DELETE FROM memo_revisions WHERE memo_id IN (${placeholders})`).bind(...chunk),
+      db.prepare(`DELETE FROM memo_contents WHERE memo_id IN (${placeholders})`).bind(...chunk),
+      db.prepare(`DELETE FROM memos WHERE workspace_id = ? AND is_deleted = 1 AND id IN (${placeholders})`).bind(workspaceId, ...chunk),
+    ];
+
+    if (offset + EMPTY_TRASH_DB_CHUNK_SIZE >= memoIds.length) {
+      statements.push(
+        auditStatement(db, actor.actorType, actor.actorId, "memo.trash_empty", "trash", "memos", { deleted }),
+        pruneExpiredAuditEventsStatement(db),
+      );
+    }
+
+    await db.batch(statements);
   }
 
-  await db.batch([
-    db.prepare(`UPDATE resources SET original_memo_id = NULL WHERE original_memo_id IN (SELECT id FROM memos WHERE workspace_id = ? AND is_deleted = 1)`).bind(workspaceId),
-    db.prepare(`DELETE FROM resources WHERE memo_id IN (SELECT id FROM memos WHERE workspace_id = ? AND is_deleted = 1)`).bind(workspaceId),
-    db.prepare(`DELETE FROM memo_revisions WHERE memo_id IN (SELECT id FROM memos WHERE workspace_id = ? AND is_deleted = 1)`).bind(workspaceId),
-    db.prepare(`DELETE FROM memo_contents WHERE memo_id IN (SELECT id FROM memos WHERE workspace_id = ? AND is_deleted = 1)`).bind(workspaceId),
-    db.prepare(`DELETE FROM memos WHERE workspace_id = ? AND is_deleted = 1`).bind(workspaceId),
-    auditStatement(db, actor.actorType, actor.actorId, "memo.trash_empty", "trash", "memos", { deleted }),
-  ]);
-
-  return deleted;
+  return { deleted, hasMore };
 };
 
 export const moveMemosToNotebook = async (
@@ -771,14 +815,45 @@ export const moveMemosToNotebook = async (
       .bind(notebookId, actorLabel, now, workspaceId, ...uniqueMemoIds),
   ];
 
-  for (const row of rows.results) {
+  if (rows.results.length === 1) {
+    const row = rows.results[0];
+    const rowTags = parseJsonArray(row.tags_json);
     statements.push(
       auditStatement(db, actor.actorType, actor.actorId, "memo.move", "memo", row.id, {
         fromNotebookId: row.notebook_id,
         toNotebookId: notebookId,
-        learning: { version: 1, workspaceId, fromNotebookId: row.notebook_id, toNotebookId: notebookId,
-          beforeTags: JSON.parse(row.tags_json), afterTags: JSON.parse(row.tags_json) },
-      })
+        learning: {
+          version: 1,
+          workspaceId,
+          fromNotebookId: row.notebook_id,
+          toNotebookId: notebookId,
+          beforeTags: rowTags,
+          afterTags: rowTags,
+        },
+      }),
+    );
+  } else {
+    const representative =
+      rows.results.find((row) => row.notebook_id !== notebookId && parseJsonArray(row.tags_json).length > 0)
+      ?? rows.results.find((row) => row.notebook_id !== notebookId)
+      ?? rows.results[0];
+    const representativeTags = parseJsonArray(representative.tags_json);
+    statements.push(
+      auditStatement(db, actor.actorType, actor.actorId, "memo.move", "memo", representative.id, {
+        batch: true,
+        count: rows.results.length,
+        memoIds: uniqueMemoIds,
+        fromNotebookId: representative.notebook_id,
+        toNotebookId: notebookId,
+        learning: {
+          version: 1,
+          workspaceId,
+          fromNotebookId: representative.notebook_id,
+          toNotebookId: notebookId,
+          beforeTags: representativeTags,
+          afterTags: representativeTags,
+        },
+      }),
     );
   }
 
@@ -1436,6 +1511,16 @@ export const updateMemoRecord = async (
         ]
       : [];
 
+  const previousTitle = normalizeMemoTitle(current.title);
+  const previousTagsText = parseJsonArray(current.tags_json).join(" ");
+  const nextTagsText = tags.join(" ");
+  const searchDocumentStatements =
+    title !== previousTitle
+    || normalizeSearchDocumentContent(contentText) !== normalizeSearchDocumentContent(current.content_text)
+    || nextTagsText !== previousTagsText
+      ? [upsertMemoSearchDocumentStatement(db, id, title, contentText, nextTagsText)]
+      : [];
+
   await db.batch([
     ...(commit?.before ?? []),
     ...revisionStatements,
@@ -1456,7 +1541,7 @@ export const updateMemoRecord = async (
          WHERE memo_id = ?`
       )
       .bind(JSON.stringify(contentJson), contentMarkdown, contentText, contentHash, nextRevision, updatedAt, input.createdAt ?? null, id),
-    upsertMemoSearchDocumentStatement(db, id, title, contentText, tags.join(" ")),
+    ...searchDocumentStatements,
     ...editSessionStatements,
     auditStatement(db, actor.actorType, actor.actorId, "memo.update", "memo", id, {
       revision: nextRevision,

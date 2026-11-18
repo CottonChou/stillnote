@@ -60,7 +60,12 @@ type MemoRouteDependencies = {
     permanent: boolean,
     actor: AuditActor,
   ) => Promise<number>;
-  emptyTrash: (environment: Bindings, workspaceId: string, actor: AuditActor) => Promise<number>;
+  emptyTrash: (
+    environment: Bindings,
+    workspaceId: string,
+    actor: AuditActor,
+    options?: { limit?: number },
+  ) => Promise<number | { deleted: number; hasMore: boolean }>;
   getMemoDetail: (
     database: DatabaseAdapter,
     workspaceId: string,
@@ -139,9 +144,15 @@ export const registerMemoRoutes = (
     const denied = requireScopes(context, "read:memos");
     if (denied) return denied;
 
+    const cursor = context.req.query("cursor");
+    const includeTotalParam = context.req.query("includeTotal");
+    const includeTotal = cursor
+      ? includeTotalParam === "1"
+      : includeTotalParam !== "0";
+
     return context.json(await dependencies.listMemos(context.env.storage.db, {
       workspaceId: getWorkspaceId(context),
-      includeTotal: context.req.query("includeTotal") !== "0",
+      includeTotal,
       notebookId: context.req.query("notebookId"),
       includeNotebookDescendants: context.req.query("includeDescendants") === "1",
       query: context.req.query("q"),
@@ -150,7 +161,7 @@ export const registerMemoRoutes = (
       sort: context.req.query("sort"),
       filter: context.req.query("filter"),
       limit: Number(context.req.query("limit") ?? 100),
-      cursor: context.req.query("cursor"),
+      cursor,
     }));
   });
 
@@ -299,12 +310,21 @@ export const registerMemoRoutes = (
     const denied = requireScopes(context, "write:memos");
     if (denied) return denied;
 
-    const deleted = await dependencies.emptyTrash(
+    const limitParam = context.req.query("limit");
+    const parsedLimit = limitParam !== undefined ? Number(limitParam) : undefined;
+    const result = await dependencies.emptyTrash(
       context.env,
       getWorkspaceId(context),
       getAuditActor(context),
+      parsedLimit !== undefined && Number.isFinite(parsedLimit) ? { limit: parsedLimit } : undefined,
     );
-    return context.json({ ok: true, deleted });
+    const deleted = typeof result === "number" ? result : result.deleted;
+    const hasMore = typeof result === "number" ? false : result.hasMore;
+    return context.json({
+      ok: true,
+      deleted,
+      ...(hasMore || limitParam !== undefined ? { hasMore } : {}),
+    });
   });
 
   app.get("/api/v1/memos/:id/revisions", async (context) => {

@@ -96,6 +96,58 @@ export const mapResourceStorageSummary = (
   attachmentCount: row?.attachment_count ?? 0,
 });
 
+export const summarizeResourceRows = (rows: Array<Pick<ResourceRow, "kind" | "byte_size">>): ResourceStorageSummary => {
+  let totalBytes = 0;
+  let imageCount = 0;
+  let attachmentCount = 0;
+  for (const row of rows) {
+    totalBytes += row.byte_size;
+    if (row.kind === "image") imageCount += 1;
+    else if (row.kind === "attachment") attachmentCount += 1;
+  }
+  return {
+    totalCount: rows.length,
+    totalBytes,
+    imageCount,
+    attachmentCount,
+  };
+};
+
+export const buildResourceEtag = (
+  resource: { id?: string | null; object_key?: string; sha256?: string | null; updated_at?: string | null },
+): string | null => {
+  const sha = resource.sha256?.trim();
+  if (sha) return `"${sha}"`;
+  const key = resource.id?.trim() || resource.object_key?.trim();
+  const updated = resource.updated_at?.trim();
+  if (key && updated) return `W/"${key}-${updated}"`;
+  return null;
+};
+
+const stripWeakEtagPrefix = (value: string) => value.trim().replace(/^W\//i, "");
+
+export const matchesIfNoneMatch = (ifNoneMatchHeader: string | undefined | null, etag: string | null): boolean => {
+  if (!ifNoneMatchHeader || !etag) return false;
+  const target = stripWeakEtagPrefix(etag);
+  return ifNoneMatchHeader
+    .split(",")
+    .map((candidate) => candidate.trim())
+    .some((candidate) => candidate === "*" || stripWeakEtagPrefix(candidate) === target);
+};
+
+export const resolveResourceCacheControl = (
+  versionParam: string | undefined,
+  sha256: string | null | undefined,
+  fallback = "private, max-age=3600",
+): string => {
+  const version = versionParam?.trim();
+  const digest = sha256?.trim();
+  if (version && digest && version.length >= 8 && digest.startsWith(version)) {
+    return "private, max-age=31536000, immutable";
+  }
+  return fallback;
+};
+
 export const validateImageUpload = (mimeType: string, size: number) => {
   if (!SUPPORTED_IMAGE_MIME_TYPES.has(mimeType)) {
     throw new AppError(
@@ -234,32 +286,32 @@ export const listResourcesForMcp = async (
   workspaceId: string,
   limit: number,
 ) => {
-  const [rows, stats] = await Promise.all([
-    database.prepare(
-      `SELECT r.id, r.memo_id, r.original_memo_id, r.bucket_name, r.object_key, r.storage_config_id, r.kind,
-              r.mime_type, r.filename, r.byte_size, r.sha256, r.width, r.height,
-              r.created_at, r.updated_at, m.title AS memo_title, m.excerpt AS memo_excerpt,
-              m.is_deleted AS memo_is_deleted
-       FROM resources r
-       INNER JOIN memos m ON m.id = r.memo_id
-       WHERE m.workspace_id = ? AND r.is_deleted = 0
-       ORDER BY r.created_at DESC
-       LIMIT ?`,
-    ).bind(workspaceId, limit).all<ResourceListRow>(),
-    database.prepare(
+  const rows = await database.prepare(
+    `SELECT r.id, r.memo_id, r.original_memo_id, r.bucket_name, r.object_key, r.storage_config_id, r.kind,
+            r.mime_type, r.filename, r.byte_size, r.sha256, r.width, r.height,
+            r.created_at, r.updated_at, m.title AS memo_title, m.excerpt AS memo_excerpt,
+            m.is_deleted AS memo_is_deleted
+     FROM resources r
+     LEFT JOIN memos m ON m.id = r.memo_id
+     WHERE r.workspace_id = ? AND r.is_deleted = 0
+     ORDER BY r.created_at DESC, r.id DESC
+     LIMIT ?`,
+  ).bind(workspaceId, limit).all<ResourceListRow>();
+
+  const summary = rows.results.length < limit
+    ? summarizeResourceRows(rows.results)
+    : mapResourceStorageSummary(await database.prepare(
       `SELECT COUNT(*) AS total_count,
               COALESCE(SUM(byte_size), 0) AS total_bytes,
               COALESCE(SUM(CASE WHEN kind = 'image' THEN 1 ELSE 0 END), 0) AS image_count,
               COALESCE(SUM(CASE WHEN kind = 'attachment' THEN 1 ELSE 0 END), 0) AS attachment_count
        FROM resources r
-       INNER JOIN memos m ON m.id = r.memo_id
-       WHERE m.workspace_id = ? AND r.is_deleted = 0`,
-    ).bind(workspaceId).first<ResourceStatsRow>(),
-  ]);
+       WHERE r.workspace_id = ? AND r.is_deleted = 0`,
+    ).bind(workspaceId).first<ResourceStatsRow>());
 
   return {
     resources: rows.results.map(mapResourceListItem),
-    summary: mapResourceStorageSummary(stats),
+    summary,
   };
 };
 
@@ -316,11 +368,12 @@ const storeResource = async (
     await context.env.storage.db.batch([
       context.env.storage.db.prepare(
         `INSERT INTO resources (
-          id, memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
+          id, workspace_id, memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
           byte_size, sha256, width, height, metadata_json, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       ).bind(
         resourceId,
+        workspaceId,
         input.memoId,
         destination.bucketName,
         objectKey,

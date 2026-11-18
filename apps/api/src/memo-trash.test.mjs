@@ -393,8 +393,13 @@ describe("batch deletion", () => {
     expect(response).toEqual({ status: 200, body: { ok: true, deleted: 2 } });
     expect(await listedIds(target, "?trash=1")).toEqual([first.memo.id, second.memo.id].sort());
     expect(target.storedFiles()).toHaveLength(4);
-    expect(auditEvents(target.sqlite, "memo.delete").map((event) => event.entity_id))
-      .toEqual([first.memo.id, second.memo.id].sort());
+    const events = auditEvents(target.sqlite, "memo.delete");
+    expect(events).toHaveLength(1);
+    expect(events[0].metadata).toEqual({
+      batch: true,
+      count: 2,
+      memoIds: [first.memo.id, second.memo.id],
+    });
   });
 
   test("changes nothing when any id is missing, in the wrong state or from another workspace", async () => {
@@ -442,7 +447,13 @@ describe("batch deletion", () => {
     for (const memoId of [first.memo.id, second.memo.id]) {
       expect(Object.values(memoRowCounts(target.sqlite, memoId)).every((count) => count === 0)).toBe(true);
     }
-    expect(auditEvents(target.sqlite, "memo.delete_permanent")).toHaveLength(2);
+    const permanentEvents = auditEvents(target.sqlite, "memo.delete_permanent");
+    expect(permanentEvents).toHaveLength(1);
+    expect(permanentEvents[0].metadata).toEqual({
+      batch: true,
+      count: 2,
+      memoIds: [first.memo.id, second.memo.id],
+    });
   });
 
   test("rejects an empty or malformed id list before touching anything", async () => {

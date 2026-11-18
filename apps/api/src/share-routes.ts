@@ -10,7 +10,7 @@ import { apiError, notFound } from "./http-errors";
 import { isMemoShareExpired, recordMemoShareView } from "./memo-share-access";
 import { resolveObjectStorage } from "./object-storage";
 import { getAuditActor, getWorkspaceId, requireUser } from "./request-auth";
-import { setResourceContentHeaders } from "./resource-service";
+import { buildResourceEtag, matchesIfNoneMatch, setResourceContentHeaders } from "./resource-service";
 import {
   isShareUnlockBlocked,
   nextShareUnlockFailure,
@@ -64,12 +64,15 @@ type ShareGateRow = {
 };
 type ReferencedMemoShareRow = { memo_id: string; token: string };
 type SharedResourceRow = {
+  id?: string | null;
   object_key: string;
   storage_config_id: string;
   kind: "image" | "attachment";
   mime_type: string | null;
   filename: string | null;
   byte_size: number;
+  sha256?: string | null;
+  updated_at?: string | null;
   workspace_id: string;
   password_hash: string | null;
   expires_at: string | null;
@@ -152,6 +155,16 @@ export const serveSharedResource = async (c: AppContext, resource: SharedResourc
     return response;
   }
 
+  const etag = buildResourceEtag(resource);
+  if (byteRange.kind === "none" && matchesIfNoneMatch(c.req.header("If-None-Match"), etag)) {
+    const headers = new Headers({
+      "Cache-Control": "private, no-store",
+      "X-Robots-Tag": "noindex, nofollow, noarchive",
+    });
+    if (etag) headers.set("ETag", etag);
+    return new Response(null, { status: 304, headers });
+  }
+
   const source = await resolveObjectStorage(c.env, resource.storage_config_id);
   const object = await source.store.get(
     resource.object_key,
@@ -161,6 +174,7 @@ export const serveSharedResource = async (c: AppContext, resource: SharedResourc
 
   const headers = new Headers();
   object.writeHttpMetadata(headers);
+  if (etag) headers.set("ETag", etag);
   headers.set("Accept-Ranges", "bytes");
   if (byteRange.kind === "range") {
     const length = object.range?.length ?? byteRange.range.length;
@@ -280,7 +294,7 @@ export const registerPublicShareRoutes = (app: Hono<AppEnv>) => {
     if (!token) return notFound(c, "Shared resource not found");
 
     const resource = await c.env.storage.db.prepare(
-      `SELECT r.object_key, r.storage_config_id, r.kind, r.mime_type, r.filename, r.byte_size,
+      `SELECT r.id, r.object_key, r.storage_config_id, r.kind, r.mime_type, r.filename, r.byte_size, r.sha256, r.updated_at,
               ms.workspace_id, ms.password_hash, ms.expires_at
        FROM memo_shares ms
        INNER JOIN memos m ON m.id = ms.memo_id AND m.workspace_id = ms.workspace_id

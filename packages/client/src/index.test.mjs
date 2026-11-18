@@ -35,6 +35,41 @@ describe("StillNote client HTTP contract", () => {
     expect(calls[7].searchParams.get("ids")).toBe("memo_1,memo_2");
     await client.listMemos({ q: "hello", includeTotal: false });
     expect(calls.at(-1).searchParams.get("includeTotal")).toBe("0");
+    await client.listMemos({ cursor: "opaque", includeTotal: true });
+    expect(calls.at(-1).searchParams.get("includeTotal")).toBe("1");
+    await client.listNotebooks({ includeStats: false });
+    expect(calls.at(-1).pathname + calls.at(-1).search).toBe("/api/v1/notebooks?includeStats=0");
+  });
+
+  test("drains paginated emptyTrash batches automatically when limit is omitted", async () => {
+    const calls = [];
+    const responses = [
+      { ok: true, deleted: 200, hasMore: true },
+      { ok: true, deleted: 42, hasMore: false },
+    ];
+    const client = createStillNoteClient({
+      baseUrl: "https://notes.example",
+      fetch: async (input) => {
+        calls.push(String(input));
+        return jsonResponse(responses.shift() ?? { ok: true, deleted: 0, hasMore: false });
+      },
+    });
+    expect(await client.emptyTrash()).toEqual({ ok: true, deleted: 242 });
+    expect(calls).toEqual([
+      "https://notes.example/api/v1/memos/trash/empty",
+      "https://notes.example/api/v1/memos/trash/empty",
+    ]);
+
+    calls.length = 0;
+    const bounded = createStillNoteClient({
+      baseUrl: "https://notes.example",
+      fetch: async (input) => {
+        calls.push(String(input));
+        return jsonResponse({ ok: true, deleted: 10, hasMore: true });
+      },
+    });
+    expect(await bounded.emptyTrash({ limit: 10 })).toEqual({ ok: true, deleted: 10, hasMore: true });
+    expect(calls).toEqual(["https://notes.example/api/v1/memos/trash/empty?limit=10"]);
   });
 
   test("companion prepare errors authenticate and never retry on a server generation endpoint", async()=>{

@@ -193,11 +193,12 @@ export const duplicateMemoRecord = async (
       upsertMemoSearchDocumentStatement(db, newMemoId, title, contentText, tags.join(" ")),
       ...copies.map((copy) => db.prepare(
         `INSERT INTO resources (
-          id, memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
+          id, workspace_id, memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
           byte_size, sha256, width, height, metadata_json, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       ).bind(
         copy.newId,
+        workspaceId,
         newMemoId,
         destination.bucketName,
         copy.newObjectKey,

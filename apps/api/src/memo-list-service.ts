@@ -167,6 +167,7 @@ export const listMemos = async (
   const filter = normalizeMemoListFilter(input.filter);
   const limit = clampNumber(input.limit ?? DEFAULT_MEMO_LIST_LIMIT, 1, MAX_MEMO_LIST_LIMIT);
   const cursor = decodeMemoListCursor(input.cursor, sort);
+  const includeTotal = input.includeTotal ?? !cursor;
   const deletedClause = includeTrash ? "m.is_deleted = 1" : "m.is_deleted = 0";
   const titleSortExpression = `LOWER(COALESCE(NULLIF(m.title, ''), '${DEFAULT_MEMO_TITLE}'))`;
   const baseConditions = ["m.workspace_id = ?", deletedClause];
@@ -245,50 +246,54 @@ export const listMemos = async (
     const page = rows.slice(0, limit);
     return {
       memos: page.map(mapMemoSummary),
-      ...(input.includeTotal === false ? {} : { totalCount: totalCount ?? page.length }),
+      ...(includeTotal ? { totalCount: totalCount ?? page.length } : {}),
       nextCursor: rows.length > limit
         ? encodeMemoListCursor(page[page.length - 1], sort, includeTrash)
         : null,
     };
   };
 
+  const needsDeferredCount = (rowCount: number) =>
+    includeTotal && (Boolean(cursor) || rowCount > limit);
+
   if (query) {
     const ftsQuery = toFtsQuery(query);
     const likeQuery = `%${escapeLike(query)}%`;
     if (ftsQuery) {
-      const searchPrefix = [ftsQuery, likeQuery, likeQuery, likeQuery];
-      const [rows, totalRow] = await Promise.all([
-        database.prepare(
-          `WITH raw_matches(memo_id, rank) AS (
-             SELECT memo_id, bm25(memos_fts)
-             FROM memos_fts
-             WHERE memos_fts MATCH ?
+      const searchPrefix = [ftsQuery, likeQuery, likeQuery, likeQuery, ...baseBinds];
+      const rows = await database.prepare(
+        `WITH raw_matches(memo_id, rank) AS (
+           SELECT memo_id, bm25(memos_fts)
+           FROM memos_fts
+           WHERE memos_fts MATCH ?
 
-             UNION ALL
+           UNION ALL
 
-             SELECT m.id, 100.0
-             FROM memos m
-             INNER JOIN memo_contents c ON c.memo_id = m.id
-             WHERE m.title LIKE ? ESCAPE '\\'
-                OR c.content_text LIKE ? ESCAPE '\\'
-                OR m.tags_json LIKE ? ESCAPE '\\'
-           ),
-           search_matches AS (
-             SELECT memo_id, MIN(rank) AS rank
-             FROM raw_matches
-             GROUP BY memo_id
-           )
-           SELECT m.id, m.notebook_id, m.title, m.excerpt, m.tags_json, m.is_pinned,
-                  m.is_archived, m.is_deleted, m.created_at, m.updated_at, m.deleted_at, mc.revision,
-                  mc.content_text, mc.content_markdown
-           FROM search_matches s
-           INNER JOIN memos m ON m.id = s.memo_id
-           INNER JOIN memo_contents mc ON mc.memo_id = m.id
-           WHERE ${cursorConditions.join(" AND ")}
-           ORDER BY ${getOrderBy()}
-           LIMIT ?`,
-        ).bind(...searchPrefix, ...cursorBinds, pageLimit).all<MemoSummaryRow>(),
-        input.includeTotal === false ? Promise.resolve(null) : database.prepare(
+           SELECT m.id, 100.0
+           FROM memos m
+           INNER JOIN memo_contents c ON c.memo_id = m.id
+           WHERE (m.title LIKE ? ESCAPE '\\'
+               OR c.content_text LIKE ? ESCAPE '\\'
+               OR m.tags_json LIKE ? ESCAPE '\\')
+             AND ${baseConditions.join(" AND ")}
+         ),
+         search_matches AS (
+           SELECT memo_id, MIN(rank) AS rank
+           FROM raw_matches
+           GROUP BY memo_id
+         )
+         SELECT m.id, m.notebook_id, m.title, m.excerpt, m.tags_json, m.is_pinned,
+                m.is_archived, m.is_deleted, m.created_at, m.updated_at, m.deleted_at, mc.revision,
+                mc.content_text, mc.content_markdown
+         FROM search_matches s
+         INNER JOIN memos m ON m.id = s.memo_id
+         INNER JOIN memo_contents mc ON mc.memo_id = m.id
+         WHERE ${cursorConditions.join(" AND ")}
+         ORDER BY ${getOrderBy()}
+         LIMIT ?`,
+      ).bind(...searchPrefix, ...cursorBinds, pageLimit).all<MemoSummaryRow>();
+      const totalRow = needsDeferredCount(rows.results.length)
+        ? await database.prepare(
           `WITH raw_matches(memo_id) AS (
              SELECT memo_id
              FROM memos_fts
@@ -299,9 +304,10 @@ export const listMemos = async (
              SELECT m.id
              FROM memos m
              INNER JOIN memo_contents c ON c.memo_id = m.id
-             WHERE m.title LIKE ? ESCAPE '\\'
-                OR c.content_text LIKE ? ESCAPE '\\'
-                OR m.tags_json LIKE ? ESCAPE '\\'
+             WHERE (m.title LIKE ? ESCAPE '\\'
+                 OR c.content_text LIKE ? ESCAPE '\\'
+                 OR m.tags_json LIKE ? ESCAPE '\\')
+               AND ${baseConditions.join(" AND ")}
            ),
            search_matches AS (
              SELECT memo_id
@@ -312,8 +318,8 @@ export const listMemos = async (
            FROM search_matches s
            INNER JOIN memos m ON m.id = s.memo_id
            WHERE ${baseConditions.join(" AND ")}`,
-        ).bind(...searchPrefix, ...baseBinds).first<{ count: number }>(),
-      ]);
+        ).bind(...searchPrefix, ...baseBinds).first<{ count: number }>()
+        : null;
       return finish(rows.results, totalRow?.count);
     }
 
@@ -322,43 +328,43 @@ export const listMemos = async (
     const searchBinds = [...baseBinds, likeQuery, likeQuery, likeQuery];
     const searchCursorConditions = [...cursorConditions, searchClause];
     const searchCursorBinds = [...cursorBinds, likeQuery, likeQuery, likeQuery];
-    const [rows, totalRow] = await Promise.all([
-      database.prepare(
-        `SELECT m.id, m.notebook_id, m.title, m.excerpt, m.tags_json, m.is_pinned,
-                m.is_archived, m.is_deleted, m.created_at, m.updated_at, m.deleted_at, mc.revision,
-                mc.content_text, mc.content_markdown
-         FROM memos m
-         INNER JOIN memo_contents mc ON mc.memo_id = m.id
-         WHERE ${searchCursorConditions.join(" AND ")}
-         ORDER BY ${getOrderBy()}
-         LIMIT ?`,
-      ).bind(...searchCursorBinds, pageLimit).all<MemoSummaryRow>(),
-      input.includeTotal === false ? Promise.resolve(null) : database.prepare(
-        `SELECT COUNT(*) AS count
-         FROM memos m
-         INNER JOIN memo_contents mc ON mc.memo_id = m.id
-         WHERE ${searchConditions.join(" AND ")}`,
-      ).bind(...searchBinds).first<{ count: number }>(),
-    ]);
-    return finish(rows.results, totalRow?.count);
-  }
-
-  const [rows, totalRow] = await Promise.all([
-    database.prepare(
+    const rows = await database.prepare(
       `SELECT m.id, m.notebook_id, m.title, m.excerpt, m.tags_json, m.is_pinned,
               m.is_archived, m.is_deleted, m.created_at, m.updated_at, m.deleted_at, mc.revision,
               mc.content_text, mc.content_markdown
        FROM memos m
        INNER JOIN memo_contents mc ON mc.memo_id = m.id
-       WHERE ${cursorConditions.join(" AND ")}
+       WHERE ${searchCursorConditions.join(" AND ")}
        ORDER BY ${getOrderBy()}
        LIMIT ?`,
-    ).bind(...cursorBinds, pageLimit).all<MemoSummaryRow>(),
-    input.includeTotal === false ? Promise.resolve(null) : database.prepare(
+    ).bind(...searchCursorBinds, pageLimit).all<MemoSummaryRow>();
+    const totalRow = needsDeferredCount(rows.results.length)
+      ? await database.prepare(
+        `SELECT COUNT(*) AS count
+         FROM memos m
+         INNER JOIN memo_contents mc ON mc.memo_id = m.id
+         WHERE ${searchConditions.join(" AND ")}`,
+      ).bind(...searchBinds).first<{ count: number }>()
+      : null;
+    return finish(rows.results, totalRow?.count);
+  }
+
+  const rows = await database.prepare(
+    `SELECT m.id, m.notebook_id, m.title, m.excerpt, m.tags_json, m.is_pinned,
+            m.is_archived, m.is_deleted, m.created_at, m.updated_at, m.deleted_at, mc.revision,
+            mc.content_text, mc.content_markdown
+     FROM memos m
+     INNER JOIN memo_contents mc ON mc.memo_id = m.id
+     WHERE ${cursorConditions.join(" AND ")}
+     ORDER BY ${getOrderBy()}
+     LIMIT ?`,
+  ).bind(...cursorBinds, pageLimit).all<MemoSummaryRow>();
+  const totalRow = needsDeferredCount(rows.results.length)
+    ? await database.prepare(
       `SELECT COUNT(*) AS count
        FROM memos m
        WHERE ${baseConditions.join(" AND ")}`,
-    ).bind(...baseBinds).first<{ count: number }>(),
-  ]);
+    ).bind(...baseBinds).first<{ count: number }>()
+    : null;
   return finish(rows.results, totalRow?.count);
 };

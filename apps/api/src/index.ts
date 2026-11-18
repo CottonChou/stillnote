@@ -866,10 +866,11 @@ const ensureDemoSeed = async (
       db
         .prepare(
           `INSERT INTO resources (
-            id, memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
+            id, workspace_id, memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
             byte_size, sha256, width, height, metadata_json, is_deleted, created_at, updated_at, deleted_at
-          ) VALUES (?, ?, ?, ?, 'builtin', ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NULL)
+          ) VALUES (?, 'ws_default', ?, ?, ?, 'builtin', ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NULL)
           ON CONFLICT(id) DO UPDATE SET
+            workspace_id = excluded.workspace_id,
             memo_id = excluded.memo_id,
             bucket_name = excluded.bucket_name,
             object_key = excluded.object_key,

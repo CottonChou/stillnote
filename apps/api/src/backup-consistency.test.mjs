@@ -19,7 +19,9 @@ const installation = async ({ includeExportIndex = true, includeMemoIdIndex = tr
   const sqlite = new Database(":memory:");
   const migrations = globSync("migrations/*.sql").sort();
   // Start with the existing schema and data, then upgrade it in place.
+  const migrationName = (file) => file.split("/").at(-1);
   for (const file of migrations.filter((file) => !file.endsWith("0080_backup_revision.sql")
+    && migrationName(file) < "0093_notebook_counts_and_d1_optimizations.sql"
     && (includeExportIndex || !file.endsWith("0085_export_cursor_index.sql"))
     && (includeMemoIdIndex || !file.endsWith("0086_memo_id_paging_index.sql")))) sqlite.exec(readFileSync(file, "utf8"));
   const directory = mkdtempSync(join(tmpdir(), "stillnote-backup-protocol-"));
@@ -28,6 +30,9 @@ const installation = async ({ includeExportIndex = true, includeMemoIdIndex = tr
   const inbox = sqlite.query("SELECT id FROM notebooks WHERE workspace_id = 'ws_default' AND slug = 'inbox'").get().id;
   const note = await createMemoRecord(storage.db, "ws_default", { notebookId: inbox, title: "Before upgrade", contentMarkdown: "original body", tags: ["backup"] }, auth, "owner");
   sqlite.exec(readFileSync("migrations/0080_backup_revision.sql", "utf8"));
+  for (const file of migrations.filter((file) => migrationName(file) >= "0093_notebook_counts_and_d1_optimizations.sql")) {
+    sqlite.exec(readFileSync(file, "utf8"));
+  }
   let activeAuth = auth;
   const app = new Hono();
   app.use("/api/v1/*", async (c, next) => { c.set("auth", activeAuth); await next(); });

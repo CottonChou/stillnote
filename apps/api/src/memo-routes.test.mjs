@@ -121,7 +121,7 @@ describe("memo route contracts", () => {
     expect(response.status).toBe(200);
     expect(received[1]).toEqual({
       workspaceId: "ws_1",
-      includeTotal: true,
+      includeTotal: false,
       notebookId: "nb_1",
       includeNotebookDescendants: true,
       query: "hello",
@@ -132,6 +132,18 @@ describe("memo route contracts", () => {
       limit: 25,
       cursor: "opaque",
     });
+
+    const explicitTotal = await createApp(dependencies).request(
+      "/api/v1/memos?cursor=opaque&includeTotal=1",
+      {},
+      environment,
+    );
+    expect(explicitTotal.status).toBe(200);
+    expect(received[1].includeTotal).toBe(true);
+
+    const firstPage = await createApp(dependencies).request("/api/v1/memos?limit=25", {}, environment);
+    expect(firstPage.status).toBe(200);
+    expect(received[1].includeTotal).toBe(true);
   });
 
   test("forwards an explicit count opt-out for bounded result consumers", async () => {

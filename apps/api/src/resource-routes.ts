@@ -10,11 +10,15 @@ import { apiError, badRequest, notFound } from "./http-errors";
 import { resolveObjectStorage } from "./object-storage";
 import {
   SUPPORTED_IMAGE_MIME_TYPES,
+  buildResourceEtag,
   setResourceContentHeaders,
   mapResource,
   mapResourceListItem,
   mapResourceStorageSummary,
+  matchesIfNoneMatch,
   normalizeFilename,
+  resolveResourceCacheControl,
+  summarizeResourceRows,
   type ResourceListRow,
   type ResourceRow,
   type ResourceStatsRow,
@@ -75,7 +79,10 @@ type ResourceRouteDependencies = {
   }) => Promise<Resource>;
 };
 
-const MAX_LEGACY_RESOURCE_UPLOAD_BYTES = 100 * 1024 * 1024;
+// Keep single-request uploads safely below Cloudflare Workers' 128 MB isolate memory limit.
+// Official clients already switch to 8 MiB multipart uploads above 5 MiB.
+const MAX_LEGACY_RESOURCE_UPLOAD_BYTES = 20 * 1024 * 1024;
+const MAX_RESOURCE_REPLACEMENT_BYTES = 20 * 1024 * 1024;
 
 const appErrorResponse = (context: AppContext, error: unknown) => {
   if (error instanceof AppError) {
@@ -94,32 +101,32 @@ export const registerResourceRoutes = (
 
     const limit = dependencies.clampNumber(Number(context.req.query("limit") ?? 500), 1, 500);
     const workspaceId = getWorkspaceId(context);
-    const [rows, stats] = await Promise.all([
-      context.env.storage.db.prepare(
-        `SELECT r.id, r.memo_id, r.original_memo_id, r.bucket_name, r.object_key, r.storage_config_id, r.kind,
-                r.mime_type, r.filename, r.byte_size, r.sha256, r.width, r.height,
-                r.created_at, r.updated_at, m.title AS memo_title, m.excerpt AS memo_excerpt,
-                m.is_deleted AS memo_is_deleted
-         FROM resources r
-         INNER JOIN memos m ON m.id = r.memo_id
-         WHERE m.workspace_id = ? AND r.is_deleted = 0
-         ORDER BY r.created_at DESC
-         LIMIT ?`,
-      ).bind(workspaceId, limit).all<ResourceListRow>(),
-      context.env.storage.db.prepare(
+    const rows = await context.env.storage.db.prepare(
+      `SELECT r.id, r.memo_id, r.original_memo_id, r.bucket_name, r.object_key, r.storage_config_id, r.kind,
+              r.mime_type, r.filename, r.byte_size, r.sha256, r.width, r.height,
+              r.created_at, r.updated_at, m.title AS memo_title, m.excerpt AS memo_excerpt,
+              m.is_deleted AS memo_is_deleted
+       FROM resources r
+       LEFT JOIN memos m ON m.id = r.memo_id
+       WHERE r.workspace_id = ? AND r.is_deleted = 0
+       ORDER BY r.created_at DESC, r.id DESC
+       LIMIT ?`,
+    ).bind(workspaceId, limit).all<ResourceListRow>();
+
+    const summary = rows.results.length < limit
+      ? summarizeResourceRows(rows.results)
+      : mapResourceStorageSummary(await context.env.storage.db.prepare(
         `SELECT COUNT(*) AS total_count,
                 COALESCE(SUM(byte_size), 0) AS total_bytes,
                 COALESCE(SUM(CASE WHEN kind = 'image' THEN 1 ELSE 0 END), 0) AS image_count,
                 COALESCE(SUM(CASE WHEN kind = 'attachment' THEN 1 ELSE 0 END), 0) AS attachment_count
          FROM resources r
-         INNER JOIN memos m ON m.id = r.memo_id
-         WHERE m.workspace_id = ? AND r.is_deleted = 0`,
-      ).bind(workspaceId).first<ResourceStatsRow>(),
-    ]);
+         WHERE r.workspace_id = ? AND r.is_deleted = 0`,
+      ).bind(workspaceId).first<ResourceStatsRow>());
 
     return context.json({
       resources: rows.results.map(mapResourceListItem),
-      summary: mapResourceStorageSummary(stats),
+      summary,
     });
   });
 
@@ -135,7 +142,7 @@ export const registerResourceRoutes = (
       return apiError(
         context,
         "multipart_upload_required",
-        "Files larger than 100 MiB must use the resumable multipart upload API.",
+        "Files larger than 20 MiB must use the resumable multipart upload API.",
         413,
       );
     }
@@ -157,7 +164,7 @@ export const registerResourceRoutes = (
       return apiError(
         context,
         "multipart_upload_required",
-        "Files larger than 100 MiB must use the resumable multipart upload API.",
+        "Files larger than 20 MiB must use the resumable multipart upload API.",
         413,
       );
     }
@@ -284,6 +291,14 @@ export const registerResourceRoutes = (
     const byteRange = parseByteRange(context.req.header("Range"), resource.byte_size);
     if (byteRange.kind === "invalid") return rangeNotSatisfiable(resource.byte_size);
 
+    const etag = buildResourceEtag(resource);
+    const cacheControl = resolveResourceCacheControl(context.req.query("v"), resource.sha256);
+    if (byteRange.kind === "none" && matchesIfNoneMatch(context.req.header("If-None-Match"), etag)) {
+      const headers = new Headers({ "Cache-Control": cacheControl });
+      if (etag) headers.set("ETag", etag);
+      return new Response(null, { status: 304, headers });
+    }
+
     const source = await resolveObjectStorage(context.env, resource.storage_config_id);
     const object = await source.store.get(
       resource.object_key,
@@ -293,7 +308,8 @@ export const registerResourceRoutes = (
 
     const headers = new Headers();
     object.writeHttpMetadata(headers);
-    headers.set("Cache-Control", headers.get("Cache-Control") ?? "private, max-age=3600");
+    headers.set("Cache-Control", resolveResourceCacheControl(context.req.query("v"), resource.sha256, headers.get("Cache-Control") ?? "private, max-age=3600"));
+    if (etag) headers.set("ETag", etag);
     headers.set("Accept-Ranges", "bytes");
     if (byteRange.kind === "range") {
       const length = object.range?.length ?? byteRange.range.length;
@@ -316,9 +332,9 @@ export const registerResourceRoutes = (
     const declaredRequestBytes = Number(context.req.header("Content-Length"));
     if (
       Number.isFinite(declaredRequestBytes)
-      && declaredRequestBytes > MAX_LEGACY_RESOURCE_UPLOAD_BYTES + 1024 * 1024
+      && declaredRequestBytes > MAX_RESOURCE_REPLACEMENT_BYTES + 1024 * 1024
     ) {
-      return apiError(context, "upload_too_large", "Resource replacements must be at most 100 MiB.", 413);
+      return apiError(context, "upload_too_large", "Resource replacements must be at most 20 MiB.", 413);
     }
 
     const form = await context.req.raw.formData();
@@ -329,8 +345,8 @@ export const registerResourceRoutes = (
     if (!(file instanceof File) || typeof expectedContentHash !== "string" || !expectedContentHash.trim()) {
       return badRequest(context, "file and expectedContentHash are required.");
     }
-    if (file.size > MAX_LEGACY_RESOURCE_UPLOAD_BYTES) {
-      return apiError(context, "upload_too_large", "Resource replacements must be at most 100 MiB.", 413);
+    if (file.size > MAX_RESOURCE_REPLACEMENT_BYTES) {
+      return apiError(context, "upload_too_large", "Resource replacements must be at most 20 MiB.", 413);
     }
 
     try {

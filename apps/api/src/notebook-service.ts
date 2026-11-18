@@ -50,7 +50,7 @@ export const mapNotebook = (row: NotebookRow): Notebook => ({
   updatedAt: row.updated_at,
 });
 
-export const notebookSelectSql = (tail: string) => `
+export const notebookSelectSql = (tail: string, options?: { includeStats?: boolean }) => `
   SELECT n.id,
          n.parent_id,
          n.name,
@@ -63,25 +63,56 @@ export const notebookSelectSql = (tail: string) => `
          n.icon_inverted,
          n.row_inverted,
          n.sort_order,
-         COUNT(m.id) AS memo_count,
-         MAX(m.updated_at) AS last_memo_updated_at,
+         ${options?.includeStats === false ? "0 AS memo_count, NULL AS last_memo_updated_at" : "n.memo_count, n.last_memo_updated_at"},
          n.created_at,
          n.updated_at
   FROM notebooks n
-  LEFT JOIN memos m ON m.notebook_id = n.id AND m.is_deleted = 0
   ${tail}
 `;
 
-export const listNotebooks = async (db: DatabaseAdapter, workspaceId: string): Promise<Notebook[]> => {
+export const listNotebooks = async (
+  db: DatabaseAdapter,
+  workspaceId: string,
+  options?: { includeStats?: boolean },
+): Promise<Notebook[]> => {
   const rows = await db
     .prepare(
       notebookSelectSql(
         `WHERE n.workspace_id = ? AND n.is_deleted = 0
-         GROUP BY n.id, n.parent_id, n.name, n.slug, n.icon, n.color, n.text_color, n.color_target, n.is_bold, n.icon_inverted, n.row_inverted, n.sort_order, n.created_at, n.updated_at
-         ORDER BY n.parent_id IS NOT NULL, n.sort_order ASC, n.name ASC`
+         ORDER BY n.parent_id IS NOT NULL, n.sort_order ASC, n.name ASC`,
+        options,
       )
     )
     .bind(workspaceId).all<NotebookRow>();
+
+  return rows.results.map(mapNotebook);
+};
+
+const listNotebooksByParent = async (
+  db: DatabaseAdapter,
+  workspaceId: string,
+  parentId: string | null,
+  options?: { includeStats?: boolean },
+): Promise<Notebook[]> => {
+  const rows = parentId === null
+    ? await db
+      .prepare(
+        notebookSelectSql(
+          `WHERE n.workspace_id = ? AND n.parent_id IS NULL AND n.is_deleted = 0
+           ORDER BY n.sort_order ASC, n.name ASC`,
+          options,
+        )
+      )
+      .bind(workspaceId).all<NotebookRow>()
+    : await db
+      .prepare(
+        notebookSelectSql(
+          `WHERE n.workspace_id = ? AND n.parent_id = ? AND n.is_deleted = 0
+           ORDER BY n.sort_order ASC, n.name ASC`,
+          options,
+        )
+      )
+      .bind(workspaceId, parentId).all<NotebookRow>();
 
   return rows.results.map(mapNotebook);
 };
@@ -94,12 +125,11 @@ export const findNotebooks = async (
   options: { name: string; parentId?: string | null; exact: boolean; limit: number },
 ) => {
   const query = normalizeNotebookLookupName(options.name);
-  const notebooks = await listNotebooks(db, workspaceId);
+  const notebooks = options.parentId !== undefined
+    ? await listNotebooksByParent(db, workspaceId, options.parentId)
+    : await listNotebooks(db, workspaceId);
   return notebooks
     .filter((notebook) => {
-      if (options.parentId !== undefined && notebook.parentId !== options.parentId) {
-        return false;
-      }
       const name = normalizeNotebookLookupName(notebook.name);
       return options.exact ? name === query : name.includes(query);
     })
@@ -112,14 +142,14 @@ export const resolveNotebookPath = async (db: DatabaseAdapter, workspaceId: stri
     throw new AppError("invalid_params", "path must contain at least one notebook name", 400);
   }
 
-  const notebooks = await listNotebooks(db, workspaceId);
   const matched: Notebook[] = [];
   let parentId: string | null = null;
 
   for (const [index, segment] of segments.entries()) {
     const normalizedSegment = normalizeNotebookLookupName(segment);
-    const candidates = notebooks.filter(
-      (notebook) => notebook.parentId === parentId && normalizeNotebookLookupName(notebook.name) === normalizedSegment,
+    const siblings = await listNotebooksByParent(db, workspaceId, parentId);
+    const candidates = siblings.filter(
+      (notebook) => normalizeNotebookLookupName(notebook.name) === normalizedSegment,
     );
 
     if (candidates.length !== 1) {
@@ -151,10 +181,7 @@ export const resolveNotebookPath = async (db: DatabaseAdapter, workspaceId: stri
 export const getNotebook = async (db: DatabaseAdapter, workspaceId: string, id: string): Promise<Notebook | null> => {
   const row = await db
     .prepare(
-      notebookSelectSql(
-        `WHERE n.id = ? AND n.workspace_id = ? AND n.is_deleted = 0
-         GROUP BY n.id, n.parent_id, n.name, n.slug, n.icon, n.color, n.text_color, n.color_target, n.is_bold, n.icon_inverted, n.row_inverted, n.sort_order, n.created_at, n.updated_at`
-      )
+      notebookSelectSql(`WHERE n.id = ? AND n.workspace_id = ? AND n.is_deleted = 0`)
     )
     .bind(id, workspaceId)
     .first<NotebookRow>();
@@ -183,6 +210,7 @@ export const createNotebookRecord = async (
   const id = createId("nb");
   const now = isoNow();
   const sortOrder = input.sortOrder ?? Date.now();
+  const slug = slugify(input.name);
 
   await db.batch([
     db
@@ -190,7 +218,7 @@ export const createNotebookRecord = async (
         `INSERT INTO notebooks (id, workspace_id, parent_id, name, slug, sort_order, created_at, updated_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
       )
-      .bind(id, workspaceId, parentId, input.name, slugify(input.name), sortOrder, now, now),
+      .bind(id, workspaceId, parentId, input.name, slug, sortOrder, now, now),
     auditStatement(db, actor.actorType, actor.actorId, "notebook.create", "notebook", id, {
       name: input.name,
       parentId,
@@ -198,13 +226,24 @@ export const createNotebookRecord = async (
     }),
   ]);
 
-  const notebook = await getNotebook(db, workspaceId, id);
-
-  if (!notebook) {
-    throw new AppError("not_found", "Notebook not found after create", 404);
-  }
-
-  return notebook;
+  return mapNotebook({
+    id,
+    parent_id: parentId,
+    name: input.name,
+    slug,
+    icon: null,
+    color: null,
+    text_color: null,
+    color_target: "icon",
+    is_bold: 0,
+    icon_inverted: 0,
+    row_inverted: 0,
+    sort_order: sortOrder,
+    memo_count: 0,
+    last_memo_updated_at: null,
+    created_at: now,
+    updated_at: now,
+  });
 };
 
 export const updateNotebookRecord = async (

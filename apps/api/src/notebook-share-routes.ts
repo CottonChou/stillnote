@@ -505,7 +505,7 @@ export const registerPublicNotebookShareRoutes = (app: Hono<AppEnv>) => {
       const resource = await c.env.storage.db
         .prepare(
           `${publicTreeSql}
-      SELECT r.object_key, r.storage_config_id, r.kind, r.mime_type, r.filename, r.byte_size,
+      SELECT r.id, r.object_key, r.storage_config_id, r.kind, r.mime_type, r.filename, r.byte_size, r.sha256, r.updated_at,
         m.workspace_id, NULL AS password_hash
       FROM resources r JOIN memos m ON r.memo_id = m.id
       JOIN visible_memos visible ON visible.id = m.id

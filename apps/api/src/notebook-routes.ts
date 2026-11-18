@@ -27,7 +27,8 @@ export const registerNotebookRoutes = (
     if (denied) return denied;
 
     await prepareDemoData(c.env);
-    return c.json({ notebooks: await listNotebooks(c.env.storage.db, getWorkspaceId(c)) });
+    const includeStats = c.req.query("includeStats") !== "0";
+    return c.json({ notebooks: await listNotebooks(c.env.storage.db, getWorkspaceId(c), { includeStats }) });
   });
 
   app.post("/api/v1/notebooks", zValidator("json", NotebookCreateSchema), async (c) => {

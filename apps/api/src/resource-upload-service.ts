@@ -345,10 +345,11 @@ const completeRestoredResourceUpload = async (
     await context.env.storage.db.batch([
       context.env.storage.db.prepare(
         `INSERT INTO resources (
-          id, memo_id, original_memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
+          id, workspace_id, memo_id, original_memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
           byte_size, sha256, width, height, metadata_json, is_deleted, created_at, updated_at, deleted_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NULL)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NULL)
         ON CONFLICT(id) DO UPDATE SET
+          workspace_id = excluded.workspace_id,
           memo_id = excluded.memo_id,
           original_memo_id = excluded.original_memo_id,
           bucket_name = excluded.bucket_name,
@@ -367,6 +368,7 @@ const completeRestoredResourceUpload = async (
           deleted_at = NULL`,
       ).bind(
         metadata.id,
+        upload.workspace_id,
         metadata.memoId,
         originalMemo?.id ?? null,
         upload.bucket_name,
@@ -464,11 +466,12 @@ export const completeResourceUpload = async (
     await context.env.storage.db.batch([
       context.env.storage.db.prepare(
         `INSERT INTO resources (
-          id, memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
+          id, workspace_id, memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
           byte_size, sha256, width, height, metadata_json, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       ).bind(
         upload.resource_id,
+        upload.workspace_id,
         upload.memo_id,
         upload.bucket_name,
         upload.object_key,

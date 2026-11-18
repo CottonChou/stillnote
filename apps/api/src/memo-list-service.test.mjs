@@ -85,7 +85,20 @@ describe("memo list service", () => {
   });
 
   test("applies descendant, trash, and tag filters to page and count queries", async () => {
-    const database = createDatabase();
+    const singlePageDb = createDatabase({ rows: [memoRow("memo_1")] });
+    const singlePage = await listMemos(singlePageDb, {
+      workspaceId: "ws_1",
+      notebookId: "nb_parent",
+      includeNotebookDescendants: true,
+      includeTrash: true,
+      filter: "tagged",
+      sort: "title-asc",
+      limit: 5,
+    });
+    expect(singlePage.totalCount).toBe(1);
+    expect(singlePageDb.calls).toHaveLength(1);
+
+    const database = createDatabase({ rows: [memoRow("memo_1"), memoRow("memo_2")], totalCount: 5 });
     await listMemos(database, {
       workspaceId: "ws_1",
       notebookId: "nb_parent",
@@ -93,6 +106,7 @@ describe("memo list service", () => {
       includeTrash: true,
       filter: "tagged",
       sort: "title-asc",
+      limit: 1,
     });
 
     expect(database.calls).toHaveLength(2);
@@ -150,10 +164,11 @@ describe("memo list service", () => {
   });
 
   test("filters by one exact tag in page and count queries", async () => {
-    const database = createDatabase();
+    const database = createDatabase({ rows: [memoRow("memo_1"), memoRow("memo_2")], totalCount: 4 });
     await listMemos(database, {
       workspaceId: "ws_1",
       tag: "Demo",
+      limit: 1,
     });
 
     expect(database.calls).toHaveLength(2);

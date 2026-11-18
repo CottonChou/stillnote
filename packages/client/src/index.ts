@@ -1146,7 +1146,10 @@ export const createStillNoteClient = (options: StillNoteClientOptions = {}) => {
         body: JSON.stringify({}),
       }),
 
-    listNotebooks: () => request<ListNotebooksResponse>("/api/v1/notebooks"),
+    listNotebooks: (options?: { includeStats?: boolean }) =>
+      request<ListNotebooksResponse>(
+        options?.includeStats === false ? "/api/v1/notebooks?includeStats=0" : "/api/v1/notebooks",
+      ),
 
     syncBootstrap: (params?: { afterId?: string | null; limit?: number }) => {
       const search = new URLSearchParams();
@@ -1276,6 +1279,7 @@ export const createStillNoteClient = (options: StillNoteClientOptions = {}) => {
       }
 
       if (params.includeTotal === false) search.set("includeTotal", "0");
+      else if (params.includeTotal === true && params.cursor) search.set("includeTotal", "1");
       return request<ListMemosResponse>(`/api/v1/memos?${search.toString()}`);
     },
 
@@ -1449,10 +1453,26 @@ export const createStillNoteClient = (options: StillNoteClientOptions = {}) => {
         body: JSON.stringify(payload),
       }),
 
-    emptyTrash: () =>
-      request<{ ok: true; deleted: number }>("/api/v1/memos/trash/empty", {
-        method: "DELETE",
-      }),
+    emptyTrash: async (options?: { limit?: number }) => {
+      if (options?.limit !== undefined) {
+        return request<{ ok: true; deleted: number; hasMore?: boolean }>(
+          `/api/v1/memos/trash/empty?limit=${encodeURIComponent(String(options.limit))}`,
+          { method: "DELETE" },
+        );
+      }
+
+      let deleted = 0;
+      for (;;) {
+        const result = await request<{ ok: true; deleted: number; hasMore?: boolean }>(
+          "/api/v1/memos/trash/empty",
+          { method: "DELETE" },
+        );
+        deleted += result.deleted;
+        if (!result.hasMore || result.deleted === 0) {
+          return { ok: true as const, deleted };
+        }
+      }
+    },
 
     getMemo: (memoId: string, options?: { includeDeleted?: boolean }) => {
       const search = new URLSearchParams();

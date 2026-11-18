@@ -11,6 +11,26 @@ export const audit = async (
   metadata: unknown
 ) => auditStatement(db, actorType, actorId, action, entityType, entityId, metadata).run();
 
+export const AUDIT_RETENTION_DAYS = 90;
+
+export const pruneExpiredAuditEventsStatement = (
+  db: DatabaseAdapter,
+  cutoffIso = new Date(Date.now() - AUDIT_RETENTION_DAYS * 86_400_000).toISOString(),
+  limit = 500,
+) =>
+  db
+    .prepare(
+      `DELETE FROM audit_events
+       WHERE id IN (
+         SELECT id
+         FROM audit_events
+         WHERE created_at < ?
+         ORDER BY created_at ASC
+         LIMIT ?
+       )`
+    )
+    .bind(cutoffIso, limit);
+
 export const auditStatement = (
   db: DatabaseAdapter,
   actorType: "user" | "agent" | "system",

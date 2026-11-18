@@ -335,7 +335,7 @@ export const registerBackupRoutes = (
       result = { memos: selected.map(dependencies.mapMemoDetail), ...await readBackupRelations(database, selected.map((row) => row.id)) };
     } else if (kind === "notebooks") {
       const rows = await database.prepare(notebookSelectSql(
-        `WHERE n.workspace_id = ? AND n.is_deleted = 0 AND n.id > ? GROUP BY n.id ORDER BY n.id ASC LIMIT ?`,
+        `WHERE n.workspace_id = ? AND n.is_deleted = 0 AND n.id > ? ORDER BY n.id ASC LIMIT ?`,
       )).bind(workspaceId, after, limit + 1).all<NotebookRow>();
       ids = rows.results.map((row) => row.id);
       result = { notebooks: rows.results.slice(0, limit).map(mapNotebook) };
@@ -571,10 +571,11 @@ export const registerBackupRoutes = (
       const now = isoNow();
       await context.env.storage.db.prepare(
         `INSERT INTO resources (
-          id, memo_id, original_memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
+          id, workspace_id, memo_id, original_memo_id, bucket_name, object_key, storage_config_id, kind, mime_type, filename,
           byte_size, sha256, width, height, metadata_json, is_deleted, created_at, updated_at, deleted_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NULL)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NULL)
         ON CONFLICT(id) DO UPDATE SET
+          workspace_id = excluded.workspace_id,
           memo_id = excluded.memo_id,
           original_memo_id = excluded.original_memo_id,
           bucket_name = excluded.bucket_name,
@@ -593,6 +594,7 @@ export const registerBackupRoutes = (
           deleted_at = NULL`,
       ).bind(
         metadata.id,
+        workspaceId,
         metadata.memoId,
         originalMemo?.id ?? null,
         destination.bucketName,
