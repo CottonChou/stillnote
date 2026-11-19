@@ -210,7 +210,8 @@ export const createNotebookRecord = async (
   const id = createId("nb");
   const now = isoNow();
   const sortOrder = input.sortOrder ?? Date.now();
-  const slug = slugify(input.name);
+  const rawSlug = slugify(input.name);
+  const slug = parentId && rawSlug === "inbox" ? `inbox-${id.slice(-6)}` : rawSlug;
 
   await db.batch([
     db
@@ -262,7 +263,8 @@ export const updateNotebookRecord = async (
   const nextName = input.name ?? current.name;
   const nextParentId = input.parentId === undefined ? current.parentId : input.parentId;
   const nextSortOrder = input.sortOrder ?? current.sortOrder;
-  const nextSlug = isInboxNotebook(current, workspaceId) ? "inbox" : slugify(nextName);
+  const rawSlug = isInboxNotebook(current, workspaceId) ? "inbox" : slugify(nextName);
+  const nextSlug = nextParentId && rawSlug === "inbox" ? `inbox-${id.slice(-6)}` : rawSlug;
   const now = isoNow();
 
   if (nextParentId === id) {

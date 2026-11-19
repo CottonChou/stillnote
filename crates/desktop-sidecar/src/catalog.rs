@@ -65,7 +65,13 @@ pub(crate) fn create_notebook(database: &Connection, params: &Value) -> Result<V
     let name = string_param(params, "name")?;
     let parent_id = params.get("parentId").and_then(Value::as_str);
     let id = now_id("nb_local");
-    database.execute("INSERT INTO notebooks (id, parent_id, name, slug, sort_order) VALUES (?1, ?2, ?3, ?4, ?5)", rusqlite::params![id, parent_id, name, name.to_lowercase().replace(' ', "-"), SystemTime::now().duration_since(UNIX_EPOCH).unwrap_or_default().as_millis() as i64]).map_err(|e| e.to_string())?;
+    let candidate = name.to_lowercase().replace(' ', "-");
+    let slug = if parent_id.is_some() && candidate == "inbox" {
+        format!("inbox-{}", &id[id.len().saturating_sub(6)..])
+    } else {
+        candidate
+    };
+    database.execute("INSERT INTO notebooks (id, parent_id, name, slug, sort_order) VALUES (?1, ?2, ?3, ?4, ?5)", rusqlite::params![id, parent_id, name, slug, SystemTime::now().duration_since(UNIX_EPOCH).unwrap_or_default().as_millis() as i64]).map_err(|e| e.to_string())?;
     let notebook = notebook_value(database, &id, true)?;
     enqueue_change(
         database,
@@ -84,20 +90,34 @@ pub(crate) fn update_notebook(database: &Connection, params: &Value) -> Result<V
         .map_err(|e| e.to_string())?;
     let database = &transaction;
 
+    let (current_slug, current_parent_id): (Option<String>, Option<String>) = database
+        .query_row(
+            "SELECT slug, parent_id FROM notebooks WHERE id = ?1",
+            [&notebook_id],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        )
+        .map_err(|e| e.to_string())?;
+    let next_parent_id = if params.get("parentId").is_some() {
+        params.get("parentId").and_then(Value::as_str).map(str::to_string)
+    } else {
+        current_parent_id
+    };
+
     if let Some(name) = params.get("name").and_then(Value::as_str) {
-        let (current_slug, parent_id): (Option<String>, Option<String>) = database
-            .query_row(
-                "SELECT slug, parent_id FROM notebooks WHERE id = ?1",
-                [&notebook_id],
-                |row| Ok((row.get(0)?, row.get(1)?)),
-            )
-            .map_err(|e| e.to_string())?;
-        let slug = if parent_id.is_none() && is_inbox_notebook(&notebook_id, current_slug.as_deref()) {
+        let slug = if next_parent_id.is_none() && is_inbox_notebook(&notebook_id, current_slug.as_deref()) {
             "inbox".to_owned()
         } else {
-            name.to_lowercase().replace(' ', "-")
+            let candidate = name.to_lowercase().replace(' ', "-");
+            if next_parent_id.is_some() && candidate == "inbox" {
+                format!("inbox-{}", &notebook_id[notebook_id.len().saturating_sub(6)..])
+            } else {
+                candidate
+            }
         };
         database.execute("UPDATE notebooks SET name = ?1, slug = ?2, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?3 AND is_deleted = 0", rusqlite::params![name, slug, notebook_id]).map_err(|e| e.to_string())?;
+    } else if params.get("parentId").is_some() && next_parent_id.is_some() && current_slug.as_deref() == Some("inbox") {
+        let slug = format!("inbox-{}", &notebook_id[notebook_id.len().saturating_sub(6)..]);
+        database.execute("UPDATE notebooks SET slug = ?1, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?2 AND is_deleted = 0", rusqlite::params![slug, notebook_id]).map_err(|e| e.to_string())?;
     }
     if params.get("parentId").is_some() {
         database.execute("UPDATE notebooks SET parent_id = ?1, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?2 AND is_deleted = 0", rusqlite::params![params.get("parentId").and_then(Value::as_str), notebook_id]).map_err(|e| e.to_string())?;

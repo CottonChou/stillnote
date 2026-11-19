@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { Database } from "bun:sqlite";
 import { globSync, readFileSync } from "node:fs";
 import { createSelfHostedStorageAdapter } from "./self-hosted-storage-adapter.ts";
-import { deleteNotebookRecord, isInboxNotebook, updateNotebookRecord } from "./notebook-service.ts";
+import { createNotebookRecord, deleteNotebookRecord, isInboxNotebook, updateNotebookRecord } from "./notebook-service.ts";
 import { workspaceInboxId } from "./workspace-provisioning.ts";
 
 const actor = { actorType: "user", actorId: "usr_1" };
@@ -52,6 +52,33 @@ describe("notebook identity", () => {
         actor,
       );
       expect(notebook).toMatchObject({ id: "ws_1_inbox", name: "收集箱", slug: "inbox" });
+    } finally {
+      fixture.sqlite.close();
+    }
+  });
+
+  test("disambiguates child notebook slugs named inbox to protect legacy sync unique index", async () => {
+    const fixture = createFixture();
+    try {
+      const child = await createNotebookRecord(
+        fixture.db,
+        "ws_1",
+        { name: "inbox", parentId: "nb_notes" },
+        actor,
+      );
+      expect(child.name).toBe("inbox");
+      expect(child.slug).toMatch(/^inbox-[a-z0-9]+$/);
+      expect(child.slug).not.toBe("inbox");
+
+      const updated = await updateNotebookRecord(
+        fixture.db,
+        "ws_1",
+        child.id,
+        { name: "Inbox" },
+        actor,
+      );
+      expect(updated.slug).toMatch(/^inbox-[a-z0-9]+$/);
+      expect(updated.slug).not.toBe("inbox");
     } finally {
       fixture.sqlite.close();
     }
