@@ -85,14 +85,14 @@ pub(crate) fn update_notebook(database: &Connection, params: &Value) -> Result<V
     let database = &transaction;
 
     if let Some(name) = params.get("name").and_then(Value::as_str) {
-        let current_slug: Option<String> = database
+        let (current_slug, parent_id): (Option<String>, Option<String>) = database
             .query_row(
-                "SELECT slug FROM notebooks WHERE id = ?1",
+                "SELECT slug, parent_id FROM notebooks WHERE id = ?1",
                 [&notebook_id],
-                |row| row.get(0),
+                |row| Ok((row.get(0)?, row.get(1)?)),
             )
             .map_err(|e| e.to_string())?;
-        let slug = if is_inbox_notebook(&notebook_id, current_slug.as_deref()) {
+        let slug = if parent_id.is_none() && is_inbox_notebook(&notebook_id, current_slug.as_deref()) {
             "inbox".to_owned()
         } else {
             name.to_lowercase().replace(' ', "-")
@@ -173,6 +173,7 @@ pub(crate) fn update_notebook(database: &Connection, params: &Value) -> Result<V
 struct ActiveNotebook {
     id: String,
     slug: Option<String>,
+    parent_id: Option<String>,
 }
 
 fn active_notebook_tree(
@@ -189,7 +190,7 @@ fn active_notebook_tree(
                INNER JOIN tree ON n.parent_id = tree.id
                WHERE n.is_deleted = 0
              )
-             SELECT n.id, n.slug
+             SELECT n.id, n.slug, n.parent_id
              FROM tree
              INNER JOIN notebooks n ON n.id = tree.id
              WHERE n.is_deleted = 0
@@ -201,6 +202,7 @@ fn active_notebook_tree(
             Ok(ActiveNotebook {
                 id: row.get(0)?,
                 slug: row.get(1)?,
+                parent_id: row.get(2)?,
             })
         })
         .map_err(|e| e.to_string())?;
@@ -210,18 +212,16 @@ fn active_notebook_tree(
 
 pub(crate) fn delete_notebook(database: &Connection, params: &Value) -> Result<Value, String> {
     let notebook_id = string_param(params, "notebookId")?;
-    let current_slug: Option<Option<String>> = database
+    let (current_slug, parent_id): (Option<String>, Option<String>) = database
         .query_row(
-            "SELECT slug FROM notebooks WHERE id = ?1",
+            "SELECT slug, parent_id FROM notebooks WHERE id = ?1",
             [&notebook_id],
-            |row| row.get(0),
+            |row| Ok((row.get(0)?, row.get(1)?)),
         )
         .optional()
-        .map_err(|e| e.to_string())?;
-    let Some(current_slug) = current_slug else {
-        return Err(format!("Notebook not found: {notebook_id}"));
-    };
-    if is_inbox_notebook(&notebook_id, current_slug.as_deref()) {
+        .map_err(|e| e.to_string())?
+        .ok_or_else(|| format!("Notebook not found: {notebook_id}"))?;
+    if parent_id.is_none() && is_inbox_notebook(&notebook_id, current_slug.as_deref()) {
         return Err("inbox_not_deletable".to_owned());
     }
 
@@ -241,7 +241,7 @@ pub(crate) fn delete_notebook(database: &Connection, params: &Value) -> Result<V
     }
     if tree
         .iter()
-        .any(|notebook| is_inbox_notebook(&notebook.id, notebook.slug.as_deref()))
+        .any(|notebook| notebook.parent_id.is_none() && is_inbox_notebook(&notebook.id, notebook.slug.as_deref()))
     {
         return Err("inbox_not_deletable".to_owned());
     }

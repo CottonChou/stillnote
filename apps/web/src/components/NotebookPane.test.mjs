@@ -156,7 +156,7 @@ describe("NotebookTreeItem inbox delete affordance", () => {
       readFileSync(new URL(`../../../../packages/shared/src/i18n/${locale}.ts`, import.meta.url), "utf8"),
     );
 
-    expect(treeItemSource).toContain('const isInbox = node.slug === "inbox"');
+    expect(treeItemSource).toContain('const isInbox = node.slug === "inbox" && !node.parentId;');
 
     // 说明必须是始终可见的 inline 文本：原生 title 在 disabled 项上不可达（pointer-events-none，
     // 且键盘焦点会跳过 disabled 项）。

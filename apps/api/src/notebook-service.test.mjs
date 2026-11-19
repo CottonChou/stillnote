@@ -37,6 +37,7 @@ describe("notebook identity", () => {
     expect(isInboxNotebook({ id: "nb_inbox", slug: "notes" }, "ws_1")).toBe(true);
     expect(isInboxNotebook({ id: workspaceInboxId("ws_1"), slug: "shou-ji-xiang" }, "ws_1")).toBe(true);
     expect(isInboxNotebook({ id: "nb_other", slug: "inbox" }, "ws_1")).toBe(true);
+    expect(isInboxNotebook({ id: "nb_other", parentId: "nb_parent", slug: "inbox" }, "ws_1")).toBe(false);
     expect(isInboxNotebook({ id: "nb_notes", slug: "notes" }, "ws_1")).toBe(false);
   });
 

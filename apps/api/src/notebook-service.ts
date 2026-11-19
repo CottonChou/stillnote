@@ -10,7 +10,7 @@ export { isInboxNotebook, workspaceInboxId } from "./workspace-provisioning";
 
 /** SQL identity for the workspace inbox: stable id first, slug as a fallback. */
 export const inboxNotebookIdentitySql = (alias: string) =>
-  `(${alias}.id = ${alias}.workspace_id || '_inbox' OR ${alias}.id = 'nb_inbox' OR ${alias}.slug = 'inbox')`;
+  `(${alias}.id = ${alias}.workspace_id || '_inbox' OR ${alias}.id = 'nb_inbox' OR (${alias}.parent_id IS NULL AND ${alias}.slug = 'inbox'))`;
 
 export type NotebookRow = {
   id: string;
@@ -410,7 +410,7 @@ export const deleteNotebookTree = async (
           SELECT 1 FROM active_tree n LEFT JOIN expected e ON e.id = n.id
           WHERE e.id IS NULL OR n.parent_id IS NOT e.parent_id
         )
-        AND NOT EXISTS (SELECT 1 FROM active_tree WHERE slug = 'inbox' OR id = 'nb_inbox' OR id = ?)
+        AND NOT EXISTS (SELECT 1 FROM active_tree WHERE (parent_id IS NULL AND slug = 'inbox') OR id = 'nb_inbox' OR id = ?)
         AND NOT EXISTS (
           SELECT 1 FROM memos WHERE workspace_id = ? AND is_deleted = 0
           AND notebook_id IN (SELECT id FROM active_tree)
@@ -435,7 +435,7 @@ export const deleteNotebookTree = async (
       `UPDATE notebooks
        SET is_deleted = 1, deleted_at = ?, updated_at = ?
        WHERE workspace_id = ? AND is_deleted = 0 AND id IN (${placeholders})
-         AND (slug IS NULL OR slug <> 'inbox') AND id <> 'nb_inbox' AND id <> ?`
+         AND (parent_id IS NOT NULL OR slug IS NULL OR slug <> 'inbox') AND id <> 'nb_inbox' AND id <> ?`
     ).bind(now, now, workspaceId, ...chunk, inboxId);
   });
   statements.push(auditStatement(db, actor.actorType, actor.actorId, "notebook.delete", "notebook", id, {

@@ -875,11 +875,11 @@ fn apply_one_sync_change(
             .get("notebook")
             .ok_or_else(|| "Missing notebook change payload".to_owned())?;
         let requested_slug = notebook.get("slug").and_then(Value::as_str);
-        let inbox = is_inbox_notebook(&entity_id, requested_slug);
         let requested_parent = notebook
             .get("parentId")
             .and_then(Value::as_str)
-            .filter(|id| !id.is_empty() && !inbox);
+            .filter(|id| !id.is_empty());
+        let inbox = is_inbox_notebook(&entity_id, requested_slug) && requested_parent.is_none();
         let parent_id = if let Some(parent_id) = requested_parent {
             let exists: bool = tx
                 .query_row(

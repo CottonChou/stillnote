@@ -641,7 +641,7 @@ export const WorkspaceScreen = ({
   const allVisibleMemosSelected = canToggleVisibleSelection && visibleMemos.every((memo) => selectedMemoIds.has(memo.id));
   const nextSelectionPinValue = selectedMemos.some((memo) => !memo.isPinned);
   const defaultMemoNotebookId = notebooks.find(
-    (notebook) => notebook.id === "nb_inbox" || notebook.slug === "inbox" || notebook.name === "等待分类"
+    (notebook) => notebook.id === "nb_inbox" || (!notebook.parentId && (notebook.slug === "inbox" || notebook.name === "等待分类"))
   )?.id ?? "";
   const createMemoNotebookId =
     activeNotebookId !== ALL_NOTES_ID && notebooks.some((notebook) => notebook.id === activeNotebookId)

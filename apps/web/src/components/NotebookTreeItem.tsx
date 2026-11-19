@@ -77,7 +77,7 @@ export const NotebookTreeItem = ({
   const hasChildren = node.children.length > 0;
   const showsSplitCount = !showDescendantNotes && hasChildren;
   const selected = node.id === selectedNotebookId;
-  const isInbox = node.slug === "inbox";
+  const isInbox = node.slug === "inbox" && !node.parentId;
   const [dropPosition, setDropPosition] = useState<NotebookDropPosition | null>(null);
   const [actionsOpen, setActionsOpen] = useState(false);
   const actionsRef = useRef<HTMLDivElement>(null);

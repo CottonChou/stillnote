@@ -571,8 +571,8 @@ export const deleteLocalNotebook = async (scope: string, notebookId: string) => 
   return true;
 };
 
-const isProtectedInboxNotebook = (notebook: Pick<Notebook, "id" | "slug">) =>
-  notebook.slug === "inbox" || notebook.id === "nb_inbox" || notebook.id.endsWith("_inbox");
+const isProtectedInboxNotebook = (notebook: Pick<Notebook, "id" | "slug"> & { parentId?: string | null }) =>
+  notebook.id === "nb_inbox" || notebook.id.endsWith("_inbox") || (!notebook.parentId && notebook.slug === "inbox");
 
 // Removes the notebook and its empty descendants. Ids are leaves-first so a
 // server that still deletes one notebook at a time can apply them in order.

@@ -34,9 +34,9 @@ export const isInboxNotebookId = (id: string, workspaceId: string) =>
   id === LEGACY_INBOX_NOTEBOOK_ID || id === workspaceInboxId(workspaceId);
 
 export const isInboxNotebook = (
-  notebook: { id: string; slug?: string | null },
+  notebook: { id: string; parentId?: string | null; slug?: string | null },
   workspaceId: string,
-) => isInboxNotebookId(notebook.id, workspaceId) || notebook.slug === "inbox";
+) => isInboxNotebookId(notebook.id, workspaceId) || (!notebook.parentId && notebook.slug === "inbox");
 
 export type UserWorkspace = {
   workspaceId: string;

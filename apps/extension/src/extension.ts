@@ -18,8 +18,8 @@ export const DEFAULT_SETTINGS: ExtensionSettings = {
   notebookId: "",
 };
 
-const isInboxNotebook = (notebook: { id: string; slug?: string | null }) =>
-  notebook.slug === "inbox" || notebook.id === "nb_inbox" || notebook.id.endsWith("_inbox");
+const isInboxNotebook = (notebook: { id: string; slug?: string | null; parentId?: string | null }) =>
+  notebook.id === "nb_inbox" || notebook.id.endsWith("_inbox") || (!notebook.parentId && notebook.slug === "inbox");
 
 // An empty or stale choice means 等待分类. A notebook the user picked still wins.
 export const clipNotebookId = (savedId: string, notebooks: { id: string; slug?: string | null }[]) => {

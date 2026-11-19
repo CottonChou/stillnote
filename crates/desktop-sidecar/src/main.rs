@@ -969,4 +969,85 @@ mod tests {
             1
         );
     }
+
+    #[test]
+    fn sync_apply_preserves_child_notebook_named_inbox() {
+        let database = Connection::open_in_memory().unwrap();
+        database
+            .execute_batch(
+                "PRAGMA foreign_keys = ON;
+                 CREATE TABLE notebooks (
+                   id TEXT PRIMARY KEY,
+                   parent_id TEXT REFERENCES notebooks(id),
+                   name TEXT NOT NULL,
+                   slug TEXT,
+                   icon TEXT,
+                   color TEXT,
+                   color_target TEXT NOT NULL DEFAULT 'icon', is_bold INTEGER NOT NULL DEFAULT 0, icon_inverted INTEGER NOT NULL DEFAULT 0, row_inverted INTEGER NOT NULL DEFAULT 0, text_color TEXT,
+                   sort_order INTEGER NOT NULL DEFAULT 0,
+                   is_deleted INTEGER NOT NULL DEFAULT 0,
+                   created_at TEXT NOT NULL DEFAULT 'now',
+                   updated_at TEXT NOT NULL DEFAULT 'now',
+                   deleted_at TEXT
+                 );
+                 CREATE UNIQUE INDEX idx_notebooks_one_active_inbox
+                   ON notebooks(slug)
+                   WHERE is_deleted = 0 AND slug = 'inbox';
+                 CREATE TABLE memos (
+                   id TEXT PRIMARY KEY,
+                   notebook_id TEXT NOT NULL REFERENCES notebooks(id),
+                   title TEXT,
+                   excerpt TEXT NOT NULL,
+                   tags_json TEXT NOT NULL,
+                   is_pinned INTEGER NOT NULL,
+                   is_archived INTEGER NOT NULL,
+                   is_deleted INTEGER NOT NULL,
+                   source_memo_ids TEXT NOT NULL,
+                   merge_source_count INTEGER NOT NULL,
+                   merged_into_memo_id TEXT REFERENCES memos(id),
+                   created_at TEXT NOT NULL,
+                   updated_at TEXT NOT NULL,
+                   deleted_at TEXT
+                 );
+                 CREATE TABLE memo_contents (
+                   memo_id TEXT PRIMARY KEY REFERENCES memos(id) ON DELETE CASCADE,
+                   content_json TEXT NOT NULL,
+                   content_markdown TEXT NOT NULL,
+                   content_text TEXT NOT NULL,
+                   content_hash TEXT NOT NULL,
+                   revision INTEGER NOT NULL,
+                   updated_at TEXT NOT NULL DEFAULT 'now'
+                 );
+                 INSERT INTO notebooks (id, name, slug, is_deleted)
+                 VALUES ('nb_root', 'Root Project', 'root-project', 0);",
+            )
+            .unwrap();
+
+        apply_sync_changes(
+            &database,
+            &json!({ "changes": [{
+                "entityType": "notebook",
+                "operation": "upsert",
+                "entityId": "nb_child_inbox",
+                "notebook": {
+                    "name": "inbox",
+                    "slug": "inbox",
+                    "parentId": "nb_root",
+                    "createdAt": "2026-11-16T00:00:00.000Z",
+                    "updatedAt": "2026-11-16T00:00:00.000Z"
+                }
+            }] }),
+        )
+        .unwrap();
+
+        let (parent_id, is_deleted): (Option<String>, i64) = database
+            .query_row(
+                "SELECT parent_id, is_deleted FROM notebooks WHERE id = 'nb_child_inbox'",
+                [],
+                |row| Ok((row.get(0)?, row.get(1)?)),
+            )
+            .unwrap();
+        assert_eq!(parent_id.as_deref(), Some("nb_root"));
+        assert_eq!(is_deleted, 0);
+    }
 }

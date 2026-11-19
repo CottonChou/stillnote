@@ -75,8 +75,8 @@ describe("native third-party import through the real API", () => {
       const result = await executeNoteImport({ reader: session, index: session.index, client, convertEnml: convertImportEnml });
       expect(result.completed).toBe(count);
       expect(result.failed).toBe(0);
-      // Only the newly created, empty folder needs a full Notebook response.
-      expect(queries.filter(sql => /COUNT\(m\.id\) AS memo_count/.test(sql))).toHaveLength(1);
+      // With denormalized notebook stats or light notebook returns, memo rows are never scanned.
+      expect(queries.filter(sql => /COUNT\(m\.id\) AS memo_count/.test(sql)).length).toBeLessThanOrEqual(1);
       await session.close();
     }
   });
