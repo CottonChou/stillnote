@@ -1,9 +1,10 @@
 import * as SplashScreen from "expo-splash-screen";
 import { useIncomingShare } from "expo-sharing";
 import { useIsRestoring } from "@tanstack/react-query";
-import { lazy, Suspense, useCallback, useEffect } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { Text } from "../src/components/LocalizedText";
+import { ErrorBoundary } from "../src/components/ErrorBoundary";
 import { LoginScreen } from "../src/screens/LoginScreen";
 import { clearAndRefreshIncomingShare } from "../src/lib/incoming-share-lifecycle";
 import { useSession } from "../src/lib/session";
@@ -42,19 +43,26 @@ export default function IndexScreen() {
     }
   }, [isLoading, isRestoringCache]);
 
+  const [workspaceResetKey, setWorkspaceResetKey] = useState(0);
+
   if (isLoading || isRestoringCache) {
     return <StartupPlaceholder />;
   }
 
   return session ? (
-    <Suspense fallback={<StartupPlaceholder showBrand />}>
-      <WorkspaceScreen
-        incomingShareError={incomingShareError}
-        incomingShareIsResolving={isResolvingIncomingShare || isWaitingForBinaryShareResolution}
-        incomingSharePayloads={incomingSharePayloads}
-        onIncomingShareHandled={handleIncomingShareHandled}
-      />
-    </Suspense>
+    <ErrorBoundary
+      key={workspaceResetKey}
+      onReset={() => setWorkspaceResetKey((k) => k + 1)}
+    >
+      <Suspense fallback={<StartupPlaceholder showBrand />}>
+        <WorkspaceScreen
+          incomingShareError={incomingShareError}
+          incomingShareIsResolving={isResolvingIncomingShare || isWaitingForBinaryShareResolution}
+          incomingSharePayloads={incomingSharePayloads}
+          onIncomingShareHandled={handleIncomingShareHandled}
+        />
+      </Suspense>
+    </ErrorBoundary>
   ) : (
     <LoginScreen />
   );

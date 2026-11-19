@@ -366,7 +366,8 @@ const NotebookDrawerContent = ({
                   style={[
                     styles.navItemText,
                     isDark && styles.textDark,
-                    activeNotebookId === ALL_NOTES_ID && memoView === "notebook" && [styles.navItemTextActive, isDark && styles.navItemTextActiveDark],
+                    activeNotebookId === ALL_NOTES_ID && memoView === "notebook" && styles.navItemTextActive,
+                    activeNotebookId === ALL_NOTES_ID && memoView === "notebook" && isDark && styles.navItemTextActiveDark,
                   ]}
                 >
                   全部笔记
@@ -535,7 +536,8 @@ const NotebookDrawerContent = ({
                       style={[
                         styles.notebookName,
                         isDark && styles.textDark,
-                        isSelected && [styles.navItemTextActive, isDark && styles.navItemTextActiveDark],
+                        isSelected && styles.navItemTextActive,
+                        isSelected && isDark && styles.navItemTextActiveDark,
                       ]}
                     >
                       {notebook.name}
@@ -604,7 +606,8 @@ const NotebookDrawerContent = ({
                     style={[
                       styles.navItemText,
                       isDark && styles.textDark,
-                      isAssetsActive && [styles.navItemTextActive, isDark && styles.navItemTextActiveDark],
+                      isAssetsActive && styles.navItemTextActive,
+                      isAssetsActive && isDark && styles.navItemTextActiveDark,
                     ]}
                   >
                     附件管理

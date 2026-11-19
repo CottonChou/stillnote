@@ -99,6 +99,7 @@ import {
   type MobileMemoUpdatePayload,
 } from "./workspace-memo-cache";
 import { refreshWorkspaceThemeStyles, styles } from "./workspace-styles";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 import { NotesView } from "./WorkspaceNotesView";
 import { NotebookDrawerLayout } from "./WorkspaceDrawer";
 import { SettingsView, type MobileLocaleMode } from "./WorkspaceSettingsView";
@@ -340,6 +341,8 @@ export const WorkspaceScreen = ({
       }
 
       return listLocalMemos(dataScope, {
+        notebookId: activeNotebookId !== ALL_NOTES_ID ? activeNotebookId : undefined,
+        includeDescendants: showDescendantNotes ?? true,
         notebookIds: activeNotebookScopeIds,
         filter: memoFilterMode,
         tag: memoView === "notebook" ? selectedTag ?? undefined : undefined,
@@ -366,6 +369,8 @@ export const WorkspaceScreen = ({
 
       return listLocalMemos(dataScope, {
         q: debouncedSearchText,
+        notebookId: activeNotebookId !== ALL_NOTES_ID ? activeNotebookId : undefined,
+        includeDescendants: showDescendantNotes ?? true,
         notebookIds: activeNotebookScopeIds,
         filter: memoFilterMode,
         tag: memoView === "notebook" ? selectedTag ?? undefined : undefined,
@@ -1430,54 +1435,56 @@ export const WorkspaceScreen = ({
 
         {activeView === "notes" ? (
           <View style={{ flex: 1 }}>
-            <NotesView
-              activeNotebook={activeNotebook}
-              showDescendantNotes={showDescendantNotes ?? true}
-              initialSyncProgress={initialMirrorSyncProgress}
-              isLoading={notebooksQuery.isLoading || (searchActive ? searchQuery.isLoading : memosQuery.isLoading) || (isInitialMirrorStatusPending && visibleMemos.length === 0)}
-              isLoadingMore={searchActive ? searchQuery.isFetchingNextPage : memosQuery.isFetchingNextPage}
-              isRefreshing={isRefreshing}
-              memoFilterMode={memoFilterMode}
-              memoListDensity={memoListDensity}
-              memoSortMode={memoSortMode}
-              memoView={memoView}
-              memos={visibleMemos}
-              notebooks={notebooks}
-              onCreate={() => openCreateMemo()}
-              onCreateFromTemplate={canCreateMemo ? openCreateFromTemplate : undefined}
-              onClearTag={clearTagFilter}
-              onClearSelection={clearSelection}
-              onFilterModeChange={handleMemoFilterModeChange}
-              onOpenActions={() => setNotesActionsOpen(true)}
-              onOpenTagFilter={() => setTagFilterPickerOpen(true)}
-              onOpenNotebookPicker={openDrawer}
-              onDeleteMemo={handleDeleteSingleMemoSummary}
-              onTogglePinMemo={handleTogglePinMemo}
-              onMemoPress={handleMemoPress}
-              onMemoLongPress={handleMemoLongPress}
-              onLoadMore={() => {
-                const query = searchActive ? searchQuery : memosQuery;
-                if (query.hasNextPage && !query.isFetchingNextPage) {
-                  void query.fetchNextPage();
-                }
-              }}
-              onRefresh={refresh}
-              onSearchTextChange={(value) => {
-                setSearchText(value);
-                clearSelection();
-              }}
-              onSetMemoView={(nextMemoView) => nextMemoView === "trash" ? showTrash() : showAllNotes()}
-              searchText={searchText}
-              selectedTag={selectedTag}
-              totalMemoCount={searchActive
-                ? searchQuery.data?.pages[0]?.totalCount ?? searchResults.length
-                : memosQuery.data?.pages[0]?.totalCount ?? memos.length}
-              selectionMode={selectionMode}
-              selectedMemoIds={selectedMemoIds}
-              error={initialMirrorSyncError ?? notebooksQuery.error ?? (searchActive ? searchQuery.error : memosQuery.error)}
-              isError={Boolean(initialMirrorSyncError) || notebooksQuery.isError || (searchActive ? searchQuery.isError : memosQuery.isError)}
-              onRetry={retryInitialSync}
-            />
+            <ErrorBoundary key={activeNotebookId} onReset={showAllNotes} resetButtonLabel="返回全部笔记">
+              <NotesView
+                activeNotebook={activeNotebook}
+                showDescendantNotes={showDescendantNotes ?? true}
+                initialSyncProgress={initialMirrorSyncProgress}
+                isLoading={notebooksQuery.isLoading || (searchActive ? searchQuery.isLoading : memosQuery.isLoading) || (isInitialMirrorStatusPending && visibleMemos.length === 0)}
+                isLoadingMore={searchActive ? searchQuery.isFetchingNextPage : memosQuery.isFetchingNextPage}
+                isRefreshing={isRefreshing}
+                memoFilterMode={memoFilterMode}
+                memoListDensity={memoListDensity}
+                memoSortMode={memoSortMode}
+                memoView={memoView}
+                memos={visibleMemos}
+                notebooks={notebooks}
+                onCreate={() => openCreateMemo()}
+                onCreateFromTemplate={canCreateMemo ? openCreateFromTemplate : undefined}
+                onClearTag={clearTagFilter}
+                onClearSelection={clearSelection}
+                onFilterModeChange={handleMemoFilterModeChange}
+                onOpenActions={() => setNotesActionsOpen(true)}
+                onOpenTagFilter={() => setTagFilterPickerOpen(true)}
+                onOpenNotebookPicker={openDrawer}
+                onDeleteMemo={handleDeleteSingleMemoSummary}
+                onTogglePinMemo={handleTogglePinMemo}
+                onMemoPress={handleMemoPress}
+                onMemoLongPress={handleMemoLongPress}
+                onLoadMore={() => {
+                  const query = searchActive ? searchQuery : memosQuery;
+                  if (query.hasNextPage && !query.isFetchingNextPage) {
+                    void query.fetchNextPage();
+                  }
+                }}
+                onRefresh={refresh}
+                onSearchTextChange={(value) => {
+                  setSearchText(value);
+                  clearSelection();
+                }}
+                onSetMemoView={(nextMemoView) => nextMemoView === "trash" ? showTrash() : showAllNotes()}
+                searchText={searchText}
+                selectedTag={selectedTag}
+                totalMemoCount={searchActive
+                  ? searchQuery.data?.pages[0]?.totalCount ?? searchResults.length
+                  : memosQuery.data?.pages[0]?.totalCount ?? memos.length}
+                selectionMode={selectionMode}
+                selectedMemoIds={selectedMemoIds}
+                error={initialMirrorSyncError ?? notebooksQuery.error ?? (searchActive ? searchQuery.error : memosQuery.error)}
+                isError={Boolean(initialMirrorSyncError) || notebooksQuery.isError || (searchActive ? searchQuery.isError : memosQuery.isError)}
+                onRetry={retryInitialSync}
+              />
+            </ErrorBoundary>
           </View>
       ) : null}
 

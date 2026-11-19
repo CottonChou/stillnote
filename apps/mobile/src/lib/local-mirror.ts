@@ -43,6 +43,7 @@ type SoftDeleteMemoRow = {
 
 export type LocalMemoListParams = {
   notebookId?: string | null;
+  includeDescendants?: boolean;
   notebookIds?: string[];
   q?: string;
   tag?: string;
@@ -137,12 +138,34 @@ export const listLocalMemos = async (scope: string, params: LocalMemoListParams)
   const conditions = ["scope = ?", "is_deleted = ?"];
   const binds: (string | number)[] = [scope, params.trash ? 1 : 0];
 
-  if (params.notebookIds?.length) {
-    conditions.push(`notebook_id IN (${params.notebookIds.map(() => "?").join(", ")})`);
-    binds.push(...params.notebookIds);
+  if (params.notebookId && params.includeDescendants) {
+    conditions.push(`notebook_id IN (
+      WITH RECURSIVE descendants(id, depth) AS (
+        SELECT ? AS id, 0 AS depth
+        UNION ALL
+        SELECT n.id, d.depth + 1
+        FROM mobile_notebooks n
+        JOIN descendants d ON json_extract(n.data_json, '$.parentId') = d.id
+        WHERE n.scope = ? AND d.depth < 100
+      )
+      SELECT id FROM descendants
+    )`);
+    binds.push(params.notebookId, scope);
   } else if (params.notebookId) {
     conditions.push("notebook_id = ?");
     binds.push(params.notebookId);
+  } else if (params.notebookIds?.length) {
+    if (params.notebookIds.length === 1) {
+      conditions.push("notebook_id = ?");
+      binds.push(params.notebookIds[0]);
+    } else if (params.notebookIds.length <= 200) {
+      conditions.push(`notebook_id IN (${params.notebookIds.map(() => "?").join(", ")})`);
+      binds.push(...params.notebookIds);
+    } else {
+      const safeIds = params.notebookIds.slice(0, 200);
+      conditions.push(`notebook_id IN (${safeIds.map(() => "?").join(", ")})`);
+      binds.push(...safeIds);
+    }
   }
   if (params.q?.trim()) {
     conditions.push("(title LIKE ? OR content_text LIKE ? OR tags_text LIKE ?)");
@@ -178,7 +201,7 @@ export const listLocalMemos = async (scope: string, params: LocalMemoListParams)
        FROM mobile_memos
        WHERE ${whereSql}
        ORDER BY ${orderBy}`,
-      ...binds
+      binds
     );
     const memos = filterLocalMemosByExactTag(
       rows.flatMap((row) => {
@@ -197,7 +220,7 @@ export const listLocalMemos = async (scope: string, params: LocalMemoListParams)
 
   const countRow = await db.getFirstAsync<{ count: number }>(
     `SELECT COUNT(*) AS count FROM mobile_memos WHERE ${whereSql}`,
-    ...binds
+    binds
   );
   const rows = await db.getAllAsync<StoredMemoSummaryRow>(
     `SELECT summary_json,
@@ -206,9 +229,7 @@ export const listLocalMemos = async (scope: string, params: LocalMemoListParams)
      WHERE ${whereSql}
      ORDER BY ${orderBy}
      LIMIT ? OFFSET ?`,
-    ...binds,
-    limit,
-    offset
+    [...binds, limit, offset]
   );
   const totalCount = countRow?.count ?? rows.length;
   const nextOffset = offset + rows.length;
