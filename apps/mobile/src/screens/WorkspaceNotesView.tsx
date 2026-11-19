@@ -370,7 +370,7 @@ const MemoList = ({
       numColumns={columnCount}
       onEndReached={onLoadMore}
       onEndReachedThreshold={0.35}
-      removeClippedSubviews={Platform.OS === "android"}
+      removeClippedSubviews={Platform.OS === "android" && memos.length > 0}
       refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} tintColor={palette.ink} />}
       style={styles.memoList}
       renderItem={renderItem}
