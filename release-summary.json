@@ -1,20 +1,20 @@
 {
-  "version": "2.18.3",
+  "version": "2.18.4",
   "changes": {
     "en-US": [
-      "Add mobile attachment and asset manager view with zoomable preview and search.",
-      "Support plain text incoming shares, ColorOS content portal, and PROCESS_TEXT action on Android.",
-      "Implement macOS in-place update fallback for desktop client."
+      "Fix white screen crash when selecting notebooks on Android by using recursive CTE queries, flattening drawer styles, and adding app error boundaries.",
+      "Scope inbox system identity to root notebooks and disambiguate nested inbox folders to protect desktop sync.",
+      "Optimize Cloudflare Workers CPU usage and D1/R2 efficiency with deferred Markdown parsing, excerpt projections, and ETag caching."
     ],
     "zh-CN": [
-      "移动端新增附件与资源管理视图，支持缩放预览、分类筛选与搜索。",
-      "Android 端支持纯文本系统分享、OPPO ColorOS 内容传送门与划词菜单写入。",
-      "实现 Mac 桌面端原地更新容错兜底机制。"
+      "修复安卓端点击笔记本及空笔记本导致白屏的问题，采用递归 CTE 保护 SQLite 参数上限，拍平抽屉样式并增设错误边界。",
+      "将收件箱系统身份限制在顶层笔记本，并消除嵌套子收件箱别名冲突以保护桌面端同步。",
+      "优化 Cloudflare Workers CPU 使用率与 D1/R2 读取性能，支持 Markdown 惰性解析、摘要投影与 ETag 缓存。"
     ],
     "ja": [
-      "モバイル版にピンチズームプレビューと検索を備えた添付ファイル・アセット管理ビューを追加。",
-      "Androidでプレーンテキスト共有、ColorOSコンテンツポータル、PROCESS_TEXTアクションに対応。",
-      "デスクトップ版Mac向けにインプレースアップデートのフォールバックを実装。"
+      "Androidでノートブック選択時に白画面になる不具合を修正し、再帰CTEによるクエリ保護とエラー境界を追加しました。",
+      "受信トレイのシステム識別子をルートノートに限定し、入れ子になった受信トレイの同期衝突を防止しました。",
+      "Cloudflare WorkersのCPU使用率とD1/R2パフォーマンスを最適化し、Markdownの遅延解析とETagキャッシュを追加しました。"
     ]
   }
 }
