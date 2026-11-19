@@ -46,6 +46,40 @@ type SyncRouteDependencies = {
 // page; querying all of them in one IN clause would make sync return HTTP 500.
 const SYNC_DETAIL_ID_BATCH_SIZE = 90;
 
+// Keep each bootstrap response within a predictable JSON parse/stringify CPU and
+// memory envelope so large clipped articles do not trip Workers CPU limits even
+// when older clients request limit=200. Always return at least one memo row so
+// pagination makes forward progress regardless of individual memo size.
+export const MAX_SYNC_BOOTSTRAP_PAGE_BYTES = 1_500_000;
+
+const estimateSyncMemoRowBytes = (row: SyncMemoDetailRow) =>
+  (row.content_json?.length ?? 0) +
+  (row.content_markdown?.length ?? 0) +
+  (row.content_text?.length ?? 0);
+
+export const selectSyncBootstrapPage = (
+  rows: SyncMemoDetailRow[],
+  limit: number,
+  maxBytes = MAX_SYNC_BOOTSTRAP_PAGE_BYTES,
+) => {
+  const maxCount = Math.min(rows.length, limit);
+  const page: SyncMemoDetailRow[] = [];
+  let totalBytes = 0;
+  for (let index = 0; index < maxCount; index += 1) {
+    const row = rows[index]!;
+    const rowBytes = estimateSyncMemoRowBytes(row);
+    if (page.length > 0 && totalBytes + rowBytes > maxBytes) {
+      break;
+    }
+    page.push(row);
+    totalBytes += rowBytes;
+  }
+  return {
+    page,
+    hasMore: rows.length > page.length,
+  };
+};
+
 // A deleted memo can outlive its original notebook: users may move every active
 // memo to trash and then delete the now-empty notebook. Local mirrors only cache
 // active notebooks, so expose the same destination used by restoreMemosRecord
@@ -101,7 +135,7 @@ export const registerSyncRoutes = (
     if (denied) return denied;
 
     const workspaceId = getWorkspaceId(context);
-    const limit = dependencies.clampNumber(Number(context.req.query("limit") ?? 100), 1, 200);
+    const limit = dependencies.clampNumber(Number(context.req.query("limit") ?? 50), 1, 200);
     const afterId = context.req.query("afterId")?.trim() ?? "";
     // Initial metadata is needed once; later pages can use the first snapshot.
     // Keep the historical response for clients that do not opt out.
@@ -139,14 +173,14 @@ export const registerSyncRoutes = (
          WHERE w.id = ?`,
       ).bind(workspaceId).first<{ cursor: number; sync_identity: string }>(),
     ]);
-    const page = memoRows.results.slice(0, limit);
+    const { page, hasMore } = selectSyncBootstrapPage(memoRows.results, limit);
     return context.json({
       notebooks: notebookRows.results.map(mapNotebook),
       memos: page.map(dependencies.mapMemoDetail),
       snapshotCursor: cursorRow?.cursor ?? 0,
       syncIdentity: cursorRow?.sync_identity,
       ...(includeMetadata ? { totalCount: totalRow?.count ?? page.length } : {}),
-      nextAfterId: memoRows.results.length > limit ? page.at(-1)?.id ?? null : null,
+      nextAfterId: hasMore ? page.at(-1)?.id ?? null : null,
     });
   });
 
@@ -160,7 +194,7 @@ export const registerSyncRoutes = (
       0,
       Number.MAX_SAFE_INTEGER,
     );
-    const limit = dependencies.clampNumber(Number(context.req.query("limit") ?? 100), 1, 200);
+    const limit = dependencies.clampNumber(Number(context.req.query("limit") ?? 50), 1, 200);
     const rows = await context.env.storage.db.prepare(
       `WITH workspace_state AS (
          SELECT w.created_at AS sync_identity,

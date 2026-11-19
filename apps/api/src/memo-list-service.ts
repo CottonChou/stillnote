@@ -1,8 +1,7 @@
 import {
   createExcerpt,
   DEFAULT_MEMO_TITLE,
-  docToText,
-  markdownToDoc,
+  markdownToPlainText,
   getDiagramSummary,
   getInfographicSummary,
   getPosterSummary,
@@ -73,7 +72,7 @@ export const mapMemoSummary = (row: MemoSummaryRow): MemoSummary => ({
   excerpt:
     row.excerpt ||
     createExcerpt(row.content_text ?? "") ||
-    createExcerpt(docToText(markdownToDoc(row.content_markdown ?? ""))),
+    createExcerpt(markdownToPlainText(row.content_markdown ?? "")),
   ...getDiagramSummary(row.content_markdown),
   ...getInfographicSummary(row.content_markdown),
   ...getPosterSummary(row.content_markdown),
@@ -154,6 +153,11 @@ export const toFtsQuery = (value: string) => {
 
 export const escapeLike = (value: string) =>
   value.replace(/[\\%_]/g, (character) => `\\${character}`);
+
+const LIST_MEMO_CONTENT_PROJECTION_SQL = `CASE WHEN m.excerpt = '' THEN substr(mc.content_text, 1, 500) ELSE NULL END AS content_text,
+                CASE WHEN instr(mc.content_markdown, 'stillnote-') > 0 THEN mc.content_markdown
+                     WHEN m.excerpt = '' AND mc.content_text = '' THEN substr(mc.content_markdown, 1, 500)
+                     ELSE NULL END AS content_markdown`;
 
 export const listMemos = async (
   database: DatabaseAdapter,
@@ -284,7 +288,7 @@ export const listMemos = async (
          )
          SELECT m.id, m.notebook_id, m.title, m.excerpt, m.tags_json, m.is_pinned,
                 m.is_archived, m.is_deleted, m.created_at, m.updated_at, m.deleted_at, mc.revision,
-                mc.content_text, mc.content_markdown
+                ${LIST_MEMO_CONTENT_PROJECTION_SQL}
          FROM search_matches s
          INNER JOIN memos m ON m.id = s.memo_id
          INNER JOIN memo_contents mc ON mc.memo_id = m.id
@@ -331,7 +335,7 @@ export const listMemos = async (
     const rows = await database.prepare(
       `SELECT m.id, m.notebook_id, m.title, m.excerpt, m.tags_json, m.is_pinned,
               m.is_archived, m.is_deleted, m.created_at, m.updated_at, m.deleted_at, mc.revision,
-              mc.content_text, mc.content_markdown
+              ${LIST_MEMO_CONTENT_PROJECTION_SQL}
        FROM memos m
        INNER JOIN memo_contents mc ON mc.memo_id = m.id
        WHERE ${searchCursorConditions.join(" AND ")}
@@ -352,7 +356,7 @@ export const listMemos = async (
   const rows = await database.prepare(
     `SELECT m.id, m.notebook_id, m.title, m.excerpt, m.tags_json, m.is_pinned,
             m.is_archived, m.is_deleted, m.created_at, m.updated_at, m.deleted_at, mc.revision,
-            mc.content_text, mc.content_markdown
+            ${LIST_MEMO_CONTENT_PROJECTION_SQL}
      FROM memos m
      INNER JOIN memo_contents mc ON mc.memo_id = m.id
      WHERE ${cursorConditions.join(" AND ")}

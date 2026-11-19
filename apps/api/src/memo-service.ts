@@ -6,6 +6,7 @@ import {
   docToText,
   emptyDoc,
   markdownToDoc,
+  markdownToPlainText,
   mergeMemoDocs,
   resolveMemoContentDoc,
   resolveMergedMemoTitle,
@@ -1024,10 +1025,15 @@ export const mergeMemosRecord = async (
   return memo;
 };
 
+// Skip full server-side TipTap AST parsing for large Markdown-only writes so
+// single-request CPU stays comfortably under Cloudflare Workers' 10 ms Free limit.
+// Clients transparently recover the full AST from contentMarkdown via resolveMemoContentDoc.
+export const DEFERRED_MARKDOWN_PARSE_THRESHOLD_CHARS = 4_000;
+
 export const createMemoRecord = async (
   db: DatabaseAdapter,
   workspaceId: string,
-  input: { notebookId: string; title?: string; contentJson?: unknown; contentMarkdown?: string; tags?: string[]; createdAt?: string; updatedAt?: string },
+  input: { notebookId: string; title?: string; contentJson?: unknown; contentMarkdown?: string; tags?: string[]; createdAt?: string; updatedAt?: string; deferMarkdownDoc?: boolean },
   actor: { actorType: "user" | "agent"; actorId: string | null },
   actorLabel: string
 ): Promise<MemoDetail> => {
@@ -1039,10 +1045,17 @@ export const createMemoRecord = async (
   }
   const tags = normalizeTags(input.tags);
   const contentMarkdown = input.contentMarkdown ?? "";
-  const contentJson = input.contentJson && typeof input.contentJson === "object"
+  const hasExplicitContentJson = Boolean(input.contentJson && typeof input.contentJson === "object");
+  const deferMarkdownParse =
+    !hasExplicitContentJson
+    && Boolean(contentMarkdown)
+    && (input.deferMarkdownDoc === true || contentMarkdown.length > DEFERRED_MARKDOWN_PARSE_THRESHOLD_CHARS);
+  const contentJson = hasExplicitContentJson
     ? input.contentJson as TiptapDoc
-    : markdownToDoc(contentMarkdown);
-  const contentText = docToText(contentJson);
+    : deferMarkdownParse
+      ? emptyDoc()
+      : markdownToDoc(contentMarkdown);
+  const contentText = deferMarkdownParse ? markdownToPlainText(contentMarkdown) : docToText(contentJson);
   const title = normalizeMemoTitle(input.title);
   const excerpt = createExcerpt(contentText);
   const contentHash = await sha256(contentMarkdown + JSON.stringify(contentJson));
@@ -1209,6 +1222,7 @@ export const importMemosRecord = async (
         tags: item.tags,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
+        deferMarkdownDoc: true,
       }, input.actor, input.actorLabel);
       createdMemoId = memo.id;
       const now = isoNow();
@@ -1403,11 +1417,15 @@ export const updateMemoRecord = async (
   }
 
   const currentContentJson = parseDoc(current.content_json);
+  const deferMarkdownUpdate =
+    input.contentJson === undefined
+    && input.contentMarkdown !== undefined
+    && input.contentMarkdown.length > DEFERRED_MARKDOWN_PARSE_THRESHOLD_CHARS;
   const contentJson =
     input.contentJson !== undefined
       ? input.contentJson
       : input.contentMarkdown !== undefined
-        ? markdownToDoc(input.contentMarkdown)
+        ? (deferMarkdownUpdate ? emptyDoc() : markdownToDoc(input.contentMarkdown))
         : currentContentJson;
   const contentMarkdown =
     input.contentMarkdown !== undefined
@@ -1415,7 +1433,9 @@ export const updateMemoRecord = async (
       : input.contentJson !== undefined
         ? docToMarkdown(contentJson)
         : current.content_markdown;
-  const contentText = hasDocumentUpdate ? docToText(contentJson) : current.content_text;
+  const contentText = hasDocumentUpdate
+    ? (deferMarkdownUpdate ? markdownToPlainText(contentMarkdown) : docToText(contentJson))
+    : current.content_text;
   const title =
     input.title !== undefined ? normalizeMemoTitle(input.title) : normalizeMemoTitle(current.title);
   if (

@@ -728,7 +728,7 @@ const bootstrapDesktopMirror = async (reset: boolean) => {
   let snapshotCursor = 0;
   let syncIdentity = "";
   do {
-    const page = await api.syncBootstrap({ afterId, limit: 200 });
+    const page = await api.syncBootstrap({ afterId, limit: 50 });
     if (firstPage) {
       snapshotCursor = page.snapshotCursor;
       syncIdentity = page.syncIdentity ?? "";
@@ -748,7 +748,7 @@ const pullRemoteChanges = async () => {
   }
 
   let cursor = status.cursor;
-  let response: SyncChangesResponse = await api.syncChanges({ cursor, limit: 200 });
+  let response: SyncChangesResponse = await api.syncChanges({ cursor, limit: 100 });
   if (hasDesktopSyncStateReset({ cursor: status.cursor, syncIdentity: status.syncIdentity }, response)) {
     await bootstrapDesktopMirror(true);
     return;
@@ -757,7 +757,7 @@ const pullRemoteChanges = async () => {
     await request("sync.apply", { changes: orderDesktopSyncChanges(response.changes) });
     cursor = response.cursor;
     if (!response.hasMore) break;
-    response = await api.syncChanges({ cursor, limit: 200 });
+    response = await api.syncChanges({ cursor, limit: 100 });
     if (hasDesktopSyncStateReset({ cursor, syncIdentity: status.syncIdentity }, response)) {
       await bootstrapDesktopMirror(true);
       return;

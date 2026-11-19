@@ -7,6 +7,7 @@ import {
   docToMarkdown,
   docToText,
   markdownToDoc,
+  markdownToPlainText,
   MERGE_DIVIDER_MARKDOWN_MARKER,
   MERGE_DIVIDER_NODE_TYPE,
   FILE_ATTACHMENT_NODE_TYPE,
@@ -845,5 +846,37 @@ describe("getMemoDisplayTitle", () => {
   test("keeps real titles, including Chinese ones", () => {
     expect(getMemoDisplayTitle("  Plan  ", "Untitled note")).toBe("Plan");
     expect(getMemoDisplayTitle("会议记录", "Untitled note")).toBe("会议记录");
+  });
+});
+
+describe("markdownToPlainText", () => {
+  test("extracts readable plain text without Markdown syntax, front matter, or StillNote comments", () => {
+    const markdown = [
+      "---",
+      "title: Ignored",
+      "tags: [a, b]",
+      "---",
+      "<!-- stillnote-diagram-v1:eyJraW5kIjoiZmxvd2NoYXJ0In0= -->",
+      "# Weekly **Plan**",
+      "",
+      "> Quote with [StillNote](https://stillnote.org) and ![cover](https://example.com/a.png)",
+      "",
+      "- [x] Finish ~~old~~ *tasks* and `code`",
+      "1. Ship fast",
+      "",
+      "```ts",
+      "const value = 42;",
+      "```",
+    ].join("\n");
+
+    const text = markdownToPlainText(markdown);
+    expect(text).not.toContain("stillnote-diagram-v1");
+    expect(text).not.toContain("title: Ignored");
+    expect(text).not.toContain("https://stillnote.org");
+    expect(text).toContain("Weekly Plan");
+    expect(text).toContain("Quote with StillNote and cover");
+    expect(text).toContain("Finish old tasks and code");
+    expect(text).toContain("Ship fast");
+    expect(text).toContain("const value = 42;");
   });
 });

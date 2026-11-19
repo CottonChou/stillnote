@@ -23,7 +23,7 @@ import { filterLocalMemosByExactTag, summarizeMobileTags } from "./mobile-tags";
 
 const DATABASE_NAME = "stillnote-mobile.db";
 const SUMMARY_PAGE_SIZE = 200;
-const CHANGE_PAGE_SIZE = 200;
+const CHANGE_PAGE_SIZE = 100;
 const SQLITE_ID_BATCH_SIZE = 400;
 
 let databasePromise: Promise<ReturnType<typeof serializeMobileDatabaseWrites>> | null = null;

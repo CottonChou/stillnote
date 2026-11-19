@@ -112,9 +112,16 @@ export const createStillNoteMarkdownManager = (
   }),
 });
 
-const markdownManager = createStillNoteMarkdownManager({
-  mathematics: createStillNoteMarkdownMathematics(),
-});
+let cachedMarkdownManager: MarkdownManager | null = null;
+
+const getMarkdownManager = () => {
+  if (!cachedMarkdownManager) {
+    cachedMarkdownManager = createStillNoteMarkdownManager({
+      mathematics: createStillNoteMarkdownMathematics(),
+    });
+  }
+  return cachedMarkdownManager;
+};
 
 const PROTECTED_MARKDOWN_SEGMENT = /(```[\s\S]*?```|~~~[\s\S]*?~~~|\$\$[\s\S]*?\$\$)/g;
 
@@ -144,11 +151,12 @@ const withDefaultImageWidths = (node: TiptapNode): TiptapNode => {
 // Long notes are split into pieces. marked otherwise copies the rest of the
 // note after every paragraph, and that copy blocks the single-threaded server.
 const parseMarkdownBody = (markdown: string): TiptapNode[] => {
+  const manager = getMarkdownManager();
   const chunks = splitMarkdownParseChunks(markdown);
   if (chunks.length <= 1) {
-    return (markdownManager.parse(markdown) as TiptapDoc).content ?? [];
+    return (manager.parse(markdown) as TiptapDoc).content ?? [];
   }
-  return chunks.flatMap((chunk) => (markdownManager.parse(chunk) as TiptapDoc).content ?? []);
+  return chunks.flatMap((chunk) => (manager.parse(chunk) as TiptapDoc).content ?? []);
 };
 
 export const markdownToDoc = (markdown: string): TiptapDoc => {
@@ -410,8 +418,9 @@ export const docToMarkdown = (doc: unknown): string => {
   const serializableDoc = protectLiteralDollarPairs(prepareImageListsForMarkdown(projectNativeUnknownContentForMarkdown(
     stripEditorOnlyNodes(body) as TiptapDoc
   )));
-  const markdown = markdownManager
-    .serialize(serializableDoc as Parameters<typeof markdownManager.serialize>[0])
+  const manager = getMarkdownManager();
+  const markdown = manager
+    .serialize(serializableDoc as Parameters<typeof manager.serialize>[0])
     .replaceAll(LITERAL_DOLLAR_PLACEHOLDER, "\\$");
   return properties === null ? markdown : `---\n${properties}\n---\n\n${markdown}`;
 };
@@ -482,6 +491,28 @@ const stripEditorOnlyNodes = (doc: unknown): unknown => {
 const getStringAttr = (attrs: Record<string, unknown> | undefined, key: string) => {
   const value = attrs?.[key];
   return typeof value === "string" ? value.trim() : "";
+};
+
+/**
+ * Fast, linear-time Markdown-to-plain-text extractor for server-side excerpts and
+ * FTS indexing without invoking the full TipTap/ProseMirror Markdown parser.
+ */
+export const markdownToPlainText = (markdown: string): string => {
+  if (!markdown) return "";
+  const normalized = markdown.replace(/\r\n?/g, "\n");
+  const header = splitMarkdownFrontMatter(normalized);
+  const body = header ? header.body : normalized;
+  return body
+    .replace(/<!--[\s\S]*?-->/g, " ")
+    .replace(/^[ \t]*(?:```+|~~~+)[^\n]*$/gm, "")
+    .replace(/!\[([^\]]*)\]\([^)\n]*\)/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)\n]*\)/g, "$1")
+    .replace(/^[ \t]*#{1,6}[ \t]+/gm, "")
+    .replace(/^[ \t]*>[ \t]?/gm, "")
+    .replace(/^[ \t]*(?:[-*+]|\d+\.)[ \t]+(?:\[[ xX]\][ \t]+)?/gm, "")
+    .replace(/[`*_~]+/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 };
 
 export const createExcerpt = (text: string, maxLength = 30): string => {

@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { Database } from "bun:sqlite";
 import { Hono } from "hono";
 import { createSelfHostedStorageAdapter } from "./self-hosted-storage-adapter.ts";
-import { registerSyncRoutes } from "./sync-routes.ts";
+import { MAX_SYNC_BOOTSTRAP_PAGE_BYTES, registerSyncRoutes } from "./sync-routes.ts";
 
 const agentAuth = {
   kind: "agent",
@@ -435,5 +435,60 @@ describe("sync route contracts", () => {
     expect(body.changes[0]).toMatchObject({ entityId: "memo_001", operation: "upsert" });
     expect(body.changes.at(-1)).toMatchObject({ entityId: "memo_200", operation: "upsert" });
     expect(detailQueryBindingCounts).toEqual([91, 91, 21]);
+  });
+
+  test("paginates bootstrap responses within the payload byte budget without stalling on oversized memos", async () => {
+    const fixture = createSyncIntegrationFixture();
+    try {
+      fixture.sqlite.exec("DELETE FROM memos; DELETE FROM memo_contents;");
+      const mediumPayload = "a".repeat(Math.floor(MAX_SYNC_BOOTSTRAP_PAGE_BYTES * 0.6));
+      const oversizedPayload = "b".repeat(MAX_SYNC_BOOTSTRAP_PAGE_BYTES + 200_000);
+      const insertMemo = fixture.sqlite.query(
+        `INSERT INTO memos (id, workspace_id, notebook_id, title, is_deleted, created_at, updated_at)
+         VALUES (?, 'ws_1', 'nb_inbox', ?, 0, '2026-09-09T00:00:00.000Z', '2026-09-09T00:00:00.000Z')`,
+      );
+      const insertContent = fixture.sqlite.query(
+        `INSERT INTO memo_contents (memo_id, revision, content_json, content_markdown, content_text, content_hash)
+         VALUES (?, 1, '{"type":"doc","content":[]}', ?, '', 'hash')`,
+      );
+      for (const [id, payload] of [
+        ["memo_001", mediumPayload],
+        ["memo_002", mediumPayload],
+        ["memo_003", oversizedPayload],
+        ["memo_004", "small"],
+      ]) {
+        insertMemo.run(id, id);
+        insertContent.run(id, payload);
+      }
+
+      const pages = [];
+      let afterId = null;
+      do {
+        const query = afterId
+          ? `limit=200&afterId=${encodeURIComponent(afterId)}&includeMetadata=0`
+          : "limit=200";
+        const response = await fixture.app.request(
+          `/api/v1/sync/bootstrap?${query}`,
+          {},
+          { storage: fixture.storage },
+        );
+        expect(response.status).toBe(200);
+        const body = await response.json();
+        pages.push(body.memos.map((memo) => memo.id));
+        afterId = body.nextAfterId;
+      } while (afterId);
+
+      // memo_001 (60%) + memo_002 (60%) > 100%, so each gets its own page;
+      // memo_003 (>100%) still makes forward progress as a 1-memo page;
+      // memo_004 finishes cleanly.
+      expect(pages).toEqual([
+        ["memo_001"],
+        ["memo_002"],
+        ["memo_003"],
+        ["memo_004"],
+      ]);
+    } finally {
+      fixture.sqlite.close();
+    }
   });
 });

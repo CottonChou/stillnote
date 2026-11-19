@@ -1,6 +1,13 @@
 import { describe, expect, test } from "bun:test";
-import { createDefaultDiagramDocument, serializeDiagramDocument } from "@stillnote/shared";
+import { Database } from "bun:sqlite";
+import {
+  createDefaultDiagramDocument,
+  createDefaultTableDocument,
+  serializeDiagramDocument,
+  serializeTableDocument,
+} from "@stillnote/shared";
 import { listMemos, mapMemoSummary, toFtsQuery } from "./memo-list-service.ts";
+import { createSelfHostedStorageAdapter } from "./self-hosted-storage-adapter.ts";
 
 const memoRow = (id, overrides = {}) => ({
   id,
@@ -208,5 +215,87 @@ describe("memo list service", () => {
     expect(database.calls[0].sql).not.toContain("memos_fts MATCH");
     expect(database.calls[0].sql).toContain("m.title LIKE ?");
     expect(database.calls[0].parameters).toContain("%---%");
+  });
+
+  test("omits ordinary memo bodies in list SQL while preserving special document summaries and empty-excerpt fallback", async () => {
+    const sqlite = new Database(":memory:");
+    try {
+      sqlite.exec(`
+        CREATE TABLE memos (
+          id TEXT PRIMARY KEY,
+          workspace_id TEXT NOT NULL,
+          notebook_id TEXT NOT NULL,
+          title TEXT,
+          excerpt TEXT NOT NULL DEFAULT '',
+          tags_json TEXT NOT NULL DEFAULT '[]',
+          is_pinned INTEGER NOT NULL DEFAULT 0,
+          is_archived INTEGER NOT NULL DEFAULT 0,
+          is_deleted INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          deleted_at TEXT
+        );
+        CREATE TABLE memo_contents (
+          memo_id TEXT PRIMARY KEY,
+          revision INTEGER NOT NULL DEFAULT 1,
+          content_text TEXT NOT NULL DEFAULT '',
+          content_markdown TEXT NOT NULL DEFAULT ''
+        );
+      `);
+      const hugeMarkdown = `# Long Article\n\n${"Paragraph content. ".repeat(1000)}`;
+      const diagramMarkdown = serializeDiagramDocument(createDefaultDiagramDocument("architecture"));
+      const tableMarkdown = serializeTableDocument(createDefaultTableDocument());
+
+      sqlite.query(
+        `INSERT INTO memos (id, workspace_id, notebook_id, title, excerpt, created_at, updated_at)
+         VALUES
+           ('memo_plain', 'ws_1', 'nb_1', 'Plain', 'Saved excerpt', '2026-09-01T00:00:00.000Z', '2026-09-03T00:00:00.000Z'),
+           ('memo_diagram', 'ws_1', 'nb_1', 'Arch', 'Diagram excerpt', '2026-09-01T00:00:00.000Z', '2026-09-02T00:00:00.000Z'),
+           ('memo_table', 'ws_1', 'nb_1', 'Tasks', 'Table excerpt', '2026-09-01T00:00:00.000Z', '2026-09-01T12:00:00.000Z'),
+           ('memo_empty_excerpt', 'ws_1', 'nb_1', 'Fallback', '', '2026-09-01T00:00:00.000Z', '2026-09-01T00:00:00.000Z')`,
+      ).run();
+      sqlite.query(
+        `INSERT INTO memo_contents (memo_id, revision, content_text, content_markdown)
+         VALUES
+           ('memo_plain', 1, ?, ?),
+           ('memo_diagram', 1, 'diagram', ?),
+           ('memo_table', 1, 'table', ?),
+           ('memo_empty_excerpt', 1, '', '# Heading **bold** fallback text')`,
+      ).run(hugeMarkdown, hugeMarkdown, diagramMarkdown, tableMarkdown);
+
+      const storage = createSelfHostedStorageAdapter(sqlite, "/tmp/stillnote-memo-list-projection-unused");
+      const rawRows = [];
+      const originalPrepare = storage.db.prepare.bind(storage.db);
+      storage.db.prepare = (sql) => {
+        const statement = originalPrepare(sql);
+        return {
+          bind: (...params) => {
+            const bound = statement.bind(...params);
+            return {
+              ...bound,
+              all: async () => {
+                const result = await bound.all();
+                if (sql.includes("FROM memos m")) rawRows.push(...result.results);
+                return result;
+              },
+            };
+          },
+        };
+      };
+
+      const result = await listMemos(storage.db, { workspaceId: "ws_1", limit: 10 });
+      const plainRaw = rawRows.find((row) => row.id === "memo_plain");
+      expect(plainRaw.content_markdown).toBeNull();
+      expect(plainRaw.content_text).toBeNull();
+
+      const byId = new Map(result.memos.map((memo) => [memo.id, memo]));
+      expect(byId.get("memo_plain")?.excerpt).toBe("Saved excerpt");
+      expect(byId.get("memo_plain")?.diagramKind).toBeNull();
+      expect(byId.get("memo_diagram")?.diagramKind).toBe("architecture");
+      expect(byId.get("memo_table")?.tableSummary).not.toBeNull();
+      expect(byId.get("memo_empty_excerpt")?.excerpt).toContain("Heading bold fallback text");
+    } finally {
+      sqlite.close();
+    }
   });
 });

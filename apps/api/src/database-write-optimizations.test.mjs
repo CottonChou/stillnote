@@ -1,7 +1,19 @@
 import { Database } from "bun:sqlite";
 import { describe, expect, test } from "bun:test";
 import { globSync, readFileSync } from "node:fs";
-import { createPosterDocument, serializePosterDocument, parsePosterDocument, markdownToDoc, addTableField, createDefaultTableDocument, serializeTableDocument, updateTableCell } from "@stillnote/shared";
+import {
+  createPosterDocument,
+  serializePosterDocument,
+  parsePosterDocument,
+  markdownToDoc,
+  resolveMemoContentDoc,
+  docToText,
+  emptyDoc,
+  addTableField,
+  createDefaultTableDocument,
+  serializeTableDocument,
+  updateTableCell,
+} from "@stillnote/shared";
 import {
   acquireMaintenanceLease,
   createMemoEditSession,
@@ -9,6 +21,11 @@ import {
   mergeMemosRecord,
   updateMemoRecord,
 } from "./index.ts";
+import {
+  createMemoRecord,
+  DEFERRED_MARKDOWN_PARSE_THRESHOLD_CHARS,
+  importMemosRecord,
+} from "./memo-service.ts";
 
 const executionContext = {
   passThroughOnException() {},
@@ -383,5 +400,79 @@ describe("database write optimizations", () => {
     expect((await request()).status).toBe(200);
     expect(sqlite.query("SELECT last_seen_at FROM sessions WHERE id = 'session_touch_test'").get().last_seen_at).not.toBe(stale);
     sqlite.close();
+  });
+
+  test("defers server-side Markdown AST parsing for large memos and batch imports while keeping search and client recovery intact", async () => {
+    const { database, sqlite } = createDatabase();
+    try {
+      const seedMemo = getSeedMemo(sqlite);
+      const actor = { actorType: "user", actorId: "user_owner" };
+      const largeBody = `# Clipped Report\n\n${"StillNote **CPU** optimization paragraph with [link](https://stillnote.org).\n\n".repeat(90)}UniqueKeywordAlpha`;
+      expect(largeBody.length).toBeGreaterThan(DEFERRED_MARKDOWN_PARSE_THRESHOLD_CHARS);
+
+      const created = await createMemoRecord(
+        database,
+        seedMemo.workspace_id,
+        {
+          notebookId: seedMemo.notebook_id,
+          title: "Large Clip",
+          contentMarkdown: largeBody,
+          tags: ["clipping"],
+        },
+        actor,
+        "owner",
+      );
+      expect(created.contentJson).toEqual(emptyDoc());
+      expect(created.contentMarkdown).toBe(largeBody);
+      expect(created.contentText).toContain("Clipped Report");
+      expect(created.contentText).toContain("UniqueKeywordAlpha");
+      expect(created.excerpt).toContain("Clipped Report");
+
+      const recovered = resolveMemoContentDoc(created.contentJson, created.contentMarkdown);
+      expect(docToText(recovered)).toContain("UniqueKeywordAlpha");
+
+      const ftsHits = sqlite.query(
+        "SELECT memo_id FROM memos_fts WHERE memos_fts MATCH '\"UniqueKeywordAlpha\"'",
+      ).all();
+      expect(ftsHits.map((row) => row.memo_id)).toContain(created.id);
+
+      const updatedBody = `# Updated Report\n\n${"Refreshed content block.\n\n".repeat(200)}UniqueKeywordBeta`;
+      const updated = await updateMemoRecord(
+        database,
+        seedMemo.workspace_id,
+        created.id,
+        { contentMarkdown: updatedBody },
+        actor,
+        "owner",
+      );
+      expect(updated.memo.contentJson).toEqual(emptyDoc());
+      expect(updated.memo.contentText).toContain("UniqueKeywordBeta");
+      expect(docToText(resolveMemoContentDoc(updated.memo.contentJson, updated.memo.contentMarkdown))).toContain("UniqueKeywordBeta");
+
+      const imported = await importMemosRecord(
+        database,
+        seedMemo.workspace_id,
+        {
+          source: "obsidian",
+          notebookId: seedMemo.notebook_id,
+          dryRun: false,
+          actor,
+          actorLabel: "owner",
+          items: [{
+            externalId: "ext_import_1",
+            title: "Imported Note",
+            contentMarkdown: "## Short imported **markdown** with UniqueKeywordGamma",
+            tags: ["import"],
+          }],
+        },
+      );
+      expect(imported.created).toBe(1);
+      const importedMemo = imported.results[0].memo;
+      expect(importedMemo.contentJson).toEqual(emptyDoc());
+      expect(importedMemo.contentText).toContain("Short imported markdown with UniqueKeywordGamma");
+      expect(docToText(resolveMemoContentDoc(importedMemo.contentJson, importedMemo.contentMarkdown))).toContain("UniqueKeywordGamma");
+    } finally {
+      sqlite.close();
+    }
   });
 });

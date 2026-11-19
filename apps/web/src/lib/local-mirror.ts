@@ -53,8 +53,8 @@ export type LocalMemoListResponse = {
   nextCursor: string | null;
 };
 
-const BOOTSTRAP_PAGE_SIZE = 200;
-const CHANGE_PAGE_SIZE = 200;
+const BOOTSTRAP_PAGE_SIZE = 50;
+const CHANGE_PAGE_SIZE = 100;
 const SYNC_CURSOR_KEY = "cursor";
 const SYNC_IDENTITY_KEY = "identity";
 const activeSyncs = new Map<string, Promise<{ bootstrapped: boolean; changed: number }>>();
